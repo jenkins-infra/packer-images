@@ -1,0 +1,48 @@
+{
+  "builders": [
+    {
+      "type": "azure-arm",
+      "vm_size": "Standard_DS2_v2",
+      "os_type": "Linux",
+      "image_publisher": "Canonical",
+      "image_offer": "UbuntuServer",
+      "image_sku": "18.04-LTS",
+
+      "client_id": "{{user `client_id`}}",
+      "client_secret": "{{user `client_secret`}}",
+      "subscription_id": "{{user `subscription_id`}}",
+
+      "location": "{{user `location`}}",
+      "managed_image_name": "jenkins-agent-ubuntu1804-{{isotime \"20060102150405\"}}",
+      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
+      "azure_tags": {
+        "timestamp": "{{isotime \"20060102150405\"}}",
+        "imagetype": "jenkins-agent-ubuntu18.04"
+      }
+    }
+  ],
+  "provisioners": [{
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+    "inline": [
+      "apt-get update",
+      "apt-get upgrade -y",
+      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -",
+      "add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable'",
+      "apt-get -y install docker-ce docker-compose openjdk-11-jdk make zip",
+      "curl https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz -o /tmp/apache-maven-3.6.3-bin.tar.gz",
+      "tar zxf /tmp/apache-maven-3.6.3-bin.tar.gz -C /usr/share/",
+      "ln -s /usr/share/apache-maven-3.6.3/bin/mvn /usr/bin/mvn",
+      "rm -f /tmp/apache-maven-3.6.3-bin.tar.gz",
+      "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+    ],
+    "inline_shebang": "/bin/sh -x",
+    "type": "shell"
+  }],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
+    }
+  ]
+}
