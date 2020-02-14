@@ -27,9 +27,9 @@ pipeline {
 
     stage('Build') {
       environment {
-        AZURE_SUBSCRIPTION_ID = credentials('azure-subscription-id')
-        AZURE_CLIENT_ID = credentials('azure-client-id')
-        AZURE_CLIENT_SECRET = credentials('azure-client-secret')
+        AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
+        AZURE_CLIENT_ID = credentials('packer-azure-client-id')
+        AZURE_CLIENT_SECRET = credentials('packer-azure-client-secret')
       }
 
       when {
@@ -39,7 +39,7 @@ pipeline {
       steps {
         sh """
           packer build \
-            --var location="East US" \
+            --var location="East US 2" \
             --var resource_group_name="prod-packer-images" \
             --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
             --var client_id="$AZURE_CLIENT_ID" \
