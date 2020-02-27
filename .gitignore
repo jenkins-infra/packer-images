@@ -6,3 +6,7 @@ crash.log
 
 # For built boxes
 *.box
+
+manifest.json
+creds.json
+vars.json

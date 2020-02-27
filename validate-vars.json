@@ -1,0 +1,7 @@
+{
+  "location": "East US",
+  "resource_group_name": "packer-images",
+  "subscription_id": "invalid",
+  "client_id": "invalid",
+  "client_secret": "invalid"
+}
