@@ -27,7 +27,7 @@
   "provisioners": [{
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
     "inline": [
-      "useradd -u 1000 -m -g jenkins -G docker jenkins",
+      "useradd -u 1000 -m -G docker jenkins",
       "apt-get update",
       "apt-get upgrade -y",
       "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -",
@@ -37,10 +37,10 @@
       "tar zxf /tmp/apache-maven-{{user `maven_version`}}-bin.tar.gz -C /usr/share/",
       "ln -s /usr/share/apache-maven-{{user `maven_version`}}/bin/mvn /usr/bin/mvn",
       "rm -f /tmp/apache-maven-{{user `maven_version`}}-bin.tar.gz",
-      "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync",
       "mkdir -p  /mnt/agent-workspace/.m2",
       "chown -R jenkins:jenkins /mnt/agent-workspace",
-      "/mnt/agent-workspace/.m2 /home/jenkins/.m2"
+      "/mnt/agent-workspace/.m2 /home/jenkins/.m2",
+      "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
     ],
     "inline_shebang": "/bin/sh -x",
     "type": "shell"
