@@ -1,4 +1,7 @@
 {
+  "variables": {
+    "maven_version": "3.6.3"
+  },
   "builders": [
     {
       "type": "azure-arm",
@@ -28,11 +31,11 @@
       "apt-get upgrade -y",
       "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -",
       "add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable'",
-      "apt-get -y install docker-ce docker-compose openjdk-11-jdk make zip",
-      "curl https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz -o /tmp/apache-maven-3.6.3-bin.tar.gz",
-      "tar zxf /tmp/apache-maven-3.6.3-bin.tar.gz -C /usr/share/",
-      "ln -s /usr/share/apache-maven-3.6.3/bin/mvn /usr/bin/mvn",
-      "rm -f /tmp/apache-maven-3.6.3-bin.tar.gz",
+      "apt-get -y install docker-ce docker-compose openjdk-8-jdk openjdk-11-jdk make zip",
+      "curl https://archive.apache.org/dist/maven/maven-3/{{user `maven_version`}}/binaries/apache-maven-{{user `maven_version`}}-bin.tar.gz -o /tmp/apache-maven-{{user `maven_version`}}-bin.tar.gz",
+      "tar zxf /tmp/apache-maven-{{user `maven_version`}}-bin.tar.gz -C /usr/share/",
+      "ln -s /usr/share/apache-maven-{{user `maven_version`}}/bin/mvn /usr/bin/mvn",
+      "rm -f /tmp/apache-maven-{{user `maven_version`}}-bin.tar.gz",
       "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
     ],
     "inline_shebang": "/bin/sh -x",
