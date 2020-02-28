@@ -15,6 +15,7 @@ pipeline {
     docker {
       args '--entrypoint=""'
       image 'hashicorp/packer:1.5.1'
+      label 'docker&&linux'
     }
   }
 
