@@ -39,7 +39,7 @@
       "rm -f /tmp/apache-maven-{{user `maven_version`}}-bin.tar.gz",
       "mkdir -p  /mnt/agent-workspace/.m2",
       "chown -R jenkins:jenkins /mnt/agent-workspace",
-      "/mnt/agent-workspace/.m2 /home/jenkins/.m2",
+      "ln -s /mnt/agent-workspace/.m2 /home/jenkins/.m2",
       "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
     ],
     "inline_shebang": "/bin/sh -x",
