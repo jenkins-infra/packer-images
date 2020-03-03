@@ -51,8 +51,8 @@ pipeline {
 
         sh """
         packer build \
-            --var location="East US 2" \
-            --var resource_group_name="prod-packer-images" \
+            --var location="East US" \
+            --var resource_group_name="prod-packer-images-eastus" \
             --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
             --var client_id="$AZURE_CLIENT_ID" \
             --var client_secret="$AZURE_CLIENT_SECRET" \

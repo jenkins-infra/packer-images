@@ -31,7 +31,8 @@
     "type": "powershell",
     "environment_vars": [
         "MAVEN_VERSION={{.maven_version}}",
-        "GIT_VERSION={{.git_version}}"
+        "GIT_VERSION={{.git_version}}",
+        "JAVA_VERSION={{.java_version}}"
     ]
   }],
   "post-processors": [
