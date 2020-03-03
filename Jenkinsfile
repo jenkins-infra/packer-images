@@ -23,6 +23,7 @@ pipeline {
     stage('Validate') {
       steps {
         sh 'packer validate --var-file validate-vars.json ubuntu-18-agent.json'
+        sh 'packer validate --var-file validate-vars.json windows-2019-agent.json'
       }
     }
 
@@ -46,6 +47,16 @@ pipeline {
             --var client_id="$AZURE_CLIENT_ID" \
             --var client_secret="$AZURE_CLIENT_SECRET" \
             ubuntu-18-agent.json
+        """
+
+        sh """
+        packer build \
+            --var location="East US 2" \
+            --var resource_group_name="prod-packer-images" \
+            --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
+            --var client_id="$AZURE_CLIENT_ID" \
+            --var client_secret="$AZURE_CLIENT_SECRET" \
+            windows-2019-agent.json
         """
       }
     }
