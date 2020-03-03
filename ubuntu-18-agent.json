@@ -1,5 +1,6 @@
 {
   "variables": {
+    "compose_version": "1.25.4",
     "maven_version": "3.6.3"
   },
   "builders": [
@@ -30,9 +31,11 @@
       "useradd -u 1000 -m -G docker jenkins",
       "apt-get update",
       "apt-get upgrade -y",
+      "apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
       "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -",
       "add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable'",
-      "apt-get -y install docker-ce docker-compose openjdk-8-jdk openjdk-11-jdk make zip",
+      "apt-get -y install docker-ce openjdk-8-jdk openjdk-11-jdk make zip",
+      "curl -L https://github.com/docker/compose/releases/download/{{user `compose_version`}}/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose",
       "curl https://archive.apache.org/dist/maven/maven-3/{{user `maven_version`}}/binaries/apache-maven-{{user `maven_version`}}-bin.tar.gz -o /tmp/apache-maven-{{user `maven_version`}}-bin.tar.gz",
       "tar zxf /tmp/apache-maven-{{user `maven_version`}}-bin.tar.gz -C /usr/share/",
       "ln -s /usr/share/apache-maven-{{user `maven_version`}}/bin/mvn /usr/bin/mvn",
