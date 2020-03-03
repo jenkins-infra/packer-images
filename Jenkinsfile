@@ -14,7 +14,7 @@ pipeline {
   agent {
     docker {
       args '--entrypoint=""'
-      image 'hashicorp/packer:1.5.1'
+      image 'hashicorp/packer:1.5.4'
       label 'docker&&linux'
     }
   }
