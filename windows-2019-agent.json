@@ -13,6 +13,12 @@
       "image_offer": "WindowsServer",
       "image_sku": "2019-Datacenter-Core",
 
+      "communicator": "winrm",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true,
+      "winrm_username": "packer",
+      "winrm_timeout": "20m",
+
       "client_id": "{{user `client_id`}}",
       "client_secret": "{{user `client_secret`}}",
       "subscription_id": "{{user `subscription_id`}}",
@@ -30,9 +36,9 @@
     "script": "windows-2019-provision.ps1",
     "type": "powershell",
     "environment_vars": [
-        "MAVEN_VERSION={{.maven_version}}",
-        "GIT_VERSION={{.git_version}}",
-        "JAVA_VERSION={{.java_version}}"
+        "MAVEN_VERSION={{user `maven_version`}}",
+        "GIT_VERSION={{user `git_version`}}",
+        "JAVA_VERSION={{user `java_version`}}"
     ]
   }],
   "post-processors": [

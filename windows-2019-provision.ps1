@@ -1,5 +1,7 @@
-Set-ExecutionPolicy Unrestricted
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+Add-Type -AssemblyName System.Web
 
 $baseDir = 'c:\azurecsdir'
 
