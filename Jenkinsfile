@@ -60,6 +60,7 @@ pipeline {
             steps {
               sh """
                 packer build \
+                  --force \
                   --var location="${configurations[AGENT]['location']}" \
                   --var resource_group_name="${configurations[AGENT]['resource_group_name']}" \
                   --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
