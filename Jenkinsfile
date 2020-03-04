@@ -36,7 +36,7 @@ pipeline {
         axes {
           axis {
             name 'AGENT'
-            values *(configurations.keySet())
+            values 'ubuntu-18', 'windows-2019'
           }
         }
         stages {
