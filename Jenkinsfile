@@ -29,14 +29,14 @@ pipeline {
           }
         }
         stages {
-          stage('Validate ${AGENT}') {
+          stage('Validate') {
             steps {
               sh 'packer validate --var-file validate-vars.json ${AGENT}-agent.json'
               sh 'packer validate --var-file validate-vars.json ${AGENT}-agent.json'
             }
           }
 
-          stage('Build ${AGENT}') {
+          stage('Build') {
             environment {
               AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
               AZURE_CLIENT_ID = credentials('packer-azure-client-id')
