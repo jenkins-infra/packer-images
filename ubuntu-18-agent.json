@@ -17,7 +17,7 @@
       "subscription_id": "{{user `subscription_id`}}",
 
       "location": "{{user `location`}}",
-      "managed_image_name": "jenkins-agent-ubuntu1804-{{isotime \"20060102150405\"}}",
+      "managed_image_name": "jenkins-agent-ubuntu1804",
       "managed_image_resource_group_name": "{{user `resource_group_name`}}",
       "azure_tags": {
         "timestamp": "{{isotime \"20060102150405\"}}",
