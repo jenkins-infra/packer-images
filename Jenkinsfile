@@ -9,6 +9,17 @@ if (env.CHANGE_ID) {
   ])
 }
 
+def configurations = [
+    'ubuntu-18' : [
+        'location' : 'East US 2',
+        'resource_group_name' : 'prod-packer-images'
+    ],
+    'windows-2019' : [
+        'location' : 'East US',
+        'resource_group_name' : 'prod-packer-images-eastus'
+    ]
+]
+
 pipeline {
   agent none
 
@@ -49,8 +60,8 @@ pipeline {
             steps {
               sh """
                 packer build \
-                  --var location="East US 2" \
-                  --var resource_group_name="prod-packer-images" \
+                  --var location="${configurations[AGENT]['location']}" \
+                  --var resource_group_name="${configurations[AGENT]['resource_group_name']}" \
                   --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
                   --var client_id="$AZURE_CLIENT_ID" \
                   --var client_secret="$AZURE_CLIENT_SECRET" \
