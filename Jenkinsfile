@@ -32,7 +32,6 @@ pipeline {
           stage('Validate') {
             steps {
               sh 'packer validate --var-file validate-vars.json ${AGENT}-agent.json'
-              sh 'packer validate --var-file validate-vars.json ${AGENT}-agent.json'
             }
           }
 
