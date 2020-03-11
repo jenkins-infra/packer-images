@@ -2,7 +2,10 @@
   "variables": {
     "maven_version": "3.6.3",
     "git_version": "2.25.1",
-    "java_version": "11.0.6+10"
+    "jdk11_version": "11.0.6+10",
+    "jdk8_version": "8u242-b08",
+    "git_lfs_version": "2.10.0",
+    "image_name": "jenkins-agent-win2019-docker"
   },
   "builders": [
     {
@@ -24,7 +27,7 @@
       "subscription_id": "{{user `subscription_id`}}",
 
       "location": "{{user `location`}}",
-      "managed_image_name": "jenkins-agent-win2019-docker",
+      "managed_image_name": "{{user `image_name`}}",
       "managed_image_resource_group_name": "{{user `resource_group_name`}}",
       "azure_tags": {
         "timestamp": "{{isotime \"20060102150405\"}}",
@@ -38,7 +41,9 @@
     "environment_vars": [
         "MAVEN_VERSION={{user `maven_version`}}",
         "GIT_VERSION={{user `git_version`}}",
-        "JAVA_VERSION={{user `java_version`}}"
+        "JDK11_VERSION={{user `jdk11_version`}}",
+        "JDK8_VERSION={{user `jdk8_version`}}",
+        "GIT_LFS_VERSION={{user `git_lfs_version`}}"
     ]
   }],
   "post-processors": [

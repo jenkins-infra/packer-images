@@ -43,7 +43,7 @@ $downloads = @{
     'gitlfs' = @{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
         'local' = "$baseDir\GitLfs.zip";
-        'destination' = "$baseDir\git\cmd";
+        'destination' = "$baseDir\git\mingw64\bin";
         'postexpand' = {
             & "$baseDir\git\cmd\git.exe" lfs install
         };
