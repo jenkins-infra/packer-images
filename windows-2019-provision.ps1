@@ -4,18 +4,51 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
 Add-Type -AssemblyName System.Web
 
 $baseDir = 'c:\azurecsdir'
+New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 
-$JDKUrl = 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JAVA_VERSION),$env:JAVA_VERSION.Replace('+', '_')
-$destinationJDKZipPath = "$baseDir\adoptOpenJDK.zip"
-$javaHome = '{0}\jdk-{1}' -f $baseDir,$env:JAVA_VERSION
-
-$GITUrl = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_VERSION
-$destinationGitZipPath = "$baseDir\MinGit.zip"
-$GITPath = "$baseDir\git\cmd\"
-
-$MavenUrl = 'https://apache.osuosl.org/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION
-$destinationMavenZipPath = "$baseDir\maven.zip"
-$mavenPath = '{0}\apache-maven-{1}\bin' -f $baseDir,$env:MAVEN_VERSION
+$downloads = @{
+    'jdk11' = @{
+        'url' = 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
+        'local' = "$baseDir\adoptOpenJDK11.zip";
+        'destination' = $baseDir;
+        'env' = @{
+            'JAVA_HOME' = '{0}\jdk-{1}' -f $baseDir,$env:JDK11_VERSION;
+        };
+        'path' = "$javaHome\bin";
+    };
+    'jdk8' = @{
+        'url' = 'https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '')
+        'local' = "$baseDir\adoptOpenJDK8.zip";
+        'destination' = $baseDir;
+    };
+    'git' = @{
+        'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_VERSION;
+        'local' = "$baseDir\MinGit.zip";
+        'destination' = "$baseDir\git";
+        'postexpand' = {
+            & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false
+            & "$baseDir\git\cmd\git.exe" config --system core.longpaths true
+        };
+        'path' = "$baseDir\git\cmd";
+    };
+    'maven' = @{
+        'url' = 'https://apache.osuosl.org/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
+        'local' = "$baseDir\maven.zip";
+        'destination' = $baseDir;
+        'path' = '{0}\apache-maven-{1}\bin' -f $baseDir,$env:MAVEN_VERSION;
+        'env' = @{
+            'MAVEN_HOME' = '{0}\apache-maven-{1}' -f $baseDir,$env:MAVEN_VERSION;
+        };
+    };
+    'gitlfs' = @{
+        'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
+        'local' = "$baseDir\GitLfs.zip";
+        'destination' = "$baseDir\git\mingw64\bin";
+        'postexpand' = {
+            & "$baseDir\git\cmd\git.exe" lfs install
+        };
+    };
+}
 
 function DownloadFile($url, $targetFile)
 {
@@ -42,31 +75,37 @@ function DownloadFile($url, $targetFile)
    $responseStream.Dispose()
 }
 
-# Checking if this is first time script is getting executed, if yes then downloading JDK, Git and VS Tools
-If(-not((Test-Path $destinationJDKZipPath)))
-{
-    New-Item -ItemType Directory -Path $baseDir -Force
-    DownloadFile $JDKUrl $destinationJDKZipPath
-    Expand-Archive -Path $destinationJDKZipPath -DestinationPath $baseDir
-    Remove-Item -Force $destinationJDKZipPath
+#New-Item -ItemType Directory -Path "$baseDir\git" -Force | Out-Null
 
-    DownloadFile $GITUrl $destinationGitZipPath
-    New-Item -ItemType Directory -Path "$baseDir\git" -Force
-    Expand-Archive -Path $destinationGitZipPath -DestinationPath $baseDir\git
-    & "$GITPath\git" config --system core.autocrlf false
-    & "$GITPath\git" config --system core.longpaths true
-    Remove-Item -Force $destinationGitZipPath
+foreach($k in $downloads.Keys) {
+    Write-Host "Downloading and setting up $k"
+    $download = $downloads[$k]
+    DownloadFile $download['url'] $download['local']
+    if($download.ContainsKey('preexpand')) {
+        Invoke-Command $download['preexpand']
+    }
 
-    DownloadFile $MavenUrl $destinationMavenZipPath
-    Expand-Archive -Path $destinationMavenZipPath -DestinationPath $baseDir
-    Remove-Item -Force $destinationMavenZipPath
+    Expand-Archive -Path $download['local'] -DestinationPath $download['destination']
 
-    # update the system path to include Git, Java and Maven
-    $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-    $newPath = "$oldPath;$javaHome\bin;$GITPath;$MavenPath"
-    Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
-    # setup JAVA_HOME environment variable
-    New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name JAVA_HOME -Value $javaHome
+    if($download.ContainsKey('postexpand')) {
+        Invoke-Command $download['postexpand']
+    }
+
+    Remove-Item -Force $download['local']
+
+    if($download.ContainsKey('env')) {
+        foreach($name in $download['env'].Keys) {
+            $value = $download['env'][$name]
+            New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name $name -Value $val | Out-Null
+        }
+    }
+
+    if($download.ContainsKey('path')) {
+        $path = $download['path']
+        $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+        $newPath = "$oldPath;$path"
+        Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
+    }
 }
 
 & $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit
