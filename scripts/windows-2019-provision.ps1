@@ -3,7 +3,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
 
 Add-Type -AssemblyName System.Web
 
-$baseDir = 'c:\azurecsdir'
+$baseDir = 'c:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 
 $downloads = @{
@@ -50,8 +50,7 @@ $downloads = @{
     };
 }
 
-function DownloadFile($url, $targetFile)
-{
+function DownloadFile($url, $targetFile) {
    $uri = New-Object "System.Uri" "$url"
    $request = [System.Net.HttpWebRequest]::Create($uri)
    $request.set_Timeout(15000) #15 second timeout
@@ -74,8 +73,6 @@ function DownloadFile($url, $targetFile)
    $targetStream.Dispose()
    $responseStream.Dispose()
 }
-
-#New-Item -ItemType Directory -Path "$baseDir\git" -Force | Out-Null
 
 foreach($k in $downloads.Keys) {
     Write-Host "Downloading and setting up $k"

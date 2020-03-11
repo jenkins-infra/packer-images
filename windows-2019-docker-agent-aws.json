@@ -9,29 +9,34 @@
   },
   "builders": [
     {
-      "type": "azure-arm",
-      "vm_size": "Standard_D4_v3",
-      "os_type": "Windows",
-      "image_publisher": "MicrosoftWindowsServer",
-      "image_offer": "WindowsServer",
-      "image_sku": "2019-Datacenter-Core",
+      "type": "amazon-ebs",
+      "region": "{{user `location`}}",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+
+      "user_data_file" : "./scripts/setupWinRM.ps1",
 
       "communicator": "winrm",
       "winrm_use_ssl": true,
       "winrm_insecure": true,
-      "winrm_username": "packer",
+      "winrm_username": "Administrator",
       "winrm_timeout": "20m",
 
-      "client_id": "{{user `client_id`}}",
-      "client_secret": "{{user `client_secret`}}",
-      "subscription_id": "{{user `subscription_id`}}",
+      "source_ami_filter": {
+        "filters": {
+            "virtualization-type": "hvm",
+            "name": "Windows_Server-2019-English-Core-ContainersLatest-*",
+            "root-device-type": "ebs"
+        },
+        "owners": ["amazon"],
+        "most_recent" : true
+      },
+      "instance_type": "t2.micro",
+      "ami_name": "jenkins-agent-win2019-docker",
 
-      "location": "{{user `location`}}",
-      "managed_image_name": "{{user `image_name`}}",
-      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
-      "azure_tags": {
+      "tags": {
         "timestamp": "{{isotime \"20060102150405\"}}",
-        "imagetype": "jenkins-agent-win2019"
+        "imagetype": "jenkins-agent-win2019-docker"
       }
     }
   ],

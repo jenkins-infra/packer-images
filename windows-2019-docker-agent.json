@@ -36,7 +36,7 @@
     }
   ],
   "provisioners": [{
-    "script": "windows-2019-provision.ps1",
+    "script": "./scripts/windows-2019-provision.ps1",
     "type": "powershell",
     "environment_vars": [
         "MAVEN_VERSION={{user `maven_version`}}",
