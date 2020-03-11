@@ -14,7 +14,7 @@ $downloads = @{
         'env' = @{
             'JAVA_HOME' = '{0}\jdk-{1}' -f $baseDir,$env:JDK11_VERSION;
         };
-        'path' = "$javaHome\bin";
+        'path' = '{0}\jdk-{1}\bin' -f $baseDir,$env:JDK11_VERSION;
     };
     'jdk8' = @{
         'url' = 'https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '')
