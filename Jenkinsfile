@@ -56,64 +56,68 @@ pipeline {
           }
         }
         stages {
-          parallel {
-            stage('Validate Azure') {
-              steps {
-                sh 'packer validate --var-file validate-vars.json ./azure/${AGENT}-agent.json'
+          stage('Validate') {
+            parallel {
+              stage('Validate Azure') {
+                steps {
+                  sh 'packer validate --var-file validate-vars.json ./azure/${AGENT}-agent.json'
+                }
               }
-            }
 
-            stage('Validate AWS') {
-              steps {
-                sh 'packer validate --var-file validate-vars.json ./aws/${AGENT}-agent.json'
+              stage('Validate AWS') {
+                steps {
+                  sh 'packer validate --var-file validate-vars.json ./aws/${AGENT}-agent.json'
+                }
               }
             }
           }
 
-          parallel {
-            stage('Build Azure') {
-              environment {
-                AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
-                AZURE_CLIENT_ID = credentials('packer-azure-client-id')
-                AZURE_CLIENT_SECRET = credentials('packer-azure-client-secret')
+          stage('Build') {
+            parallel {
+              stage('Build Azure') {
+                environment {
+                  AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
+                  AZURE_CLIENT_ID = credentials('packer-azure-client-id')
+                  AZURE_CLIENT_SECRET = credentials('packer-azure-client-secret')
+                }
+
+                when {
+                  branch 'master'
+                }
+
+                steps {
+                  sh """
+                      packer build \
+                      --force \
+                      --var location="${azureConfigurations[AGENT]['location']}" \
+                      --var resource_group_name="${azureConfigurations[AGENT]['resource_group_name']}" \
+                      --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
+                      --var client_id="$AZURE_CLIENT_ID" \
+                      --var client_secret="$AZURE_CLIENT_SECRET" \
+                      ./azure/${AGENT}-agent.json
+                  """
+                }
               }
 
-              when {
-                branch 'master'
-              }
+              stage('Build AWS') {
+                environment {
+                  AWS = credentials('packer-aws')
+                }
 
-              steps {
-                sh """
-                    packer build \
-                    --force \
-                    --var location="${azureConfigurations[AGENT]['location']}" \
-                    --var resource_group_name="${azureConfigurations[AGENT]['resource_group_name']}" \
-                    --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
-                    --var client_id="$AZURE_CLIENT_ID" \
-                    --var client_secret="$AZURE_CLIENT_SECRET" \
-                    ./azure/${AGENT}-agent.json
-                """
-              }
-            }
+                when {
+                  branch 'master'
+                }
 
-            stage('Build AWS') {
-              environment {
-                AWS = credentials('packer-aws')
-              }
-
-              when {
-                branch 'master'
-              }
-
-              steps {
-                sh """
-                    packer build \
-                    --force \
-                    --var location="${awsConfigurations[AGENT]['location']}" \
-                    --var aws_access_key="$AWS_ACCESS_KEY_ID" \
-                    --var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
-                    ./aws/${AGENT}-agent.json
-                """
+                steps {
+                  sh """
+                      packer build \
+                      --force \
+                      --var location="${awsConfigurations[AGENT]['location']}" \
+                      --var aws_access_key="$AWS_ACCESS_KEY_ID" \
+                      --var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
+                      ./aws/${AGENT}-agent.json
+                  """
+                }
               }
             }
           }
