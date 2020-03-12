@@ -1,0 +1,44 @@
+{
+  "variables": {
+    "compose_version": "1.25.4",
+    "maven_version": "3.6.3"
+  },
+  "builders": [
+    {
+      "type": "azure-arm",
+      "vm_size": "Standard_DS2_v2",
+      "os_type": "Linux",
+      "image_publisher": "Canonical",
+      "image_offer": "UbuntuServer",
+      "image_sku": "18.04-LTS",
+
+      "client_id": "{{user `client_id`}}",
+      "client_secret": "{{user `client_secret`}}",
+      "subscription_id": "{{user `subscription_id`}}",
+
+      "location": "{{user `location`}}",
+      "managed_image_name": "jenkins-agent-ubuntu1804",
+      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
+      "azure_tags": {
+        "timestamp": "{{isotime \"20060102150405\"}}",
+        "imagetype": "jenkins-agent-ubuntu18.04"
+      }
+    }
+  ],
+  "provisioners": [{
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+    "script" : "./scripts/ubuntu-18-provision.sh",
+    "type": "shell",
+    "environment_vars": [
+        "MAVEN_VERSION={{user `maven_version`}}",
+        "COMPOSE_VERSION={{user `compose_version`}}"
+    ]
+  }],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
+    }
+  ]
+}

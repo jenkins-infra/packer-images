@@ -9,7 +9,7 @@ if (env.CHANGE_ID) {
   ])
 }
 
-def configurations = [
+def azureConfigurations = [
     'ubuntu-18' : [
         'location' : 'East US 2',
         'resource_group_name' : 'prod-packer-images'
@@ -21,6 +21,18 @@ def configurations = [
     'windows-2019-docker' : [
         'location' : 'East US',
         'resource_group_name' : 'prod-packer-images-eastus'
+    ]
+]
+
+def awsConfigurations = [
+    'ubuntu-18' : [
+        'location' : 'us-east-2'
+    ],
+    'windows-2019' : [
+        'location' : 'us-east-2'
+    ],
+    'windows-2019-docker' : [
+        'location' : 'us-east-2'
     ]
 ]
 
@@ -44,36 +56,66 @@ pipeline {
           }
         }
         stages {
-          stage('Validate') {
-            steps {
-              sh 'packer validate --var-file validate-vars.json ${AGENT}-agent.json'
+          parallel {
+            stage('Validate Azure') {
+              steps {
+                sh 'packer validate --var-file validate-vars.json ./azure/${AGENT}-agent.json'
+              }
+            }
+
+            stage('Validate AWS') {
+              steps {
+                sh 'packer validate --var-file validate-vars.json ./aws/${AGENT}-agent.json'
+              }
             }
           }
 
-          stage('Build') {
-            environment {
-              AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
-              AZURE_CLIENT_ID = credentials('packer-azure-client-id')
-              AZURE_CLIENT_SECRET = credentials('packer-azure-client-secret')
+          parallel {
+            stage('Build Azure') {
+              environment {
+                AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
+                AZURE_CLIENT_ID = credentials('packer-azure-client-id')
+                AZURE_CLIENT_SECRET = credentials('packer-azure-client-secret')
+              }
+
+              when {
+                branch 'master'
+              }
+
+              steps {
+                sh """
+                    packer build \
+                    --force \
+                    --var location="${azureConfigurations[AGENT]['location']}" \
+                    --var resource_group_name="${azureConfigurations[AGENT]['resource_group_name']}" \
+                    --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
+                    --var client_id="$AZURE_CLIENT_ID" \
+                    --var client_secret="$AZURE_CLIENT_SECRET" \
+                    ./azure/${AGENT}-agent.json
+                """
+              }
             }
 
-            when {
-              branch 'master'
-            }
+            stage('Build AWS') {
+              environment {
+                AWS = credentials('packer-aws')
+              }
 
-            steps {
-              sh """
-                packer build \
-                  --force \
-                  --var location="${configurations[AGENT]['location']}" \
-                  --var resource_group_name="${configurations[AGENT]['resource_group_name']}" \
-                  --var subscription_id="$AZURE_SUBSCRIPTION_ID" \
-                  --var client_id="$AZURE_CLIENT_ID" \
-                  --var client_secret="$AZURE_CLIENT_SECRET" \
-                  ${AGENT}-agent.json
-              """
+              when {
+                branch 'master'
+              }
+
+              steps {
+                sh """
+                    packer build \
+                    --force \
+                    --var location="${awsConfigurations[AGENT]['location']}" \
+                    --var aws_access_key="$AWS_ACCESS_KEY_ID" \
+                    --var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
+                    ./aws/${AGENT}-agent.json
+                """
+              }
             }
-          }
         }
       }
     }
