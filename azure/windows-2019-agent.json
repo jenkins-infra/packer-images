@@ -5,7 +5,7 @@
     "jdk11_version": "11.0.6+10",
     "jdk8_version": "8u242-b08",
     "git_lfs_version": "2.10.0",
-    "image_name": "jenkins-agent-win2019-docker"
+    "image_name": "jenkins-agent-win2019"
   },
   "builders": [
     {
@@ -14,7 +14,7 @@
       "os_type": "Windows",
       "image_publisher": "MicrosoftWindowsServer",
       "image_offer": "WindowsServer",
-      "image_sku": "2019-Datacenter-with-Containers",
+      "image_sku": "2019-Datacenter-Core",
 
       "communicator": "winrm",
       "winrm_use_ssl": true,
@@ -31,12 +31,12 @@
       "managed_image_resource_group_name": "{{user `resource_group_name`}}",
       "azure_tags": {
         "timestamp": "{{isotime \"20060102150405\"}}",
-        "imagetype": "jenkins-agent-win2019-docker"
+        "imagetype": "jenkins-agent-win2019"
       }
     }
   ],
   "provisioners": [{
-    "script": "windows-2019-provision.ps1",
+    "script": "./scripts/windows-2019-provision.ps1",
     "type": "powershell",
     "environment_vars": [
         "MAVEN_VERSION={{user `maven_version`}}",

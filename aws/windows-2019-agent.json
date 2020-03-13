@@ -1,0 +1,61 @@
+{
+  "variables": {
+    "maven_version": "3.6.3",
+    "git_version": "2.25.1",
+    "jdk11_version": "11.0.6+10",
+    "jdk8_version": "8u242-b08",
+    "git_lfs_version": "2.10.0",
+    "image_name": "jenkins-agent-win2019"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "{{user `location`}}",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+
+      "user_data_file" : "./scripts/setupWinRM.ps1",
+
+      "communicator": "winrm",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true,
+      "winrm_username": "Administrator",
+      "winrm_timeout": "20m",
+
+      "source_ami_filter": {
+        "filters": {
+            "virtualization-type": "hvm",
+            "name": "Windows_Server-2019-English-Core-Base-*",
+            "root-device-type": "ebs"
+        },
+        "owners": ["amazon"],
+        "most_recent" : true
+      },
+      "instance_type": "t2.micro",
+      "ami_name": "jenkins-agent-win2019",
+
+      "tags": {
+        "timestamp": "{{isotime \"20060102150405\"}}",
+        "imagetype": "jenkins-agent-win2019"
+      }
+    }
+  ],
+  "provisioners": [{
+    "script": "./scripts/windows-2019-provision.ps1",
+    "type": "powershell",
+    "environment_vars": [
+        "MAVEN_VERSION={{user `maven_version`}}",
+        "GIT_VERSION={{user `git_version`}}",
+        "JDK11_VERSION={{user `jdk11_version`}}",
+        "JDK8_VERSION={{user `jdk8_version`}}",
+        "GIT_LFS_VERSION={{user `git_lfs_version`}}"
+    ]
+  }],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
+    }
+  ]
+}
