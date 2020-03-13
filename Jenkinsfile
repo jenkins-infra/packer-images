@@ -70,8 +70,8 @@ pipeline {
           stage('Build Azure') {
             environment {
               AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
-              AZURE_CLIENT_ID = credentials('packer-azure-client-id')
-              AZURE_CLIENT_SECRET = credentials('packer-azure-client-secret')
+              AZURE_CLIENT_ID       = credentials('packer-azure-client-id')
+              AZURE_CLIENT_SECRET   = credentials('packer-azure-client-secret')
             }
             when {
               branch 'master'
@@ -91,7 +91,8 @@ pipeline {
           }
           stage('Build AWS') {
             environment {
-              AWS = credentials('packer-aws')
+              AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+              AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
             }
             when {
               branch 'master'
