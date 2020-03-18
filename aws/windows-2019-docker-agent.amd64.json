@@ -36,7 +36,8 @@
 
       "tags": {
         "timestamp": "{{isotime \"20060102150405\"}}",
-        "imagetype": "jenkins-agent-win2019-docker"
+        "imagetype": "jenkins-agent-win2019-docker",
+        "imageplatform": "amd64"
       }
     }
   ],
