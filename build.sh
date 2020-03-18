@@ -14,7 +14,7 @@ function isTemplateExist() {
 }
 
 function buildAzure(){
-  : "${RESOURCE_GROUP_NAME:?Resource Group Name Defined}"
+  : "${RESOURCE_GROUP_NAME:?Resource Group Name not defined}"
   packer build \
       --force \
       --var location="$LOCATION" \
