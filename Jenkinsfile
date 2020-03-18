@@ -64,7 +64,7 @@ pipeline {
           }
           axis {
             name 'CLOUD'
-            values 'awz', 'azure'
+            values 'aws', 'azure'
           }
         }
         excludes {
