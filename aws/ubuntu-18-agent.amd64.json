@@ -9,7 +9,7 @@
       "region": "{{user `location`}}",
       "access_key": "{{user `aws_access_key`}}",
       "secret_key": "{{user `aws_secret_key`}}",
-      "ssh_username": "jenkins",
+      "ssh_username": "ubuntu",
       "source_ami_filter": {
           "filters": {
               "virtualization-type": "hvm",
