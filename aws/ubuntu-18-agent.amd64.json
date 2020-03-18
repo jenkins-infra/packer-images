@@ -1,0 +1,48 @@
+{
+  "variables": {
+    "compose_version": "1.25.4",
+    "maven_version": "3.6.3"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "{{user `location`}}",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "ssh_username": "jenkins",
+      "source_ami_filter": {
+          "filters": {
+              "virtualization-type": "hvm",
+              "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+              "root-device-type": "ebs"
+          },
+          "owners": ["099720109477"],
+          "most_recent" : true
+      },
+      "instance_type": "t2.micro",
+      "ami_name": "jenkins-agent-ubuntu18.04-amd64",
+
+      "tags": {
+        "timestamp": "{{isotime \"20060102150405\"}}",
+        "imagetype": "jenkins-agent-ubuntu18.04",
+        "imageplatform": "amd64"
+      }
+    }
+  ],
+  "provisioners": [{
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+    "script" : "./scripts/ubuntu-18-provision.sh",
+    "type": "shell",
+    "environment_vars": [
+        "MAVEN_VERSION={{user `maven_version`}}",
+        "COMPOSE_VERSION={{user `compose_version`}}"
+    ]
+  }],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
+    }
+  ]
+}
