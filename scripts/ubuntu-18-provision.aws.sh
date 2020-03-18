@@ -23,7 +23,6 @@ system_info:
     name: jenkins
     lock_passwd: True
     gecos: Jenkins
-    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     groups: [jenkins,docker]
     shell: /bin/bash
 EOF
