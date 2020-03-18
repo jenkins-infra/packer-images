@@ -75,12 +75,22 @@ pipeline {
               values 'arm64'
             }
             axis {
+              name 'CLOUD'
+              values 'azure'
+            }
+          }
+          exclude {
+            axis {
+              name 'ARCHITECTURE'
+              values 'arm64'
+            }
+            axis {
               name 'AGENT'
               notValues 'ubuntu-18'
             }
             axis {
               name 'CLOUD'
-              notValues 'aws'
+              values 'aws'
             }
           }
         }
