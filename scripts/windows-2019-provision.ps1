@@ -105,9 +105,17 @@ foreach($k in $downloads.Keys) {
     }
 }
 
-& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit
+if(Test-Path 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml') {
+    Write-Host 'Updating AWS configuration for passwords'
+    # Enable the system password to be retrieved from the AWS Console after this AMI is built and used to launch code
+    $ec2config = [xml] (Get-Content 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
+    ($ec2config.ec2configurationsettings.plugins.plugin | Where-Object {$_.name -eq 'Ec2SetPassword'}).state = 'Enabled'
+    $ec2config.Save('C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
+}
+
+& $env:SystemRoot\System32\Sysprep\Sysprep.exe /oobe /generalize /quiet /quit
 while($true) {
-    $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select-Object ImageState
+    $imageState = Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\State' | Select-Object ImageState
     if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') {
         Write-Output $imageState.ImageState
         Start-Sleep -s 10
