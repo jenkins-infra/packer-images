@@ -20,7 +20,7 @@
           "most_recent" : true
       },
       "instance_type": "a1.medium",
-      "ami_name": "jenkins-agent-ubuntu18.04-arm64",
+      "ami_name": "jenkins-agent-ubuntu18.04-arm64-{{isotime | clean_resource_name}}",
 
       "tags": {
         "timestamp": "{{isotime \"20060102150405\"}}",
