@@ -32,7 +32,7 @@
         "most_recent" : true
       },
       "instance_type": "t2.micro",
-      "ami_name": "jenkins-agent-win2019-docker",
+      "ami_name": "jenkins-agent-win2019-docker-{{isotime | clean_resource_name}}",
 
       "tags": {
         "timestamp": "{{isotime \"20060102150405\"}}",
