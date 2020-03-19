@@ -31,7 +31,7 @@
   ],
   "provisioners": [{
     "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
-    "script" : "./scripts/ubuntu-18-provision.aws.sh",
+    "script" : "./scripts/ubuntu-18-provision.aws.amd64.sh",
     "type": "shell",
     "environment_vars": [
         "MAVEN_VERSION={{user `maven_version`}}",
