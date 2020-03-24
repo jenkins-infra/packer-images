@@ -43,7 +43,8 @@
         "GIT_VERSION={{user `git_version`}}",
         "JDK11_VERSION={{user `jdk11_version`}}",
         "JDK8_VERSION={{user `jdk8_version`}}",
-        "GIT_LFS_VERSION={{user `git_lfs_version`}}"
+        "GIT_LFS_VERSION={{user `git_lfs_version`}}",
+        "CLOUD_TYPE=azure"
     ]
   }],
   "post-processors": [

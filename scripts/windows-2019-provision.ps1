@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Web
 $baseDir = 'c:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 
-$downloads = @{
+$downloads = [ordered]@{
     'jdk11' = @{
         'url' = 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
         'local' = "$baseDir\adoptOpenJDK11.zip";
@@ -21,16 +21,6 @@ $downloads = @{
         'local' = "$baseDir\adoptOpenJDK8.zip";
         'destination' = $baseDir;
     };
-    'git' = @{
-        'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_VERSION;
-        'local' = "$baseDir\MinGit.zip";
-        'destination' = "$baseDir\git";
-        'postexpand' = {
-            & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false
-            & "$baseDir\git\cmd\git.exe" config --system core.longpaths true
-        };
-        'path' = "$baseDir\git\cmd";
-    };
     'maven' = @{
         'url' = 'https://apache.osuosl.org/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
         'local' = "$baseDir\maven.zip";
@@ -40,6 +30,16 @@ $downloads = @{
             'MAVEN_HOME' = '{0}\apache-maven-{1}' -f $baseDir,$env:MAVEN_VERSION;
         };
     };
+    'git' = @{
+        'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_VERSION;
+        'local' = "$baseDir\MinGit.zip";
+        'destination' = "$baseDir\git";
+        'postexpand' = {
+            & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false
+            & "$baseDir\git\cmd\git.exe" config --system core.longpaths true
+        };
+        'path' = "$baseDir\git\cmd";
+    };    
     'gitlfs' = @{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
         'local' = "$baseDir\GitLfs.zip";
@@ -47,6 +47,20 @@ $downloads = @{
         'postexpand' = {
             & "$baseDir\git\cmd\git.exe" lfs install
         };
+    };
+    'openssh' = @{
+        'check' = { -not [System.String]::IsNullOrWhiteSpace($env:OPENSSH_VERSION) };
+        'url' = 'https://github.com/PowerShell/Win32-OpenSSH/releases/download/{0}/OpenSSH-Win64.zip' -f $env:OPENSSH_VERSION;
+        'local' = "$baseDir\openssh.zip";
+        'destination' = 'C:\Program Files';
+        'postexpand' = {
+            New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+            powershell.exe -ExecutionPolicy Bypass -File 'C:\Program Files\OpenSSH-Win64\install-sshd.ps1'
+            if(-not (Test-Path -Path $env:ProgramData/ssh)) {
+                New-Item -ItemType Directory -Path $env:ProgramData/ssh
+            }
+            Set-Service sshd -StartupType Automatic
+        }
     };
 }
 
@@ -75,8 +89,16 @@ function DownloadFile($url, $targetFile) {
 }
 
 foreach($k in $downloads.Keys) {
-    Write-Host "Downloading and setting up $k"
     $download = $downloads[$k]
+    if($download.ContainsKey('check')) {
+        $res = Invoke-Command $download['check']
+        if(!$res) {
+            Write-Host "Check did not pass, not setting up $k"
+            continue;
+        }
+    }
+    Write-Host "Downloading and setting up $k"
+
     DownloadFile $download['url'] $download['local']
     if($download.ContainsKey('preexpand')) {
         Invoke-Command $download['preexpand']
