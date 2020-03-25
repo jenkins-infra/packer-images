@@ -61,6 +61,9 @@ $downloads = [ordered]@{
             }
             if(-not [System.String]::IsNullOrWhiteSpace($env:OPENSSH_PUBLIC_KEY)) {
                 Set-Content -Path $env:ProgramData/ssh/administrators_authorized_keys -Value "$($env:OPENSSH_PUBLIC_KEY)" -Force
+                icacls $env:ProgramData/ssh/administrators_authorized_keys /inheritance:r
+                icacls $env:ProgramData/ssh/administrators_authorized_keys /grant SYSTEM:`(F`)
+                icacls $env:ProgramData/ssh/administrators_authorized_keys /grant BUILTIN\Administrators:`(F`)
             }
             Set-Service sshd -StartupType Automatic | Out-Null
         }
