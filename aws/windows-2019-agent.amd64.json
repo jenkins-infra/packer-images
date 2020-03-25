@@ -6,7 +6,8 @@
     "jdk8_version": "8u242-b08",
     "git_lfs_version": "2.10.0",
     "openssh_version": "v8.1.0.0p1-Beta",
-    "image_name": "jenkins-agent-win2019"    
+    "image_name": "jenkins-agent-win2019",
+    "openssh_public_key": ""
   },
   "builders": [
     {
@@ -51,7 +52,8 @@
         "JDK8_VERSION={{user `jdk8_version`}}",
         "GIT_LFS_VERSION={{user `git_lfs_version`}}",
         "OPENSSH_VERSION={{user `openssh_version`}}",
-        "CLOUD_TYPE=aws"
+        "CLOUD_TYPE=aws",
+        "OPENSSH_PUBLIC_KEY={{user `openssh_public_key`}}"
       ]
     },
     {

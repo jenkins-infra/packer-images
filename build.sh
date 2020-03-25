@@ -31,6 +31,7 @@ function buildAWS(){
       --var location="$LOCATION" \
       --var aws_access_key="$AWS_ACCESS_KEY_ID" \
       --var aws_secret_key="$AWS_SECRET_ACCESS_KEY" \
+      --var openssh_public_key="$OPENSSH_PUBLIC_KEY" \
       "./${CLOUD}/${AGENT}-agent.${ARCHITECTURE}.json"
 }
 

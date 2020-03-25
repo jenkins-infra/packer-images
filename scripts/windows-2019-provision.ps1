@@ -39,7 +39,7 @@ $downloads = [ordered]@{
             & "$baseDir\git\cmd\git.exe" config --system core.longpaths true
         };
         'path' = "$baseDir\git\cmd";
-    };    
+    };
     'gitlfs' = @{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
         'local' = "$baseDir\GitLfs.zip";
@@ -54,12 +54,15 @@ $downloads = [ordered]@{
         'local' = "$baseDir\openssh.zip";
         'destination' = 'C:\Program Files';
         'postexpand' = {
-            New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+            New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
             powershell.exe -ExecutionPolicy Bypass -File 'C:\Program Files\OpenSSH-Win64\install-sshd.ps1'
             if(-not (Test-Path -Path $env:ProgramData/ssh)) {
                 New-Item -ItemType Directory -Path $env:ProgramData/ssh
             }
-            Set-Service sshd -StartupType Automatic
+            if(-not [System.String]::IsNullOrWhiteSpace($env:OPENSSH_PUBLIC_KEY)) {
+                Set-Content -Path $env:ProgramData/ssh/administrators_authorized_keys -Value "$($env:OPENSSH_PUBLIC_KEY)" -Force
+            }
+            Set-Service sshd -StartupType Automatic | Out-Null
         }
     };
 }
