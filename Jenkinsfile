@@ -108,6 +108,7 @@ pipeline {
               AZURE_CLIENT_SECRET   = credentials('packer-azure-client-secret')
               AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
               AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+              OPENSSH_PUBLIC_KEY    = credentials('packer-aws-openssh-public-key')
               LOCATION              = "${configurations[CLOUD][AGENT]['location']}"
               RESOURCE_GROUP_NAME   = "${configurations[CLOUD][AGENT]['resource_group_name']}"
             }
