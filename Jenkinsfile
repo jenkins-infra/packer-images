@@ -5,7 +5,7 @@ if (env.CHANGE_ID) {
 } else {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '96')),
-    pipelineTriggers([[$class: "SCMTrigger", scmpoll_spec: "H/10 * * * *"]]),
+    pipelineTriggers([[$class: "SCMTrigger", scmpoll_spec: "* * * * 0"]]),
   ])
 }
 
