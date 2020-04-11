@@ -18,10 +18,6 @@ def configurations = [
     'windows-2019' : [
         'location' : 'East US',
         'resource_group_name' : 'prod-packer-images-eastus'
-    ],
-    'windows-2019-docker' : [
-        'location' : 'East US',
-        'resource_group_name' : 'prod-packer-images-eastus'
     ]
   ],
   'aws': [
@@ -56,7 +52,7 @@ pipeline {
           }
           axis {
             name 'AGENT'
-            values 'ubuntu-18', 'windows-2019', 'windows-2019-docker'
+            values 'ubuntu-18', 'windows-2019'
           }
           axis {
             name 'CLOUD'
