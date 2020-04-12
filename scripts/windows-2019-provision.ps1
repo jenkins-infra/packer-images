@@ -140,3 +140,17 @@ if(Test-Path 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml') {
     ($ec2config.ec2configurationsettings.plugins.plugin | Where-Object {$_.name -eq 'Ec2SetPassword'}).state = 'Enabled'
     $ec2config.Save('C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
 }
+
+if($env:CLOUD_TYPE -eq 'azure') {
+    # Azure needs the image sysprep'd manually, AWS is done using AWS scripts from the json
+    & $env:SystemRoot\System32\Sysprep\Sysprep.exe /oobe /generalize /quiet /quit
+    while($true) {
+        $imageState = Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\State' | Select-Object ImageState
+        if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') {
+            Write-Output $imageState.ImageState
+            Start-Sleep -s 5
+        } else {
+            break
+        }
+    }
+}
