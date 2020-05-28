@@ -18,6 +18,10 @@ def configurations = [
     'windows-2019' : [
         'location' : 'East US',
         'resource_group_name' : 'prod-packer-images-eastus'
+    ],
+    'windows-10' : [
+        'location' : 'East US',
+        'resource_grou-_name' : 'prod-packer-images-eastus'
     ]
   ],
   'aws': [
