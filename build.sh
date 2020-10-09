@@ -14,7 +14,8 @@ function isTemplateExist() {
 }
 
 function buildAzure(){
-  : "${RESOURCE_GROUP_NAME:?Resource Group Name not defined}"
+  : "${RESOURCE_GROUP_NAME:?RESOURCE_GROUP_NAME not defined}"
+  : "${AZURE_SUBSCRIPTION_ID:?AZURE_SUBSCRIPTION_ID not defined}"
   packer build \
       --force \
       --var location="$LOCATION" \
