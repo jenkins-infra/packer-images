@@ -154,3 +154,5 @@ if($env:CLOUD_TYPE -eq 'azure') {
         }
     }
 }
+
+[System.Environment]::OSVersion.Version
