@@ -5,7 +5,8 @@ if (env.CHANGE_ID) {
 } else {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '96')),
-    pipelineTriggers([[$class: "SCMTrigger", scmpoll_spec: "H/10 * * * *"]]),
+ // Disable for now until we fix https://ci.jenkins.io/job/Infra/job/packer-images/job/master/148/console
+ //   pipelineTriggers([[$class: "SCMTrigger", scmpoll_spec: "H/10 * * * *"]]),
   ])
 }
 
