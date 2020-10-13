@@ -21,7 +21,7 @@ def configurations = [
     ],
     'windows-10' : [
         'location' : 'East US',
-        'resource_grou-_name' : 'prod-packer-images-eastus'
+        'resource_group_name' : 'prod-packer-images-eastus'
     ]
   ],
   'aws': [
