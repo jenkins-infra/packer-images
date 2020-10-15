@@ -12,6 +12,7 @@
       "type": "azure-arm",
       "vm_size": "Standard_D4_v3",
       "os_type": "Windows",
+      "os_disk_size_gb": 130,
       "image_publisher": "MicrosoftWindowsServer",
       "image_offer": "WindowsServer",
       "image_sku": "datacenter-core-1909-with-containers-smalldisk",
@@ -36,6 +37,12 @@
     }
   ],
   "provisioners": [{
+    "type": "windows-update"
+  },
+  {
+    "type": "windows-restart"
+  },
+  {  
     "script": "./scripts/windows-2019-provision.ps1",
     "type": "powershell",
     "environment_vars": [
