@@ -70,9 +70,46 @@ $downloads = [ordered]@{
     };
 }
 
-function DownloadFile($url, $targetFile) {
+Function Retry-Command {
+    [CmdletBinding()]
+    Param(
+        [Parameter(Position=0, Mandatory=$true)]
+        [scriptblock]$ScriptBlock,
+
+        [Parameter(Position=1, Mandatory=$false)]
+        [int]$Maximum = 5,
+
+        [Parameter(Position=2, Mandatory=$false)]
+        [int]$Delay = 100
+    )
+
+    Begin {
+        $cnt = 0
+    }
+
+    Process {
+        do {
+            $cnt++
+            try {
+                $ScriptBlock.Invoke()
+                return
+            } catch {
+                Write-Error $_.Exception.InnerException.Message -ErrorAction Continue
+                Start-Sleep -Milliseconds $Delay
+            }
+        } while ($cnt -lt $Maximum)
+
+        # Throw an error after $Maximum unsuccessful invocations. Doesn't need
+        # a condition, since the function returns upon successful invocation.
+        throw 'Execution failed.'
+    }
+}
+
+Function DownloadFile($url, $targetFile) {
     Write-Host "Downloading $url"
-    Invoke-WebRequest $url -OutFile $targetFile
+    Retry-Command -ScriptBlock {
+      Invoke-WebRequest $url -OutFile $targetFile
+    }
 }
 
 foreach($k in $downloads.Keys) {
@@ -143,4 +180,7 @@ Write-Host "Disks"
 Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" | 
 Select-Object -Property DeviceID, DriveType, VolumeName, 
 @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
-@{L="Capacity";E={"{0:N2}" -f ($_.Size/1GB)}}
+@{L="Capacity";E={"{0:N2}" -f ($_.Size/1GB)}} | Format-Table -Property DeviceID, VolumeName, FreeSpaceGB, Capacity
+
+Write-Host "Patch(s) installed"
+Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
