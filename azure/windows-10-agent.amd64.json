@@ -36,6 +36,12 @@
     }
   ],
   "provisioners": [{
+      "type": "windows-update"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {  
     "script": "./scripts/windows-2019-provision.ps1",
     "type": "powershell",
     "environment_vars": [
