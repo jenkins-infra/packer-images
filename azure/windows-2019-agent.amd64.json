@@ -15,7 +15,7 @@
       "os_disk_size_gb": 130,
       "image_publisher": "MicrosoftWindowsServer",
       "image_offer": "WindowsServer",
-      "image_sku": "datacenter-core-1909-with-containers-smalldisk",
+      "image_sku": "datacenter-core-2004-with-containers-smalldisk",
 
       "communicator": "winrm",
       "winrm_use_ssl": true,
