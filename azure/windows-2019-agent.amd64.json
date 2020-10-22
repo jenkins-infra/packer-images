@@ -15,7 +15,7 @@
       "os_disk_size_gb": 130,
       "image_publisher": "MicrosoftWindowsServer",
       "image_offer": "WindowsServer",
-      "image_sku": "datacenter-core-2004-with-containers-smalldisk",
+      "image_sku": "2019-Datacenter-Core-with-Containers",
 
       "communicator": "winrm",
       "winrm_use_ssl": true,
@@ -41,6 +41,10 @@
   },
   {
     "type": "windows-restart"
+  },
+  {  
+    "script": "./scripts/validate-docker.ps1",
+    "type": "powershell"
   },
   {  
     "script": "./scripts/windows-2019-provision.ps1",
