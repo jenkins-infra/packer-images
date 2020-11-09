@@ -15,6 +15,14 @@
       "region": "{{user `location`}}",
       "access_key": "{{user `aws_access_key`}}",
       "secret_key": "{{user `aws_secret_key`}}",
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_size": 100,
+          "volume_type": "gp2",
+          "delete_on_termination": true
+        }
+      ],
       "user_data_file": "./scripts/setupWinRM.ps1",
       "communicator": "winrm",
       "winrm_use_ssl": true,
