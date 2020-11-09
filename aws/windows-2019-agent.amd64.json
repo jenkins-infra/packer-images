@@ -34,6 +34,7 @@
       },
       "instance_type": "t2.micro",
       "ami_name": "jenkins-agent-win2019-{{isotime | clean_resource_name}}",
+      "os_disk_size_gb": 130,
       "tags": {
         "timestamp": "{{isotime \"20060102150405\"}}",
         "imagetype": "jenkins-agent-win2019",
