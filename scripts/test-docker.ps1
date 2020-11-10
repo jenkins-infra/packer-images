@@ -1,6 +1,8 @@
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+$ErrorActionPreference = 'Stop'
+
 New-Item -Path "c:\" -Name "temp" -ItemType "directory"
 
 Write-Host "Creating Dockerfile.ltsc2019"

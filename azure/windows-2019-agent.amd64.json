@@ -43,7 +43,11 @@
     "type": "windows-restart"
   },
   {  
-    "script": "./scripts/validate-docker.ps1",
+    "script": "./scripts/test-disk-size.ps1",
+    "type": "powershell"
+  },
+  {  
+    "script": "./scripts/test-docker.ps1",
     "type": "powershell"
   },
   {  
