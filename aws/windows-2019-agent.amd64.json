@@ -49,37 +49,42 @@
       }
     }
   ],
-  "provisioners": [{
-      "type": "windows-update"
-    },
-    {
-      "type": "windows-restart"
-    },
-    {  
-      "script": "./scripts/validate-docker.ps1",
-      "type": "powershell"
-    },
-    {  
-      "script": "./scripts/windows-2019-provision.ps1",
-      "type": "powershell",
-      "environment_vars": [
-        "MAVEN_VERSION={{user `maven_version`}}",
-        "GIT_VERSION={{user `git_version`}}",
-        "JDK11_VERSION={{user `jdk11_version`}}",
-        "JDK8_VERSION={{user `jdk8_version`}}",
-        "GIT_LFS_VERSION={{user `git_lfs_version`}}",
-        "OPENSSH_VERSION={{user `openssh_version`}}",
-        "CLOUD_TYPE=aws",
-        "OPENSSH_PUBLIC_KEY={{user `openssh_public_key`}}"
-      ]
-    },
-    {
-      "type": "powershell",
-      "inline": [
-        "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -SchedulePerBoot",
-        "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"
-      ]
-    }
+  "provisioners": [
+  {
+    "type": "windows-update"
+  },
+  {
+    "type": "windows-restart"
+  },
+  {  
+    "script": "./scripts/test-disk-size.ps1",
+    "type": "powershell"
+  },
+  {  
+    "script": "./scripts/test-docker.ps1",
+    "type": "powershell"
+  },
+  {  
+    "script": "./scripts/windows-2019-provision.ps1",
+    "type": "powershell",
+    "environment_vars": [
+      "MAVEN_VERSION={{user `maven_version`}}",
+      "GIT_VERSION={{user `git_version`}}",
+      "JDK11_VERSION={{user `jdk11_version`}}",
+      "JDK8_VERSION={{user `jdk8_version`}}",
+      "GIT_LFS_VERSION={{user `git_lfs_version`}}",
+      "OPENSSH_VERSION={{user `openssh_version`}}",
+      "CLOUD_TYPE=aws",
+      "OPENSSH_PUBLIC_KEY={{user `openssh_public_key`}}"
+    ]
+  },
+  {
+    "type": "powershell",
+    "inline": [
+      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -SchedulePerBoot",
+      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"
+    ]
+  }
   ],
   "post-processors": [
     {
