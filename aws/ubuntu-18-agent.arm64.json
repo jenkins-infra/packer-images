@@ -1,7 +1,7 @@
 {
   "variables": {
-    "compose_version": "1.25.4",
-    "maven_version": "3.6.3"
+    "compose_version": "{{user `compose_version`}}",
+    "maven_version": "{{user `maven_version`}}"
   },
   "builders": [
     {
