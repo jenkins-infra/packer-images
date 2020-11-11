@@ -3,5 +3,11 @@
   "resource_group_name": "packer-images",
   "subscription_id": "invalid",
   "client_id": "invalid",
-  "client_secret": "invalid"
+  "client_secret": "invalid",
+  "maven_version": "invalid",
+  "git_version": "invalid",
+  "jdk11_version": "invalid",
+  "jdk8_version": "invalid",
+  "git_lfs_version": "invalid",
+  "compose_version": "invalid"
 }
