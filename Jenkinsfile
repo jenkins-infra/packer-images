@@ -36,18 +36,16 @@ def configurations = [
 ]
 
 pipeline {
-  agent none
-
+  agent {
+    docker {
+      args '--entrypoint=""'
+      image 'hashicorp/packer:1.7.2'
+      label 'docker&&linux'
+    }
+  }
   stages {
     stage('ValidateAndBuild') {
       matrix {
-        agent {
-          docker {
-            args '--entrypoint=""'
-            image 'jenkinsciinfra/packer:69d1c36a21c8f2514a7c07ed89cc44732867adf9'
-            label 'docker&&linux'
-          }
-        }
         axes {
           axis {
             name 'ARCHITECTURE'
@@ -89,24 +87,25 @@ pipeline {
             }
           }
         }
+        environment {
+          AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
+          AZURE_CLIENT_ID       = credentials('packer-azure-client-id')
+          AZURE_CLIENT_SECRET   = credentials('packer-azure-client-secret')
+          AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+          AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+          OPENSSH_PUBLIC_KEY    = credentials('packer-aws-openssh-public-key')
+          LOCATION              = "${configurations[CLOUD][AGENT]['location']}"
+          RESOURCE_GROUP_NAME   = "${configurations[CLOUD][AGENT]['resource_group_name']}"
+          PACKER_HOME_DIR       = "/tmp/packer.d.${CLOUD}.${ARCHITECTURE}.${AGENT}"
+          PACKER_PLUGIN_PATH    = "${PACKER_HOME_DIR}/plugins"
+        }
         stages {
           stage('Validate') {
             steps {
-              sh 'packer validate --var-file validate-vars.json ./${CLOUD}/${AGENT}-agent.${ARCHITECTURE}.json'
+              sh "./build.sh validateOnly"
             }
           }
-
           stage('Build') {
-            environment {
-              AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
-              AZURE_CLIENT_ID       = credentials('packer-azure-client-id')
-              AZURE_CLIENT_SECRET   = credentials('packer-azure-client-secret')
-              AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
-              AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
-              OPENSSH_PUBLIC_KEY    = credentials('packer-aws-openssh-public-key')
-              LOCATION              = "${configurations[CLOUD][AGENT]['location']}"
-              RESOURCE_GROUP_NAME   = "${configurations[CLOUD][AGENT]['resource_group_name']}"
-            }
             when {
               branch 'master'
             }
