@@ -1,0 +1,17 @@
+---
+apiVersion: "v1"
+kind: "Pod"
+spec:
+  restartPolicy: "Never"
+  containers:
+    - name: aws
+      image: jenkinsciinfra/aws:latest
+      command:
+        - cat
+      tty: true
+    - name: packer
+      image: hashicorp/packer:1.7.2
+      command:
+        - cat
+      tty: true
+...

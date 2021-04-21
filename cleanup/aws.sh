@@ -4,7 +4,7 @@ set -eu -o pipefail
 
 run_aws_ec2_deletion_command() {
   # Check the DRYRUN environment variable
-  if [ "${DRYRUN:-true}" == "false" ] || [ "${DRYRUN:-true}" == "no" ]
+  if [ "${DRYRUN:-true}" = "false" ] || [ "${DRYRUN:-true}" = "no" ]
   then
     # Execute command "as it"
     aws ec2 "$@"
@@ -57,7 +57,7 @@ for secgroup_id in $(aws ec2 describe-security-groups --filters 'Name=group-name
   | jq -r '.SecurityGroups[].GroupId')
 do
   # Each security group which name matches the pattern '*packer*' is deleted if it is orphaned (not use by any network interface)
-  if [ "0" == "$(aws ec2 describe-network-interfaces --filters "Name=group-id,Values=${secgroup_id}" | jq -r '.NetworkInterfaces | length')" ]
+  if [ "0" = "$(aws ec2 describe-network-interfaces --filters "Name=group-id,Values=${secgroup_id}" | jq -r '.NetworkInterfaces | length')" ]
   then
     #shellcheck disable=SC2086
     run_aws_ec2_deletion_command delete-security-group --group-id ${secgroup_id}

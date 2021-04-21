@@ -6,10 +6,9 @@ properties([
 
 pipeline {
   agent {
-    docker {
-      args '--entrypoint=""'
-      image 'hashicorp/packer:1.7.2'
-      label 'docker&&linux'
+    kubernetes {
+      defaultContainer 'packer'
+      yamlFile 'CiPodTemplate.yaml'
     }
   }
   stages {
@@ -86,13 +85,6 @@ pipeline {
     stage('Garbage Collection of Cloud Resources') {
       parallel {
         stage('Cleanup AWS us-east-2') {
-          agent {
-            docker {
-              args '--entrypoint=""'
-              image 'hashicorp/packer:1.7.2'
-              label 'docker&&linux'
-            }
-          }
           environment {
             AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
             AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
@@ -100,7 +92,9 @@ pipeline {
             DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
           }
           steps {
-            sh 'bash ./cleanup/aws.sh'
+            container('aws') {
+              sh './cleanup/aws.sh'
+            }
           }
         }
       }
