@@ -1,16 +1,8 @@
-def buildNumber = BUILD_NUMBER as int; if (buildNumber > 1) milestone(buildNumber - 1); milestone(buildNumber) // JENKINS-43353 / JENKINS-58625
 
-if (env.CHANGE_ID) {
-  properties([
-    buildDiscarder(logRotator(numToKeepStr: '10')),
-  ])
-} else {
-  properties([
-    buildDiscarder(logRotator(numToKeepStr: '96')),
- // Disable for now until we fix https://ci.jenkins.io/job/Infra/job/packer-images/job/master/148/console
- //   pipelineTriggers([[$class: "SCMTrigger", scmpoll_spec: "H/10 * * * *"]]),
-  ])
-}
+properties([
+  buildDiscarder(logRotator(numToKeepStr: '10')),
+  pipelineTriggers([cron('@daily')]),
+])
 
 pipeline {
   agent {
@@ -87,6 +79,28 @@ pipeline {
             steps {
               sh './run-packer.sh build'
             }
+          }
+        }
+      }
+    }
+    stage('Garbage Collection of Cloud Resources') {
+      parallel {
+        stage('Cleanup AWS us-east-2') {
+          agent {
+            docker {
+              args '--entrypoint=""'
+              image 'hashicorp/packer:1.7.2'
+              label 'docker&&linux'
+            }
+          }
+          environment {
+            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+            AWS_REGION            = 'us-east-2'
+            DRYRUN                = "${env.BRANCH_NAME == 'master' ? 'false' : 'true'}"
+          }
+          steps {
+            sh 'bash ./cleanup/aws.sh'
           }
         }
       }
