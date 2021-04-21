@@ -74,7 +74,7 @@ pipeline {
           }
           stage('Build') {
             when {
-              branch 'master'
+              branch 'main'
             }
             steps {
               sh './run-packer.sh build'
@@ -97,7 +97,7 @@ pipeline {
             AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
             AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
             AWS_REGION            = 'us-east-2'
-            DRYRUN                = "${env.BRANCH_NAME == 'master' ? 'false' : 'true'}"
+            DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
           }
           steps {
             sh 'bash ./cleanup/aws.sh'
