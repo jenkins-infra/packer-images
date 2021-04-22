@@ -12,29 +12,6 @@ if (env.CHANGE_ID) {
   ])
 }
 
-def configurations = [
-  'azure': [
-    'ubuntu-18' : [
-        'location' : 'East US 2',
-        'resource_group_name' : 'prod-packer-images'
-    ],
-    'windows-2019' : [
-        'location' : 'East US',
-        'resource_group_name' : 'prod-packer-images-eastus'
-    ]
-  ],
-  'aws': [
-    'ubuntu-18' : [
-        'location' : 'us-east-2',
-        'resource_group_name' : ''
-    ],
-    'windows-2019' : [
-        'location' : 'us-east-2',
-        'resource_group_name' : ''
-    ]
-  ]
-]
-
 pipeline {
   agent {
     docker {
@@ -48,15 +25,15 @@ pipeline {
       matrix {
         axes {
           axis {
-            name 'ARCHITECTURE'
+            name 'PKR_VAR_architecture'
             values 'amd64', 'arm64'
           }
           axis {
-            name 'AGENT'
+            name 'PKR_VAR_agent'
             values 'ubuntu-18', 'windows-2019'
           }
           axis {
-            name 'CLOUD'
+            name 'PKR_VAR_cloud'
             values 'aws', 'azure'
           }
         }
@@ -64,45 +41,43 @@ pipeline {
           // Only build arm64 architecture for ubuntu on AWS
           exclude {
             axis {
-              name 'ARCHITECTURE'
+              name 'PKR_VAR_architecture'
               values 'arm64'
             }
             axis {
-              name 'CLOUD'
+              name 'PKR_VAR_cloud'
               values 'azure'
             }
           }
           exclude {
             axis {
-              name 'ARCHITECTURE'
+              name 'PKR_VAR_architecture'
               values 'arm64'
             }
             axis {
-              name 'AGENT'
+              name 'PKR_VAR_agent'
               notValues 'ubuntu-18'
             }
             axis {
-              name 'CLOUD'
+              name 'PKR_VAR_cloud'
               values 'aws'
             }
           }
         }
         environment {
-          AZURE_SUBSCRIPTION_ID = credentials('packer-azure-subscription-id')
-          AZURE_CLIENT_ID       = credentials('packer-azure-client-id')
-          AZURE_CLIENT_SECRET   = credentials('packer-azure-client-secret')
-          AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
-          AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
-          OPENSSH_PUBLIC_KEY    = credentials('packer-aws-openssh-public-key')
-          LOCATION              = "${configurations[CLOUD][AGENT]['location']}"
-          RESOURCE_GROUP_NAME   = "${configurations[CLOUD][AGENT]['resource_group_name']}"
-          PACKER_HOME_DIR       = "/tmp/packer.d.${CLOUD}.${ARCHITECTURE}.${AGENT}"
-          PACKER_PLUGIN_PATH    = "${PACKER_HOME_DIR}/plugins"
+          PKR_VAR_subscription_id = credentials('packer-azure-subscription-id')
+          PKR_VAR_client_id       = credentials('packer-azure-client-id')
+          PKR_VAR_client_secret   = credentials('packer-azure-client-secret')
+          AWS_ACCESS_KEY_ID       = credentials('packer-aws-access-key-id')
+          AWS_SECRET_ACCESS_KEY   = credentials('packer-aws-secret-access-key')
+          OPENSSH_PUBLIC_KEY      = credentials('packer-aws-openssh-public-key')
+          PACKER_HOME_DIR         = "/tmp/packer.d.${PKR_VAR_cloud}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
+          PACKER_PLUGIN_PATH      = "${PACKER_HOME_DIR}/plugins"
         }
         stages {
           stage('Validate') {
             steps {
-              sh "./build.sh validateOnly"
+              sh './run-packer.sh validate'
             }
           }
           stage('Build') {
@@ -110,7 +85,7 @@ pipeline {
               branch 'master'
             }
             steps {
-              sh "./build.sh"
+              sh './run-packer.sh build'
             }
           }
         }
