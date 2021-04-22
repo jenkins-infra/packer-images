@@ -1,8 +1,10 @@
 
-properties([
-  buildDiscarder(logRotator(numToKeepStr: '10')),
-  pipelineTriggers([cron('@daily')]),
-])
+if (env.BRANCH_NAME == 'main') {
+  properties([
+    buildDiscarder(logRotator(numToKeepStr: '10')),
+    pipelineTriggers([cron('@daily')]),
+  ])
+}
 
 pipeline {
   agent {
