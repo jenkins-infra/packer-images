@@ -7,7 +7,7 @@ A repository containing a number of packer build configurations for AWS & Azure.
 * A shell (sh, bash, ash, zsh) prompt
 * Packer (check template's version constraints to know which version to use)
 * Define the environment variables `PKR_VAR_cloud`, `PKR_VAR_agent` and `PKR_VAR_architecture` to the target you want to build
-* Configure the cloud (defined on the variable `PKR_VAR_cloud`) credentials (e.g. APi key, or Cloud's CLI access sur as `az` or `aws` commands))
+* Configure the cloud (defined on the variable `PKR_VAR_cloud`) credentials (e.g. APi key, or Cloud's CLI access such as `az` or `aws` commands))
 
 ## Invoking the build locally
 
