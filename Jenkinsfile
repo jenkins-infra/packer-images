@@ -1,23 +1,16 @@
-def buildNumber = BUILD_NUMBER as int; if (buildNumber > 1) milestone(buildNumber - 1); milestone(buildNumber) // JENKINS-43353 / JENKINS-58625
 
-if (env.CHANGE_ID) {
+if (env.BRANCH_NAME == 'main') {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
-  ])
-} else {
-  properties([
-    buildDiscarder(logRotator(numToKeepStr: '96')),
- // Disable for now until we fix https://ci.jenkins.io/job/Infra/job/packer-images/job/master/148/console
- //   pipelineTriggers([[$class: "SCMTrigger", scmpoll_spec: "H/10 * * * *"]]),
+    pipelineTriggers([cron('@daily')]),
   ])
 }
 
 pipeline {
   agent {
-    docker {
-      args '--entrypoint=""'
-      image 'hashicorp/packer:1.7.2'
-      label 'docker&&linux'
+    kubernetes {
+      defaultContainer 'packer'
+      yamlFile 'CiPodTemplate.yaml'
     }
   }
   stages {
@@ -82,10 +75,27 @@ pipeline {
           }
           stage('Build') {
             when {
-              branch 'master'
+              branch 'main'
             }
             steps {
               sh './run-packer.sh build'
+            }
+          }
+        }
+      }
+    }
+    stage('Garbage Collection of Cloud Resources') {
+      parallel {
+        stage('Cleanup AWS us-east-2') {
+          environment {
+            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+            AWS_REGION            = 'us-east-2'
+            DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
+          }
+          steps {
+            container('aws') {
+              sh './cleanup/aws.sh'
             }
           }
         }
