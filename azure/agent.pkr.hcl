@@ -54,6 +54,10 @@ variable "subscription_id" {
 locals {
   now_unix_timestamp = formatdate("YYYYMMDDhhmmss", timestamp())
   image_name         = "jenkins-agent-${var.agent}"
+  resource_groups = {
+    "East US 2" = "prod-packer-images",
+    "East US"   = "prod-packer-images-eastus",
+  }
 }
 
 
@@ -76,7 +80,7 @@ build {
     image_publisher                   = "Canonical"
     image_sku                         = "18.04-LTS"
     os_type                           = "Linux"
-    managed_image_resource_group_name = "prod-packer-images"
+    managed_image_resource_group_name = local.resource_groups[var.location]
     vm_size                           = "Standard_DS2_v2"
   }
 
@@ -101,7 +105,7 @@ build {
     image_publisher                   = "MicrosoftWindowsServer"
     image_sku                         = "2019-Datacenter-Core-with-Containers"
     os_type                           = "Windows"
-    managed_image_resource_group_name = "prod-packer-images-eastus"
+    managed_image_resource_group_name = local.resource_groups[var.location]
     vm_size                           = "Standard_D4_v3"
     os_disk_size_gb                   = 130
     winrm_insecure                    = true
