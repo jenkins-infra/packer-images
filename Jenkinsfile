@@ -31,6 +31,7 @@ pipeline {
           }
           axis {
             name 'PKR_VAR_location'
+            // Aggregated list of all regions for all clouds. Look at the exclusions to know which location is for which cloud.
             values 'us-east-2', 'East US 2', 'East US'
           }
         }
