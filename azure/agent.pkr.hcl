@@ -85,8 +85,8 @@ build {
   }
 
   provisioner "shell" {
-    environment_vars = ["MAVEN_VERSION=${var.maven_version}", "COMPOSE_VERSION=${var.compose_version}"]
-    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
+    environment_vars = ["MAVEN_VERSION=${var.maven_version}", "COMPOSE_VERSION=${var.compose_version}", "ARCHITECTURE=${var.architecture}"]
+    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./scripts/ubuntu-18-provision.sh"
   }
 

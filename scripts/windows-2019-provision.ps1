@@ -1,3 +1,100 @@
+
+## Fail fast - equivalent of "set -e"
+$ErrorActionPreference = 'Stop'
+
+## Reusable Functions (must be declared before calling)
+Function Retry-Command {
+    [CmdletBinding()]
+    Param(
+        [Parameter(Position=0, Mandatory=$true)]
+        [scriptblock]$ScriptBlock,
+
+        [Parameter(Position=1, Mandatory=$false)]
+        [int]$Maximum = 5,
+
+        [Parameter(Position=2, Mandatory=$false)]
+        [int]$Delay = 100
+    )
+
+    Begin {
+        $cnt = 0
+    }
+
+    Process {
+        do {
+            $cnt++
+            try {
+                $ScriptBlock.Invoke()
+                return
+            } catch {
+                Write-Error $_.Exception.InnerException.Message -ErrorAction Continue
+                Start-Sleep -Milliseconds $Delay
+            }
+        } while ($cnt -lt $Maximum)
+
+        # Throw an error after $Maximum unsuccessful invocations. Doesn't need
+        # a condition, since the function returns upon successful invocation.
+        throw 'Execution failed.'
+    }
+}
+
+Function DownloadFile($url, $targetFile) {
+    Write-Host "Downloading $url"
+    Retry-Command -ScriptBlock {
+        Invoke-WebRequest $url -OutFile $targetFile
+    }
+}
+
+
+## Define username/password
+$username = 'jenkins'
+Add-Type -AssemblyName System.Web
+$password = [System.Web.Security.Membership]::GeneratePassword(16, 8)
+$secPass = ConvertTo-SecureString -String "$password" -AsPlainText -Force
+
+## Add a group for Docker Engine
+# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.localaccounts/new-localgroup?view=powershell-5.1
+New-LocalGroup -Name docker
+
+## Add a non-admin user for Jenkins agent
+# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.localaccounts/new-localuser?view=powershell-5.1
+New-LocalUser -Name "$username" `
+    -AccountNeverExpires `
+    -Description "Jenkins Agent User" `
+    -Password $secPass
+
+### Allow to use docker
+# https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-docker/configure-docker-daemon
+# https://docs.microsoft.com/en-us/virtualization/windowscontainers/troubleshooting
+$dockerGroup = 'docker'
+Add-LocalGroupMember -Group "$dockerGroup" -Member "$username"
+$dockerConfig = @"
+{
+    "group" : "$dockerGroup"
+}
+"@
+echo "$dockerConfig" | Out-File -encoding ASCII C:\ProgramData\Docker\config\daemon.json
+Restart-Service docker
+
+## Pregenerate user profile and userhome by impersonating the jenkins user
+# Start by installing psexec
+$baseTempDir    = 'C:\Windows\temp'
+$tempFile       = "$baseTempDir\PSTools.zip"
+$tempDir        = "$baseTempDir\PSTools"
+$psExecBin      = "$tempDir\psexec.exe"
+DownloadFile 'https://download.sysinternals.com/files/PSTools.zip' $tempFile
+Expand-Archive -Path "$tempFile" -DestinationPath "$tempDir"
+
+# Invoke cmd.exe as jenkins user through psexec to pregenerate settings and home
+Invoke-Expression "$psExecBin -u jenkins -p '$password' -accepteula cmd.exe /c exit"
+
+# Ensure that jenkins user can execute docker commands
+Invoke-Expression "$psExecBin -u jenkins -p '$password' -accepteula cmd.exe /c docker run --rm hello-world"
+
+# Cleanup psexec
+Remove-Item -Force -Recurse "$tempDir"
+Remove-Item -Force "$tempFile"
+
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -70,48 +167,6 @@ $downloads = [ordered]@{
     };
 }
 
-Function Retry-Command {
-    [CmdletBinding()]
-    Param(
-        [Parameter(Position=0, Mandatory=$true)]
-        [scriptblock]$ScriptBlock,
-
-        [Parameter(Position=1, Mandatory=$false)]
-        [int]$Maximum = 5,
-
-        [Parameter(Position=2, Mandatory=$false)]
-        [int]$Delay = 100
-    )
-
-    Begin {
-        $cnt = 0
-    }
-
-    Process {
-        do {
-            $cnt++
-            try {
-                $ScriptBlock.Invoke()
-                return
-            } catch {
-                Write-Error $_.Exception.InnerException.Message -ErrorAction Continue
-                Start-Sleep -Milliseconds $Delay
-            }
-        } while ($cnt -lt $Maximum)
-
-        # Throw an error after $Maximum unsuccessful invocations. Doesn't need
-        # a condition, since the function returns upon successful invocation.
-        throw 'Execution failed.'
-    }
-}
-
-Function DownloadFile($url, $targetFile) {
-    Write-Host "Downloading $url"
-    Retry-Command -ScriptBlock {
-      Invoke-WebRequest $url -OutFile $targetFile
-    }
-}
-
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('check')) {
@@ -177,8 +232,8 @@ Write-Host "OS Version"
 [System.Environment]::OSVersion.Version
 
 Write-Host "Disks"
-Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" | 
-Select-Object -Property DeviceID, DriveType, VolumeName, 
+Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" |
+Select-Object -Property DeviceID, DriveType, VolumeName,
 @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
 @{L="Capacity";E={"{0:N2}" -f ($_.Size/1GB)}} | Format-Table -Property DeviceID, VolumeName, FreeSpaceGB, Capacity
 
