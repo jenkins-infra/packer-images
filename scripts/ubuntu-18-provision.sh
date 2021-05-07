@@ -34,7 +34,9 @@ apt-get install -y --no-install-recommends \
   openjdk-11-jdk \
   make \
   unzip \
-  zip
+  zip \
+  jq \
+  git
 
 ## Ensure that docker-compose is installed (version from environment)
 curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
