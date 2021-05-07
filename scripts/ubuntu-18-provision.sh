@@ -69,13 +69,6 @@ useradd --create-home \
   --shell /bin/bash \
   "${username}"
 
-# Allow user Jenkins to own the agent workspace's dir
-agent_workspace=/mnt/agent-workspace # This directory must be outside the user home directory
-mkdir -p  "${agent_workspace}/.m2"
-chown -R "${username}:${groupname}" "${agent_workspace}"
-## Share user maven's cache with the agent's cache
-ln -s "${agent_workspace}/.m2" "${userhome}/.m2"
-
 ## Ensure that the VM is cleaned up
 export HISTSIZE=0
 sync
