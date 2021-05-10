@@ -10,6 +10,10 @@ echo "ARCHITECTURE=${ARCHITECTURE}"
 echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
 echo "MAVEN_VERSION=${MAVEN_VERSION}"
 
+## Copy custom scripts
+cp /tmp/add_auth_key_to_user.sh /usr/local/bin/add_auth_key_to_user.sh
+chmod a+x /usr/local/bin/add_auth_key_to_user.sh
+
 ## Ensure the machine is up-to-date
 apt-get update
 apt-get upgrade -y
@@ -67,6 +71,13 @@ useradd --create-home \
   --groups docker \
   --shell /bin/bash \
   "${username}"
+
+# Add authorized keys to jenkins user
+mkdir -p "${userhome}/.ssh"
+curl --fail --silent --location --show-error "${OPENSSH_AUTHORIZED_KEYS_URL}" --output "${userhome}/.ssh/authorized_keys"
+chmod 0700 "${userhome}/.ssh"
+chmod 0600 "${userhome}/.ssh/authorized_keys"
+chown -R jenkins:jenkins "${userhome}/.ssh"
 
 ## Ensure that the VM is cleaned up
 export HISTSIZE=0
