@@ -112,12 +112,15 @@ build {
     winrm_timeout                     = "20m"
     winrm_use_ssl                     = true
     winrm_username                    = "packer"
+    async_resourcegroup_delete        = true # Faster builds, but no deletion error reporting
   }
 
   provisioner "windows-update" {
+    max_retries = 3 # Fight against flaky Windows Updates
   }
 
   provisioner "windows-restart" {
+    max_retries = 3 # Fight against flaky Windows Updates
   }
 
   provisioner "powershell" {
