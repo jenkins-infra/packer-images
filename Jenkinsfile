@@ -75,9 +75,9 @@ pipeline {
             }
           }
           stage('Build') {
-            when {
-              branch 'main'
-            }
+            // when {
+            //   branch 'main'
+            // }
             steps {
               sh './run-packer.sh build'
             }
