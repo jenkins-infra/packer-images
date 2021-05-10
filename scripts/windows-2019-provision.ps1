@@ -159,15 +159,7 @@ foreach($k in $downloads.Keys) {
 
 ## Set Cloud-specific tasks
 switch($env:CLOUD_TYPE) {
-    'aws' {
-        if(Test-Path 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml') {
-            Write-Host 'Updating AWS configuration for passwords'
-            # Enable the system password to be retrieved from the AWS Console after this AMI is built and used to launch code
-            $ec2config = [xml] (Get-Content 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
-            ($ec2config.ec2configurationsettings.plugins.plugin | Where-Object {$_.name -eq 'Ec2SetPassword'}).state = 'Enabled'
-            $ec2config.Save('C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
-        }
-
+    'amazon-ebs' {
         ## Prepare AWS EC2 Launcher (cleanup, run on each VM boot, etc.)
         Write-Output "Previous EC2Launch Config"
         Write-Host "Previous EC2Launch Config"
@@ -190,7 +182,7 @@ switch($env:CLOUD_TYPE) {
         C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\InitializeInstance.ps1 -SchedulePerBoot
         C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\SendWindowsIsReady.ps1 -Schedule
     }
-    'azure' {
+    'azure-arm' {
         # Azure needs the image sysprep'd manually, AWS is done using AWS scripts from the json
         & $env:SystemRoot\System32\Sysprep\Sysprep.exe /oobe /generalize /quiet /quit
         while($true) {
@@ -206,6 +198,18 @@ switch($env:CLOUD_TYPE) {
     }
 }
 
+## TODO: Cleanup
+# See. https://github.com/ajcarberry/packer-windows-2019/blob/master/scripts/cleanup.ps1
+## TODO: Disable WinRM
+# netsh advfirewall firewall set rule name="Windows Remote Management (HTTP-In)" new enable=yes action=block
+# # Delete any existing WinRM listeners
+# winrm delete winrm/config/listener?Address=*+Transport=HTTP  2>$Null
+# winrm delete winrm/config/listener?Address=*+Transport=HTTPS 2>$Null
+# #Stop WinRM Service
+# Stop-Service -Name WinRM
+# # Set-Service -Name winrm -StartupType Disabled
+
+## Final information: print out status
 Write-Host "OS Version"
 [System.Environment]::OSVersion.Version
 

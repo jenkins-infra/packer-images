@@ -26,8 +26,9 @@ pipeline {
             values 'ubuntu-18', 'windows-2019'
           }
           axis {
-            name 'PKR_VAR_cloud'
-            values 'aws', 'azure'
+            name 'PKR_VAR_image_type'
+            // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
+            values 'amazon-ebs', 'azure-arm'
           }
         }
         excludes {
@@ -38,11 +39,11 @@ pipeline {
               values 'arm64'
             }
             axis {
-              name 'PKR_VAR_cloud'
-              values 'azure'
+              name 'PKR_VAR_image_type'
+              values 'azure-arm'
             }
           }
-          // Only build Ubuntu images for ARM, in AWS
+          // Only build Ubuntu images for arm64 CPU in AWS
           exclude {
             axis {
               name 'PKR_VAR_architecture'
@@ -53,19 +54,18 @@ pipeline {
               notValues 'ubuntu-18'
             }
             axis {
-              name 'PKR_VAR_cloud'
-              values 'aws'
+              name 'PKR_VAR_image_type'
+              values 'amazon-ebs'
             }
           }
         }
         environment {
-          PKR_VAR_subscription_id = credentials('packer-azure-subscription-id')
-          PKR_VAR_client_id       = credentials('packer-azure-client-id')
-          PKR_VAR_client_secret   = credentials('packer-azure-client-secret')
+          PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
+          PKR_VAR_azure_client_id       = credentials('packer-azure-client-id')
+          PKR_VAR_azure_client_secret   = credentials('packer-azure-client-secret')
           AWS_ACCESS_KEY_ID       = credentials('packer-aws-access-key-id')
           AWS_SECRET_ACCESS_KEY   = credentials('packer-aws-secret-access-key')
-          OPENSSH_PUBLIC_KEY      = credentials('packer-aws-openssh-public-key')
-          PACKER_HOME_DIR         = "/tmp/packer.d.${PKR_VAR_cloud}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
+          PACKER_HOME_DIR         = "/tmp/packer.d.${PKR_VAR_image_type}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
           PACKER_PLUGIN_PATH      = "${PACKER_HOME_DIR}/plugins"
         }
         stages {
