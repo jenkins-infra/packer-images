@@ -14,6 +14,13 @@ echo "MAVEN_VERSION=${MAVEN_VERSION}"
 cp /tmp/add_auth_key_to_user.sh /usr/local/bin/add_auth_key_to_user.sh
 chmod a+x /usr/local/bin/add_auth_key_to_user.sh
 
+## Remove unused packages
+apt-get remove --purge -y \
+  lxcfs `# We use docker as container engine` \
+  lxd `# We use docker as container engine` \
+  snapd
+apt-get autoremove -y --purge
+
 ## Ensure the machine is up-to-date
 apt-get update
 apt-get upgrade -y
@@ -80,5 +87,24 @@ chmod 0600 "${userhome}/.ssh/authorized_keys"
 chown -R jenkins:jenkins "${userhome}/.ssh"
 
 ## Ensure that the VM is cleaned up
-export HISTSIZE=0
+# Remove Bash history
+unset HISTFILE
+rm -f /root/.bash_history
+
+# Remove old kernels and packages
+apt-get -y autoremove --purge
+apt-get -y clean
+
+# Cleanup log file
+find /var/log -type f -exec truncate --size=0 {} \;
+
+# Avoid temp files from packer build
+rm -rf /tmp/*
+
+# Wait for fs to be synced up before stopping
 sync
+
+# Prints out the final package state for observability
+dpkg -l
+
+exit 0
