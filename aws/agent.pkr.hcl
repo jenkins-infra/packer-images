@@ -1,6 +1,10 @@
 packer {
   required_version = ">= 1.7.2, < 1.8.0"
   required_plugins {
+    amazon = {
+      version = ">= 0.0.1"
+      source  = "github.com/hashicorp/amazon"
+    }
     windows-update = {
       version = "0.12.0"
       source  = "github.com/rgl/windows-update"
@@ -47,7 +51,7 @@ locals {
   now_unix_timestamp = formatdate("YYYYMMDDhhmmss", timestamp())
   aws_rootfs_size_gb = 100
   aws_instance_type = {
-    "amd64" = "t3.micro"  # 2 CPU / 1 GB / $0.0104
+    "amd64" = "t3.large"  # 2 CPU / 1 GB / $0.0104
     "arm64" = "t4g.micro" # 2 CPU / 1 GB / $0.0084
   }
 }
@@ -104,9 +108,15 @@ build {
   }
 
   provisioner "shell" {
-    environment_vars = ["MAVEN_VERSION=${var.maven_version}", "COMPOSE_VERSION=${var.compose_version}", "ARCHITECTURE=${var.architecture}"]
+    environment_vars = [
+      "MAVEN_VERSION=${var.maven_version}",
+      "COMPOSE_VERSION=${var.compose_version}",
+      "ARCHITECTURE=${var.architecture}",
+      "CLOUD_TYPE=aws",
+    ]
     execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./scripts/ubuntu-18-provision.sh"
+    max_retries      = 3 # Fight against APT errors
   }
 
   post-processor "manifest" {
@@ -127,26 +137,26 @@ build {
   }
 
   provisioner "windows-update" {
+    max_retries = 3 # Fight against flaky Windows Updates
   }
 
   provisioner "windows-restart" {
+    max_retries = 3 # Fight against flaky Windows Updates
   }
 
   provisioner "powershell" {
-    script = "./scripts/test-disk-size.ps1"
-  }
-
-  provisioner "powershell" {
-    script = "./scripts/test-docker.ps1"
-  }
-
-  provisioner "powershell" {
-    environment_vars = ["MAVEN_VERSION=${var.maven_version}", "GIT_VERSION=${var.git_version}", "JDK11_VERSION=${var.jdk11_version}", "JDK8_VERSION=${var.jdk8_version}", "GIT_LFS_VERSION=${var.git_lfs_version}", "OPENSSH_VERSION=${var.openssh_version}", "CLOUD_TYPE=aws", "OPENSSH_PUBLIC_KEY=${var.openssh_public_key}"]
-    script           = "./scripts/windows-2019-provision.ps1"
-  }
-
-  provisioner "powershell" {
-    inline = ["C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -SchedulePerBoot", "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"]
+    environment_vars = [
+      "MAVEN_VERSION=${var.maven_version}",
+      "GIT_VERSION=${var.git_version}",
+      "JDK11_VERSION=${var.jdk11_version}",
+      "JDK8_VERSION=${var.jdk8_version}",
+      "GIT_LFS_VERSION=${var.git_lfs_version}",
+      "OPENSSH_VERSION=${var.openssh_version}",
+      "CLOUD_TYPE=aws",
+    ]
+    elevated_user = "Administrator"
+    elevated_password = build.Password
+    script = "./scripts/windows-2019-provision.ps1"
   }
 
   post-processor "manifest" {

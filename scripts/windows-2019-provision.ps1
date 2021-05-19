@@ -1,6 +1,19 @@
-
 ## Fail fast - equivalent of "set -e"
 $ErrorActionPreference = 'Stop'
+
+## Uncomment to enable Verbose mode - equivalent of "set -x"
+# https://stackoverflow.com/questions/41324882/how-to-run-a-powershell-script-with-verbose-output
+# $VerbosePreference="Continue"
+# Set-PSDebug -Trace 1
+
+## Enable unprivileged actions for this script
+# See https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.1
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
+
+## Load Powershell libraries
+Add-Type -AssemblyName System.Web
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 
 ## Reusable Functions (must be declared before calling)
 Function Retry-Command {
@@ -45,64 +58,20 @@ Function DownloadFile($url, $targetFile) {
     }
 }
 
+# Install OpenSSH (from Windows Features)
+Write-Output "Setting up OpenSSH Server"
+Write-Host "(host) setting up OpenSSH Server"
 
-## Define username/password
-$username = 'jenkins'
-Add-Type -AssemblyName System.Web
-$password = [System.Web.Security.Membership]::GeneratePassword(16, 8)
-$secPass = ConvertTo-SecureString -String "$password" -AsPlainText -Force
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+Set-Service -Name sshd -StartupType 'Automatic'
+Start-Service sshd
+New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
 
-## Add a group for Docker Engine
-# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.localaccounts/new-localgroup?view=powershell-5.1
-New-LocalGroup -Name docker
-
-## Add a non-admin user for Jenkins agent
-# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.localaccounts/new-localuser?view=powershell-5.1
-New-LocalUser -Name "$username" `
-    -AccountNeverExpires `
-    -Description "Jenkins Agent User" `
-    -Password $secPass
-
-### Allow to use docker
-# https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-docker/configure-docker-daemon
-# https://docs.microsoft.com/en-us/virtualization/windowscontainers/troubleshooting
-$dockerGroup = 'docker'
-Add-LocalGroupMember -Group "$dockerGroup" -Member "$username"
-$dockerConfig = @"
-{
-    "group" : "$dockerGroup"
-}
-"@
-echo "$dockerConfig" | Out-File -encoding ASCII C:\ProgramData\Docker\config\daemon.json
-Restart-Service docker
-
-## Pregenerate user profile and userhome by impersonating the jenkins user
-# Start by installing psexec
-$baseTempDir    = 'C:\Windows\temp'
-$tempFile       = "$baseTempDir\PSTools.zip"
-$tempDir        = "$baseTempDir\PSTools"
-$psExecBin      = "$tempDir\psexec.exe"
-DownloadFile 'https://download.sysinternals.com/files/PSTools.zip' $tempFile
-Expand-Archive -Path "$tempFile" -DestinationPath "$tempDir"
-
-# Invoke cmd.exe as jenkins user through psexec to pregenerate settings and home
-Invoke-Expression "$psExecBin -u jenkins -p '$password' -accepteula cmd.exe /c exit"
-
-# Ensure that jenkins user can execute docker commands
-Invoke-Expression "$psExecBin -u jenkins -p '$password' -accepteula cmd.exe /c docker run --rm hello-world"
-
-# Cleanup psexec
-Remove-Item -Force -Recurse "$tempDir"
-Remove-Item -Force "$tempFile"
-
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-Add-Type -AssemblyName System.Web
-
+## Prepare Tools Installation
 $baseDir = 'c:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 
+## List of tools to use
 $downloads = [ordered]@{
     'jdk11' = @{
         'url' = 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
@@ -145,28 +114,10 @@ $downloads = [ordered]@{
             & "$baseDir\git\cmd\git.exe" lfs install
         };
     };
-    'openssh' = @{
-        'check' = { -not [System.String]::IsNullOrWhiteSpace($env:OPENSSH_VERSION) };
-        'url' = 'https://github.com/PowerShell/Win32-OpenSSH/releases/download/{0}/OpenSSH-Win64.zip' -f $env:OPENSSH_VERSION;
-        'local' = "$baseDir\openssh.zip";
-        'destination' = 'C:\Program Files';
-        'postexpand' = {
-            New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
-            powershell.exe -ExecutionPolicy Bypass -File 'C:\Program Files\OpenSSH-Win64\install-sshd.ps1'
-            if(-not (Test-Path -Path $env:ProgramData/ssh)) {
-                New-Item -ItemType Directory -Path $env:ProgramData/ssh
-            }
-            if(-not [System.String]::IsNullOrWhiteSpace($env:OPENSSH_PUBLIC_KEY)) {
-                Set-Content -Path $env:ProgramData/ssh/administrators_authorized_keys -Value "$($env:OPENSSH_PUBLIC_KEY)" -Force
-                icacls $env:ProgramData/ssh/administrators_authorized_keys /inheritance:r
-                icacls $env:ProgramData/ssh/administrators_authorized_keys /grant SYSTEM:`(F`)
-                icacls $env:ProgramData/ssh/administrators_authorized_keys /grant BUILTIN\Administrators:`(F`)
-            }
-            Set-Service sshd -StartupType Automatic | Out-Null
-        }
-    };
 }
 
+## Proceed to install tools
+# TODO: foreach in parallel for downloads
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('check')) {
@@ -206,25 +157,52 @@ foreach($k in $downloads.Keys) {
     }
 }
 
-if(Test-Path 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml') {
-    Write-Host 'Updating AWS configuration for passwords'
-    # Enable the system password to be retrieved from the AWS Console after this AMI is built and used to launch code
-    $ec2config = [xml] (Get-Content 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
-    ($ec2config.ec2configurationsettings.plugins.plugin | Where-Object {$_.name -eq 'Ec2SetPassword'}).state = 'Enabled'
-    $ec2config.Save('C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
-}
-
-if($env:CLOUD_TYPE -eq 'azure') {
-    # Azure needs the image sysprep'd manually, AWS is done using AWS scripts from the json
-    & $env:SystemRoot\System32\Sysprep\Sysprep.exe /oobe /generalize /quiet /quit
-    while($true) {
-        $imageState = Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\State' | Select-Object ImageState
-        if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') {
-            Write-Output $imageState.ImageState
-            Start-Sleep -s 5
-        } else {
-            break
+## Set Cloud-specific tasks
+switch($env:CLOUD_TYPE) {
+    'aws' {
+        if(Test-Path 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml') {
+            Write-Host 'Updating AWS configuration for passwords'
+            # Enable the system password to be retrieved from the AWS Console after this AMI is built and used to launch code
+            $ec2config = [xml] (Get-Content 'C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
+            ($ec2config.ec2configurationsettings.plugins.plugin | Where-Object {$_.name -eq 'Ec2SetPassword'}).state = 'Enabled'
+            $ec2config.Save('C:\Program Files\Amazon\Ec2ConfigService\Settings\config.xml')
         }
+
+        ## Prepare AWS EC2 Launcher (cleanup, run on each VM boot, etc.)
+        Write-Output "Previous EC2Launch Config"
+        Write-Host "Previous EC2Launch Config"
+        type C:\ProgramData\Amazon\EC2-Windows\Launch\Config\LaunchConfig.json
+
+        $EC2LaunchConfig = @"
+{
+    "setComputerName": false,
+    "setMonitorAlwaysOn": true,
+    "setWallpaper": false,
+    "addDnsSuffixList": true,
+    "extendBootVolumeSize": false,
+    "handleUserData": true,
+    "adminPasswordType": "Random""
+}
+"@
+        echo "$EC2LaunchConfig" | Out-File C:\ProgramData\Amazon\EC2-Windows\Launch\Config\LaunchConfig.json
+
+        # Ref. https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html#user-data-scripts-subsequent
+        C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\InitializeInstance.ps1 -SchedulePerBoot
+        C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\SendWindowsIsReady.ps1 -Schedule
+    }
+    'azure' {
+        # Azure needs the image sysprep'd manually, AWS is done using AWS scripts from the json
+        & $env:SystemRoot\System32\Sysprep\Sysprep.exe /oobe /generalize /quiet /quit
+        while($true) {
+            $imageState = Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\State' | Select-Object ImageState
+            if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') {
+                Write-Output $imageState.ImageState
+                Start-Sleep -s 5
+            } else {
+                break
+            }
+        }
+        Break
     }
 }
 
