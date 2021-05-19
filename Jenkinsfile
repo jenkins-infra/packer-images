@@ -29,35 +29,8 @@ pipeline {
             name 'PKR_VAR_cloud'
             values 'aws', 'azure'
           }
-          axis {
-            name 'PKR_VAR_location'
-            // Aggregated list of all regions for all clouds. Look at the exclusions to know which location is for which cloud.
-            values 'us-east-2', 'East US 2', 'East US'
-          }
         }
         excludes {
-          // Only build amazon locations on AWS
-          exclude {
-            axis {
-              name 'PKR_VAR_cloud'
-              values 'azure'
-            }
-            axis {
-              name 'PKR_VAR_location'
-              values 'us-east-2'
-            }
-          }
-          // Only build Azure locations on Azure
-          exclude {
-            axis {
-              name 'PKR_VAR_cloud'
-              values 'aws'
-            }
-            axis {
-              name 'PKR_VAR_location'
-              values 'East US 2', 'East US'
-            }
-          }
           // Do NOT build ARM images in Azure
           exclude {
             axis {
