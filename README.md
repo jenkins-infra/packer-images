@@ -39,8 +39,8 @@ aws ec2 describe-instances
 
 ### Azure
 
-* Retrieve the resource group name from the source to build in the template file (directive `managed_image_resource_group_name`),
-  and also the location from `*.auto.pkrvars.hc` file associated to azure/.
+* Retrieve the resource group name from the source to build in the template file (directive `managed_image_resource_group_name`)
+  from `*.auto.pkrvars.hcl` file associated to azure/.
 
 * Create a new resource group on your account with this retrieved values
 

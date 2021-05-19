@@ -11,9 +11,6 @@ packer {
 variable "agent" {
   type = string
 }
-variable "location" {
-  type = string
-}
 variable "compose_version" {
   type = string
 }
@@ -42,46 +39,58 @@ variable "openssh_version" {
   type = string
 }
 variable "client_id" {
-  type = string
+  type    = string
+  default = ""
 }
 variable "client_secret" {
-  type = string
+  type    = string
+  default = ""
 }
 variable "subscription_id" {
-  type = string
+  default = ""
+  type    = string
+}
+variable "image_version" {
+  type    = string
+  default = "0.0.2"
 }
 
 locals {
   now_unix_timestamp = formatdate("YYYYMMDDhhmmss", timestamp())
   image_name         = "jenkins-agent-${var.agent}"
-  resource_groups = {
-    "East US 2" = "prod-packer-images",
-    "East US"   = "prod-packer-images-eastus",
-  }
+  resource_group     = "prod-packer-images"
 }
-
 
 source "azure-arm" "base" {
   azure_tags = {
     imagetype = local.image_name
     timestamp = local.now_unix_timestamp
   }
-  client_id          = var.client_id
-  client_secret      = var.client_secret
-  location           = var.location
-  managed_image_name = local.image_name
-  subscription_id    = var.subscription_id
+  client_id                         = var.client_id
+  client_secret                     = var.client_secret
+  location                          = "East US"
+  managed_image_name                = local.image_name
+  subscription_id                   = var.subscription_id
+  managed_image_resource_group_name = local.resource_group
+
+  shared_image_gallery_destination {
+    subscription        = var.subscription_id
+    resource_group      = local.resource_group
+    gallery_name        = "prod_packer_images"
+    image_name          = local.image_name
+    image_version       = var.image_version
+    replication_regions = ["East US", "East US 2"]
+  }
 }
 
 build {
   source "azure-arm.base" {
-    name                              = "ubuntu-18"
-    image_offer                       = "UbuntuServer"
-    image_publisher                   = "Canonical"
-    image_sku                         = "18.04-LTS"
-    os_type                           = "Linux"
-    managed_image_resource_group_name = local.resource_groups[var.location]
-    vm_size                           = "Standard_DS2_v2"
+    name            = "ubuntu-18"
+    image_offer     = "UbuntuServer"
+    image_publisher = "Canonical"
+    image_sku       = "18_04-lts-gen2"
+    os_type         = "Linux"
+    vm_size         = "Standard_DS2_v2"
   }
 
   provisioner "shell" {
@@ -99,20 +108,19 @@ build {
 
 build {
   source "azure-arm.base" {
-    name                              = "windows-2019"
-    communicator                      = "winrm"
-    image_offer                       = "WindowsServer"
-    image_publisher                   = "MicrosoftWindowsServer"
-    image_sku                         = "2019-Datacenter-Core-with-Containers"
-    os_type                           = "Windows"
-    managed_image_resource_group_name = local.resource_groups[var.location]
-    vm_size                           = "Standard_D4_v3"
-    os_disk_size_gb                   = 130
-    winrm_insecure                    = true
-    winrm_timeout                     = "20m"
-    winrm_use_ssl                     = true
-    winrm_username                    = "packer"
-    async_resourcegroup_delete        = true # Faster builds, but no deletion error reporting
+    name                       = "windows-2019"
+    communicator               = "winrm"
+    image_offer                = "WindowsServer"
+    image_publisher            = "MicrosoftWindowsServer"
+    image_sku                  = "2019-Datacenter-Core-with-Containers-g2"
+    os_type                    = "Windows"
+    vm_size                    = "Standard_D4s_v3"
+    os_disk_size_gb            = 130
+    winrm_insecure             = true
+    winrm_timeout              = "20m"
+    winrm_use_ssl              = true
+    winrm_username             = "packer"
+    async_resourcegroup_delete = true # Faster builds, but no deletion error reporting
   }
 
   provisioner "windows-update" {

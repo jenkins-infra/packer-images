@@ -11,7 +11,6 @@ set -eu -o pipefail
 : "${PKR_VAR_cloud:?Variable PKR_VAR_cloud not defined.}"
 : "${PKR_VAR_agent:?Variable PKR_VAR_agent not defined.}"
 : "${PKR_VAR_architecture:?Variable PKR_VAR_architecture not defined.}"
-: "${PKR_VAR_location:?Variable PKR_VAR_location not defined.}"
 : "${1:?First argument - packer action to execute- not defined.}"
 
 ## Always run initialization to ensure plugins are download and workspace is set up
@@ -23,7 +22,7 @@ case $1 in
     echo "Validation Success."
     ;;
   build)
-    packer build --only="*.${PKR_VAR_agent}" --force "${PKR_VAR_cloud}/"
+    packer build --only="*.${PKR_VAR_agent}" -timestamp-ui --force "${PKR_VAR_cloud}/"
     echo "Build Success."
     ;;
   *)

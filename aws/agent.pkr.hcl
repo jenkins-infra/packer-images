@@ -11,9 +11,6 @@ packer {
 variable "agent" {
   type = string
 }
-variable "location" {
-  type = string
-}
 variable "compose_version" {
   type = string
 }
@@ -41,6 +38,10 @@ variable "openssh_public_key" {
 variable "openssh_version" {
   type = string
 }
+variable "region" {
+  type    = string
+  default = "us-east-2"
+}
 
 locals {
   now_unix_timestamp = formatdate("YYYYMMDDhhmmss", timestamp())
@@ -52,7 +53,6 @@ locals {
 }
 
 data "amazon-ami" "ubuntu-18" {
-
   filters = {
     name                = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-${var.architecture}-server-*"
     root-device-type    = "ebs"
@@ -60,7 +60,7 @@ data "amazon-ami" "ubuntu-18" {
   }
   most_recent = true
   owners      = ["099720109477"]
-  region      = "${var.location}"
+  region      = var.region
 }
 
 data "amazon-ami" "windows-2019" {
@@ -71,7 +71,7 @@ data "amazon-ami" "windows-2019" {
   }
   most_recent = true
   owners      = ["amazon"]
-  region      = "${var.location}"
+  region      = var.region
 }
 
 source "amazon-ebs" "base" {
@@ -83,7 +83,12 @@ source "amazon-ebs" "base" {
     volume_size           = local.aws_rootfs_size_gb
     volume_type           = "gp2"
   }
-  region       = var.location
+  # Where to build the VM
+  region = var.region
+  # Where to export the AMI
+  ami_regions = [
+    var.region
+  ]
   source_ami   = data.amazon-ami[var.agent].id
   ssh_username = "ubuntu"
   tags = {
