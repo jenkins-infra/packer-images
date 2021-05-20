@@ -6,8 +6,8 @@ A repository containing a number of packer build configurations for AWS & Azure.
 
 * A shell (sh, bash, ash, zsh) prompt
 * Packer (check template's version constraints to know which version to use)
-* Define the environment variables `PKR_VAR_cloud`, `PKR_VAR_agent` and `PKR_VAR_architecture` to the target you want to build
-* Configure the cloud (defined on the variable `PKR_VAR_cloud`) credentials (e.g. APi key, or Cloud's CLI access such as `az` or `aws` commands))
+* Define the environment variables `PKR_VAR_image_type`, `PKR_VAR_agent` and `PKR_VAR_architecture` to the target you want to build
+* Configure the cloud (defined on the variable `PKR_VAR_image_type`) credentials (e.g. APi key, or Cloud's CLI access such as `az` or `aws` commands))
 
 ## Invoking the build locally
 
@@ -17,7 +17,7 @@ With the requirements verified locally, execute the following command:
 
 ```bash
 # Means: "Build the ubuntu-18 agent for AWS, on ARM64 CPU
-export PKR_VAR_cloud=aws
+export PKR_VAR_image_type=amazon-ebs
 export PKR_VAR_agent=ubuntu-18
 export PKR_VAR_architecture=arm64
 
@@ -54,5 +54,5 @@ az group create -n myResourceGroup -l eastus
 PKR_VAR_subscription_id="$(az account show --query id -o tsv)"
 export PKR_VAR_subscription_id
 
-PKR_VAR_cloud=azure PKR_VAR_agent=windows-2019 PKR_VAR_architecture=amd64 PKR_VAR_client_id=<client id> PKR_VAR_client_secret=<client secret> ./run-packer.sh build
+PKR_VAR_image_type=azure-arm PKR_VAR_agent=windows-2019 PKR_VAR_architecture=amd64 PKR_VAR_client_id=<client id> PKR_VAR_client_secret=<client secret> ./run-packer.sh build
 ```

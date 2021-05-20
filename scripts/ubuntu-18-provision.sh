@@ -1,6 +1,5 @@
 #!/bin/bash
 # This script provision the Linux Ubuntu 18 images for Jenkins agents
-# Clouds supported: aws, azure
 # Architecture supported: amd64, arm64
 
 set -eux -o pipefail
