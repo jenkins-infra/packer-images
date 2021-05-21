@@ -64,6 +64,10 @@ variable "image_type" {
   type        = string
   description = "Which kind of Packer builder to use (e.g. cloud platform): amazon-ebs, azure-arm"
 }
+variable "openssh_authorized_keys_url" {
+  type        = string
+  description = "URL to an authorized keys file to be used as default for SSH authentication of the agents"
+}
 
 locals {
   now_unix_timestamp = formatdate("YYYYMMDDhhmmss", timestamp())
@@ -163,12 +167,18 @@ build {
     vm_size         = "Standard_DS2_v2"
   }
 
+  provisioner "file" {
+    source      = "./scripts/add_auth_key_to_user.sh"
+    destination = "/tmp/add_auth_key_to_user.sh"
+  }
+
   provisioner "shell" {
     environment_vars = [
       "MAVEN_VERSION=${var.maven_version}",
       "COMPOSE_VERSION=${var.compose_version}",
       "ARCHITECTURE=${var.architecture}",
       "CLOUD_TYPE=${var.image_type}",
+      "OPENSSH_AUTHORIZED_KEYS_URL=${var.openssh_authorized_keys_url}",
     ]
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script          = "./scripts/ubuntu-18-provision.sh"
@@ -216,6 +226,11 @@ build {
     max_retries = 3 # Fight against flaky Windows Updates
   }
 
+  provisioner "file" {
+    source      = "./scripts/addSSHPubKey.ps1"
+    destination = "C:/"
+  }
+
   provisioner "powershell" {
     environment_vars = [
       "MAVEN_VERSION=${var.maven_version}",
@@ -225,6 +240,7 @@ build {
       "GIT_LFS_VERSION=${var.git_lfs_version}",
       "OPENSSH_VERSION=${var.openssh_version}",
       "CLOUD_TYPE=${var.image_type}",
+      "OPENSSH_AUTHORIZED_KEYS_URL=${var.openssh_authorized_keys_url}",
     ]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
