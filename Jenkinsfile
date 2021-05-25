@@ -14,6 +14,20 @@ pipeline {
     }
   }
   stages {
+    stage('Prepare') {
+      steps {
+        // Must be on the same agent as the packer steps
+        // TODO: replace me by a custom docker image
+        sh '''
+        apk add --no-cache curl git
+        latest_release_url="$(curl  --write-out "%{redirect_url}" --output /dev/null --silent https://github.com/jenkins-x-plugins/jx-release-version/releases/latest | sed 's#/tag/#/download/#g')"
+        curl --silent --location --show-error "${latest_release_url}/jx-release-version-linux-amd64.tar.gz" \
+          | tar -C /usr/local/bin -x -z -f -
+        jx-release-version --version
+        git fetch --tags # TODO: configure job to fetch tags automatically (migrate to infra.ci?)
+        '''
+      }
+    }
     stage('ValidateAndBuild') {
       matrix {
         axes {

@@ -56,9 +56,9 @@ variable "azure_subscription_id" {
   default = ""
   type    = string
 }
-variable "azure_image_version" {
+variable "image_version" {
   type    = string
-  default = "0.0.2"
+  default = "0.0.1" # Default is a valid version to not fail azure validation
 }
 variable "image_type" {
   type        = string
@@ -127,6 +127,7 @@ source "amazon-ebs" "base" {
     imageplatform = var.architecture
     imagetype     = local.image_name
     timestamp     = local.now_unix_timestamp
+    version       = var.image_version
   }
 }
 
@@ -135,6 +136,7 @@ source "azure-arm" "base" {
     imageplatform = var.architecture
     imagetype     = local.image_name
     timestamp     = local.now_unix_timestamp
+    version       = var.image_version
   }
   client_id                         = var.azure_client_id
   client_secret                     = var.azure_client_secret
@@ -148,7 +150,7 @@ source "azure-arm" "base" {
     resource_group      = local.azure_resource_group
     gallery_name        = "prod_packer_images"
     image_name          = local.image_name
-    image_version       = var.azure_image_version
+    image_version       = var.image_version
     replication_regions = ["East US", "East US 2"]
   }
 }
