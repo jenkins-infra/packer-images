@@ -15,6 +15,9 @@ set -eu -o pipefail
 
 packer_template_dir="./"
 
+PKR_VAR_image_version="$(jx-release-version -next-version semantic)"
+export PKR_VAR_image_version
+
 ## Always run initialization to ensure plugins are download and workspace is set up
 packer init "${packer_template_dir}"
 
