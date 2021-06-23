@@ -32,6 +32,10 @@ chmod a+x /usr/local/bin/add_auth_key_to_user.sh
 echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
 apt purge -y unattended-upgrades
 
+## Remove unused packages
+apt purge -y snap lxcfs lxd lxd-client
+apt autoremove --purge -y
+
 ## Ensure the machine is up-to-date
 apt-get update
 apt-get upgrade -y
@@ -90,7 +94,6 @@ tar zxf "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" -C /usr/share/
 ln -s "/usr/share/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/bin/mvn
 rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 
-
 ## Ensure that there is a user named "jenkins" created and configured
 username=jenkins
 userid=1001
@@ -118,4 +121,5 @@ chown -R jenkins:jenkins "${userhome}/.ssh"
 
 ## Ensure that the VM is cleaned up
 export HISTSIZE=0
+rm -rf /tmp/* /var/log/*
 sync
