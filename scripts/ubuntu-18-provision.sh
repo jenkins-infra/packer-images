@@ -9,10 +9,15 @@ echo "== Provisiong jenkins-infra agent for ubuntu 18"
 echo "ARCHITECTURE=${ARCHITECTURE}"
 echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
 echo "MAVEN_VERSION=${MAVEN_VERSION}"
+export DEBIAN_FRONTEND=noninteractive
 
 ## Copy custom scripts
 cp /tmp/add_auth_key_to_user.sh /usr/local/bin/add_auth_key_to_user.sh
 chmod a+x /usr/local/bin/add_auth_key_to_user.sh
+
+## Disable and Remove Unattended APT Upgrades
+echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
+apt purge -y unattended-upgrades
 
 ## Ensure the machine is up-to-date
 apt-get update
