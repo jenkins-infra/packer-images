@@ -67,6 +67,13 @@ else
   apt-get install -y --no-install-recommends git
 fi
 
+## Install git-lfs (after git)
+git_lfs_deb="/tmp/git-lfs_${GIT_LFS_VERSION}_amd64.deb"
+curl --fail --silent --location --show-error --output "${git_lfs_deb}" \
+  "https://packagecloud.io/github/git-lfs/packages/debian/stretch/git-lfs_${GIT_LFS_VERSION}_amd64.deb/download"
+dpkg -i "${git_lfs_deb}"
+rm -f "${git_lfs_deb}"
+
 ## OpenJDKs
 install_package_version openjdk-11-jdk "${JDK11_VERSION}"
 install_package_version openjdk-8-jdk "${JDK8_VERSION}"
