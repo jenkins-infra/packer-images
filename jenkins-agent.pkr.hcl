@@ -244,6 +244,7 @@ build {
       "JDK11_VERSION=${var.jdk11_version}",
       "JDK8_VERSION=${var.jdk8_version}",
       "GIT_LFS_VERSION=${var.git_lfs_version}",
+      "COMPOSE_VERSION=${var.compose_version}",
       "OPENSSH_VERSION=${var.openssh_version}",
       "CLOUD_TYPE=${var.image_type}",
       "OPENSSH_AUTHORIZED_KEYS_URL=${var.openssh_authorized_keys_url}",
