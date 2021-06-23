@@ -37,9 +37,6 @@ variable "jdk11_version" {
 variable "jdk8_version" {
   type = string
 }
-variable "openssh_version" {
-  type = string
-}
 variable "aws_region" {
   type    = string
   default = "us-east-2"
@@ -245,7 +242,6 @@ build {
       "JDK8_VERSION=${var.jdk8_version}",
       "GIT_LFS_VERSION=${var.git_lfs_version}",
       "COMPOSE_VERSION=${var.compose_version}",
-      "OPENSSH_VERSION=${var.openssh_version}",
       "CLOUD_TYPE=${var.image_type}",
       "OPENSSH_AUTHORIZED_KEYS_URL=${var.openssh_authorized_keys_url}",
     ]
