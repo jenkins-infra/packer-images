@@ -11,6 +11,19 @@ echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
 echo "MAVEN_VERSION=${MAVEN_VERSION}"
 export DEBIAN_FRONTEND=noninteractive
 
+## This function installs the package provided as arg. $1
+# with the latest version specified as arg. $2.
+# When there are different packages builds available for the provided version
+# then the most recent one ise installed
+function install_package_version() {
+  local package_version
+  package_version="$(apt-cache madison "${1}" \
+    | grep "${2}" `# Extract all candidate packages with this version` \
+    | head -n1 `# Only keep the most recent package which should be the first line` \
+    | awk '{print $3}' `# Package version is the 3rd column`)"
+  apt-get install -y --no-install-recommends "${1}=${package_version}"
+}
+
 ## Copy custom scripts
 cp /tmp/add_auth_key_to_user.sh /usr/local/bin/add_auth_key_to_user.sh
 chmod a+x /usr/local/bin/add_auth_key_to_user.sh
@@ -38,8 +51,6 @@ apt-get install -y --no-install-recommends docker-ce
 
 ## Ensure that the Jenkins Agent commons requirements are installed
 apt-get install -y --no-install-recommends \
-  openjdk-8-jdk \
-  openjdk-11-jdk \
   make \
   unzip \
   zip \
@@ -50,15 +61,15 @@ if [ -n "${GIT_VERSION}" ]
 then
   ## a specific git version is required: search it on the official git PPA repositories
   add-apt-repository -y ppa:git-core/ppa
-  GIT_PACKAGE_VERSION="$(apt-cache madison git \
-    | grep "${GIT_VERSION}" `# Extract all candidate packages with this version` \
-    | head -n1 `# Only keep the most recent package which should be the first line` \
-    | awk '{print $3}' `# Package version is the 3rd column`)"
-  apt-get install -y --no-install-recommends git="${GIT_PACKAGE_VERSION}"
+  install_package_version git "${GIT_VERSION}"
 else
   ## No git version: install the latest git available in the default repos
   apt-get install -y --no-install-recommends git
 fi
+
+## OpenJDKs
+install_package_version openjdk-11-jdk "${JDK11_VERSION}"
+install_package_version openjdk-8-jdk "${JDK8_VERSION}"
 
 ## Ensure that docker-compose is installed (version from environment)
 curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
