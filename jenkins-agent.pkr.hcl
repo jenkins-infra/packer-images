@@ -177,6 +177,7 @@ build {
   provisioner "shell" {
     environment_vars = [
       "MAVEN_VERSION=${var.maven_version}",
+      "GIT_VERSION=${var.git_version}",
       "COMPOSE_VERSION=${var.compose_version}",
       "ARCHITECTURE=${var.architecture}",
       "CLOUD_TYPE=${var.image_type}",

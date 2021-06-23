@@ -43,8 +43,22 @@ apt-get install -y --no-install-recommends \
   make \
   unzip \
   zip \
-  jq \
-  git
+  jq
+
+## Install git
+if [ -n "${GIT_VERSION}" ]
+then
+  ## a specific git version is required: search it on the official git PPA repositories
+  add-apt-repository -y ppa:git-core/ppa
+  GIT_PACKAGE_VERSION="$(apt-cache madison git \
+    | grep "${GIT_VERSION}" `# Extract all candidate packages with this version` \
+    | head -n1 `# Only keep the most recent package which should be the first line` \
+    | awk '{print $3}' `# Package version is the 3rd column`)"
+  apt-get install -y --no-install-recommends git="${GIT_PACKAGE_VERSION}"
+else
+  ## No git version: install the latest git available in the default repos
+  apt-get install -y --no-install-recommends git
+fi
 
 ## Ensure that docker-compose is installed (version from environment)
 curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
