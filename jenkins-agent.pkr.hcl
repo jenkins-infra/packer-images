@@ -37,9 +37,6 @@ variable "jdk11_version" {
 variable "jdk8_version" {
   type = string
 }
-variable "openssh_version" {
-  type = string
-}
 variable "aws_region" {
   type    = string
   default = "us-east-2"
@@ -177,6 +174,10 @@ build {
   provisioner "shell" {
     environment_vars = [
       "MAVEN_VERSION=${var.maven_version}",
+      "GIT_VERSION=${var.git_version}",
+      "JDK11_VERSION=${var.jdk11_version}",
+      "JDK8_VERSION=${var.jdk8_version}",
+      "GIT_LFS_VERSION=${var.git_lfs_version}",
       "COMPOSE_VERSION=${var.compose_version}",
       "ARCHITECTURE=${var.architecture}",
       "CLOUD_TYPE=${var.image_type}",
@@ -240,7 +241,7 @@ build {
       "JDK11_VERSION=${var.jdk11_version}",
       "JDK8_VERSION=${var.jdk8_version}",
       "GIT_LFS_VERSION=${var.git_lfs_version}",
-      "OPENSSH_VERSION=${var.openssh_version}",
+      "COMPOSE_VERSION=${var.compose_version}",
       "CLOUD_TYPE=${var.image_type}",
       "OPENSSH_AUTHORIZED_KEYS_URL=${var.openssh_authorized_keys_url}",
     ]
