@@ -72,11 +72,14 @@ else
 fi
 
 ## Install git-lfs (after git)
-git_lfs_deb="/tmp/git-lfs_${GIT_LFS_VERSION}_${ARCHITECTURE}.deb"
-curl --fail --silent --location --show-error --output "${git_lfs_deb}" \
-  "https://packagecloud.io/github/git-lfs/packages/debian/stretch/git-lfs_${GIT_LFS_VERSION}_${ARCHITECTURE}.deb/download"
-dpkg -i "${git_lfs_deb}"
-rm -f "${git_lfs_deb}"
+git_lfs_archive="git-lfs-linux-${ARCHITECTURE}-v${GIT_LFS_VERSION}.tar.gz"
+git_lfs_release_url="https://github.com/git-lfs/git-lfs/releases/download/v${GIT_LFS_VERSION}/${git_lfs_archive}"
+
+curl --fail --silent --location --show-error --output "/tmp/${git_lfs_archive}" "${git_lfs_release_url}"
+mkdir -p /tmp/git-lfs
+tar xzvf "/tmp/${git_lfs_archive}" -C /tmp/git-lfs
+bash -x /tmp/git-lfs/install.sh # Execute in debug mode in case something goes wrong
+rm -rf /tmp/git-lfs*
 
 ## OpenJDKs
 install_package_version openjdk-11-jdk "${JDK11_VERSION}"
