@@ -58,7 +58,8 @@ apt-get install -y --no-install-recommends \
   make \
   unzip \
   zip \
-  jq
+  jq \
+  parallel
 
 ## Install git
 if [ -n "${GIT_VERSION}" ]
