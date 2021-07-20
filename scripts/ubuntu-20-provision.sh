@@ -33,7 +33,7 @@ echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
 apt purge -y unattended-upgrades
 
 ## Remove unused packages
-apt purge -y snap lxcfs lxd lxd-client
+apt purge -y snap lxd
 apt autoremove --purge -y
 
 ## Ensure the machine is up-to-date
