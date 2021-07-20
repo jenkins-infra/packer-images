@@ -1,11 +1,11 @@
 #!/bin/bash
-# This script provision the Linux Ubuntu 18 images for Jenkins agents
+# This script provision the Linux Ubuntu 20 images for Jenkins agents
 # Architecture supported: amd64, arm64
 
 set -eux -o pipefail
 
 ## Check for environment variables or fail miserably (due to set -u enabled)
-echo "== Provisiong jenkins-infra agent for ubuntu 18"
+echo "== Provisiong jenkins-infra agent for ubuntu 20"
 echo "ARCHITECTURE=${ARCHITECTURE}"
 echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
 echo "MAVEN_VERSION=${MAVEN_VERSION}"

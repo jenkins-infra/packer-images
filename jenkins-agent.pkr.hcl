@@ -14,7 +14,7 @@ packer {
 
 variable "agent" {
   type        = string
-  description = "Which agent to build: ubuntu-18, windows-2019."
+  description = "Which agent to build: ubuntu-20, windows-2019."
 }
 variable "compose_version" {
   type = string
@@ -80,9 +80,9 @@ locals {
   azure_resource_group = "prod-packer-images"
 }
 
-data "amazon-ami" "ubuntu-18" {
+data "amazon-ami" "ubuntu-20" {
   filters = {
-    name                = "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-${var.architecture}-server-*"
+    name                = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-${var.architecture}-server-*"
     root-device-type    = "ebs"
     virtualization-type = "hvm"
   }
@@ -154,14 +154,14 @@ source "azure-arm" "base" {
 
 build {
   source "amazon-ebs.base" {
-    name = "ubuntu-18"
+    name = "ubuntu-20"
   }
 
   source "azure-arm.base" {
-    name            = "ubuntu-18"
-    image_offer     = "UbuntuServer"
-    image_publisher = "Canonical"
-    image_sku       = "18_04-lts-gen2"
+    name            = "ubuntu-20"
+    image_offer     = "0001-com-ubuntu-server-focal"
+    image_publisher = "canonical"
+    image_sku       = "20_04-lts-gen2"
     os_type         = "Linux"
     vm_size         = "Standard_DS2_v2"
   }
@@ -184,7 +184,7 @@ build {
       "OPENSSH_AUTHORIZED_KEYS_URL=${var.openssh_authorized_keys_url}",
     ]
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-    script          = "./scripts/ubuntu-18-provision.sh"
+    script          = "./scripts/ubuntu-20-provision.sh"
     max_retries     = 3 # Fight against APT errors
   }
 

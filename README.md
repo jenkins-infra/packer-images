@@ -16,9 +16,9 @@ With the requirements verified locally, execute the following command:
 * Define the target to build:
 
 ```bash
-# Means: "Build the ubuntu-18 agent for AWS, on ARM64 CPU
+# Means: "Build the ubuntu-20 agent for AWS, on ARM64 CPU
 export PKR_VAR_image_type=amazon-ebs
-export PKR_VAR_agent=ubuntu-18
+export PKR_VAR_agent=ubuntu-20
 export PKR_VAR_architecture=arm64
 
 # Verify that you can use AWS API: the command must succeed

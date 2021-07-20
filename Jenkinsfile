@@ -37,7 +37,7 @@ pipeline {
           }
           axis {
             name 'PKR_VAR_agent'
-            values 'ubuntu-18', 'windows-2019'
+            values 'ubuntu-20', 'windows-2019'
           }
           axis {
             name 'PKR_VAR_image_type'
@@ -65,7 +65,7 @@ pipeline {
             }
             axis {
               name 'PKR_VAR_agent'
-              notValues 'ubuntu-18'
+              notValues 'ubuntu-20'
             }
             axis {
               name 'PKR_VAR_image_type'
