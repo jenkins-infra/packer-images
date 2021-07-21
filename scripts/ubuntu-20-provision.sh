@@ -49,7 +49,7 @@ apt-get install -y --no-install-recommends \
   software-properties-common
 
 curl --fail --silent --location --show-error https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=${ARCHITECTURE}] https://download.docker.com/linux/ubuntu bionic stable"
+add-apt-repository "deb [arch=${ARCHITECTURE}] https://download.docker.com/linux/ubuntu focal stable"
 apt-get update
 apt-get install -y --no-install-recommends docker-ce
 
