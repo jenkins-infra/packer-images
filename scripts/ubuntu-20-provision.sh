@@ -1,11 +1,11 @@
 #!/bin/bash
-# This script provision the Linux Ubuntu 18 images for Jenkins agents
+# This script provision the Linux Ubuntu 20 images for Jenkins agents
 # Architecture supported: amd64, arm64
 
 set -eux -o pipefail
 
 ## Check for environment variables or fail miserably (due to set -u enabled)
-echo "== Provisiong jenkins-infra agent for ubuntu 18"
+echo "== Provisiong jenkins-infra agent for ubuntu 20"
 echo "ARCHITECTURE=${ARCHITECTURE}"
 echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
 echo "MAVEN_VERSION=${MAVEN_VERSION}"
@@ -33,7 +33,7 @@ echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
 apt purge -y unattended-upgrades
 
 ## Remove unused packages
-apt purge -y snap lxcfs lxd lxd-client
+apt purge -y snap lxd
 apt autoremove --purge -y
 
 ## Ensure the machine is up-to-date
@@ -49,7 +49,7 @@ apt-get install -y --no-install-recommends \
   software-properties-common
 
 curl --fail --silent --location --show-error https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=${ARCHITECTURE}] https://download.docker.com/linux/ubuntu bionic stable"
+add-apt-repository "deb [arch=${ARCHITECTURE}] https://download.docker.com/linux/ubuntu focal stable"
 apt-get update
 apt-get install -y --no-install-recommends docker-ce
 
