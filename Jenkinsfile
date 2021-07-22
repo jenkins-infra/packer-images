@@ -89,9 +89,9 @@ pipeline {
             }
           }
           stage('Build') {
-            when {
-              branch 'main'
-            }
+//             when {
+//               branch 'main'
+//             }
             steps {
               sh './run-packer.sh build'
             }
@@ -106,7 +106,7 @@ pipeline {
             AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
             AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
             AWS_REGION            = 'us-east-2'
-            DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
+            DRYRUN                = "false"
           }
           steps {
             container('aws') {
