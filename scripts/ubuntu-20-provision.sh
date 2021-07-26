@@ -61,6 +61,14 @@ apt-get install -y --no-install-recommends \
   jq \
   parallel
 
+# setup qemu
+apt-get install -y --no-install-recommends \
+  qemu \
+  binfmt-support \
+  qemu-user-static
+
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
 ## Install git
 if [ -n "${GIT_VERSION}" ]
 then
