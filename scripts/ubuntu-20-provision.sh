@@ -67,7 +67,9 @@ apt-get install -y --no-install-recommends \
   binfmt-support \
   qemu-user-static
 
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+if [ "$(uname -m)" = "x86_64" ]; then
+  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+fi
 
 ## Install git
 if [ -n "${GIT_VERSION}" ]
