@@ -1,5 +1,5 @@
 maven_version               = "3.8.1"
-git_version                 = "2.32.0"
+git_version                 = "2.33.0"
 jdk11_version               = "11.0.11+9"
 jdk8_version                = "8u292-b10"
 git_lfs_version             = "2.13.3"
