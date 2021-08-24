@@ -17,10 +17,12 @@ export DEBIAN_FRONTEND=noninteractive
 # then the most recent one ise installed
 function install_package_version() {
   local package_version
+
   package_version="$(apt-cache madison "${1}" \
     | grep "${2}" `# Extract all candidate packages with this version` \
     | head -n1 `# Only keep the most recent package which should be the first line` \
-    | awk '{print $3}' `# Package version is the 3rd column`)"
+    | awk '{print $3}' `# Package version is the 3rd column` || { echo "ERROR: could not find version $2 for $1. Output of apt-cache madison is: $(apt-cache madison "${1}")"; exit 1; } )"
+
   apt-get install -y --no-install-recommends "${1}=${package_version}"
 }
 
@@ -30,10 +32,10 @@ chmod a+x /usr/local/bin/add_auth_key_to_user.sh
 
 ## Disable and Remove Unattended APT Upgrades
 echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
-apt purge -y unattended-upgrades
+apt purge -y unattended-upgrades || true # Do not fail if the package does not exist
 
 ## Remove unused packages
-apt purge -y snap lxd
+apt purge -y snap lxd || true # Do not fail if the package does not exist
 apt autoremove --purge -y
 
 ## Ensure the machine is up-to-date
@@ -68,7 +70,7 @@ apt-get install -y --no-install-recommends \
   qemu-user-static
 
 if [ "$(uname -m)" = "x86_64" ]; then
-  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true # Never fail
 fi
 
 ## Install git
