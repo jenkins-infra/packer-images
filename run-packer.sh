@@ -3,7 +3,7 @@
 # Requirements:
 #  - the variables PKR_VAR_image_type, PKR_VAR_agent and PKR_VAR_architecture are defined
 #  - The cloud defined on PKR_VAR_image_type must be configured through its standard environment variables or CLI default setting
-# This script could be repalced by a Makefile
+# This script could be replaced by a Makefile
 # But make is not installed in the Docker image hashicorp/packer:1.7.2
 
 set -eu -o pipefail
