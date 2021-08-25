@@ -10,7 +10,7 @@ spec:
         - cat
       tty: true
     - name: packer
-      image: hashicorp/packer:1.7.2
+      image: hashicorp/packer:1.7.4
       command:
         - cat
       tty: true
