@@ -2,11 +2,11 @@ packer {
   required_version = ">= 1.7.2, < 1.8.0"
   required_plugins {
     amazon = {
-      version = ">= 0.0.1"
+      version = "1.0.0"
       source  = "github.com/hashicorp/amazon"
     }
     windows-update = {
-      version = "0.12.0"
+      version = "0.14.0"
       source  = "github.com/rgl/windows-update"
     }
   }
