@@ -14,7 +14,8 @@ packer {
 
 variable "agent" {
   type        = string
-  description = "Which agent to build: ubuntu-20, windows-2019."
+  description = "Which agent to build: ubuntu-20 (default), windows-2019."
+  default     = "ubuntu-20"
 }
 variable "compose_version" {
   type = string
@@ -26,7 +27,9 @@ variable "git_lfs_version" {
   type = string
 }
 variable "architecture" {
-  type = string
+  type        = string
+  description = "CPU architecure ID of the build with the following possible values: [amd64 (default), arm64]"
+  default     = "amd64"
 }
 variable "git_version" {
   type = string
@@ -59,7 +62,8 @@ variable "image_version" {
 }
 variable "image_type" {
   type        = string
-  description = "Which kind of Packer builder to use (e.g. cloud platform): amazon-ebs, azure-arm"
+  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs (default), azure-arm]"
+  default     = "amazon-ebs"
 }
 variable "openssh_authorized_keys_url" {
   type        = string
