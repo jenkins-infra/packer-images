@@ -69,6 +69,15 @@ variable "openssh_authorized_keys_url" {
   type        = string
   description = "URL to an authorized keys file to be used as default for SSH authentication of the agents"
 }
+variable "build_type" {
+  type        = string
+  description = "Type of build e.g. is it a development build (from a contributor machine), a ci build (pull request or branch build) or a production build (principal branch build on ci)?"
+  default     = "dev" # value in ["dev", "ci", "prod"]
+}
+variable "scm_ref" {
+  type        = string
+  description = "SCM (e.g. Git...) reference of the current build. Can be a commit hash (short or long), a branch name or a tag name."
+}
 
 locals {
   now_unix_timestamp = formatdate("YYYYMMDDhhmmss", timestamp())
@@ -81,7 +90,12 @@ locals {
     "azure-arm"  = "packer"
     "amazon-ebs" = "Administrator"
   }
-  azure_resource_group = "prod-packer-images"
+  azure_resource_group = "${var.build_type}-packer-images"
+  azure_galleries = {
+    "prod_packer_images"    = ["East US", "East US 2"]
+    "staging_packer_images" = ["East US", "East US 2"] # Only the "main" branch, should map the production as much as possible
+    "dev_packer_images"     = ["East US"]              # Faster builds for branches, pull requests or local development
+  }
 }
 
 data "amazon-ami" "ubuntu-20" {
@@ -129,6 +143,8 @@ source "amazon-ebs" "base" {
     imagetype     = local.image_name
     timestamp     = local.now_unix_timestamp
     version       = var.image_version
+    scm_ref       = var.scm_ref
+    build_type    = var.build_type
   }
 }
 
@@ -138,6 +154,8 @@ source "azure-arm" "base" {
     imagetype     = local.image_name
     timestamp     = local.now_unix_timestamp
     version       = var.image_version
+    scm_ref       = var.scm_ref
+    build_type    = var.build_type
   }
   client_id                         = var.azure_client_id
   client_secret                     = var.azure_client_secret
@@ -149,10 +167,10 @@ source "azure-arm" "base" {
   shared_image_gallery_destination {
     subscription        = var.azure_subscription_id
     resource_group      = local.azure_resource_group
-    gallery_name        = "prod_packer_images"
+    gallery_name        = "${var.build_type}_packer_images"
     image_name          = local.image_name
     image_version       = var.image_version
-    replication_regions = ["East US", "East US 2"]
+    replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
   }
 }
 

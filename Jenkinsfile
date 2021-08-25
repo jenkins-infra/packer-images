@@ -77,12 +77,48 @@ pipeline {
           PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
           PKR_VAR_azure_client_id       = credentials('packer-azure-client-id')
           PKR_VAR_azure_client_secret   = credentials('packer-azure-client-secret')
-          AWS_ACCESS_KEY_ID       = credentials('packer-aws-access-key-id')
-          AWS_SECRET_ACCESS_KEY   = credentials('packer-aws-secret-access-key')
-          PACKER_HOME_DIR         = "/tmp/packer.d.${PKR_VAR_image_type}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
-          PACKER_PLUGIN_PATH      = "${PACKER_HOME_DIR}/plugins"
+          AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
+          AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
+          PACKER_HOME_DIR               = "/tmp/packer.d.${PKR_VAR_image_type}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
+          PACKER_PLUGIN_PATH            = "${PACKER_HOME_DIR}/plugins"
+          PACKER_VARS_FILE              = ".auto.pkrvars.hcl"
         }
         stages {
+          stage('Prepare') {
+            stages {
+              stage('Prepare on Branch Main') {
+                when {
+                  branch 'main'
+                }
+                steps {
+                  sh '''
+                  echo 'build_type = "staging"' >> "${PACKER_VARS_FILE}"
+                  '''
+                }
+              }
+              stage('Prepare on Tag') {
+                when {
+                  buildingTag()
+                }
+                steps {
+                  sh '''
+                  set -eu
+                  echo 'build_type = "prod"' >> "${PACKER_VARS_FILE}"
+                  echo 'image_name = "'${TAG_NAME}'"' >> "${PACKER_VARS_FILE}"
+                  '''
+                }
+              }
+              stage('Prepare and Report') {
+                steps {
+                  sh '''
+                  echo 'scm_ref = "'"$(git rev-parse --short --verify HEAD)"'"' >> "${PACKER_VARS_FILE}"
+                  packer fmt -recursive .
+                  ./run-packer.sh report
+                  '''
+                }
+              }
+            }
+          }
           stage('Validate') {
             steps {
               sh './run-packer.sh validate'

@@ -1,36 +1,51 @@
 #!/bin/bash
 # run-packer: execute the packer action passed as argument
-# Requirements:
-#  - the variables PKR_VAR_image_type, PKR_VAR_agent and PKR_VAR_architecture are defined
-#  - The cloud defined on PKR_VAR_image_type must be configured through its standard environment variables or CLI default setting
 # This script could be replaced by a Makefile
 # But make is not installed in the Docker image hashicorp/packer
 
 set -eu -o pipefail
 
-: "${PKR_VAR_image_type:?Variable PKR_VAR_image_type not defined.}"
-: "${PKR_VAR_agent:?Variable PKR_VAR_agent not defined.}"
-: "${PKR_VAR_architecture:?Variable PKR_VAR_architecture not defined.}"
 : "${1:?First argument - packer action to execute- not defined.}"
 
 packer_template_dir="./"
 
-PKR_VAR_image_version="$(jx-release-version -next-version semantic)"
-export PKR_VAR_image_version
+export PKR_VAR_scm_ref PKR_VAR_image_type PKR_VAR_agent
+
 
 ## Always run initialization to ensure plugins are download and workspace is set up
 packer init "${packer_template_dir}"
 
+## Define Packer flags based on the current environment (look at the `Jenkinsfile` to diagnose the pipeline)
+PACKER_COMMON_FLAGS=("${packer_template_dir}")
+set +u
+if test -n "${PKR_VAR_image_type}" && test -n "${PKR_VAR_agent}"
+then
+  PACKER_COMMON_FLAGS=("--only=${PKR_VAR_image_type}.${PKR_VAR_agent}" "${PACKER_COMMON_FLAGS[@]}")
+fi
+set -u
+
+echo "== Running action $1 with packer: =="
 case $1 in
   validate)
-    packer validate --only="${PKR_VAR_image_type}.${PKR_VAR_agent}" "${packer_template_dir}"
+    packer validate "${PACKER_COMMON_FLAGS[@]}"
     echo "Validation Success."
     ;;
   build)
-    packer build --only="${PKR_VAR_image_type}.${PKR_VAR_agent}" -timestamp-ui --force "${packer_template_dir}"
+    packer build -timestamp-ui --force "${PACKER_COMMON_FLAGS[@]}"
     echo "Build Success."
+    ;;
+  report)
+    echo "= Current Packer environment:"
+    env | grep -i PKR_VAR
+    env | grep -i PACKER
+    PACKER_VARS_FILE=.auto.pkrvars.hcl
+    echo "= Current Packer var file ${PACKER_VARS_FILE} =="
+    cat "${PACKER_VARS_FILE}"
     ;;
   *)
     echo "Error: Packer action '$1' is unknown."
     ;;
 esac
+echo "===================================="
+
+exit 0
