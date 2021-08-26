@@ -125,9 +125,6 @@ pipeline {
             }
           }
           stage('Build') {
-            when {
-              branch 'main'
-            }
             steps {
               sh './run-packer.sh build'
             }
