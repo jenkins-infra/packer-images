@@ -7,28 +7,9 @@ if (env.BRANCH_NAME == 'main') {
 }
 
 pipeline {
-  agent {
-    kubernetes {
-      defaultContainer 'packer'
-      yamlFile 'CiPodTemplate.yaml'
-    }
-  }
+  agent none
   stages {
-    stage('Prepare') {
-      steps {
-        // Must be on the same agent as the packer steps
-        // TODO: replace me by a custom docker image
-        sh '''
-        apk add --no-cache curl git
-        latest_release_url="$(curl  --write-out "%{redirect_url}" --output /dev/null --silent https://github.com/jenkins-x-plugins/jx-release-version/releases/latest | sed 's#/tag/#/download/#g')"
-        curl --silent --location --show-error "${latest_release_url}/jx-release-version-linux-amd64.tar.gz" \
-          | tar -C /usr/local/bin -x -z -f -
-        jx-release-version --version
-        git fetch --tags # TODO: configure job to fetch tags automatically (migrate to infra.ci?)
-        '''
-      }
-    }
-    stage('ValidateAndBuild') {
+    stage('Packer Images') {
       matrix {
         axes {
           axis {
@@ -73,6 +54,12 @@ pipeline {
             }
           }
         }
+        agent {
+          kubernetes {
+            defaultContainer 'packer'
+            yamlFile 'CiPodTemplate.yaml'
+          }
+        }
         environment {
           PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
           PKR_VAR_azure_client_id       = credentials('packer-azure-client-id')
@@ -84,39 +71,44 @@ pipeline {
           PACKER_VARS_FILE              = ".auto.pkrvars.hcl"
         }
         stages {
-          stage('Prepare') {
-            stages {
-              stage('Prepare on Branch Main') {
-                when {
-                  branch 'main'
-                }
-                steps {
-                  sh '''
-                  echo 'build_type = "staging"' >> "${PACKER_VARS_FILE}"
-                  '''
-                }
-              }
-              stage('Prepare on Tag') {
-                when {
-                  buildingTag()
-                }
-                steps {
-                  sh '''
-                  set -eu
-                  echo 'build_type = "prod"' >> "${PACKER_VARS_FILE}"
-                  echo 'image_name = "'${TAG_NAME}'"' >> "${PACKER_VARS_FILE}"
-                  '''
-                }
-              }
-              stage('Prepare and Report') {
-                steps {
-                  sh '''
-                  echo 'scm_ref = "'"$(git rev-parse --short --verify HEAD)"'"' >> "${PACKER_VARS_FILE}"
-                  packer fmt -recursive .
-                  ./run-packer.sh report
-                  '''
-                }
-              }
+          stage('Prepare on Branch Main') {
+            when {
+              branch 'main'
+            }
+            steps {
+              sh '''
+              echo 'build_type = "staging"' >> "${PACKER_VARS_FILE}"
+              '''
+            }
+          }
+          stage('Prepare on Tag') {
+            when {
+              buildingTag()
+            }
+            steps {
+              sh '''
+              set -eu
+              echo 'build_type = "prod"' >> "${PACKER_VARS_FILE}"
+              echo 'image_name = "'${TAG_NAME}'"' >> "${PACKER_VARS_FILE}"
+              '''
+            }
+          }
+          stage('Prepare and Report') {
+            steps {
+              sh '''
+              ## TODO: configure job to fetch tags automatically (migrate to infra.ci?)
+              git fetch --tags
+              ######
+              echo 'scm_ref = "'"$(git rev-parse --short --verify HEAD)"'"' >> "${PACKER_VARS_FILE}"
+              packer fmt -recursive .
+              ./run-packer.sh report
+              ## TODO: create a docker-packer image with these tools within, instead of the bare hashicorp/packer image
+              apk add --no-cache curl git
+              latest_release_url="$(curl  --write-out "%{redirect_url}" --output /dev/null --silent https://github.com/jenkins-x-plugins/jx-release-version/releases/latest | sed 's#/tag/#/download/#g')"
+              curl --silent --location --show-error "${latest_release_url}/jx-release-version-linux-amd64.tar.gz" | tar -C /usr/local/bin -x -z -f -
+              jx-release-version --version
+              ######
+              '''
             }
           }
           stage('Validate') {
@@ -135,6 +127,12 @@ pipeline {
     stage('Garbage Collection of Cloud Resources') {
       parallel {
         stage('Cleanup AWS us-east-2') {
+          agent {
+            kubernetes {
+              defaultContainer 'aws'
+              yamlFile 'CiPodTemplate.yaml'
+            }
+          }
           environment {
             AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
             AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
@@ -142,9 +140,7 @@ pipeline {
             DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
           }
           steps {
-            container('aws') {
-              sh './cleanup/aws.sh'
-            }
+            sh './cleanup/aws.sh'
           }
         }
       }
