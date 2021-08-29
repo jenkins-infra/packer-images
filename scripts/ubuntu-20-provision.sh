@@ -10,6 +10,17 @@ echo "ARCHITECTURE=${ARCHITECTURE}"
 echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
 echo "MAVEN_VERSION=${MAVEN_VERSION}"
 export DEBIAN_FRONTEND=noninteractive
+ubuntu_codename="$(cat /etc/os-release | grep UBUNTU_CODENAME | cut -d = -f 2)"
+
+## Check for presence of requirements or fail fast
+for cli in add-apt-repository apt-get apt-cache awk curl grep groupadd head tar uname useradd
+do
+  if ! command -v $cli >/dev/null 2>&1
+  then
+    echo "ERROR: command line ${cli} required but not found. Exiting."
+    exit 1
+  fi
+done
 
 ## This function installs the package provided as arg. $1
 # with the latest version specified as arg. $2.
@@ -32,11 +43,11 @@ chmod a+x /usr/local/bin/add_auth_key_to_user.sh
 
 ## Disable and Remove Unattended APT Upgrades
 echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
-apt purge -y unattended-upgrades || true # Do not fail if the package does not exist
+apt-get purge -y unattended-upgrades || true # Do not fail if the package does not exist
 
 ## Remove unused packages
-apt purge -y snap lxd || true # Do not fail if the package does not exist
-apt autoremove --purge -y
+apt-get purge -y snap lxd || true # Do not fail if the package does not exist
+apt-get autoremove --purge -y
 
 ## Ensure the machine is up-to-date
 apt-get update
@@ -51,7 +62,7 @@ apt-get install -y --no-install-recommends \
   software-properties-common
 
 curl --fail --silent --location --show-error https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=${ARCHITECTURE}] https://download.docker.com/linux/ubuntu focal stable"
+add-apt-repository "deb [arch=${ARCHITECTURE}] https://download.docker.com/linux/ubuntu ${ubuntu_codename} stable"
 apt-get update
 apt-get install -y --no-install-recommends docker-ce
 
