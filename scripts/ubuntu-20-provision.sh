@@ -94,9 +94,27 @@ tar xzvf "/tmp/${git_lfs_archive}" -C /tmp/git-lfs
 bash -x /tmp/git-lfs/install.sh # Execute in debug mode in case something goes wrong
 rm -rf /tmp/git-lfs*
 
-## OpenJDKs
-install_package_version openjdk-11-jdk "${JDK11_VERSION}"
-install_package_version openjdk-8-jdk "${JDK8_VERSION}"
+## OpenJDKs: Adoptium - https://adoptium.net/installation.html
+# JDK8
+jdk8_short_version="$(echo "${JDK8_VERSION}" | sed 's/-//g')"
+cpu_arch_short="$(uname -m)"
+if test "${cpu_arch_short}" == "x86_64"
+then
+  # Damn :'(
+  cpu_arch_short="x64"
+fi
+curl -sSL -o /tmp/jdk8.tgz \
+  "https://github.com/adoptium/temurin8-binaries/releases/download/jdk${JDK8_VERSION}/OpenJDK8U-jdk_${cpu_arch_short}_linux_hotspot_${jdk8_short_version}.tar.gz"
+tar xzf /tmp/jdk8.tgz -C /opt
+# Priority (last argument) is set to the JDK major version: higher version will be the default used
+update-alternatives --install /usr/bin/java java /opt/jdk${JDK8_VERSION}/bin/java 8
+
+# JDK11
+jdk11_short_version="$(echo "${JDK11_VERSION}" | sed 's/+/_/g')"
+curl -sSL -o /tmp/jdk11.tgz \
+  "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${JDK11_VERSION}/OpenJDK11U-jdk_${cpu_arch_short}_linux_hotspot_${jdk11_short_version}.tar.gz"
+tar xzf /tmp/jdk11.tgz -C /opt
+update-alternatives --install /usr/bin/java java /opt/jdk-${JDK11_VERSION}/bin/java 11
 
 ## Ensure that docker-compose is installed (version from environment)
 curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \

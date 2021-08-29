@@ -74,7 +74,7 @@ New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 ## List of tools to use
 $downloads = [ordered]@{
     'jdk11' = @{
-        'url' = 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
+        'url' = 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
         'local' = "$baseDir\adoptOpenJDK11.zip";
         'expandTo' = $baseDir;
         'env' = @{
@@ -83,7 +83,7 @@ $downloads = [ordered]@{
         'path' = '{0}\jdk-{1}\bin' -f $baseDir,$env:JDK11_VERSION;
     };
     'jdk8' = @{
-        'url' = 'https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '')
+        'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '')
         'local' = "$baseDir\adoptOpenJDK8.zip";
         'expandTo' = $baseDir;
     };
