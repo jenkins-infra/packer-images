@@ -1,0 +1,50 @@
+---
+title: "Bump Git version"
+sources:
+  gitVersion:
+    # Version is retrieved from the GitHub source mirror: if there is a release, then you're sure that the artifacts are available
+    kind: githubRelease
+    name: Get the latest Git version
+    spec:
+      owner: "git"
+      repository: "git"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionFilter:
+        kind: semver
+  # Retrieve the line defining Git version from Packer Auto Vars. file (it's a trick to handle partial file update)
+  packerVarGitCurrentLine:
+    kind: file
+    name: Get the current Packer Default variable for Git version
+    spec:
+      file: .auto.pkrvars.hcl
+    transformers:
+      - find: 'git_version.*=.*"(.*?)"'
+  packerAutoVars:
+    kind: file
+    name: Get the complete packer auto vars. file content as a source
+    depends_on:
+      - gitVersion
+      - packerVarGitCurrentLine
+    spec:
+      file: .auto.pkrvars.hcl
+    transformers:
+      - replacer:
+          from: '{{ source "packerVarGitCurrentLine" }}'
+          to: 'git_version = "{{ source "gitVersion" }}"'
+targets:
+  updateGitVersion:
+    name: Update the Git version in the Packer default values
+    sourceID: packerAutoVars
+    kind: file
+    spec:
+      file: ".auto.pkrvars.hcl"
+    scm:
+      github:
+        user: "{{ .github.user }}"
+        email: "{{ .github.email }}"
+        owner: "{{ .github.owner }}"
+        repository: "{{ .github.repository }}"
+        token: "{{ requiredEnv .github.token }}"
+        username: "{{ .github.username }}"
+        branch: "{{ .github.branch }}"
