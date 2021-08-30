@@ -1,0 +1,52 @@
+---
+title: "Bump Maven version"
+sources:
+  mavenVersion:
+    # Version is retrieved from the GitHub source mirror: if there is a release, then you're sure that the artifacts are available
+    kind: githubRelease
+    name: Get the latest Maven version
+    spec:
+      owner: "apache"
+      repository: "maven"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionFilter:
+        kind: latest
+    transformers:
+      - trimPrefix: "maven-"
+  # Retrieve the line defining Maven version from Packer Auto Vars. file (it's a trick to handle partial file update)
+  packerVarMavenCurrentLine:
+    kind: file
+    name: Get the current Packer Default variable for Maven version
+    spec:
+      file: .auto.pkrvars.hcl
+    transformers:
+      - find: 'maven_version.*=.*"(.*?)"'
+  packerAutoVars:
+    kind: file
+    name: Get the complete packer auto vars. file content as a source
+    depends_on:
+      - mavenVersion
+      - packerVarMavenCurrentLine
+    spec:
+      file: .auto.pkrvars.hcl
+    transformers:
+      - replacer:
+          from: '{{ source "packerVarMavenCurrentLine" }}'
+          to: 'maven_version = "{{ source "mavenVersion" }}"'
+targets:
+  updateMavenVersion:
+    name: Update the Maven version in the Packer default values
+    sourceID: packerAutoVars
+    kind: file
+    spec:
+      file: ".auto.pkrvars.hcl"
+    scm:
+      github:
+        user: "{{ .github.user }}"
+        email: "{{ .github.email }}"
+        owner: "{{ .github.owner }}"
+        repository: "{{ .github.repository }}"
+        token: "{{ requiredEnv .github.token }}"
+        username: "{{ .github.username }}"
+        branch: "{{ .github.branch }}"
