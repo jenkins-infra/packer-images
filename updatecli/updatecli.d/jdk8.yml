@@ -1,0 +1,54 @@
+---
+title: "Bump JDK8 version"
+sources:
+  JDK8Version:
+    # Version is retrieved from the GitHub source mirror: if there is a release, then you're sure that the artifacts are available
+    kind: githubRelease
+    name: Get the latest Adoptium JDK8 version
+    spec:
+      owner: "adoptium"
+      repository: "temurin8-binaries"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionFilter:
+        kind: regex
+        # jdk8u302-b08 is OK, but jdk8u302-b08.1 is not
+        pattern: "^jdk8u(\\d*)-b(\\d*)$"
+    transformers:
+      - trimPrefix: "jdk"
+  # Retrieve the line defining JDK version from Packer Auto Vars. file (it's a trick to handle partial file update)
+  packerVarJDK8CurrentLine:
+    kind: file
+    name: Get the current Packer Default variable for JDK8 version
+    spec:
+      file: .auto.pkrvars.hcl
+    transformers:
+      - find: 'jdk8_version.*=.*"(.*?)"'
+  packerAutoVars:
+    kind: file
+    name: Get the complete packer auto vars. file content as a source
+    depends_on:
+      - JDK8Version
+      - packerVarJDK8CurrentLine
+    spec:
+      file: .auto.pkrvars.hcl
+    transformers:
+      - replacer:
+          from: '{{ source "packerVarJDK8CurrentLine" }}'
+          to: 'jdk8_version = "{{ source "JDK8Version" }}"'
+targets:
+  updateJDK8Version:
+    name: Update the JDK8 version in the Packer default values
+    sourceID: packerAutoVars
+    kind: file
+    spec:
+      file: ".auto.pkrvars.hcl"
+    scm:
+      github:
+        user: "{{ .github.user }}"
+        email: "{{ .github.email }}"
+        owner: "{{ .github.owner }}"
+        repository: "{{ .github.repository }}"
+        token: "{{ requiredEnv .github.token }}"
+        username: "{{ .github.username }}"
+        branch: "{{ .github.branch }}"
