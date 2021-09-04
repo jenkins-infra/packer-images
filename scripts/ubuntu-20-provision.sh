@@ -105,6 +105,10 @@ tar xzvf "/tmp/${git_lfs_archive}" -C /tmp/git-lfs
 bash -x /tmp/git-lfs/install.sh # Execute in debug mode in case something goes wrong
 rm -rf /tmp/git-lfs*
 
+## Install JDK needed component
+## Prevent Java null pointer exception due to missing fontconfig
+apt-get install -y --no-install-recommends fontconfig
+
 ## OpenJDKs: Adoptium - https://adoptium.net/installation.html
 # JDK8
 jdk8_short_version="$(echo "${JDK8_VERSION}" | sed 's/-//g')"
