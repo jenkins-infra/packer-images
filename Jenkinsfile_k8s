@@ -2,12 +2,17 @@
 if (env.BRANCH_NAME == 'main') {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
+    // Daily build is enough: only the tagged build would generate downstream PRs on jenkins-infra
     pipelineTriggers([cron('@daily')]),
   ])
 }
 
 pipeline {
   agent none
+  options {
+    // Average build time is ~40 min. 1 hour indicates that something is wrong and should fail
+    timeout(time: 1, unit: 'HOURS')
+  }
   stages {
     stage('Packer Images') {
       matrix {
@@ -96,9 +101,6 @@ pipeline {
           stage('Prepare and Report') {
             steps {
               sh '''
-              ## TODO: configure job to fetch tags automatically (migrate to infra.ci?)
-              git fetch --tags
-              ######
               echo 'scm_ref = "'"$(git rev-parse --short --verify HEAD)"'"' >> "${PACKER_VARS_FILE}"
               packer fmt -recursive .
               ./run-packer.sh report
