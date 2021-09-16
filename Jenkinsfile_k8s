@@ -14,6 +14,18 @@ pipeline {
     timeout(time: 1, unit: 'HOURS')
   }
   stages {
+    stage('UpdateCLI') {
+      steps {
+        script {
+          withCredentials([string(credentialsId: 'updatecli-github-token', variable: 'UPDATECLI_GITHUB_TOKEN')]) {
+            updatecli(action: 'diff')
+            if (env.BRANCH_NAME == 'main') {
+              updatecli(action: 'apply', cronTriggerExpression: '@daily')
+            }
+          }
+        }
+      }
+    }
     stage('Packer Images') {
       matrix {
         axes {
