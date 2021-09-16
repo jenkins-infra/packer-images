@@ -86,6 +86,8 @@ pipeline {
           PACKER_HOME_DIR               = "/tmp/packer.d.${PKR_VAR_image_type}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
           PACKER_PLUGIN_PATH            = "${PACKER_HOME_DIR}/plugins"
           PACKER_VARS_FILE              = ".auto.pkrvars.hcl"
+          // Reuse the updatecli Github token to ensure that packer init does not hit the rate limit
+          PACKER_GITHUB_API_TOKEN       = credentials('updatecli-github-token')
         }
         stages {
           stage('Prepare on Branch Main') {
