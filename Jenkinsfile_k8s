@@ -106,7 +106,7 @@ pipeline {
               sh '''
               set -eu
               echo 'build_type = "prod"' >> "${PACKER_VARS_FILE}"
-              echo 'image_name = "'${TAG_NAME}'"' >> "${PACKER_VARS_FILE}"
+              echo 'image_version = "'${TAG_NAME}'"' >> "${PACKER_VARS_FILE}"
               '''
             }
           }
