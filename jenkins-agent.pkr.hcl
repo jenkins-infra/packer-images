@@ -185,7 +185,7 @@ build {
     image_publisher = "canonical"
     image_sku       = "20_04-lts-gen2"
     os_type         = "Linux"
-    vm_size         = "Standard_DS3_v2" # Huge size requires - avoid https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
+    vm_size         = "Standard_DS4_v2" # Huge size requires - avoid https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
   }
 
   provisioner "file" {
