@@ -10,8 +10,8 @@ if (env.BRANCH_NAME == 'main') {
 pipeline {
   agent none
   options {
-    // Average build time is ~40 min. 2 hours timeout indicates that something is wrong and should fail
-    timeout(time: 2, unit: 'HOURS')
+    // Average build time is ~30 min. 1 hour timeout indicates that something is wrong and should fail
+    timeout(time: 1, unit: 'HOURS')
   }
   stages {
     stage('UpdateCLI') {
