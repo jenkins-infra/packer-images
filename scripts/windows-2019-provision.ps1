@@ -190,18 +190,8 @@ switch($env:CLOUD_TYPE) {
         C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\SendWindowsIsReady.ps1 -Schedule
     }
     'azure-arm' {
-        # Azure needs the image sysprep'd manually, AWS is done using AWS scripts from the json
-        & $env:SystemRoot\System32\Sysprep\Sysprep.exe /oobe /generalize /quiet /quit
-        while($true) {
-            $imageState = Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\State' | Select-Object ImageState
-            if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') {
-                Write-Output $imageState.ImageState
-                Start-Sleep -s 5
-            } else {
-                break
-            }
-        }
-        Break
+        # Azure needs the image sysprep'd manually
+        & $env:SystemRoot\System32\Sysprep\Sysprep.exe /oobe /generalize /quiet /shutdown
     }
 }
 
