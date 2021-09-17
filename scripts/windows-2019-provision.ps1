@@ -164,37 +164,6 @@ foreach($k in $downloads.Keys) {
     }
 }
 
-## Set Cloud-specific tasks
-switch($env:CLOUD_TYPE) {
-    'amazon-ebs' {
-        ## Prepare AWS EC2 Launcher (cleanup, run on each VM boot, etc.)
-        Write-Output "Previous EC2Launch Config"
-        Write-Host "Previous EC2Launch Config"
-        type C:\ProgramData\Amazon\EC2-Windows\Launch\Config\LaunchConfig.json
-
-        $EC2LaunchConfig = @"
-{
-    "setComputerName": false,
-    "setMonitorAlwaysOn": true,
-    "setWallpaper": false,
-    "addDnsSuffixList": true,
-    "extendBootVolumeSize": false,
-    "handleUserData": true,
-    "adminPasswordType": "Random""
-}
-"@
-        echo "$EC2LaunchConfig" | Out-File C:\ProgramData\Amazon\EC2-Windows\Launch\Config\LaunchConfig.json
-
-        # Ref. https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html#user-data-scripts-subsequent
-        C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\InitializeInstance.ps1 -SchedulePerBoot
-        C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\SendWindowsIsReady.ps1 -Schedule
-    }
-    'azure-arm' {
-        # Azure needs the image sysprep'd manually
-        & $env:SystemRoot\System32\Sysprep\Sysprep.exe /oobe /generalize /quiet /shutdown
-    }
-}
-
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
 DownloadFile "$env:OPENSSH_AUTHORIZED_KEYS_URL" "$temp_authorized_keys_file"

@@ -272,6 +272,41 @@ build {
     script            = "./scripts/windows-2019-provision.ps1"
   }
 
+  # Recommended (and sometimes required) before running deprovisioning (sysprep or AWS scripts)
+  # ref. https://www.packer.io/docs/builders/azure/arm#windows
+  provisioner "windows-restart" { pause_before = "1m" }
+  provisioner "powershell" {
+    only              = ["azure-arm.windows-2019"]
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+    inline = [
+      " # NOTE: the following *3* lines are only needed if the you have installed the Guest Agent.",
+      "  while ((Get-Service RdAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
+      "  while ((Get-Service WindowsAzureTelemetryService).Status -ne 'Running') { Start-Sleep -s 5 }",
+      "  while ((Get-Service WindowsAzureGuestAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
+
+      "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit /mode:vm",
+      "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
+    ]
+  }
+  provisioner "file" {
+    only        = ["amazon-ebs.windows-2019"]
+    source      = "./scripts/EC2-LaunchConfig.json"
+    destination = "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Config\\LaunchConfig.json"
+  }
+  provisioner "powershell" {
+    only              = ["amazon-ebs.windows-2019"]
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+    # Ref. https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html#user-data-scripts-subsequent
+    inline = [
+      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SendWindowsIsReady.ps1 -Schedule",
+      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -Schedule",
+      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"
+    ]
+  }
+
+
   post-processor "manifest" {
     output     = "manifest.json"
     strip_path = true
