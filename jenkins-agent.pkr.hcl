@@ -244,17 +244,16 @@ build {
     async_resourcegroup_delete = true # Faster builds, but no deletion error reporting
   }
 
-  provisioner "windows-update" {
-    max_retries = 3 # Fight against flaky Windows Updates
-  }
-
-  provisioner "windows-restart" {
-    max_retries = 3 # Fight against flaky Windows Updates
-  }
+  ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
+  # Note that restarts are only done when required by windows updates
+  provisioner "windows-update" { pause_before = "1m" }
+  provisioner "windows-update" { pause_before = "1m" }
+  provisioner "windows-update" { pause_before = "1m" }
 
   provisioner "file" {
-    source      = "./scripts/addSSHPubKey.ps1"
-    destination = "C:/"
+    pause_before = "1m"
+    source       = "./scripts/addSSHPubKey.ps1"
+    destination  = "C:/"
   }
 
   provisioner "powershell" {
