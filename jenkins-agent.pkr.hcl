@@ -274,7 +274,10 @@ build {
 
   # Recommended (and sometimes required) before running deprovisioning (sysprep or AWS scripts)
   # ref. https://www.packer.io/docs/builders/azure/arm#windows
-  provisioner "windows-restart" { pause_before = "1m" }
+  provisioner "windows-restart" {
+    pause_before    = "1m"
+    restart_timeout = "15m"
+  }
   provisioner "powershell" {
     only              = ["azure-arm.windows-2019"]
     elevated_user     = local.windows_winrm_user[var.image_type]
