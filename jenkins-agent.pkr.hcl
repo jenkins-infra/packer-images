@@ -37,6 +37,10 @@ variable "git_version" {
 variable "jdk11_version" {
   type = string
 }
+
+variable "jdk17_version" {
+  type = string
+}
 variable "jdk8_version" {
   type = string
 }
@@ -199,6 +203,7 @@ build {
       "MAVEN_VERSION=${var.maven_version}",
       "GIT_VERSION=${var.git_version}",
       "JDK11_VERSION=${var.jdk11_version}",
+      "JDK17_VERSION=${var.jdk17_version}",
       "JDK8_VERSION=${var.jdk8_version}",
       "GIT_LFS_VERSION=${var.git_lfs_version}",
       "COMPOSE_VERSION=${var.compose_version}",
