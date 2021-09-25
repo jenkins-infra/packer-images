@@ -202,9 +202,9 @@ build {
     environment_vars = [
       "MAVEN_VERSION=${var.maven_version}",
       "GIT_VERSION=${var.git_version}",
+      "JDK8_VERSION=${var.jdk8_version}",
       "JDK11_VERSION=${var.jdk11_version}",
       "JDK17_VERSION=${var.jdk17_version}",
-      "JDK8_VERSION=${var.jdk8_version}",
       "GIT_LFS_VERSION=${var.git_lfs_version}",
       "COMPOSE_VERSION=${var.compose_version}",
       "ARCHITECTURE=${var.architecture}",
@@ -265,8 +265,9 @@ build {
     environment_vars = [
       "MAVEN_VERSION=${var.maven_version}",
       "GIT_VERSION=${var.git_version}",
-      "JDK11_VERSION=${var.jdk11_version}",
       "JDK8_VERSION=${var.jdk8_version}",
+      "JDK11_VERSION=${var.jdk11_version}",
+      "JDK17_VERSION=${var.jdk17_version}",
       "GIT_LFS_VERSION=${var.git_lfs_version}",
       "COMPOSE_VERSION=${var.compose_version}",
       "CLOUD_TYPE=${var.image_type}",
