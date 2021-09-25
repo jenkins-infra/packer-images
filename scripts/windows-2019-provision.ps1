@@ -87,10 +87,6 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-{0}/OpenJDK17-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK17_VERSION),$env:JDK17_VERSION.Replace('+', '_');
         'local' = "$baseDir\temurin17.zip";
         'expandTo' = $baseDir;
-        'env' = @{
-            'JAVA_HOME' = '{0}\jdk-{1}' -f $baseDir,$env:JDK17_VERSION;
-        };
-        'path' = '{0}\jdk-{1}\bin' -f $baseDir,$env:JDK17_VERSION;
     };
     'jdk8' = @{
         'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '')
