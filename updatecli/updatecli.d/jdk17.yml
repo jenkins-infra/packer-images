@@ -12,8 +12,8 @@ sources:
       username: "{{ .github.username }}"
       versionFilter:
         kind: regex
-        # jdk-17.0.12+7(https://github.com/adoptium/temurin17-binaries/releases/tag/jdk-17.0.12%2B7) is OK
-        pattern: "^jdk-17+(\\d*)$"
+        # jdk-17+35(https://github.com/adoptium/temurin17-binaries/releases/tag/jdk-17%2B35) is OK
+        pattern: "^jdk-17\\+(\\d*)$"
     transformers:
       - trimPrefix: "jdk-"
   # Retrieve the line defining JDK version from Packer Auto Vars. file (it's a trick to handle partial file update)
