@@ -131,6 +131,13 @@ curl -sSL -o /tmp/jdk11.tgz \
 tar xzf /tmp/jdk11.tgz -C /opt
 update-alternatives --install /usr/bin/java java /opt/jdk-${JDK11_VERSION}/bin/java 11
 
+# JDK17
+jdk17_short_version="$(echo "${JDK17_VERSION}" | sed 's/+/_/g')"
+curl -sSL -o /tmp/jdk17.tgz \
+  "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
+tar xzf /tmp/jdk17.tgz -C /opt
+update-alternatives --install /usr/bin/java java /opt/jdk-${JDK17_VERSION}/bin/java 17
+
 ## Ensure that docker-compose is installed (version from environment)
 curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
   "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-Linux-x86_64"
