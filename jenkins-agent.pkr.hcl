@@ -101,6 +101,7 @@ locals {
     "staging_packer_images" = ["East US", "East US 2"] # Only the "main" branch, should map the production as much as possible
     "dev_packer_images"     = ["East US"]              # Faster builds for branches, pull requests or local development
   }
+  os_disk_size_gb = 90 # less than 100 Gb to allow more instance sizes that have a temp cache < 100 Gb such as DS4_v3
 }
 
 data "amazon-ami" "ubuntu-20" {
@@ -132,7 +133,7 @@ source "amazon-ebs" "base" {
   launch_block_device_mappings {
     delete_on_termination = true
     device_name           = "/dev/sda1"
-    volume_size           = 100
+    volume_size           = local.os_disk_size_gb
     volume_type           = "gp2"
   }
   # Where to build the VM
@@ -241,7 +242,7 @@ build {
     image_sku                  = "2019-Datacenter-Core-with-Containers-g2"
     vm_size                    = local.azure_vm_size
     os_type                    = "Windows"
-    os_disk_size_gb            = 130
+    os_disk_size_gb            = local.os_disk_size_gb
     winrm_insecure             = true
     winrm_timeout              = "20m"
     winrm_use_ssl              = true
