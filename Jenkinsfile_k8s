@@ -14,14 +14,35 @@ pipeline {
     timeout(time: 1, unit: 'HOURS')
   }
   stages {
-    stage('UpdateCLI') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            withCredentials([string(credentialsId: 'updatecli-github-token', variable: 'UPDATECLI_GITHUB_TOKEN')]) {
-              updatecli(action: 'diff')
-              if (env.BRANCH_NAME == 'main') {
-                updatecli(action: 'apply', cronTriggerExpression: '@daily')
+    stage('Side Tasks') {
+      parallel {
+        stage('GC on AWS us-east-2') {
+          agent {
+            kubernetes {
+              defaultContainer 'aws'
+              yamlFile 'CiPodTemplate.yaml'
+            }
+          }
+          environment {
+            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+            AWS_REGION            = 'us-east-2'
+            DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
+          }
+          steps {
+            sh './cleanup/aws.sh'
+          }
+        }
+        stage('Updatecli') {
+          steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              script {
+                withCredentials([string(credentialsId: 'updatecli-github-token', variable: 'UPDATECLI_GITHUB_TOKEN')]) {
+                  updatecli(action: 'diff')
+                  if (env.BRANCH_NAME == 'main') {
+                    updatecli(action: 'apply', cronTriggerExpression: '@daily')
+                  }
+                }
               }
             }
           }
@@ -138,27 +159,6 @@ pipeline {
             steps {
               sh './run-packer.sh build'
             }
-          }
-        }
-      }
-    }
-    stage('Garbage Collection of Cloud Resources') {
-      parallel {
-        stage('Cleanup AWS us-east-2') {
-          agent {
-            kubernetes {
-              defaultContainer 'aws'
-              yamlFile 'CiPodTemplate.yaml'
-            }
-          }
-          environment {
-            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
-            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
-            AWS_REGION            = 'us-east-2'
-            DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
-          }
-          steps {
-            sh './cleanup/aws.sh'
           }
         }
       }
