@@ -76,22 +76,31 @@ New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 $downloads = [ordered]@{
     'jdk11' = @{
         'url' = 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
-        'local' = "$baseDir\adoptOpenJDK11.zip";
+        'local' = "$baseDir\temurin11.zip";
         'expandTo' = $baseDir;
         'env' = @{
-            'JAVA_HOME' = '{0}\jdk-{1}' -f $baseDir,$env:JDK11_VERSION;
+            'JAVA_HOME' = '{0}\jdk-11' -f $baseDir;
         };
-        'path' = '{0}\jdk-{1}\bin' -f $baseDir,$env:JDK11_VERSION;
+        'path' = '{0}\jdk-11\bin' -f $baseDir;
+        'postexpand' = {
+            & Move-Item -Path "$baseDir\jdk-11*" -Destination "$baseDir\jdk-11"
+        };
     };
     'jdk17' = @{
         'url' = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-{0}/OpenJDK17-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK17_VERSION),$env:JDK17_VERSION.Replace('+', '_');
         'local' = "$baseDir\temurin17.zip";
         'expandTo' = $baseDir;
+        'postexpand' = {
+            & Move-Item -Path "$baseDir\jdk-17*" -Destination "$baseDir\jdk-17"
+        };
     };
     'jdk8' = @{
         'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '')
-        'local' = "$baseDir\adoptOpenJDK8.zip";
+        'local' = "$baseDir\temurin8.zip";
         'expandTo' = $baseDir;
+        'postexpand' = {
+            & Move-Item -Path "$baseDir\jdk8*" -Destination "$baseDir\jdk-8"
+        };
     };
     'maven' = @{
         'url' = 'https://apache.osuosl.org/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
