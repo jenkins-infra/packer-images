@@ -11,6 +11,7 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionFilter:
+        pattern: ~2
         kind: semver
   # Retrieve the line defining Git-LFS version from Packer Auto Vars. file (it's a trick to handle partial file update)
   packerVarGitLfsCurrentLine:
