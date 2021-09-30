@@ -239,7 +239,7 @@ build {
     communicator               = "winrm"
     image_offer                = "WindowsServer"
     image_publisher            = "MicrosoftWindowsServer"
-    image_sku                  = "2019-Datacenter-Core-with-Containers-g2"
+    image_sku                  = "2019-datacenter-core-with-containers-smalldisk-g2"
     vm_size                    = local.azure_vm_size
     os_type                    = "Windows"
     os_disk_size_gb            = local.os_disk_size_gb
