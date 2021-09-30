@@ -30,7 +30,9 @@ pipeline {
             DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
           }
           steps {
-            sh './cleanup/aws.sh'
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              sh './cleanup/aws.sh'
+            }
           }
         }
         stage('Updatecli') {
