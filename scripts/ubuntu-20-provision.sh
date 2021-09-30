@@ -110,6 +110,8 @@ rm -rf /tmp/git-lfs*
 apt-get install -y --no-install-recommends fontconfig
 
 ## OpenJDKs: Adoptium - https://adoptium.net/installation.html
+mkdir -p /opt/jdk-8 /opt/jdk-11 /opt/jdk-17
+
 # JDK8
 jdk8_short_version="${JDK8_VERSION//-/}"
 cpu_arch_short="$(uname -m)"
@@ -120,23 +122,25 @@ then
 fi
 curl -sSL -o /tmp/jdk8.tgz \
   "https://github.com/adoptium/temurin8-binaries/releases/download/jdk${JDK8_VERSION}/OpenJDK8U-jdk_${cpu_arch_short}_linux_hotspot_${jdk8_short_version}.tar.gz"
-tar xzf /tmp/jdk8.tgz -C /opt
-# Priority (last argument) is set to the JDK major version: higher version will be the default used
-update-alternatives --install /usr/bin/java java "/opt/jdk${JDK8_VERSION}/bin/java" 8
+tar xzf /tmp/jdk8.tgz --strip-components=1 -C /opt/jdk-8
 
 # JDK11
 jdk11_short_version="${JDK11_VERSION//+/_}"
 curl -sSL -o /tmp/jdk11.tgz \
   "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${JDK11_VERSION}/OpenJDK11U-jdk_${cpu_arch_short}_linux_hotspot_${jdk11_short_version}.tar.gz"
-tar xzf /tmp/jdk11.tgz -C /opt
-update-alternatives --install /usr/bin/java java "/opt/jdk-${JDK11_VERSION}/bin/java" 11
+tar xzf /tmp/jdk11.tgz --strip-components=1 -C /opt/jdk-11
 
 # JDK17
 jdk17_short_version="${JDK17_VERSION//+/_}"
 curl -sSL -o /tmp/jdk17.tgz \
   "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
-tar xzf /tmp/jdk17.tgz -C /opt
-update-alternatives --install /usr/bin/java java "/opt/jdk-${JDK17_VERSION}/bin/java" 17
+tar xzf /tmp/jdk17.tgz --strip-components=1 -C /opt/jdk-17
+
+# Define JDK installations
+# Priority (last argument) is set to the JDK major version: higher version will be the default used
+update-alternatives --install /usr/bin/java java /opt/jdk-8/bin/java 8
+update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 11
+update-alternatives --install /usr/bin/java java /opt/jdk-17/bin/java 17
 
 ## Ensure that docker-compose is installed (version from environment)
 curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
