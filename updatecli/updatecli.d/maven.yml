@@ -34,12 +34,13 @@ sources:
           from: '{{ source "packerVarMavenCurrentLine" }}'
           to: 'maven_version = "{{ source "mavenVersion" }}"'
 
-conditions:
-  checkIfMavenReleaseIsAvailable:
-    kind: shell
-    sourceID: mavenVersion
-    spec:
-      command: bash ./updatecli/scripts/check-maven.sh
+### curl is not available in the Docker image we are using
+# conditions:
+#   checkIfMavenReleaseIsAvailable:
+#     kind: shell
+#     sourceID: mavenVersion
+#     spec:
+#       command: bash ./updatecli/scripts/check-maven.sh
 
 targets:
   updateMavenVersion:
