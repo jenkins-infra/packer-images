@@ -1,6 +1,6 @@
 maven_version = "3.8.3"
 git_version = "2.33.1"
-jdk11_version = "11.0.12+7"
+jdk11_version = "11.0.13+8"
 jdk17_version = "17+35"
 jdk8_version = "8u302-b08"
 git_lfs_version = "3.0.1"
