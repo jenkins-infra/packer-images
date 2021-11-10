@@ -78,10 +78,6 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
         'local' = "$baseDir\temurin11.zip";
         'expandTo' = $baseDir;
-        'env' = @{
-            'JAVA_HOME' = '{0}\jdk-11' -f $baseDir;
-        };
-        'path' = '{0}\jdk-11\bin' -f $baseDir;
         'postexpand' = {
             & Move-Item -Path "$baseDir\jdk-11*" -Destination "$baseDir\jdk-11"
         };
@@ -177,6 +173,16 @@ foreach($k in $downloads.Keys) {
         Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
     }
 }
+
+## Sets the default JDK
+$defaultJavaHome = '{0}\jdk-{1}' -f $baseDir,$env:DEFAULT_JDK
+$defaultJavaBinPath = '{0}\bin' -f $defaultJavaHome
+# Path
+$oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+$newPath = '{0};{1}' -f $defaultJavaBinPath,$oldPath
+Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
+# env JAVA_HOME
+New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name 'JAVA_HOME' -Value $defaultJavaHome | Out-Null
 
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'

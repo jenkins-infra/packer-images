@@ -137,10 +137,14 @@ curl -sSL -o /tmp/jdk17.tgz \
 tar xzf /tmp/jdk17.tgz --strip-components=1 -C /opt/jdk-17
 
 # Define JDK installations
-# Priority (last argument) is set to the JDK major version: higher version will be the default used
+# The priority of a JDK is the last argument.
+# Starts by setting priority to the JDK major version: higher version is the expected default
 update-alternatives --install /usr/bin/java java /opt/jdk-8/bin/java 8
 update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 11
 update-alternatives --install /usr/bin/java java /opt/jdk-17/bin/java 17
+# Then, use the DEFAULT_JDK env var to set the priority of the specified default JDK to 1000 to ensure its the one used by update-alternatives
+update-alternatives --install /usr/bin/java java "/opt/jdk-${DEFAULT_JDK}/bin/java" 1000
+echo "JAVA_HOME=/opt/jdk-${DEFAULT_JDK}" >> /etc/environment
 
 ## Ensure that docker-compose is installed (version from environment)
 curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
