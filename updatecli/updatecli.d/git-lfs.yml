@@ -2,7 +2,6 @@
 title: "Bump Git-LFS version"
 sources:
   gitLfsVersion:
-    # Version is retrieved from the GitHub source mirror: if there is a release, then you're sure that the artifacts are available
     kind: githubRelease
     name: Get the latest Git-LFS version
     spec:
@@ -11,34 +10,16 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionFilter:
+        # Latest version which is semver "stable" (removes any 'v' prefix)
         kind: semver
-  # Retrieve the line defining Git-LFS version from Packer Auto Vars. file (it's a trick to handle partial file update)
-  packerVarGitLfsCurrentLine:
-    kind: file
-    name: Get the current Packer Default variable for Git-LFS version
-    spec:
-      file: .auto.pkrvars.hcl
-    transformers:
-      - find: 'git_lfs_version.*=.*"(.*?)"'
-  packerAutoVars:
-    kind: file
-    name: Get the complete packer auto vars. file content as a source
-    depends_on:
-      - gitLfsVersion
-      - packerVarGitLfsCurrentLine
-    spec:
-      file: .auto.pkrvars.hcl
-    transformers:
-      - replacer:
-          from: '{{ source "packerVarGitLfsCurrentLine" }}'
-          to: 'git_lfs_version = "{{ source "gitLfsVersion" }}"'
 targets:
   updateGitLfsVersion:
     name: Update the Git-LFS version in the Packer default values
-    sourceID: packerAutoVars
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
+      matchPattern: 'git_lfs_version(.*)=.*'
+      replacePattern: 'git_lfs_version$1= "{{ source `gitLfsVersion` }}"'
     scm:
       github:
         user: "{{ .github.user }}"

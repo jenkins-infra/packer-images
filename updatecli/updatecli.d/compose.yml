@@ -1,8 +1,7 @@
 ---
-title: "Bump DockerCompose version"
+title: "Bump Docker Compose version"
 sources:
   dockerComposeVersion:
-    # Version is retrieved from the GitHub source mirror: if there is a release, then you're sure that the artifacts are available
     kind: githubRelease
     name: Get the latest Docker Compose version
     spec:
@@ -13,33 +12,14 @@ sources:
       versionFilter:
         kind: semver
         pattern: "~1"
-  # Retrieve the line defining DockerCompose version from Packer Auto Vars. file (it's a trick to handle partial file update)
-  packerVarDockerComposeCurrentLine:
-    kind: file
-    name: Get the current Packer Default variable for DockerCompose version
-    spec:
-      file: .auto.pkrvars.hcl
-    transformers:
-      - find: 'compose_version.*=.*"(.*?)"'
-  packerAutoVars:
-    kind: file
-    name: Get the complete packer auto vars. file content as a source
-    depends_on:
-      - dockerComposeVersion
-      - packerVarDockerComposeCurrentLine
-    spec:
-      file: .auto.pkrvars.hcl
-    transformers:
-      - replacer:
-          from: '{{ source "packerVarDockerComposeCurrentLine" }}'
-          to: 'compose_version = "{{ source "dockerComposeVersion" }}"'
 targets:
   updateDockerComposeVersion:
     name: Update the DockerCompose version in the Packer default values
-    sourceID: packerAutoVars
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
+      matchPattern: 'compose_version(.*)=.*'
+      replacePattern: 'compose_version$1= "{{ source `dockerComposeVersion` }}"'
     scm:
       github:
         user: "{{ .github.user }}"
