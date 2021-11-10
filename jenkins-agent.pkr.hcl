@@ -37,7 +37,10 @@ variable "git_version" {
 variable "jdk11_version" {
   type = string
 }
-
+variable "default_jdk" {
+  description = "Major version of the default JDK to use"
+  type        = string
+}
 variable "jdk17_version" {
   type = string
 }
