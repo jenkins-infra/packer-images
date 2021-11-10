@@ -287,8 +287,7 @@ build {
   # Recommended (and sometimes required) before running deprovisioning (sysprep or AWS scripts)
   # ref. https://www.packer.io/docs/builders/azure/arm#windows
   provisioner "windows-restart" {
-    pause_before    = "1m"
-    restart_timeout = "15m"
+    max_retries = 3
   }
   provisioner "powershell" {
     only              = ["azure-arm.windows-2019"]
