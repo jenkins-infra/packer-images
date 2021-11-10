@@ -2,7 +2,6 @@
 title: "Bump JDK8 version"
 sources:
   JDK8Version:
-    # Version is retrieved from the GitHub source mirror: if there is a release, then you're sure that the artifacts are available
     kind: githubRelease
     name: Get the latest Adoptium JDK8 version
     spec:
@@ -16,33 +15,21 @@ sources:
         pattern: "^jdk8u(\\d*)-b(\\d*)$"
     transformers:
       - trimPrefix: "jdk"
-  # Retrieve the line defining JDK version from Packer Auto Vars. file (it's a trick to handle partial file update)
-  packerVarJDK8CurrentLine:
-    kind: file
-    name: Get the current Packer Default variable for JDK8 version
+
+conditions:
+  checkIfReleaseIsAvailable:
+    kind: shell
     spec:
-      file: .auto.pkrvars.hcl
-    transformers:
-      - find: 'jdk8_version.*=.*"(.*?)"'
-  packerAutoVars:
-    kind: file
-    name: Get the complete packer auto vars. file content as a source
-    depends_on:
-      - JDK8Version
-      - packerVarJDK8CurrentLine
-    spec:
-      file: .auto.pkrvars.hcl
-    transformers:
-      - replacer:
-          from: '{{ source "packerVarJDK8CurrentLine" }}'
-          to: 'jdk8_version = "{{ source "JDK8Version" }}"'
+      command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
+
 targets:
   updateJDK8Version:
     name: Update the JDK8 version in the Packer default values
-    sourceID: packerAutoVars
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
+      matchPattern: 'jdk8_version(.*)=.*'
+      replacePattern: 'jdk8_version$1= "{{ source `JDK8Version` }}"'
     scm:
       github:
         user: "{{ .github.user }}"

@@ -13,42 +13,22 @@ sources:
         kind: latest
     transformers:
       - trimPrefix: "maven-"
-  # Retrieve the line defining Maven version from Packer Auto Vars. file (it's a trick to handle partial file update)
-  packerVarMavenCurrentLine:
-    kind: file
-    name: Get the current Packer Default variable for Maven version
-    spec:
-      file: .auto.pkrvars.hcl
-    transformers:
-      - find: 'maven_version.*=.*"(.*?)"'
-  packerAutoVars:
-    kind: file
-    name: Get the complete packer auto vars. file content as a source
-    depends_on:
-      - mavenVersion
-      - packerVarMavenCurrentLine
-    spec:
-      file: .auto.pkrvars.hcl
-    transformers:
-      - replacer:
-          from: '{{ source "packerVarMavenCurrentLine" }}'
-          to: 'maven_version = "{{ source "mavenVersion" }}"'
 
-### curl is not available in the Docker image we are using
-# conditions:
-#   checkIfMavenReleaseIsAvailable:
-#     kind: shell
-#     sourceID: mavenVersion
-#     spec:
-#       command: bash ./updatecli/scripts/check-maven.sh
+conditions:
+  checkIfReleaseIsAvailable:
+    kind: shell
+    disablesourceinput: true
+    spec:
+      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `mavenVersion` }}/binaries/apache-maven-{{ source `mavenVersion` }}-bin.tar.gz
 
 targets:
   updateMavenVersion:
     name: Update the Maven version in the Packer default values
-    sourceID: packerAutoVars
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
+      matchPattern: 'maven_version(.*)=.*'
+      replacePattern: 'maven_version$1= "{{ source `mavenVersion` }}"'
     scm:
       github:
         user: "{{ .github.user }}"
