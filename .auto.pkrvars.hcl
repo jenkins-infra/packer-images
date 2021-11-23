@@ -1,4 +1,4 @@
-maven_version               = "3.8.3"
+maven_version               = "3.8.4"
 git_version                 = "2.34.0"
 jdk11_version               = "11.0.13+8"
 jdk17_version               = "17+35"
