@@ -1,5 +1,18 @@
 ---
 title: "Bump Docker Compose version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
 sources:
   dockerComposeVersion:
     kind: githubRelease
@@ -10,8 +23,11 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionFilter:
+        ## Semver removes any 'v' prefix and get the latest version following semantic
         kind: semver
+        ## Only check for 1.x.y versions
         pattern: "~1"
+
 targets:
   updateDockerComposeVersion:
     name: Update the DockerCompose version in the Packer default values
@@ -20,12 +36,14 @@ targets:
       file: ".auto.pkrvars.hcl"
       matchPattern: 'compose_version(.*)=.*'
       replacePattern: 'compose_version$1= "{{ source `dockerComposeVersion` }}"'
-    scm:
-      github:
-        user: "{{ .github.user }}"
-        email: "{{ .github.email }}"
-        owner: "{{ .github.owner }}"
-        repository: "{{ .github.repository }}"
-        token: "{{ requiredEnv .github.token }}"
-        username: "{{ .github.username }}"
-        branch: "{{ .github.branch }}"
+    scmID: default
+
+pullrequests:
+  default:
+    kind: github
+    scmID: default
+    targets:
+      - updateDockerComposeVersion
+    spec:
+      labels:
+        - dependencies

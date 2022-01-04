@@ -19,7 +19,6 @@ pipeline {
         stage('GC on AWS us-east-2') {
           agent {
             kubernetes {
-              defaultContainer 'aws'
               yamlFile 'CiPodTemplate.yaml'
             }
           }
@@ -98,7 +97,6 @@ pipeline {
         }
         agent {
           kubernetes {
-            defaultContainer 'packer'
             yamlFile 'CiPodTemplate.yaml'
           }
         }
