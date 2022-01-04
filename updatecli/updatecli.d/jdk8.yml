@@ -1,5 +1,18 @@
 ---
 title: "Bump JDK8 version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
 sources:
   JDK8Version:
     kind: githubRelease
@@ -30,12 +43,14 @@ targets:
       file: ".auto.pkrvars.hcl"
       matchPattern: 'jdk8_version(.*)=.*'
       replacePattern: 'jdk8_version$1= "{{ source `JDK8Version` }}"'
-    scm:
-      github:
-        user: "{{ .github.user }}"
-        email: "{{ .github.email }}"
-        owner: "{{ .github.owner }}"
-        repository: "{{ .github.repository }}"
-        token: "{{ requiredEnv .github.token }}"
-        username: "{{ .github.username }}"
-        branch: "{{ .github.branch }}"
+    scmID: default
+
+pullrequests:
+  default:
+    kind: github
+    scmID: default
+    targets:
+      - updateJDK8Version
+    spec:
+      labels:
+        - dependencies

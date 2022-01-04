@@ -1,5 +1,18 @@
 ---
 title: "Bump JDK17 version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
 sources:
   JDK17Version:
     kind: githubRelease
@@ -30,12 +43,14 @@ targets:
       file: ".auto.pkrvars.hcl"
       matchPattern: 'jdk17_version(.*)=.*'
       replacePattern: 'jdk17_version$1= "{{ source `JDK17Version` }}"'
-    scm:
-      github:
-        user: "{{ .github.user }}"
-        email: "{{ .github.email }}"
-        owner: "{{ .github.owner }}"
-        repository: "{{ .github.repository }}"
-        token: "{{ requiredEnv .github.token }}"
-        username: "{{ .github.username }}"
-        branch: "{{ .github.branch }}"
+    scmID: default
+
+pullrequests:
+  default:
+    kind: github
+    scmID: default
+    targets:
+      - updateJDK17Version
+    spec:
+      labels:
+        - dependencies

@@ -1,5 +1,18 @@
 ---
 title: "Bump Git-LFS version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
 sources:
   gitLfsVersion:
     kind: githubRelease
@@ -12,6 +25,7 @@ sources:
       versionFilter:
         # Latest version which is semver "stable" (removes any 'v' prefix)
         kind: semver
+
 targets:
   updateGitLfsVersion:
     name: Update the Git-LFS version in the Packer default values
@@ -20,12 +34,14 @@ targets:
       file: ".auto.pkrvars.hcl"
       matchPattern: 'git_lfs_version(.*)=.*'
       replacePattern: 'git_lfs_version$1= "{{ source `gitLfsVersion` }}"'
-    scm:
-      github:
-        user: "{{ .github.user }}"
-        email: "{{ .github.email }}"
-        owner: "{{ .github.owner }}"
-        repository: "{{ .github.repository }}"
-        token: "{{ requiredEnv .github.token }}"
-        username: "{{ .github.username }}"
-        branch: "{{ .github.branch }}"
+    scmID: default
+
+pullrequests:
+  default:
+    kind: github
+    scmID: default
+    targets:
+      - updateGitLfsVersion
+    spec:
+      labels:
+        - dependencies

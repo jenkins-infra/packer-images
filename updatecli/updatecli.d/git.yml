@@ -1,5 +1,18 @@
 ---
 title: "Bump Git version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
 sources:
   gitVersion:
     kind: githubRelease
@@ -21,12 +34,14 @@ targets:
       file: ".auto.pkrvars.hcl"
       matchPattern: 'git_version(.*)=.*'
       replacePattern: 'git_version$1= "{{ source `gitVersion` }}"'
-    scm:
-      github:
-        user: "{{ .github.user }}"
-        email: "{{ .github.email }}"
-        owner: "{{ .github.owner }}"
-        repository: "{{ .github.repository }}"
-        token: "{{ requiredEnv .github.token }}"
-        username: "{{ .github.username }}"
-        branch: "{{ .github.branch }}"
+    scmID: default
+
+pullrequests:
+  default:
+    kind: github
+    scmID: default
+    targets:
+      - updateGitVersion
+    spec:
+      labels:
+        - dependencies
