@@ -9,6 +9,10 @@ packer {
       version = "0.14.0"
       source  = "github.com/rgl/windows-update"
     }
+    docker = {
+      version = ">= 0.0.7"
+      source  = "github.com/hashicorp/docker"
+    }
   }
 }
 
@@ -28,7 +32,7 @@ variable "git_lfs_version" {
 }
 variable "architecture" {
   type        = string
-  description = "CPU architecure ID of the build with the following possible values: [amd64 (default), arm64]"
+  description = "CPU architecture ID of the build with the following possible values: [amd64 (default), arm64]"
   default     = "amd64"
 }
 variable "git_version" {
@@ -69,7 +73,7 @@ variable "image_version" {
 }
 variable "image_type" {
   type        = string
-  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs (default), azure-arm]"
+  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs (default), azure-arm, docker]"
   default     = "amazon-ebs"
 }
 variable "openssh_authorized_keys_url" {
@@ -106,7 +110,7 @@ locals {
   }
   os_disk_size_gb = 90 # less than 100 Gb to allow more instance sizes that have a temp cache < 100 Gb such as DS4_v3
 }
-
+/*
 data "amazon-ami" "ubuntu-20" {
   filters = {
     name                = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-${var.architecture}-server-*"
@@ -117,7 +121,7 @@ data "amazon-ami" "ubuntu-20" {
   owners      = ["099720109477"]
   region      = var.aws_region
 }
-
+/*
 data "amazon-ami" "windows-2019" {
   filters = {
     name                = "Windows_Server-2019-English-Core-ContainersLatest-*"
@@ -128,6 +132,7 @@ data "amazon-ami" "windows-2019" {
   owners      = ["amazon"]
   region      = var.aws_region
 }
+*/
 
 source "amazon-ebs" "base" {
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
@@ -183,7 +188,25 @@ source "azure-arm" "base" {
   }
 }
 
+source "docker" "base" {
+  # only amd64 supported
+  image = "ubuntu:20.04"
+  # persist image on local docker engine
+  commit = true
+  # some label to stay compliant
+  changes = [
+    "LABEL timestamp     = ${local.now_unix_timestamp}",
+    "LABEL version       = ${var.image_version}",
+    "LABEL scm_ref       = ${var.scm_ref}",
+    "LABEL build_type    = ${var.build_type}",
+  ]
+}
+
 build {
+  source "docker.base" {
+    name = "ubuntu-20"
+  }
+
   source "amazon-ebs.base" {
     name = "ubuntu-20"
   }
@@ -195,6 +218,18 @@ build {
     image_sku       = "20_04-lts-gen2"
     os_type         = "Linux"
     vm_size         = local.azure_vm_size
+  }
+
+  provisioner "shell" {
+    # steps for docker images
+    only = ["docker.ubuntu-20"]
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive",
+    ]
+    #adding sudo and bash for docker software-properties-common 
+    inline = [
+      "apt update && apt install -y sudo curl bash software-properties-common",
+    ]
   }
 
   provisioner "file" {
@@ -225,6 +260,13 @@ build {
     output     = "manifest.json"
     strip_path = true
   }
+
+  #for later use with correct repository
+  #post-processor "docker-tag" {
+  #  repository = "packer-cb"
+  #  tags       = ["ubuntu-focal-nodejs"]
+  #  only       = ["docker.ubuntu-focal"]
+  #}
 }
 
 build {
