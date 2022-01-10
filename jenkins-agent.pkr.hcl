@@ -121,7 +121,7 @@ data "amazon-ami" "ubuntu-20" {
   owners      = ["099720109477"]
   region      = var.aws_region
 }
-/*
+
 data "amazon-ami" "windows-2019" {
   filters = {
     name                = "Windows_Server-2019-English-Core-ContainersLatest-*"
