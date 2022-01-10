@@ -11,9 +11,6 @@ echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
 echo "MAVEN_VERSION=${MAVEN_VERSION}"
 export DEBIAN_FRONTEND=noninteractive
 
-
-ubuntu_codename="$(grep UBUNTU_CODENAME /etc/os-release | cut -d = -f 2)"
-
 ## Check for presence of requirements or fail fast
 for cli in add-apt-repository apt-get apt-cache awk curl grep groupadd head tar uname useradd
 do
@@ -64,13 +61,10 @@ apt-get install -y --no-install-recommends \
   gnupg-agent \
   software-properties-common
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-#curl --fail --silent --location --show-error https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-#add-apt-repository "deb [arch=${ARCHITECTURE}] https://download.docker.com/linux/ubuntu ${ubuntu_codename} stable"
-
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update
 apt-get install -y --no-install-recommends docker-ce
 
