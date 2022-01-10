@@ -57,7 +57,7 @@ apt-get install -y --no-install-recommends \
   ca-certificates \
   curl \
   gnupg \
-  lsb-release
+  lsb-release \
   gnupg-agent \
   software-properties-common
 
