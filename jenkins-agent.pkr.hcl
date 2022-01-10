@@ -28,7 +28,7 @@ variable "git_lfs_version" {
 }
 variable "architecture" {
   type        = string
-  description = "CPU architecure ID of the build with the following possible values: [amd64 (default), arm64]"
+  description = "CPU architecture ID of the build with the following possible values: [amd64 (default), arm64]"
   default     = "amd64"
 }
 variable "git_version" {

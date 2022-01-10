@@ -10,7 +10,6 @@ echo "ARCHITECTURE=${ARCHITECTURE}"
 echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
 echo "MAVEN_VERSION=${MAVEN_VERSION}"
 export DEBIAN_FRONTEND=noninteractive
-ubuntu_codename="$(grep UBUNTU_CODENAME /etc/os-release | cut -d = -f 2)"
 
 ## Check for presence of requirements or fail fast
 for cli in add-apt-repository apt-get apt-cache awk curl grep groupadd head tar uname useradd
@@ -55,14 +54,17 @@ apt-get upgrade -y
 
 ## Ensure Docker is installed as per https://docs.docker.com/engine/install/ubuntu/
 apt-get install -y --no-install-recommends \
-  apt-transport-https \
   ca-certificates \
   curl \
+  gnupg \
+  lsb-release \
   gnupg-agent \
   software-properties-common
 
-curl --fail --silent --location --show-error https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=${ARCHITECTURE}] https://download.docker.com/linux/ubuntu ${ubuntu_codename} stable"
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update
 apt-get install -y --no-install-recommends docker-ce
 
