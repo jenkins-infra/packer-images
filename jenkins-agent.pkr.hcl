@@ -193,7 +193,7 @@ source "docker" "base" {
   image = "ubuntu:20.04"
   # persist image on local docker engine
   commit = true
-  # some label to stay compliant
+  # some labels to stay compliant
   changes = [
     "LABEL timestamp     = ${local.now_unix_timestamp}",
     "LABEL version       = ${var.image_version}",
