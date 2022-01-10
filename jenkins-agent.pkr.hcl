@@ -110,7 +110,7 @@ locals {
   }
   os_disk_size_gb = 90 # less than 100 Gb to allow more instance sizes that have a temp cache < 100 Gb such as DS4_v3
 }
-/*
+
 data "amazon-ami" "ubuntu-20" {
   filters = {
     name                = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-${var.architecture}-server-*"
@@ -132,7 +132,6 @@ data "amazon-ami" "windows-2019" {
   owners      = ["amazon"]
   region      = var.aws_region
 }
-*/
 
 source "amazon-ebs" "base" {
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
