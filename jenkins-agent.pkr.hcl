@@ -226,11 +226,6 @@ build {
     script          = "./scripts/ubuntu-20-provision.sh"
     max_retries     = 3 # Fight against APT errors
   }
-
-  post-processor "manifest" {
-    output     = "manifest.json"
-    strip_path = true
-  }
 }
 
 build {
@@ -319,10 +314,4 @@ build {
       "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"
     ]
   }
-
-  ## Commented out because https://github.com/hashicorp/packer-plugin-azure/issues/152
-  # post-processor "manifest" {
-  #   output     = "manifest.json"
-  #   strip_path = true
-  # }
 }
