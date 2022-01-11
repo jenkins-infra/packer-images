@@ -139,7 +139,6 @@ pipeline {
             steps {
               sh '''
               echo 'scm_ref = "'"$(git rev-parse --short --verify HEAD)"'"' >> "${PACKER_VARS_FILE}"
-              packer fmt -recursive .
               ./run-packer.sh report
               '''
             }
