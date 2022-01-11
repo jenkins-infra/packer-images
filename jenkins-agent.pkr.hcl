@@ -315,9 +315,9 @@ build {
     ]
   }
 
-
-  post-processor "manifest" {
-    output     = "manifest.json"
-    strip_path = true
-  }
+  ## Commented out because https://github.com/hashicorp/packer-plugin-azure/issues/152
+  # post-processor "manifest" {
+  #   output     = "manifest.json"
+  #   strip_path = true
+  # }
 }
