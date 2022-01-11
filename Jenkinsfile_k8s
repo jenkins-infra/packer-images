@@ -64,7 +64,7 @@ pipeline {
           axis {
             name 'PKR_VAR_image_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'amazon-ebs', 'azure-arm'
+            values 'amazon-ebs', 'azure-arm', 'docker'
           }
         }
         excludes {
