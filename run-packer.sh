@@ -27,6 +27,7 @@ set -u
 echo "== Running action $1 with packer: =="
 case $1 in
   validate)
+    packer fmt -recursive .
     packer validate "${PACKER_COMMON_FLAGS[@]}"
     echo "Validation Success."
     ;;
