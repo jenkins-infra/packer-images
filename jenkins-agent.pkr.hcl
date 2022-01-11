@@ -185,6 +185,8 @@ source "azure-arm" "base" {
     image_version       = var.image_version
     replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
   }
+
+  async_resourcegroup_delete = true # Faster builds, but no deletion error reporting
 }
 
 build {
@@ -255,7 +257,6 @@ build {
     winrm_timeout              = "20m"
     winrm_use_ssl              = true
     winrm_username             = local.windows_winrm_user[var.image_type]
-    async_resourcegroup_delete = true # Faster builds, but no deletion error reporting
   }
 
   ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
