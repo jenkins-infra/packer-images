@@ -9,6 +9,10 @@ packer {
       version = "0.14.0"
       source  = "github.com/rgl/windows-update"
     }
+    azure = {
+      version = "1.0.4"
+      source  = "github.com/hashicorp/azure"
+    }
   }
 }
 
@@ -181,6 +185,8 @@ source "azure-arm" "base" {
     image_version       = var.image_version
     replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
   }
+
+  async_resourcegroup_delete = true # Faster builds, but no deletion error reporting
 }
 
 build {
@@ -220,11 +226,6 @@ build {
     script          = "./scripts/ubuntu-20-provision.sh"
     max_retries     = 3 # Fight against APT errors
   }
-
-  post-processor "manifest" {
-    output     = "manifest.json"
-    strip_path = true
-  }
 }
 
 build {
@@ -251,7 +252,6 @@ build {
     winrm_timeout              = "20m"
     winrm_use_ssl              = true
     winrm_username             = local.windows_winrm_user[var.image_type]
-    async_resourcegroup_delete = true # Faster builds, but no deletion error reporting
   }
 
   ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
@@ -313,11 +313,5 @@ build {
       "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -Schedule",
       "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"
     ]
-  }
-
-
-  post-processor "manifest" {
-    output     = "manifest.json"
-    strip_path = true
   }
 }
