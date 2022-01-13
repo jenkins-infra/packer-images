@@ -96,9 +96,12 @@ pipeline {
           }
         }
         agent {
+          label "${${PKR_VAR_agent} == 'ubuntu-20' ? 'linux' : 'windows'}-${PKR_VAR_architecture}-docker"
+          /*
           kubernetes {
             yamlFile 'CiPodTemplate.yaml'
           }
+          */
         }
         environment {
           PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
