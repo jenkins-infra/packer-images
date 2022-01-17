@@ -3,7 +3,7 @@
 # This script could be replaced by a Makefile
 # But make is not installed in the Docker image hashicorp/packer
 
-set -eu -o pipefail
+set -eux -o pipefail
 
 : "${1:?First argument - packer action to execute- not defined.}"
 
@@ -16,30 +16,35 @@ export PKR_VAR_scm_ref PKR_VAR_image_type PKR_VAR_agent
 
 
 ## check if packer exist or install it
-if ! command -v ${packer_cmd} >/dev/null 2>&1  && ! test -x "${packer_install_dir}/${packer_cmd}"
+if ! command -v ${packer_cmd} >/dev/null 2>&1
 then
-  echo "Packer not installed, I install it"
-  arch=$(uname -i)
-  if [[ $arch == x86_64* ]]; then
-      echo "X64 Architecture"
-      packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_amd64.zip"
-  elif [[ $arch == i*86 ]]; then
-      echo "X32 Architecture"
-      packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_386.zip"
-  elif [[ $arch == arm* ]]; then
-      echo "ARM Architecture 32b"
-      packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_arm.zip"
-  elif [[ $arch == aarch64 ]]; then
-      echo "ARM Architecture 64b"
-      packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_arm64.zip"
-  else 
-      echo "Architecture not found"
-      exit 2
+  if test -x "${packer_install_dir}/${packer_cmd}"
+  then
+    packer_cmd="${packer_install_dir}/packer"
+  else
+    echo "Packer not installed, I install it"
+    arch=$(uname -i)
+    if [[ $arch == x86_64* ]]; then
+        echo "X64 Architecture"
+        packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_amd64.zip"
+    elif [[ $arch == i*86 ]]; then
+        echo "X32 Architecture"
+        packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_386.zip"
+    elif [[ $arch == arm* ]]; then
+        echo "ARM Architecture 32b"
+        packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_arm.zip"
+    elif [[ $arch == aarch64 ]]; then
+        echo "ARM Architecture 64b"
+        packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_arm64.zip"
+    else 
+        echo "Architecture not found"
+        exit 2
+    fi
+    curl -sSL -o /tmp/packer.zip $packer_download_path
+    unzip /tmp/packer.zip -d ${packer_install_dir}
+    chmod +x ${packer_install_dir}/packer
+    packer_cmd="${packer_install_dir}/packer"
   fi
-  curl -sSL -o /tmp/packer.zip $packer_download_path
-  unzip /tmp/packer.zip -d ${packer_install_dir}
-  chmod +x ${packer_install_dir}/packer
-  packer_cmd="${packer_install_dir}/packer"
 fi
 
 ## Always run initialization to ensure plugins are download and workspace is set up
