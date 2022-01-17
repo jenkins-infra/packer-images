@@ -9,6 +9,8 @@ set -eu -o pipefail
 
 packer_cmd="packer"
 packer_template_dir="./"
+packer_install_dir="/$HOME"
+packer_version="1.7.8"
 
 export PKR_VAR_scm_ref PKR_VAR_image_type PKR_VAR_agent
 
@@ -20,25 +22,24 @@ then
   arch=$(uname -i)
   if [[ $arch == x86_64* ]]; then
       echo "X64 Architecture"
-      packer_download_path="https://releases.hashicorp.com/packer/1.7.8/packer_1.7.8_linux_amd64.zip"
+      packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_amd64.zip"
   elif [[ $arch == i*86 ]]; then
       echo "X32 Architecture"
-      packer_download_path="https://releases.hashicorp.com/packer/1.7.8/packer_1.7.8_linux_386.zip"
+      packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_386.zip"
   elif [[ $arch == arm* ]]; then
       echo "ARM Architecture 32b"
-      packer_download_path="https://releases.hashicorp.com/packer/1.7.8/packer_1.7.8_linux_arm.zip"
+      packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_arm.zip"
   elif [[ $arch == aarch64 ]]; then
       echo "ARM Architecture 64b"
-      packer_download_path="https://releases.hashicorp.com/packer/1.7.8/packer_1.7.8_linux_arm64.zip"
+      packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_arm64.zip"
   else 
       echo "Architecture not found"
       exit 2
   fi
   curl -sSL -o /tmp/packer.zip $packer_download_path
-  #tar xzf /tmp/packer.zip -C /opt/packer
-  unzip /tmp/packer.zip -d /opt/
-  chmod +x /opt/packer
-  packer_cmd="/opt/packer"
+  unzip /tmp/packer.zip -d ${packer_install_dir}
+  chmod +x ${packer_install_dir}/packer
+  packer_cmd="${packer_install_dir}/packer"
 fi
 
 ## Always run initialization to ensure plugins are download and workspace is set up
