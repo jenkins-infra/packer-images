@@ -7,13 +7,42 @@ set -eu -o pipefail
 
 : "${1:?First argument - packer action to execute- not defined.}"
 
+packer_cmd="packer"
 packer_template_dir="./"
 
 export PKR_VAR_scm_ref PKR_VAR_image_type PKR_VAR_agent
 
 
+## check if packer exist or install it
+if ! command -v $packer_cmd >/dev/null 2>&1
+then
+  echo "Packer not installed, I install it"
+  arch=$(uname -i)
+  if [[ $arch == x86_64* ]]; then
+      echo "X64 Architecture"
+      packer_download_path="https://releases.hashicorp.com/packer/1.7.8/packer_1.7.8_linux_amd64.zip"
+  elif [[ $arch == i*86 ]]; then
+      echo "X32 Architecture"
+      packer_download_path="https://releases.hashicorp.com/packer/1.7.8/packer_1.7.8_linux_386.zip"
+  elif [[ $arch == arm* ]]; then
+      echo "ARM Architecture 32b"
+      packer_download_path="https://releases.hashicorp.com/packer/1.7.8/packer_1.7.8_linux_arm.zip"
+  elif [[ $arch == aarch64 ]]; then
+      echo "ARM Architecture 64b"
+      packer_download_path="https://releases.hashicorp.com/packer/1.7.8/packer_1.7.8_linux_arm64.zip"
+  else 
+      echo "Architecture not found"
+      exit 2
+  fi
+  curl -sSL -o /tmp/packer.zip $packer_download_path
+  #tar xzf /tmp/packer.zip -C /opt/packer
+  unzip /tmp/packer.zip -d /opt/
+  chmod +x /opt/packer
+  packer_cmd="/opt/packer"
+fi
+
 ## Always run initialization to ensure plugins are download and workspace is set up
-packer init "${packer_template_dir}"
+$packer_cmd init "${packer_template_dir}"
 
 ## Define Packer flags based on the current environment (look at the `Jenkinsfile` to diagnose the pipeline)
 PACKER_COMMON_FLAGS=("${packer_template_dir}")
@@ -27,12 +56,12 @@ set -u
 echo "== Running action $1 with packer: =="
 case $1 in
   validate)
-    packer fmt -recursive .
-    packer validate "${PACKER_COMMON_FLAGS[@]}"
+    $packer_cmd fmt -recursive .
+    $packer_cmd validate "${PACKER_COMMON_FLAGS[@]}"
     echo "Validation Success."
     ;;
   build)
-    packer build -timestamp-ui --force "${PACKER_COMMON_FLAGS[@]}"
+    $packer_cmd build -timestamp-ui --force "${PACKER_COMMON_FLAGS[@]}"
     echo "Build Success."
     ;;
   report)
