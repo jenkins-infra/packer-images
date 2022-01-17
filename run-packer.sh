@@ -16,7 +16,7 @@ export PKR_VAR_scm_ref PKR_VAR_image_type PKR_VAR_agent
 
 
 ## check if packer exist or install it
-if ! command -v $packer_cmd >/dev/null 2>&1
+if ! command -v ${packer_cmd} >/dev/null 2>&1  && ! test -x "${packer_install_dir}/${packer_cmd}"
 then
   echo "Packer not installed, I install it"
   arch=$(uname -i)
