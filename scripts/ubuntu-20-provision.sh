@@ -7,8 +7,6 @@ set -eux -o pipefail
 ## Check for environment variables or fail miserably (due to set -u enabled)
 echo "== Provisiong jenkins-infra agent for ubuntu 20"
 echo "ARCHITECTURE=${ARCHITECTURE}"
-echo "COMPOSE_VERSION=${COMPOSE_VERSION}"
-echo "MAVEN_VERSION=${MAVEN_VERSION}"
 export DEBIAN_FRONTEND=noninteractive
 
 ## This function check a list of commands are working. exit with code 1 if not

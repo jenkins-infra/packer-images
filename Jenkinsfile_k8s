@@ -116,6 +116,16 @@ pipeline {
           PACKER_GITHUB_API_TOKEN       = credentials('updatecli-github-token')
         }
         stages {
+          stage('Prepare only on windows') {
+            when {
+              environment name: 'PKR_VAR_agent', value: 'windows'
+            }
+            steps {
+              bat '''
+              dir c:
+              '''
+            }
+          }
           stage('Prepare on Branch Main') {
             when {
               branch 'main'
