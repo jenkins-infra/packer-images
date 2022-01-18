@@ -96,7 +96,9 @@ pipeline {
           }
         }
         agent {
-          label "${env.PKR_VAR_agent == 'ubuntu-20' ? 'linux' : 'windows'}-${PKR_VAR_architecture}-docker"
+          //label "${env.PKR_VAR_agent == 'ubuntu-20' ? 'linux' : 'windows'}-${PKR_VAR_architecture}-docker"
+          // Temporary forcing exception for windows/docker which is not finished yet
+          label "${env.PKR_VAR_agent == 'windows-2019' && env.PKR_VAR_image_type == 'docker' ? 'windows' : 'linux'}-${PKR_VAR_architecture}-docker"
           /*
           kubernetes {
             yamlFile 'CiPodTemplate.yaml'
