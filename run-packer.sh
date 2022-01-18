@@ -41,8 +41,7 @@ then
         exit 2
     fi
     curl -sSL -o /tmp/packer.zip $packer_download_path
-    unzip /tmp/packer.zip -d ${packer_install_dir}
-    chmod +x ${packer_install_dir}/packer
+    unzip /tmp/packer.zip -d "${packer_install_dir}"
     packer_cmd="${packer_install_dir}/packer"
   fi
 fi
