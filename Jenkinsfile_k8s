@@ -105,10 +105,22 @@ pipeline {
               values 'docker'
             }
           }
+
+          //temporary exclusion to pinpoint the winRM bug
+          exclude {
+            axis {
+              name 'PKR_VAR_image_type'
+              values 'docker'
+            }
+          }
         }
         agent {
           // Temporary forcing exception for windows/docker which is not finished yet
-          label "${env.PKR_VAR_agent == 'windows-2019' && env.PKR_VAR_image_type == 'docker' ? 'windows' : 'linux'}-${PKR_VAR_architecture}-docker"
+          //label "${env.PKR_VAR_agent == 'windows-2019' && env.PKR_VAR_image_type == 'docker' ? 'windows' : 'linux'}-${PKR_VAR_architecture}-docker"
+          // temporary revert to pinpoint the winRM bug
+          kubernetes {
+            yamlFile 'CiPodTemplate.yaml'
+          }
         }
         environment {
           PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
