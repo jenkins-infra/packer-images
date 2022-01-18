@@ -98,7 +98,7 @@ pipeline {
           exclude {
             axis {
               name 'PKR_VAR_agent'
-              notValues 'windows-2019'
+              values 'windows-2019'
             }
             axis {
               name 'PKR_VAR_image_type'
