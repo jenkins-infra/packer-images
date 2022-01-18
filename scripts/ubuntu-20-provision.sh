@@ -97,6 +97,13 @@ else
   apt-get install -y --no-install-recommends git
 fi
 
+# Install Python 3
+apt-get install -y --no-install-recommends \
+  python3 \
+  python3-docker \
+  python3-pip \
+  python3-venv
+
 ## Install git-lfs (after git)
 git_lfs_archive="git-lfs-linux-${ARCHITECTURE}-v${GIT_LFS_VERSION}.tar.gz"
 git_lfs_release_url="https://github.com/git-lfs/git-lfs/releases/download/v${GIT_LFS_VERSION}/${git_lfs_archive}"
