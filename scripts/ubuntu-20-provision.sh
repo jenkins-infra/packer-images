@@ -102,7 +102,8 @@ apt-get install -y --no-install-recommends \
   python3 \
   python3-docker \
   python3-pip \
-  python3-venv
+  python3-venv \
+  python3-wheel
 
 ## Install git-lfs (after git)
 git_lfs_archive="git-lfs-linux-${ARCHITECTURE}-v${GIT_LFS_VERSION}.tar.gz"
