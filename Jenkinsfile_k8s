@@ -118,7 +118,7 @@ pipeline {
         stages {
           stage('Prepare only on windows') {
             when {
-              environment name: 'PKR_VAR_agent', value: 'windows'
+              environment name: 'PKR_VAR_agent', value: 'windows-2019'
             }
             steps {
               bat '''
