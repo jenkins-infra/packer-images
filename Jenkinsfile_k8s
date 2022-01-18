@@ -94,16 +94,21 @@ pipeline {
               values 'amazon-ebs'
             }
           }
+          // No build on windows / docker not yet implemented
+          exclude {
+            axis {
+              name 'PKR_VAR_agent'
+              notValues 'windows-2019'
+            }
+            axis {
+              name 'PKR_VAR_image_type'
+              values 'docker'
+            }
+          }
         }
         agent {
-          //label "${env.PKR_VAR_agent == 'ubuntu-20' ? 'linux' : 'windows'}-${PKR_VAR_architecture}-docker"
           // Temporary forcing exception for windows/docker which is not finished yet
           label "${env.PKR_VAR_agent == 'windows-2019' && env.PKR_VAR_image_type == 'docker' ? 'windows' : 'linux'}-${PKR_VAR_architecture}-docker"
-          /*
-          kubernetes {
-            yamlFile 'CiPodTemplate.yaml'
-          }
-          */
         }
         environment {
           PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
@@ -118,16 +123,6 @@ pipeline {
           PACKER_GITHUB_API_TOKEN       = credentials('updatecli-github-token')
         }
         stages {
-          stage('Prepare only on windows') {
-            when {
-              environment name: 'PKR_VAR_agent', value: 'windows-2019'
-            }
-            steps {
-              bat '''
-              dir c:
-              '''
-            }
-          }
           stage('Prepare on Branch Main') {
             when {
               branch 'main'
