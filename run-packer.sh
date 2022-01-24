@@ -15,14 +15,14 @@ packer_version="1.7.8"
 export PKR_VAR_scm_ref PKR_VAR_image_type PKR_VAR_agent
 
 
-## check if packer exist or install it
+## check if packer exists or install it
 if ! command -v ${packer_cmd} >/dev/null 2>&1
 then
   if test -x "${packer_install_dir}/${packer_cmd}"
   then
     packer_cmd="${packer_install_dir}/packer"
   else
-    echo "Packer not installed, I install it"
+    echo "Packer not installed, installing it"
     arch=$(uname -i)
     if [[ $arch == x86_64* ]]; then
         echo "X64 Architecture"

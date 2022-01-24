@@ -9,7 +9,7 @@ echo "== Provisiong jenkins-infra agent for ubuntu 20"
 echo "ARCHITECTURE=${ARCHITECTURE}"
 export DEBIAN_FRONTEND=noninteractive
 
-## This function check a list of commands are working. exit with code 1 if not
+## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
   ## Check for presence of requirements or fail fast
   for cli in add-apt-repository apt-get apt-cache awk curl grep groupadd head tar uname useradd
@@ -45,7 +45,7 @@ function copy_custom_scripts() {
 
 ## All the clean for apt
 function clean_apt() {
-  ## Disable and Remove Unattended APT Upgrades
+  ## Disable and remove Unattended APT upgrades
   echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
   apt-get purge -y unattended-upgrades || true # Do not fail if the package does not exist
 
@@ -86,7 +86,7 @@ function install_JA_requirements(){
     parallel
 }
 
-# setup qemu
+## setup qemu
 function install_qemu() {
   apt-get install -y --no-install-recommends \
     qemu \
@@ -100,7 +100,6 @@ function install_qemu() {
 
 ## Install Python 3
 function install_python() {
-  # Install Python 3
   apt-get install -y --no-install-recommends \
     python3 \
     python3-docker \
@@ -109,7 +108,7 @@ function install_python() {
     python3-wheel
 }
 
-## Install git and gitLFS
+## Install git and git-lfs
 function install_git_gitlfs() {
   if [ -n "${GIT_VERSION}" ]
   then

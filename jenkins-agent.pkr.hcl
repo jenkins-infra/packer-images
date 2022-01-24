@@ -231,7 +231,7 @@ build {
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
     ]
-    #adding sudo and bash for docker software-properties-common 
+    # adding sudo and bash for docker software-properties-common 
     inline = [
       "apt update && apt install -y sudo curl bash software-properties-common",
     ]
