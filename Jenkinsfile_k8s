@@ -94,7 +94,7 @@ pipeline {
               values 'amazon-ebs'
             }
           }
-          // No build on windows / docker not yet implemented
+          // No build on Windows or Docker, not yet implemented
           exclude {
             axis {
               name 'PKR_VAR_agent'
