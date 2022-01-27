@@ -13,6 +13,10 @@ packer {
       version = "1.0.4"
       source  = "github.com/hashicorp/azure"
     }
+    docker = {
+      version = ">= 0.0.7"
+      source  = "github.com/hashicorp/docker"
+    }
   }
 }
 
@@ -73,7 +77,7 @@ variable "image_version" {
 }
 variable "image_type" {
   type        = string
-  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs (default), azure-arm]"
+  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs (default), azure-arm, docker]"
   default     = "amazon-ebs"
 }
 variable "openssh_authorized_keys_url" {
@@ -189,7 +193,25 @@ source "azure-arm" "base" {
   async_resourcegroup_delete = true # Faster builds, but no deletion error reporting
 }
 
+source "docker" "base" {
+  # only amd64 supported
+  image = "ubuntu:20.04"
+  # persist image on local docker engine
+  commit = true
+  # some label to stay compliant
+  changes = [
+    "LABEL timestamp     = ${local.now_unix_timestamp}",
+    "LABEL version       = ${var.image_version}",
+    "LABEL scm_ref       = ${var.scm_ref}",
+    "LABEL build_type    = ${var.build_type}",
+  ]
+}
+
 build {
+  source "docker.base" {
+    name = "ubuntu-20"
+  }
+
   source "amazon-ebs.base" {
     name = "ubuntu-20"
   }
@@ -201,6 +223,18 @@ build {
     image_sku       = "20_04-lts-gen2"
     os_type         = "Linux"
     vm_size         = local.azure_vm_size
+  }
+
+  provisioner "shell" {
+    # steps for docker images
+    only = ["docker.ubuntu-20"]
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive",
+    ]
+    # adding sudo and bash for docker software-properties-common 
+    inline = [
+      "apt update && apt install -y sudo curl bash software-properties-common",
+    ]
   }
 
   provisioner "file" {
@@ -226,6 +260,13 @@ build {
     script          = "./scripts/ubuntu-20-provision.sh"
     max_retries     = 3 # Fight against APT errors
   }
+
+  #for later use with correct repository
+  #post-processor "docker-tag" {
+  #  repository = "packer-cb"
+  #  tags       = ["ubuntu-focal-nodejs"]
+  #  only       = ["docker.ubuntu-focal"]
+  #}
 }
 
 build {
@@ -240,18 +281,18 @@ build {
   }
 
   source "azure-arm.base" {
-    name                       = "windows-2019"
-    communicator               = "winrm"
-    image_offer                = "WindowsServer"
-    image_publisher            = "MicrosoftWindowsServer"
-    image_sku                  = "2019-datacenter-core-with-containers-smalldisk-g2"
-    vm_size                    = local.azure_vm_size
-    os_type                    = "Windows"
-    os_disk_size_gb            = local.os_disk_size_gb
-    winrm_insecure             = true
-    winrm_timeout              = "20m"
-    winrm_use_ssl              = true
-    winrm_username             = local.windows_winrm_user[var.image_type]
+    name            = "windows-2019"
+    communicator    = "winrm"
+    image_offer     = "WindowsServer"
+    image_publisher = "MicrosoftWindowsServer"
+    image_sku       = "2019-datacenter-core-with-containers-smalldisk-g2"
+    vm_size         = local.azure_vm_size
+    os_type         = "Windows"
+    os_disk_size_gb = local.os_disk_size_gb
+    winrm_insecure  = true
+    winrm_timeout   = "20m"
+    winrm_use_ssl   = true
+    winrm_username  = local.windows_winrm_user[var.image_type]
   }
 
   ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865

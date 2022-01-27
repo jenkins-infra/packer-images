@@ -64,7 +64,7 @@ pipeline {
           axis {
             name 'PKR_VAR_image_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'amazon-ebs', 'azure-arm'
+            values 'amazon-ebs', 'azure-arm', 'docker'
           }
         }
         excludes {
@@ -94,11 +94,21 @@ pipeline {
               values 'amazon-ebs'
             }
           }
+          // No build on Windows or Docker, not yet implemented
+          exclude {
+            axis {
+              name 'PKR_VAR_agent'
+              values 'windows-2019'
+            }
+            axis {
+              name 'PKR_VAR_image_type'
+              values 'docker'
+            }
+          }
         }
         agent {
-          kubernetes {
-            yamlFile 'CiPodTemplate.yaml'
-          }
+          // Temporary forcing exception for windows/docker which is not finished yet
+          label "${env.PKR_VAR_agent == 'windows-2019' && env.PKR_VAR_image_type == 'docker' ? 'windows' : 'linux'}-${PKR_VAR_architecture}-docker"
         }
         environment {
           PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
