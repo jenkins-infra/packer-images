@@ -239,7 +239,12 @@ build {
 
   provisioner "file" {
     source      = "./scripts/add_auth_key_to_user.sh"
-    destination = "/tmp/add_auth_key_to_user.sh"
+    destination = "/tmp/add_auth_key_to_user.sh" 
+  }
+
+  provisioner "file" {
+    source      = "./scripts/docker.gpg"
+    destination = "/tmp/docker.gpg" 
   }
 
   provisioner "shell" {
