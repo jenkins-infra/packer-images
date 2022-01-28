@@ -62,6 +62,7 @@ function clean_apt() {
 function install_docker() {
   apt-get install -y --no-install-recommends \
     ca-certificates \
+    curl \
     gnupg \
     lsb-release \
     gnupg-agent \
