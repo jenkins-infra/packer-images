@@ -160,7 +160,7 @@ function install_jdk() {
   # JDK17
   jdk17_short_version="${JDK17_VERSION//+/_}"
   curl -sSL -o /tmp/jdk17.tgz \
-    "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
+    "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17U-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
   tar xzf /tmp/jdk17.tgz --strip-components=1 -C /opt/jdk-17
 
   # Define JDK installations
