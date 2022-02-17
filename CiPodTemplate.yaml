@@ -4,4 +4,4 @@ spec:
   automountServiceAccountToken: false
   containers:
     - name: jnlp
-      image: jenkinsciinfra/hashicorp-tools:0.3.1
+      image: jenkinsciinfra/hashicorp-tools:0.3.5
