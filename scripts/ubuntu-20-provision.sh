@@ -69,7 +69,7 @@ function install_docker() {
     software-properties-common
 
   #using the local version of the docker public key avoid curl errors
-  gpg --no-tty --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
+  gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
   echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -160,7 +160,7 @@ function install_jdk() {
   # JDK17
   jdk17_short_version="${JDK17_VERSION//+/_}"
   curl -sSL -o /tmp/jdk17.tgz \
-    "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
+    "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17U-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
   tar xzf /tmp/jdk17.tgz --strip-components=1 -C /opt/jdk-17
 
   # Define JDK installations
