@@ -1,5 +1,5 @@
 
-if (env.BRANCH_NAME == 'main') {
+if (env.BRANCH_IS_PRIMARY) {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
     // Daily build is enough: only the tagged build would generate downstream PRs on jenkins-infra
@@ -40,7 +40,7 @@ pipeline {
               script {
                 withCredentials([string(credentialsId: 'updatecli-github-token', variable: 'UPDATECLI_GITHUB_TOKEN')]) {
                   updatecli(action: 'diff')
-                  if (env.BRANCH_NAME == 'main') {
+                  if (env.BRANCH_IS_PRIMARY) {
                     updatecli(action: 'apply', cronTriggerExpression: '@daily')
                   }
                 }
@@ -123,9 +123,9 @@ pipeline {
           PACKER_GITHUB_API_TOKEN       = credentials('updatecli-github-token')
         }
         stages {
-          stage('Prepare on Branch Main') {
+          stage('Prepare on primary branch') {
             when {
-              branch 'main'
+              expression { env.BRANCH_IS_PRIMARY }
             }
             steps {
               sh '''
