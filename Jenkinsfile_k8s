@@ -125,7 +125,7 @@ pipeline {
         stages {
           stage('Prepare on primary branch') {
             when {
-              expression { env.BRANCH_IS_PRIMARY }
+              expression { (env.BRANCH_IS_PRIMARY).toBoolean() }
             }
             steps {
               sh '''
