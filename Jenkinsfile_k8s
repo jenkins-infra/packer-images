@@ -50,12 +50,8 @@ pipeline {
           
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh '''
-                az login --service-principal \
-                    -u "$PKR_VAR_azure_client_id" \
-                    -p "$PKR_VAR_azure_client_secret" \
-                    -t "$PKR_VAR_azure_subscription_id"
-              '''
+              sh 'az login --service-principal -u "$PKR_VAR_azure_client_id" -p "$PKR_VAR_azure_client_secret"'
+              sh 'az account set -s "$AZURE_SUBSCRIPTION_ID"'
               sh './cleanup/azure.sh'
             }
           }
