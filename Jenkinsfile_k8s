@@ -34,6 +34,32 @@ pipeline {
             }
           }
         }
+        stage('GC on Azure') {
+          environment {
+            PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
+            PKR_VAR_azure_client_id       = credentials('packer-azure-client-id')
+            PKR_VAR_azure_client_secret   = credentials('packer-azure-client-secret')
+            DRYRUN = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
+          }
+          
+          agent {
+            kubernetes {
+              yamlFile 'CiPodTemplate.yaml'
+            }
+          }
+          
+          steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              sh '''
+                az login --service-principal \
+                    -u "$PKR_VAR_azure_client_id" \
+                    -p "$PKR_VAR_azure_client_secret" \
+                    -t "$PKR_VAR_azure_subscription_id"
+              '''
+              sh './cleanup/azure.sh'
+            }
+          }
+        }
         stage('Updatecli') {
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
