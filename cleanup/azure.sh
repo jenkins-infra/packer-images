@@ -11,12 +11,10 @@ run_az_deletion_command() {
     echo "az group" "$@"
     az group "$@"
   else
-    # Execute command with the "--dry-run"
-    subcommand="$1"
-    shift
-    echo "== DRY RUN (show instead of ${subcommand}):"
-    echo "az group show $@"
-    az group show "$@" 2>&1 | grep -v 'Request would have succeeded' || true
+    # Show command with "as it should run"
+    echo "== DRY RUN "
+    echo "= Command that would be executed without dry-run:" 
+    echo "az group " "$@"
   fi
 }
 
@@ -37,12 +35,11 @@ else
     yesterday="$(date --date="-${timeshift_days} days" +%Y%m%d%H%M%S)"
 fi
 
-## Check for aws API reachability (is it configured?)
+## Check for Azure API reachability (is it configured?)
 az account show >/dev/null || \
   { echo "[ERROR] Unable to request the Azure API: the command 'az account show' failed. Please check your Azure credentials"; exit 1; }
 
 ## Remove running instances older than 24 hours
-#az group list --query '[?tags.timestamp<'\''20220222222222'\''] | [?starts_with(name, '\''pkr-Resource-'\'')].name'
 INSTANCE_IDS="$(az group list --query '[?tags.timestamp<='\''`'"${yesterday}"'`'\''] | [?starts_with(name, '\''pkr-Resource-'\'')].name'| jq -r '.[]' | xargs)" 
 
 if [ -n "${INSTANCE_IDS}" ]
@@ -52,7 +49,7 @@ then
   cpt="0"
   for rg in ${INSTANCE_IDS}
   do
-    run_az_deletion_command delete --name $rg
+    run_az_deletion_command delete --name "$rg" --yes --no-wait
     ((cpt=cpt+1))
   done
   echo "== $cpt resources group have been deleted"
