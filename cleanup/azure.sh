@@ -40,7 +40,7 @@ az account show >/dev/null || \
   { echo "[ERROR] Unable to request the Azure API: the command 'az account show' failed. Please check your Azure credentials"; exit 1; }
 
 ## Remove running instances older than 24 hours
-INSTANCE_IDS="$(az group list --query '[?tags.timestamp<='\''`'"${yesterday}"'`'\''] | [?starts_with(name, '\''pkr-Resource-'\'')].name'| jq -r '.[]' | xargs)" 
+INSTANCE_IDS="$(az group list --query '[?tags.timestamp.to_number(@)<=`'"${yesterday}"'`] | [?starts_with(name, '\''pkr-Resource-'\'')].name'| jq -r '.[]' | xargs)" 
 
 if [ -n "${INSTANCE_IDS}" ]
 then
@@ -52,7 +52,13 @@ then
     run_az_deletion_command delete --name "$rg" --yes --no-wait
     ((cpt=cpt+1))
   done
-  echo "== $cpt resources group have been deleted"
+
+  if [ "${DRYRUN:-true}" = "false" ] || [ "${DRYRUN:-true}" = "no" ]
+  then
+    echo "== $cpt resources group have been deleted"
+  else
+    echo "==DRYRUN $cpt resources group would have been deleted"
+  fi
 else
   echo "== No dangling instance found to terminate."
 fi
