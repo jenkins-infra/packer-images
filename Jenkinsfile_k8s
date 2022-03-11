@@ -37,7 +37,7 @@ pipeline {
         stage('GC on Azure') {
           environment {
             PACKER_AZURE = credentials('packer-azure-serviceprincipal')
-            DRYRUN = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
+            DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
           }
           
           agent {
