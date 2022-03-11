@@ -129,9 +129,6 @@ pipeline {
           label "${env.PKR_VAR_agent == 'windows-2019' && env.PKR_VAR_image_type == 'docker' ? 'windows' : 'linux'}-${PKR_VAR_architecture}-docker"
         }
         environment {
-          PKR_VAR_azure_subscription_id = credentials('packer-azure-subscription-id')
-          PKR_VAR_azure_client_id       = credentials('packer-azure-client-id')
-          PKR_VAR_azure_client_secret   = credentials('packer-azure-client-secret')
           AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
           AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
           PACKER_HOME_DIR               = "/tmp/packer.d.${PKR_VAR_image_type}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
@@ -178,7 +175,14 @@ pipeline {
           }
           stage('Build') {
             steps {
-              sh './run-packer.sh build'
+              withCredentials([azureServicePrincipal(
+                credentialsId: 'packer-azure-serviceprincipal',
+                clientIdVariable: 'PKR_VAR_azure_client_id',
+                clientSecretVariable: 'PKR_VAR_azure_client_secret',
+                subscriptionIdVariable: 'PKR_VAR_azure_subscription_id'
+              )]) {
+                sh './run-packer.sh build'
+              }
             }
           }
         }
