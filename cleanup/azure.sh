@@ -7,7 +7,7 @@ run_az_deletion_command() {
   if [ "${DRYRUN:-true}" = "false" ] || [ "${DRYRUN:-true}" = "no" ]
   then
     # Execute command "as it"
-    echo "command that is executed : "
+    echo "command executed: "
     echo "az group" "$@"
     az group "$@"
   else
