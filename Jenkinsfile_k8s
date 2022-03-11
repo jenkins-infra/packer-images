@@ -34,6 +34,26 @@ pipeline {
             }
           }
         }
+        stage('GC on Azure') {
+          environment {
+            PACKER_AZURE = credentials('packer-azure-serviceprincipal')
+            DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
+          }
+          
+          agent {
+            kubernetes {
+              yamlFile 'CiPodTemplate.yaml'
+            }
+          }
+          
+          steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
+              sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
+              sh './cleanup/azure.sh'
+            }
+          }
+        }
         stage('Updatecli') {
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
