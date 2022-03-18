@@ -135,7 +135,7 @@ pipeline {
           PACKER_PLUGIN_PATH            = "${PACKER_HOME_DIR}/plugins"
           PACKER_VARS_FILE              = ".auto.pkrvars.hcl"
           // Reuse the updatecli Github token to ensure that packer init does not hit the rate limit
-          PACKER_GITHUB_API_TOKEN       = credentials('updatecli-github-token')
+          PACKER_GITHUB_API_TOKEN       = credentials('github-app-infra')
         }
         stages {
           stage('Prepare on primary branch') {
