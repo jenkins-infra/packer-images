@@ -99,7 +99,7 @@ $downloads = [ordered]@{
         };
     };
     'maven' = @{
-        'url' = 'https://apache.osuosl.org/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
+        'url' = 'https://archive.apache.org/dist/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
         'local' = "$baseDir\maven.zip";
         'expandTo' = $baseDir;
         'path' = '{0}\apache-maven-{1}\bin' -f $baseDir,$env:MAVEN_VERSION;
