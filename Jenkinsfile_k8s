@@ -31,6 +31,7 @@ pipeline {
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
               sh './cleanup/aws.sh'
+              sh './cleanup/aws_images.sh'
             }
           }
         }
