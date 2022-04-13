@@ -40,14 +40,14 @@ targets:
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
-      matchPattern: 'maven_version(.*)=.*'
+      matchPattern: "maven_version(.*)=.*"
       replacePattern: 'maven_version$1= "{{ source `mavenVersion` }}"'
-    scmID: default
+    scmid: default
 
 pullrequests:
   default:
     kind: github
-    scmID: default
+    scmid: default
     targets:
       - updateMavenVersion
     spec:

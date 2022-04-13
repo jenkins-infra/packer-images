@@ -41,14 +41,14 @@ targets:
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
-      matchPattern: 'jdk17_version(.*)=.*'
+      matchPattern: "jdk17_version(.*)=.*"
       replacePattern: 'jdk17_version$1= "{{ source `JDK17Version` }}"'
-    scmID: default
+    scmid: default
 
 pullrequests:
   default:
     kind: github
-    scmID: default
+    scmid: default
     targets:
       - updateJDK17Version
     spec:

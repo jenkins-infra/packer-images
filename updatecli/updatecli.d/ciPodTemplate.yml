@@ -36,7 +36,7 @@ targets:
   updateImageOnPodTemplateForHashicorpTools:
     name: "Update the value of the key 'image' of the first container ('hashicorp-tools')"
     kind: yaml
-    scmID: default
+    scmid: default
     transformers:
       - addPrefix: "jenkinsciinfra/hashicorp-tools:"
     spec:
@@ -46,7 +46,7 @@ targets:
 pullrequests:
   default:
     kind: github
-    scmID: default
+    scmid: default
     targets:
       - updateImageOnPodTemplateForHashicorpTools
     spec:

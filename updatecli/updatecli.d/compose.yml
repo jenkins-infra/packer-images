@@ -34,14 +34,14 @@ targets:
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
-      matchPattern: 'compose_version(.*)=.*'
+      matchPattern: "compose_version(.*)=.*"
       replacePattern: 'compose_version$1= "{{ source `dockerComposeVersion` }}"'
-    scmID: default
+    scmid: default
 
 pullrequests:
   default:
     kind: github
-    scmID: default
+    scmid: default
     targets:
       - updateDockerComposeVersion
     spec:
