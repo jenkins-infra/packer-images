@@ -32,14 +32,14 @@ targets:
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
-      matchPattern: 'git_version(.*)=.*'
+      matchPattern: "git_version(.*)=.*"
       replacePattern: 'git_version$1= "{{ source `gitVersion` }}"'
-    scmID: default
+    scmid: default
 
 pullrequests:
   default:
     kind: github
-    scmID: default
+    scmid: default
     targets:
       - updateGitVersion
     spec:

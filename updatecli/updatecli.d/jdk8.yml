@@ -41,14 +41,14 @@ targets:
     kind: file
     spec:
       file: ".auto.pkrvars.hcl"
-      matchPattern: 'jdk8_version(.*)=.*'
+      matchPattern: "jdk8_version(.*)=.*"
       replacePattern: 'jdk8_version$1= "{{ source `JDK8Version` }}"'
-    scmID: default
+    scmid: default
 
 pullrequests:
   default:
     kind: github
-    scmID: default
+    scmid: default
     targets:
       - updateJDK8Version
     spec:
