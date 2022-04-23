@@ -68,6 +68,9 @@ function install_docker() {
     gnupg-agent \
     software-properties-common
 
+  # Wait a few seconds to allow the gpg-agent to finish initializing in background
+  sleep 5
+
   #using the local version of the docker public key avoid curl errors
   gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
   echo \
