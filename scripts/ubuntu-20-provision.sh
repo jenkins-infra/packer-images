@@ -60,6 +60,7 @@ function clean_apt() {
 
 ## Ensure Docker is installed as per https://docs.docker.com/engine/install/ubuntu/
 function install_docker() {
+  apt-get update -q
   apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
@@ -68,15 +69,12 @@ function install_docker() {
     gnupg-agent \
     software-properties-common
 
-  # Wait a few seconds to allow the gpg-agent to finish initializing in background
-  sleep 5
+  gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
 
-  #using the local version of the docker public key avoid curl errors
-  gpg --batch --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
   echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-  apt-get update
+  apt-get update -q
   apt-get install -y --no-install-recommends docker-ce
 }
 
