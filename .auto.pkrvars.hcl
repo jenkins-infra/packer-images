@@ -1,6 +1,6 @@
 maven_version               = "3.8.4"
 git_version                 = "2.36.0"
-jdk11_version               = "11.0.14+9"
+jdk11_version               = "11.0.15+10"
 jdk17_version               = "17.0.3+7"
 jdk8_version                = "8u322-b06"
 default_jdk                 = "11"
