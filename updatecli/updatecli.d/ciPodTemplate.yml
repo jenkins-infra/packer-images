@@ -15,7 +15,7 @@ scms:
 
 sources:
   dockerHashicorpToolsImageVersion:
-    kind: githubRelease
+    kind: githubrelease
     spec:
       owner: "jenkins-infra"
       repository: "docker-hashicorp-tools"

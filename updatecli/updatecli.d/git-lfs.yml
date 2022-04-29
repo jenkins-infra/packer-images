@@ -15,25 +15,24 @@ scms:
 
 sources:
   gitLfsVersion:
-    kind: githubRelease
+    kind: githubrelease
     name: Get the latest Git-LFS version
     spec:
       owner: "git-lfs"
       repository: "git-lfs"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
-      versionFilter:
+      versionfilter:
         # Latest version which is semver "stable" (removes any 'v' prefix)
         kind: semver
 
 targets:
   updateGitLfsVersion:
     name: Update the Git-LFS version in the Packer default values
-    kind: file
+    kind: yaml
     spec:
-      file: ".auto.pkrvars.hcl"
-      matchPattern: "git_lfs_version(.*)=.*"
-      replacePattern: 'git_lfs_version$1= "{{ source `gitLfsVersion` }}"'
+      file: "provision-env.yml"
+      key: "git_lfs_version"
     scmid: default
 
 pullrequests:
@@ -44,4 +43,5 @@ pullrequests:
       - updateGitLfsVersion
     spec:
       labels:
-        - dependencies
+        - enhancement
+        - git-lfs
