@@ -149,6 +149,10 @@ $downloads = [ordered]@{
         'expandTo' = $baseDir;
         'cleanuplocal' = 'true'
     };
+    'jq' = @{
+        'url' = 'https://github.com/stedolan/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
+        'local' = "$baseDir\jq.exe"
+    };
 }
 
 ## Proceed to install tools
@@ -239,6 +243,7 @@ Write-Host "== Sanity Check of installed tools"
 & "$baseDir\docker-compose.exe" --version
 & "$baseDir\git\mingw64\bin\git-lfs.exe" --version
 & "$baseDir\jx-release-version" --version
+& "$baseDir\jq.exe" --version
 
 ## Maven requires the JAVA_HOME environment variable to be set. We use this value here: it is ephemeral.
 $env:JAVA_HOME = $defaultJavaHome

@@ -1,0 +1,51 @@
+---
+title: "Bump jq version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest jq release version
+    spec:
+      owner: "stedolan"
+      repository: "jq"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: regex
+        ## Latest stable x.y.z version
+        pattern: 'jq-(\d*)\.(\d*)$'
+    transformers:
+      - trimPrefix: "jq-"
+
+targets:
+  updateVersion:
+    name: "Update the jq version in the provision-env.yml file"
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: "provision-env.yml"
+      key: "jq_version"
+    scmid: default
+
+pullrequests:
+  default:
+    kind: github
+    scmid: default
+    targets:
+      - updateVersion
+    spec:
+      labels:
+        - enhancement
+        - jq

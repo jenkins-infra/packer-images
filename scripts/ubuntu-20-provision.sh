@@ -84,7 +84,7 @@ function install_JA_requirements(){
     make \
     unzip \
     zip \
-    jq \
+    jq="${JQ_VERSION}*" `# This package exists for both intel and ARM on Ubuntu 20.04. Fix version to ensure constant behavior.` \
     parallel
 }
 
