@@ -133,6 +133,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/hadolint/hadolint/releases/download/v{0}/hadolint-Windows-x86_64.exe' -f $env:HADOLINT_VERSION;
         'local' = "$baseDir\hadolint";
     };
+    'cst' = @{
+        'url' = 'https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{0}/container-structure-test-windows-amd64.exe' -f $env:CST_VERSION;
+        'local' = "$baseDir\container-structure-test";
+    };
 }
 
 ## Proceed to install tools

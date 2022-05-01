@@ -203,6 +203,13 @@ function install_hadolint() {
   chmod a+x /usr/local/bin/hadolint
 }
 
+## Ensure that google container-structure-test is installed
+function install_cst() {
+  curl --fail --silent --location --show-error --output /usr/local/bin/container-structure-test \
+    "https://github.com/GoogleContainerTools/container-structure-test/releases/download/v${CST_VERSION}/container-structure-test-linux-${ARCHITECTURE}"
+  chmod a+x /usr/local/bin/container-structure-test
+}
+
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
   username=jenkins
@@ -250,6 +257,7 @@ function main() {
   install_docker_compose
   install_maven
   install_hadolint
+  install_cst
   setuser
   cleanup
 }
