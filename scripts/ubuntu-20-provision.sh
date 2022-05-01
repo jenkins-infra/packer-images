@@ -34,7 +34,7 @@ function install_package_version() {
     | head -n1 `# Only keep the most recent package which should be the first line` \
     | awk '{print $3}' `# Package version is the 3rd column` || { echo "ERROR: could not find version $2 for $1. Output of apt-cache madison is: $(apt-cache madison "${1}")"; exit 1; } )"
 
-  apt-get install -y --no-install-recommends "${1}=${package_version}"
+  apt-get install --yes --no-install-recommends "${1}=${package_version}"
 }
 
 ## Copy custom scripts
@@ -60,8 +60,8 @@ function clean_apt() {
 
 ## Ensure Docker is installed as per https://docs.docker.com/engine/install/ubuntu/
 function install_docker() {
-  apt-get update -q
-  apt-get install -y --no-install-recommends \
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends \
     ca-certificates \
     curl \
     gnupg \
@@ -74,13 +74,13 @@ function install_docker() {
   echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-  apt-get update -q
-  apt-get install -y --no-install-recommends docker-ce
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends docker-ce
 }
 
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
-  apt-get install -y --no-install-recommends \
+  apt-get install --yes --no-install-recommends \
     make \
     unzip \
     zip \
@@ -90,7 +90,7 @@ function install_JA_requirements(){
 
 ## setup qemu
 function install_qemu() {
-  apt-get install -y --no-install-recommends \
+  apt-get install --yes --no-install-recommends \
     qemu \
     binfmt-support \
     qemu-user-static
@@ -102,12 +102,13 @@ function install_qemu() {
 
 ## Install Python 3
 function install_python() {
-  apt-get install -y --no-install-recommends \
+  apt-get install --yes --no-install-recommends \
     python3 \
     python3-docker \
     python3-pip \
     python3-venv \
     python3-wheel
+  python3 -m pip install --no-cache-dir pip --upgrade
 }
 
 ## Install git and git-lfs
@@ -119,7 +120,7 @@ function install_git_gitlfs() {
     install_package_version git "${GIT_VERSION}"
   else
     ## No git version: install the latest git available in the default repos
-    apt-get install -y --no-install-recommends git
+    apt-get install --yes --no-install-recommends git
   fi
 
   ## Install git-lfs (after git)
@@ -135,7 +136,7 @@ function install_git_gitlfs() {
 
 function install_jdk() {
   ## Prevent Java null pointer exception due to missing fontconfig
-  apt-get install -y --no-install-recommends fontconfig
+  apt-get install --yes --no-install-recommends fontconfig
 
   ## OpenJDKs: Adoptium - https://adoptium.net/installation.html
   mkdir -p /opt/jdk-8 /opt/jdk-11 /opt/jdk-17
@@ -219,6 +220,20 @@ function install_jxreleaseversion() {
   rm -rf /tmp/*
 }
 
+## Ensure that azure-cli is installed
+function install_azurecli() {
+  ## From https://github.com/Azure/azure-cli/issues/7368#issuecomment-921578936
+  apt-get install --yes --no-install-recommends \
+    gcc \
+    libffi-dev \
+    libsodium-dev \
+    python3-dev
+  export SODIUM_INSTALL="system"
+  python3 -m pip install --no-cache-dir pynacl
+  # Using the Python installation to ensure that both Intel and ARM are supported (Microsoft only provides a package for Intel)
+  python3 -m pip install --no-cache-dir azure-cli=="${AZURECLI_VERSION}"
+}
+
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
   username=jenkins
@@ -255,6 +270,7 @@ function cleanup() {
 
 function sanity_check() {
   echo "== Sanity Check of installed tools"
+  az --version
   container-structure-test version
   docker -v ## Client only
   docker-compose -v
@@ -290,6 +306,7 @@ function main() {
   install_hadolint
   install_cst
   install_jxreleaseversion
+  install_azurecli
   setuser
   cleanup
 }

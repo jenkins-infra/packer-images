@@ -1,0 +1,51 @@
+---
+title: "Bump azure-cli version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest azure-cli version
+    spec:
+      owner: "Azure"
+      repository: "azure-cli"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: regex
+        ## Latest stable x.y.z version
+        pattern: 'azure-cli-(\d*)\.(\d*)\.(\d*)$'
+    transformers:
+      - trimPrefix: "azure-cli-"
+
+targets:
+  updateVersion:
+    name: "Update the azure-cli version in the provision-env.yml file"
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: "provision-env.yml"
+      key: "azurecli_version"
+    scmid: default
+
+pullrequests:
+  default:
+    kind: github
+    scmid: default
+    targets:
+      - updateVersion
+    spec:
+      labels:
+        - enhancement
+        - azure-cli
