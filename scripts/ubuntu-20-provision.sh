@@ -178,7 +178,7 @@ function install_jdk() {
 ## Ensure that docker-compose is installed (version from environment)
 function install_docker_compose(){
   curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
-    "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-Linux-x86_64"
+    "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-Linux-$(uname -m)"
   chmod a+x /usr/local/bin/docker-compose
 }
 

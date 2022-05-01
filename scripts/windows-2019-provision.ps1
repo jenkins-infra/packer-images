@@ -126,7 +126,7 @@ $downloads = [ordered]@{
         };
     };
     'dockercompose' = @{
-        'url' = 'https://github.com/docker/compose/releases/download/{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
+        'url' = 'https://github.com/docker/compose/releases/download/v{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
         'local' = "$baseDir\docker-compose";
     };
     'hadolint' = @{
