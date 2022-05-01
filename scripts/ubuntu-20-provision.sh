@@ -210,6 +210,15 @@ function install_cst() {
   chmod a+x /usr/local/bin/container-structure-test
 }
 
+## Ensure that jx-release-version is installed
+function install_jxreleaseversion() {
+  curl --fail --silent --location --show-error --output /tmp/jx-release-version.tgz \
+    "https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v${JXRELEASEVERSION_VERSION}/jx-release-version-linux-${ARCHITECTURE}.tar.gz"
+  tar -xzf /tmp/jx-release-version.tgz -C /tmp
+  cp /tmp/jx-release-version /usr/local/bin/jx-release-version
+  rm -rf /tmp/*
+}
+
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
   username=jenkins
@@ -258,6 +267,7 @@ function main() {
   install_maven
   install_hadolint
   install_cst
+  install_jxreleaseversion
   setuser
   cleanup
 }

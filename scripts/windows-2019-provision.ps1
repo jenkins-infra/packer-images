@@ -137,6 +137,11 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{0}/container-structure-test-windows-amd64.exe' -f $env:CST_VERSION;
         'local' = "$baseDir\container-structure-test";
     };
+    'jx-release-version' = @{
+        'url' = 'https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v{0}/jx-release-version-windows-amd64.zip' -f $env:JXRELEASEVERSION_VERSION;
+        'local' = "$baseDir\jx-release-version.zip";
+        'expandTo' = $baseDir;
+    };
 }
 
 ## Proceed to install tools
