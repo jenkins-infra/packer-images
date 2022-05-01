@@ -253,6 +253,28 @@ function cleanup() {
   sync
 }
 
+function sanity_check() {
+  echo "== Sanity Check of installed tools"
+  container-structure-test version
+  docker -v ## Client only
+  docker-compose -v
+  git --version
+  git-lfs --version
+  hadolint -v
+  java -version
+  jq --version
+  jx-release-version -version
+  make --version
+  mvn -v
+  parallel --version
+  python3 --version
+  unzip -v
+  zip -v
+  echo "== End of sanity check"
+  echo "== Installed packages:"
+  dpkg -l
+}
+
 function main() {
   check_commands
   copy_custom_scripts
@@ -273,3 +295,4 @@ function main() {
 }
 
 main
+sanity_check

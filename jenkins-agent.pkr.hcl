@@ -226,7 +226,6 @@ build {
     environment_vars = concat(local.provisionning_env_vars, ["DEBIAN_FRONTEND=noninteractive", "ARCHITECTURE=${var.architecture}"])
     execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./scripts/ubuntu-20-provision.sh"
-    max_retries      = 3 # Fight against APT errors
   }
 }
 
