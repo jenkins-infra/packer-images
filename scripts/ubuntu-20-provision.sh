@@ -179,6 +179,7 @@ function install_jdk() {
 function install_docker_compose(){
   curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
     "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-Linux-x86_64"
+  chmod a+x /usr/local/bin/docker-compose
 }
 
 ## Ensure that maven is installed and configured (version from environment)
@@ -189,6 +190,17 @@ function install_maven() {
   tar zxf "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" -C /usr/share/
   ln -s "/usr/share/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/bin/mvn
   rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
+}
+
+## Ensure that hadolint is installed
+function install_hadolint() {
+  hadolint_arch_suffix="${ARCHITECTURE}"
+  if [ "${hadolint_arch_suffix}" == "amd64" ]; then
+    hadolint_arch_suffix="x86_64"
+  fi
+  curl --fail --silent --location --show-error --output /usr/local/bin/hadolint \
+    "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-${hadolint_arch_suffix}"
+  chmod a+x /usr/local/bin/hadolint
 }
 
 ## Ensure that there is a user named "jenkins" created and configured
@@ -237,6 +249,7 @@ function main() {
   install_jdk
   install_docker_compose
   install_maven
+  install_hadolint
   setuser
   cleanup
 }

@@ -129,6 +129,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/docker/compose/releases/download/{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
         'local' = "$baseDir\docker-compose";
     };
+    'hadolint' = @{
+        'url' = 'https://github.com/hadolint/hadolint/releases/download/v{0}/hadolint-Windows-x86_64.exe' -f $env:HADOLINT_VERSION;
+        'local' = "$baseDir\hadolint";
+    };
 }
 
 ## Proceed to install tools
