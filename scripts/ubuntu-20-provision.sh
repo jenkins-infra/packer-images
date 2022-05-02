@@ -234,6 +234,15 @@ function install_azurecli() {
   python3 -m pip install --no-cache-dir azure-cli=="${AZURECLI_VERSION}"
 }
 
+## Ensure that the GitHub command line (`gh`) is installed
+function install_gh() {
+  curl --silent --show-error --location --output /tmp/gh.tar.gz \
+    "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${ARCHITECTURE}.tar.gz"
+  tar xvfz /tmp/gh.tar.gz -C /tmp
+  cp "/tmp/gh_${GH_VERSION}_linux_${ARCHITECTURE}/bin/gh" /usr/local/bin/gh
+  rm -rf /tmp/*
+}
+
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
   username=jenkins
@@ -274,6 +283,7 @@ function sanity_check() {
   container-structure-test version
   docker -v ## Client only
   docker-compose -v
+  gh --version
   git --version
   git-lfs --version
   hadolint -v
@@ -307,6 +317,7 @@ function main() {
   install_cst
   install_jxreleaseversion
   install_azurecli
+  install_gh
   setuser
   cleanup
 }

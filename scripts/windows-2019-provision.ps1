@@ -162,6 +162,16 @@ $downloads = [ordered]@{
             Start-Process msiexec.exe -Wait -ArgumentList "/i $baseDir\AzureCLI.msi /quiet /L*V C:\package.log";
         };
         'cleanuplocal' = 'true'
+    };
+    'gh' = @{
+        'url' = 'https://github.com/cli/cli/releases/download/v{0}/gh_{0}_windows_amd64.zip' -f $env:GH_VERSION;
+        'local' = "$baseDir\gh.zip";
+        'expandTo' = "$baseDir\gh.tmp";
+        'postexpand' = {
+            & Move-Item -Path "$baseDir\gh.tmp\bin\gh.exe" -Destination "$baseDir\gh.exe";
+            & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
+        };
+        'cleanuplocal' = 'true'
     }
 }
 
