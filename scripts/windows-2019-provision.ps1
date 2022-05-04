@@ -69,7 +69,7 @@ Start-Service sshd
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
 
 ## Prepare Tools Installation
-$baseDir = 'c:\tools'
+$baseDir = 'C:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 
 ## List of tools to use
@@ -81,6 +81,7 @@ $downloads = [ordered]@{
         'postexpand' = {
             & Move-Item -Path "$baseDir\jdk-11*" -Destination "$baseDir\jdk-11"
         };
+        'cleanuplocal' = 'true'
     };
     'jdk17' = @{
         'url' = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-{0}/OpenJDK17U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK17_VERSION),$env:JDK17_VERSION.Replace('+', '_');
@@ -89,15 +90,17 @@ $downloads = [ordered]@{
         'postexpand' = {
             & Move-Item -Path "$baseDir\jdk-17*" -Destination "$baseDir\jdk-17"
         };
+        'cleanuplocal' = 'true'
     };
     'jdk8' = @{
-        'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '')
+        'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '');
         'local' = "$baseDir\temurin8.zip";
         'expandTo' = $baseDir;
         'postexpand' = {
             & Move-Item -Path "$baseDir\jdk8*" -Destination "$baseDir\jdk-8"
         };
-    };
+        'cleanuplocal' = 'true'
+    }
     'maven' = @{
         'url' = 'https://archive.apache.org/dist/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
         'local' = "$baseDir\maven.zip";
@@ -106,29 +109,70 @@ $downloads = [ordered]@{
         'env' = @{
             'MAVEN_HOME' = '{0}\apache-maven-{1}' -f $baseDir,$env:MAVEN_VERSION;
         };
+        'cleanuplocal' = 'true'
     };
     'git' = @{
         'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_VERSION;
         'local' = "$baseDir\MinGit.zip";
         'expandTo' = "$baseDir\git";
         'postexpand' = {
-            & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false
-            & "$baseDir\git\cmd\git.exe" config --system core.longpaths true
+            & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false;
+            & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
         };
         'path' = "$baseDir\git\cmd";
+        'cleanuplocal' = 'true'
     };
     'gitlfs' = @{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
         'local' = "$baseDir\GitLfs.zip";
         'expandTo' = "$baseDir\git\mingw64\bin";
         'postexpand' = {
-            & "$baseDir\git\cmd\git.exe" lfs install
+            & "$baseDir\git\cmd\git.exe" lfs install;
         };
+        'cleanuplocal' = 'true'
     };
     'dockercompose' = @{
-        'url' = 'https://github.com/docker/compose/releases/download/{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
-        'local' = "$baseDir\docker-compose";
+        'url' = 'https://github.com/docker/compose/releases/download/v{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
+        'local' = "$baseDir\docker-compose.exe"
     };
+    'hadolint' = @{
+        'url' = 'https://github.com/hadolint/hadolint/releases/download/v{0}/hadolint-Windows-x86_64.exe' -f $env:HADOLINT_VERSION;
+        'local' = "$baseDir\hadolint.exe"
+    };
+    'cst' = @{
+        'url' = 'https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{0}/container-structure-test-windows-amd64.exe' -f $env:CST_VERSION;
+        'local' = "$baseDir\container-structure-test.exe"
+    };
+    'jx-release-version' = @{
+        'url' = 'https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v{0}/jx-release-version-windows-amd64.zip' -f $env:JXRELEASEVERSION_VERSION;
+        'local' = "$baseDir\jx-release-version.zip"
+        'expandTo' = $baseDir;
+        'cleanuplocal' = 'true'
+    };
+    'jq' = @{
+        'url' = 'https://github.com/stedolan/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
+        'local' = "$baseDir\jq.exe"
+    };
+    'az' = @{
+        'url' = 'https://azcliprod.blob.core.windows.net/msi/azure-cli-{0}.msi' -f $env:AZURECLI_VERSION;
+        'local' = "$baseDir\AzureCLI.msi";
+        'postexpand' = {
+            ## Add these options to msiexec.exe to write debug to the log file
+            # /L*V "C:\package.log"
+            Start-Process msiexec.exe -Wait -ArgumentList "/i $baseDir\AzureCLI.msi /quiet /L*V C:\package.log";
+        };
+        'cleanuplocal' = 'true'
+    };
+    'gh' = @{
+        'url' = 'https://github.com/cli/cli/releases/download/v{0}/gh_{0}_windows_amd64.zip' -f $env:GH_VERSION;
+        'local' = "$baseDir\gh.zip";
+        'expandTo' = "$baseDir\gh.tmp";
+        'postexpand' = {
+            & Move-Item -Path "$baseDir\gh.tmp\bin\gh.exe" -Destination "$baseDir\gh.exe";
+            & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
+        };
+        'cleanuplocal' = 'true'
+    }
 }
 
 ## Proceed to install tools
@@ -157,7 +201,9 @@ foreach($k in $downloads.Keys) {
         Invoke-Command $download['postexpand']
     }
 
-    Remove-Item -Force $download['local']
+    if($download.ContainsKey('cleanuplocal')) {
+        Remove-Item -Force $download['local']
+    }
 
     if($download.ContainsKey('env')) {
         foreach($name in $download['env'].Keys) {
@@ -192,17 +238,6 @@ foreach($line in Get-Content "$temp_authorized_keys_file") {
 }
 Remove-Item -Force "$temp_authorized_keys_file"
 
-## TODO: Cleanup
-# See. https://github.com/ajcarberry/packer-windows-2019/blob/master/scripts/cleanup.ps1
-## TODO: Disable WinRM
-# netsh advfirewall firewall set rule name="Windows Remote Management (HTTP-In)" new enable=yes action=block
-# # Delete any existing WinRM listeners
-# winrm delete winrm/config/listener?Address=*+Transport=HTTP  2>$Null
-# winrm delete winrm/config/listener?Address=*+Transport=HTTPS 2>$Null
-# #Stop WinRM Service
-# Stop-Service -Name WinRM
-# # Set-Service -Name winrm -StartupType Disabled
-
 ## Final information: print out status
 Write-Host "OS Version"
 [System.Environment]::OSVersion.Version
@@ -215,3 +250,23 @@ Select-Object -Property DeviceID, DriveType, VolumeName,
 
 Write-Host "Patch(s) installed"
 Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
+
+Write-Host "== Sanity Check of installed tools"
+& docker -v ## Client only
+
+& "$baseDir\git\cmd\git.exe" --version
+& "$baseDir\jdk-8\bin\java.exe" -version
+& "$baseDir\jdk-11\bin\java.exe" -version
+& "$baseDir\jdk-17\bin\java.exe" -version
+& "$baseDir\container-structure-test.exe" version
+& "$baseDir\hadolint.exe" --version
+& "$baseDir\docker-compose.exe" --version
+& "$baseDir\git\mingw64\bin\git-lfs.exe" --version
+& "$baseDir\jx-release-version" --version
+& "$baseDir\jq.exe" --version
+& "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\az.cmd" version
+
+## Maven requires the JAVA_HOME environment variable to be set. We use this value here: it is ephemeral.
+$env:JAVA_HOME = $defaultJavaHome
+$mavenBin = '{0}\apache-maven-{1}\bin\mvn.cmd' -f $baseDir,$env:MAVEN_VERSION
+& "$mavenBin" -v

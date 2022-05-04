@@ -15,25 +15,24 @@ scms:
 
 sources:
   gitVersion:
-    kind: githubRelease
+    kind: githubrelease
     name: Get the latest Git version
     spec:
       owner: "git"
       repository: "git"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
-      versionFilter:
+      versionfilter:
         # Latest version which is semver "stable" (removes any 'v' prefix)
         kind: semver
 
 targets:
   updateGitVersion:
     name: Update the Git version in the Packer default values
-    kind: file
+    kind: yaml
     spec:
-      file: ".auto.pkrvars.hcl"
-      matchPattern: "git_version(.*)=.*"
-      replacePattern: 'git_version$1= "{{ source `gitVersion` }}"'
+      file: "provision-env.yml"
+      key: "git_version"
     scmid: default
 
 pullrequests:
@@ -44,4 +43,5 @@ pullrequests:
       - updateGitVersion
     spec:
       labels:
-        - dependencies
+        - enhancement
+        - git

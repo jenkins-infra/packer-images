@@ -34,7 +34,7 @@ function install_package_version() {
     | head -n1 `# Only keep the most recent package which should be the first line` \
     | awk '{print $3}' `# Package version is the 3rd column` || { echo "ERROR: could not find version $2 for $1. Output of apt-cache madison is: $(apt-cache madison "${1}")"; exit 1; } )"
 
-  apt-get install -y --no-install-recommends "${1}=${package_version}"
+  apt-get install --yes --no-install-recommends "${1}=${package_version}"
 }
 
 ## Copy custom scripts
@@ -60,8 +60,8 @@ function clean_apt() {
 
 ## Ensure Docker is installed as per https://docs.docker.com/engine/install/ubuntu/
 function install_docker() {
-  apt-get update -q
-  apt-get install -y --no-install-recommends \
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends \
     ca-certificates \
     curl \
     gnupg \
@@ -74,23 +74,23 @@ function install_docker() {
   echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-  apt-get update -q
-  apt-get install -y --no-install-recommends docker-ce
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends docker-ce
 }
 
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
-  apt-get install -y --no-install-recommends \
+  apt-get install --yes --no-install-recommends \
     make \
     unzip \
     zip \
-    jq \
+    jq="${JQ_VERSION}*" `# This package exists for both intel and ARM on Ubuntu 20.04. Fix version to ensure constant behavior.` \
     parallel
 }
 
 ## setup qemu
 function install_qemu() {
-  apt-get install -y --no-install-recommends \
+  apt-get install --yes --no-install-recommends \
     qemu \
     binfmt-support \
     qemu-user-static
@@ -102,12 +102,13 @@ function install_qemu() {
 
 ## Install Python 3
 function install_python() {
-  apt-get install -y --no-install-recommends \
+  apt-get install --yes --no-install-recommends \
     python3 \
     python3-docker \
     python3-pip \
     python3-venv \
     python3-wheel
+  python3 -m pip install --no-cache-dir pip --upgrade
 }
 
 ## Install git and git-lfs
@@ -119,7 +120,7 @@ function install_git_gitlfs() {
     install_package_version git "${GIT_VERSION}"
   else
     ## No git version: install the latest git available in the default repos
-    apt-get install -y --no-install-recommends git
+    apt-get install --yes --no-install-recommends git
   fi
 
   ## Install git-lfs (after git)
@@ -135,7 +136,7 @@ function install_git_gitlfs() {
 
 function install_jdk() {
   ## Prevent Java null pointer exception due to missing fontconfig
-  apt-get install -y --no-install-recommends fontconfig
+  apt-get install --yes --no-install-recommends fontconfig
 
   ## OpenJDKs: Adoptium - https://adoptium.net/installation.html
   mkdir -p /opt/jdk-8 /opt/jdk-11 /opt/jdk-17
@@ -178,7 +179,8 @@ function install_jdk() {
 ## Ensure that docker-compose is installed (version from environment)
 function install_docker_compose(){
   curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
-    "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-Linux-x86_64"
+    "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-Linux-$(uname -m)"
+  chmod a+x /usr/local/bin/docker-compose
 }
 
 ## Ensure that maven is installed and configured (version from environment)
@@ -189,6 +191,56 @@ function install_maven() {
   tar zxf "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" -C /usr/share/
   ln -s "/usr/share/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/bin/mvn
   rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
+}
+
+## Ensure that hadolint is installed
+function install_hadolint() {
+  hadolint_arch_suffix="${ARCHITECTURE}"
+  if [ "${hadolint_arch_suffix}" == "amd64" ]; then
+    hadolint_arch_suffix="x86_64"
+  fi
+  curl --fail --silent --location --show-error --output /usr/local/bin/hadolint \
+    "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-${hadolint_arch_suffix}"
+  chmod a+x /usr/local/bin/hadolint
+}
+
+## Ensure that google container-structure-test is installed
+function install_cst() {
+  curl --fail --silent --location --show-error --output /usr/local/bin/container-structure-test \
+    "https://github.com/GoogleContainerTools/container-structure-test/releases/download/v${CST_VERSION}/container-structure-test-linux-${ARCHITECTURE}"
+  chmod a+x /usr/local/bin/container-structure-test
+}
+
+## Ensure that jx-release-version is installed
+function install_jxreleaseversion() {
+  curl --fail --silent --location --show-error --output /tmp/jx-release-version.tgz \
+    "https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v${JXRELEASEVERSION_VERSION}/jx-release-version-linux-${ARCHITECTURE}.tar.gz"
+  tar -xzf /tmp/jx-release-version.tgz -C /tmp
+  cp /tmp/jx-release-version /usr/local/bin/jx-release-version
+  rm -rf /tmp/*
+}
+
+## Ensure that azure-cli is installed
+function install_azurecli() {
+  ## From https://github.com/Azure/azure-cli/issues/7368#issuecomment-921578936
+  apt-get install --yes --no-install-recommends \
+    gcc \
+    libffi-dev \
+    libsodium-dev \
+    python3-dev
+  export SODIUM_INSTALL="system"
+  python3 -m pip install --no-cache-dir pynacl
+  # Using the Python installation to ensure that both Intel and ARM are supported (Microsoft only provides a package for Intel)
+  python3 -m pip install --no-cache-dir azure-cli=="${AZURECLI_VERSION}"
+}
+
+## Ensure that the GitHub command line (`gh`) is installed
+function install_gh() {
+  curl --silent --show-error --location --output /tmp/gh.tar.gz \
+    "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${ARCHITECTURE}.tar.gz"
+  tar xvfz /tmp/gh.tar.gz -C /tmp
+  cp "/tmp/gh_${GH_VERSION}_linux_${ARCHITECTURE}/bin/gh" /usr/local/bin/gh
+  rm -rf /tmp/*
 }
 
 ## Ensure that there is a user named "jenkins" created and configured
@@ -225,6 +277,30 @@ function cleanup() {
   sync
 }
 
+function sanity_check() {
+  echo "== Sanity Check of installed tools"
+  az --version
+  container-structure-test version
+  docker -v ## Client only
+  docker-compose -v
+  gh --version
+  git --version
+  git-lfs --version
+  hadolint -v
+  java -version
+  jq --version
+  jx-release-version -version
+  make --version
+  mvn -v
+  parallel --version
+  python3 --version
+  unzip -v
+  zip -v
+  echo "== End of sanity check"
+  echo "== Installed packages:"
+  dpkg -l
+}
+
 function main() {
   check_commands
   copy_custom_scripts
@@ -237,8 +313,14 @@ function main() {
   install_jdk
   install_docker_compose
   install_maven
+  install_hadolint
+  install_cst
+  install_jxreleaseversion
+  install_azurecli
+  install_gh
   setuser
   cleanup
 }
 
 main
+sanity_check

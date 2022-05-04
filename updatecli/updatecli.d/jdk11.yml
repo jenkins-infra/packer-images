@@ -15,14 +15,14 @@ scms:
 
 sources:
   JDK11Version:
-    kind: githubRelease
+    kind: githubrelease
     name: Get the latest Adoptium JDK11 version
     spec:
       owner: "adoptium"
       repository: "temurin11-binaries"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
-      versionFilter:
+      versionfilter:
         kind: regex
         # jdk-11.0.12+7(https://github.com/adoptium/temurin11-binaries/releases/tag/jdk-11.0.12%2B7) is OK
         pattern: "^jdk-11.(\\d*).(\\d*).(\\d*)+(\\d*)$"
@@ -38,11 +38,10 @@ conditions:
 targets:
   updateJDK11Version:
     name: Update the JDK11 version in the Packer default values
-    kind: file
+    kind: yaml
     spec:
-      file: ".auto.pkrvars.hcl"
-      matchPattern: "jdk11_version(.*)=.*"
-      replacePattern: 'jdk11_version$1= "{{ source `JDK11Version` }}"'
+      file: "provision-env.yml"
+      key: "jdk11_version"
     scmid: default
 
 pullrequests:
@@ -53,4 +52,5 @@ pullrequests:
       - updateJDK11Version
     spec:
       labels:
-        - dependencies
+        - enhancement
+        - jdk11

@@ -1,5 +1,5 @@
 ---
-title: "Bump Git-LFS version"
+title: "Bump GitHub CLI (gh) version"
 
 scms:
   default:
@@ -14,25 +14,25 @@ scms:
       branch: "{{ .github.branch }}"
 
 sources:
-  gitLfsVersion:
+  lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest Git-LFS version
+    name: Get the latest GitHub CLI (gh) release version
     spec:
-      owner: "git-lfs"
-      repository: "git-lfs"
+      owner: "cli"
+      repository: "cli"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
-        # Latest version which is semver "stable" (removes any 'v' prefix)
         kind: semver
 
 targets:
-  updateGitLfsVersion:
-    name: Update the Git-LFS version in the Packer default values
+  updateVersion:
+    name: "Update the GitHub CLI (gh) version in the provision-env.yml file"
+    sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provision-env.yml"
-      key: "git_lfs_version"
+      key: "gh_version"
     scmid: default
 
 pullrequests:
@@ -40,8 +40,9 @@ pullrequests:
     kind: github
     scmid: default
     targets:
-      - updateGitLfsVersion
+      - updateVersion
     spec:
       labels:
         - enhancement
-        - git-lfs
+        - gh
+        - github-cli

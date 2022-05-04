@@ -25,35 +25,10 @@ variable "agent" {
   description = "Which agent to build: ubuntu-20 (default), windows-2019."
   default     = "ubuntu-20"
 }
-variable "compose_version" {
-  type = string
-}
-variable "maven_version" {
-  type = string
-}
-variable "git_lfs_version" {
-  type = string
-}
 variable "architecture" {
   type        = string
   description = "CPU architecture ID of the build with the following possible values: [amd64 (default), arm64]"
   default     = "amd64"
-}
-variable "git_version" {
-  type = string
-}
-variable "jdk11_version" {
-  type = string
-}
-variable "default_jdk" {
-  description = "Major version of the default JDK to use"
-  type        = string
-}
-variable "jdk17_version" {
-  type = string
-}
-variable "jdk8_version" {
-  type = string
 }
 variable "aws_region" {
   type    = string
@@ -80,10 +55,6 @@ variable "image_type" {
   description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs (default), azure-arm, docker]"
   default     = "amazon-ebs"
 }
-variable "openssh_authorized_keys_url" {
-  type        = string
-  description = "URL to an authorized keys file to be used as default for SSH authentication of the agents"
-}
 variable "build_type" {
   type        = string
   description = "Type of build e.g. is it a development build (from a contributor machine), a ci build (pull request or branch build) or a production build (principal branch build on ci)?"
@@ -92,6 +63,11 @@ variable "build_type" {
 variable "scm_ref" {
   type        = string
   description = "SCM (e.g. Git...) reference of the current build. Can be a commit hash (short or long), a branch name or a tag name."
+}
+variable "provision_env_file" {
+  type        = string
+  description = "Path (absolute or relative to this packer template) to the YAML file with the list of environment variables forwarded to provisionners (mainly tools versions)"
+  default     = "provision-env.yml"
 }
 
 locals {
@@ -112,7 +88,8 @@ locals {
     "staging_packer_images" = ["East US", "East US 2"] # Only the "main" branch, should map the production as much as possible
     "dev_packer_images"     = ["East US"]              # Faster builds for branches, pull requests or local development
   }
-  os_disk_size_gb = 90 # less than 100 Gb to allow more instance sizes that have a temp cache < 100 Gb such as DS4_v3
+  os_disk_size_gb        = 90 # less than 100 Gb to allow more instance sizes that have a temp cache < 100 Gb such as DS4_v3
+  provisionning_env_vars = [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"]
 }
 
 data "amazon-ami" "ubuntu-20" {
@@ -227,11 +204,9 @@ build {
 
   provisioner "shell" {
     # steps for docker images
-    only = ["docker.ubuntu-20"]
-    environment_vars = [
-      "DEBIAN_FRONTEND=noninteractive",
-    ]
-    # adding sudo and bash for docker software-properties-common 
+    only             = ["docker.ubuntu-20"]
+    environment_vars = concat(local.provisionning_env_vars, ["DEBIAN_FRONTEND=noninteractive", "ARCHITECTURE=${var.architecture}"])
+    # adding sudo and bash for docker software-properties-common
     inline = [
       "apt update && apt install -y sudo curl bash software-properties-common",
     ]
@@ -239,39 +214,19 @@ build {
 
   provisioner "file" {
     source      = "./scripts/add_auth_key_to_user.sh"
-    destination = "/tmp/add_auth_key_to_user.sh" 
+    destination = "/tmp/add_auth_key_to_user.sh"
   }
 
   provisioner "file" {
     source      = "./scripts/docker.gpg"
-    destination = "/tmp/docker.gpg" 
+    destination = "/tmp/docker.gpg"
   }
 
   provisioner "shell" {
-    environment_vars = [
-      "MAVEN_VERSION=${var.maven_version}",
-      "GIT_VERSION=${var.git_version}",
-      "JDK8_VERSION=${var.jdk8_version}",
-      "JDK11_VERSION=${var.jdk11_version}",
-      "JDK17_VERSION=${var.jdk17_version}",
-      "DEFAULT_JDK=${var.default_jdk}",
-      "GIT_LFS_VERSION=${var.git_lfs_version}",
-      "COMPOSE_VERSION=${var.compose_version}",
-      "ARCHITECTURE=${var.architecture}",
-      "CLOUD_TYPE=${var.image_type}",
-      "OPENSSH_AUTHORIZED_KEYS_URL=${var.openssh_authorized_keys_url}",
-    ]
-    execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-    script          = "./scripts/ubuntu-20-provision.sh"
-    max_retries     = 3 # Fight against APT errors
+    environment_vars = concat(local.provisionning_env_vars, ["DEBIAN_FRONTEND=noninteractive", "ARCHITECTURE=${var.architecture}"])
+    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+    script           = "./scripts/ubuntu-20-provision.sh"
   }
-
-  #for later use with correct repository
-  #post-processor "docker-tag" {
-  #  repository = "packer-cb"
-  #  tags       = ["ubuntu-focal-nodejs"]
-  #  only       = ["docker.ubuntu-focal"]
-  #}
 }
 
 build {
@@ -313,18 +268,7 @@ build {
   }
 
   provisioner "powershell" {
-    environment_vars = [
-      "MAVEN_VERSION=${var.maven_version}",
-      "GIT_VERSION=${var.git_version}",
-      "JDK8_VERSION=${var.jdk8_version}",
-      "JDK11_VERSION=${var.jdk11_version}",
-      "JDK17_VERSION=${var.jdk17_version}",
-      "DEFAULT_JDK=${var.default_jdk}",
-      "GIT_LFS_VERSION=${var.git_lfs_version}",
-      "COMPOSE_VERSION=${var.compose_version}",
-      "CLOUD_TYPE=${var.image_type}",
-      "OPENSSH_AUTHORIZED_KEYS_URL=${var.openssh_authorized_keys_url}",
-    ]
+    environment_vars  = concat(local.provisionning_env_vars, ["CLOUD_TYPE=${var.image_type}"])
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
     script            = "./scripts/windows-2019-provision.ps1"

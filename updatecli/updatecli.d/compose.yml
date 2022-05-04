@@ -15,27 +15,24 @@ scms:
 
 sources:
   dockerComposeVersion:
-    kind: githubRelease
+    kind: githubrelease
     name: Get the latest Docker Compose version
     spec:
       owner: "docker"
       repository: "compose"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
-      versionFilter:
+      versionfilter:
         ## Semver removes any 'v' prefix and get the latest version following semantic
         kind: semver
-        ## Only check for 1.x.y versions
-        pattern: "~1"
 
 targets:
   updateDockerComposeVersion:
     name: Update the DockerCompose version in the Packer default values
-    kind: file
+    kind: yaml
     spec:
-      file: ".auto.pkrvars.hcl"
-      matchPattern: "compose_version(.*)=.*"
-      replacePattern: 'compose_version$1= "{{ source `dockerComposeVersion` }}"'
+      file: "provision-env.yml"
+      key: "compose_version"
     scmid: default
 
 pullrequests:
@@ -46,4 +43,5 @@ pullrequests:
       - updateDockerComposeVersion
     spec:
       labels:
-        - dependencies
+        - enhancement
+        - docker-compose
