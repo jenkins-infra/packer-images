@@ -40,13 +40,13 @@ pipeline {
             PACKER_AZURE = credentials('packer-azure-serviceprincipal')
             DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
           }
-          
+
           agent {
             kubernetes {
               yamlFile 'CiPodTemplate.yaml'
             }
           }
-          
+
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
               sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
@@ -137,7 +137,6 @@ pipeline {
           PACKER_VARS_FILE              = ".auto.pkrvars.hcl"
           // Reuse the updatecli Github token to ensure that packer init does not hit the rate limit
           GITHUB_IAT_TOKEN              = credentials('github-app-infra')
-          PACKER_GITHUB_API_TOKEN       = "${GITHUB_IAT_TOKEN_PSW}"
         }
         stages {
           stage('Prepare on primary branch') {
@@ -164,15 +163,19 @@ pipeline {
           }
           stage('Prepare and Report') {
             steps {
-              sh '''
-              echo 'scm_ref = "'"$(git rev-parse --short --verify HEAD)"'"' >> "${PACKER_VARS_FILE}"
-              ./run-packer.sh report
-              '''
+              withEnv(["PACKER_GITHUB_API_TOKEN=${GITHUB_IAT_TOKEN_PSW}"]) {
+                sh '''
+                echo 'scm_ref = "'"$(git rev-parse --short --verify HEAD)"'"' >> "${PACKER_VARS_FILE}"
+                ./run-packer.sh report
+                '''
+              }
             }
           }
           stage('Validate') {
             steps {
-              sh './run-packer.sh validate'
+              withEnv(["PACKER_GITHUB_API_TOKEN=${GITHUB_IAT_TOKEN_PSW}"]) {
+                sh './run-packer.sh validate'
+              }
             }
           }
           stage('Build') {
@@ -183,7 +186,9 @@ pipeline {
                 clientSecretVariable: 'PKR_VAR_azure_client_secret',
                 subscriptionIdVariable: 'PKR_VAR_azure_subscription_id'
               )]) {
-                sh './run-packer.sh build'
+                withEnv(["PACKER_GITHUB_API_TOKEN=${GITHUB_IAT_TOKEN_PSW}"]) {
+                  sh './run-packer.sh build'
+                }
               }
             }
           }
