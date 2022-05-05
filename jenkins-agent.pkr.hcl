@@ -88,7 +88,7 @@ locals {
     "staging_packer_images" = ["East US", "East US 2"] # Only the "main" branch, should map the production as much as possible
     "dev_packer_images"     = ["East US"]              # Faster builds for branches, pull requests or local development
   }
-  os_disk_size_gb        = 90 # less than 100 Gb to allow more instance sizes that have a temp cache < 100 Gb such as DS4_v3
+  windows_disk_size_gb   = 128 # Must be greater than 127 Gb to allow Azure template to work with
   provisionning_env_vars = [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"]
 }
 
@@ -114,6 +114,7 @@ data "amazon-ami" "windows-2019" {
   region      = var.aws_region
 }
 
+# This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
   instance_type = local.aws_instance_type[var.architecture]
@@ -121,7 +122,7 @@ source "amazon-ebs" "base" {
   launch_block_device_mappings {
     delete_on_termination = true
     device_name           = "/dev/sda1"
-    volume_size           = local.os_disk_size_gb
+    volume_size           = local.windows_disk_size_gb
     volume_type           = "gp2"
   }
   # Where to build the VM
@@ -248,7 +249,7 @@ build {
     image_sku       = "2019-datacenter-core-with-containers-smalldisk-g2"
     vm_size         = local.azure_vm_size
     os_type         = "Windows"
-    os_disk_size_gb = local.os_disk_size_gb
+    os_disk_size_gb = local.windows_disk_size_gb
     winrm_insecure  = true
     winrm_timeout   = "20m"
     winrm_use_ssl   = true
