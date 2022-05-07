@@ -10,7 +10,7 @@ set -eux -o pipefail
 packer_cmd="packer"
 packer_template_dir="./"
 packer_install_dir="/$HOME"
-packer_version="1.7.8"
+packer_version="1.8.0"
 
 export PKR_VAR_scm_ref PKR_VAR_image_type PKR_VAR_agent
 
@@ -36,7 +36,7 @@ then
     elif [[ $arch == aarch64 ]]; then
         echo "ARM Architecture 64b"
         packer_download_path="https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_arm64.zip"
-    else 
+    else
         echo "Architecture not found"
         exit 2
     fi
