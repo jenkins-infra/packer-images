@@ -7,6 +7,16 @@ if (env.BRANCH_IS_PRIMARY) {
   ])
 }
 
+final String podAgentDefinition = '''
+apiVersion: v1
+kind: Pod
+spec:
+  automountServiceAccountToken: false
+  containers:
+    - name: jnlp
+      image: jenkinsciinfra/hashicorp-tools:latest
+'''
+
 pipeline {
   agent none
   options {
@@ -15,18 +25,20 @@ pipeline {
   }
   stages {
     stage('Side Tasks') {
+      environment {
+        DRYRUN = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
+      }
       parallel {
         stage('GC on AWS us-east-2') {
           agent {
             kubernetes {
-              yamlFile 'CiPodTemplate.yaml'
+              yaml podAgentDefinition
             }
           }
           environment {
             AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
             AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
             AWS_DEFAULT_REGION    = 'us-east-2'
-            DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
           }
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
@@ -36,17 +48,14 @@ pipeline {
           }
         }
         stage('GC on Azure') {
-          environment {
-            PACKER_AZURE = credentials('packer-azure-serviceprincipal')
-            DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
-          }
-
           agent {
             kubernetes {
-              yamlFile 'CiPodTemplate.yaml'
+              yaml podAgentDefinition
             }
           }
-
+          environment {
+            PACKER_AZURE = credentials('packer-azure-serviceprincipal')
+          }
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
               sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
@@ -73,15 +82,15 @@ pipeline {
       matrix {
         axes {
           axis {
-            name 'PKR_VAR_architecture'
+            name 'cpu_architecture'
             values 'amd64', 'arm64'
           }
           axis {
-            name 'PKR_VAR_agent'
-            values 'ubuntu-20', 'windows-2019'
+            name 'agent_type'
+            values 'ubuntu-20.04', 'windows-2019'
           }
           axis {
-            name 'PKR_VAR_image_type'
+            name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
             values 'amazon-ebs', 'azure-arm', 'docker'
           }
@@ -90,84 +99,90 @@ pipeline {
           // Do NOT build ARM images in Azure
           exclude {
             axis {
-              name 'PKR_VAR_architecture'
+              name 'cpu_architecture'
               values 'arm64'
             }
             axis {
-              name 'PKR_VAR_image_type'
+              name 'compute_type'
               values 'azure-arm'
             }
           }
           // Only build Ubuntu images for arm64 CPU in AWS
           exclude {
             axis {
-              name 'PKR_VAR_architecture'
+              name 'cpu_architecture'
               values 'arm64'
             }
             axis {
-              name 'PKR_VAR_agent'
-              notValues 'ubuntu-20'
+              name 'agent_type'
+              notValues 'ubuntu-20.04'
             }
             axis {
-              name 'PKR_VAR_image_type'
+              name 'compute_type'
               values 'amazon-ebs'
             }
           }
           // No build on Windows or Docker, not yet implemented
           exclude {
             axis {
-              name 'PKR_VAR_agent'
+              name 'agent_type'
               values 'windows-2019'
             }
             axis {
-              name 'PKR_VAR_image_type'
+              name 'compute_type'
               values 'docker'
             }
           }
         }
         agent {
-          // Temporary forcing exception for windows/docker which is not finished yet
-          label "${env.PKR_VAR_agent == 'windows-2019' && env.PKR_VAR_image_type == 'docker' ? 'windows' : 'linux'}-${PKR_VAR_architecture}-docker"
+          label "linux-${env.cpu_architecture}-docker"
         }
         environment {
           AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
           AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
-          PACKER_HOME_DIR               = "/tmp/packer.d.${PKR_VAR_image_type}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
-          PACKER_PLUGIN_PATH            = "${PACKER_HOME_DIR}/plugins"
           // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
           // Re.f https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
           PKR_VAR_build_type            = "${env.TAG_NAME ? 'prod' : (env.BRANCH_IS_PRIMARY ? 'staging' : 'dev') }"
           PKR_VAR_image_version         = "${env.TAG_NAME ?: ''}"
           PKR_VAR_scm_ref               = "${env.GIT_COMMIT}"
-          // Reuse the updatecli Github token to ensure that packer init does not hit the rate limit
-          GITHUB_IAT_TOKEN              = credentials('github-app-infra')
+          PKR_VAR_agent_os_type         = "${env.agent_type.split('-')[0]}"
+          PKR_VAR_agent_os_version      = "${env.agent_type.split('-')[1]}"
+          PKR_VAR_architecture          = "${env.cpu_architecture}"
+          PKR_VAR_image_type            = "${env.compute_type}"
+          PATH                          = "${WORKSPACE}/.bin:${env.PATH}" // Required if packer needs to be installed
         }
         stages {
-          stage('Prepare and Report') {
+          stage('Build Template') {
             steps {
-              withEnv(["PACKER_GITHUB_API_TOKEN=${GITHUB_IAT_TOKEN_PSW}"]) {
-                sh './run-packer.sh report'
-              }
-            }
-          }
-          stage('Validate') {
-            steps {
-              withEnv(["PACKER_GITHUB_API_TOKEN=${GITHUB_IAT_TOKEN_PSW}"]) {
-                sh './run-packer.sh validate'
-              }
-            }
-          }
-          stage('Build') {
-            steps {
+              // Pass the Azure credentials through Packer Input variables, as environment variables prefixed with 'PKR_VAR_'
+                // Re.f https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
               withCredentials([azureServicePrincipal(
                 credentialsId: 'packer-azure-serviceprincipal',
                 clientIdVariable: 'PKR_VAR_azure_client_id',
                 clientSecretVariable: 'PKR_VAR_azure_client_secret',
                 subscriptionIdVariable: 'PKR_VAR_azure_subscription_id'
-              )]) {
-                withEnv(["PACKER_GITHUB_API_TOKEN=${GITHUB_IAT_TOKEN_PSW}"]) {
-                  sh './run-packer.sh build'
+              ),]) {
+                // Required if packer needs to be installed
+                sh 'command -v packer >/dev/null 2>&1 || bash ./install-packer.sh "${WORKSPACE}/.bin" "1.8.0"'
+
+                // Help auditing pipeline execution
+                sh '''
+                echo "= Current Packer environment:"
+                env | grep -i PKR_VAR
+                env | grep -i PACKER
+                '''
+
+                // Initialize the project. To avoid hitting GitHub APi rate limit, Packer authenticates
+                // with an API token (auto-generated IAT, valid for 1 hour) provided to the environment variable PACKER_GITHUB_API_TOKEN
+                withCredentials([usernamePassword(credentialsId: 'github-app-infra',usernameVariable: 'UNUSED',passwordVariable: 'PACKER_GITHUB_API_TOKEN')]) {
+                  sh 'packer init ./'
                 }
+
+                // Validate template (for all elements)
+                sh 'packer validate ./'
+
+                // Execute build only for this matrix cell's setup
+                sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
               }
             }
           }
