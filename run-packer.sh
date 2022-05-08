@@ -46,7 +46,7 @@ then
   fi
 fi
 
-## Always run initialization to ensure plugins are download and workspace is set up
+## Always run initialization to ensure plugins are downloaded and workspace is set up
 $packer_cmd init "${packer_template_dir}"
 
 ## Define Packer flags based on the current environment (look at the `Jenkinsfile` to diagnose the pipeline)
@@ -73,9 +73,6 @@ case $1 in
     echo "= Current Packer environment:"
     env | grep -i PKR_VAR
     env | grep -i PACKER
-    PACKER_VARS_FILE=.auto.pkrvars.hcl
-    echo "= Current Packer var file ${PACKER_VARS_FILE} =="
-    cat "${PACKER_VARS_FILE}"
     ;;
   *)
     echo "Error: Packer action '$1' is unknown."

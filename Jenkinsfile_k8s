@@ -134,40 +134,19 @@ pipeline {
           AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
           PACKER_HOME_DIR               = "/tmp/packer.d.${PKR_VAR_image_type}.${PKR_VAR_architecture}.${PKR_VAR_agent}"
           PACKER_PLUGIN_PATH            = "${PACKER_HOME_DIR}/plugins"
-          PACKER_VARS_FILE              = ".auto.pkrvars.hcl"
+          // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
+          // Re.f https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
+          PKR_VAR_build_type            = "${env.TAG_NAME ? 'prod' : (env.BRANCH_IS_PRIMARY ? 'staging' : 'dev') }"
+          PKR_VAR_image_version         = "${env.TAG_NAME ?: ''}"
+          PKR_VAR_scm_ref               = "${env.GIT_COMMIT}"
           // Reuse the updatecli Github token to ensure that packer init does not hit the rate limit
           GITHUB_IAT_TOKEN              = credentials('github-app-infra')
         }
         stages {
-          stage('Prepare on primary branch') {
-            when {
-              expression { env.BRANCH_IS_PRIMARY }
-            }
-            steps {
-              sh '''
-              echo 'build_type = "staging"' >> "${PACKER_VARS_FILE}"
-              '''
-            }
-          }
-          stage('Prepare on Tag') {
-            when {
-              buildingTag()
-            }
-            steps {
-              sh '''
-              set -eu
-              echo 'build_type = "prod"' >> "${PACKER_VARS_FILE}"
-              echo 'image_version = "'${TAG_NAME}'"' >> "${PACKER_VARS_FILE}"
-              '''
-            }
-          }
           stage('Prepare and Report') {
             steps {
               withEnv(["PACKER_GITHUB_API_TOKEN=${GITHUB_IAT_TOKEN_PSW}"]) {
-                sh '''
-                echo 'scm_ref = "'"$(git rev-parse --short --verify HEAD)"'"' >> "${PACKER_VARS_FILE}"
-                ./run-packer.sh report
-                '''
+                sh './run-packer.sh report'
               }
             }
           }
