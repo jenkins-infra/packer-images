@@ -112,7 +112,7 @@ $downloads = [ordered]@{
         'cleanuplocal' = 'true'
     };
     'git' = @{
-        'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_VERSION;
+        'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION;
         'local' = "$baseDir\MinGit.zip";
         'expandTo' = "$baseDir\git";
         'postexpand' = {

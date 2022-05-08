@@ -18,21 +18,25 @@ sources:
     kind: githubrelease
     name: Get the latest Git version
     spec:
-      owner: "git"
+      owner: "git-for-windows"
       repository: "git"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
-        # Latest version which is semver "stable" (removes any 'v' prefix)
-        kind: semver
+        kind: regex
+        ## Latest stable v{x.y.z}.windows.1
+        pattern: 'v(\d*)\.(\d*)\.(\d*)\.windows\.1$'
+    transformers:
+      - trimPrefix: "v"
+      - trimSuffix: ".windows.1"
 
 targets:
   updateGitVersion:
-    name: Update the Git version in the Packer default values
+    name: Update the Git Windows version in the Packer default values
     kind: yaml
     spec:
       file: "provision-env.yml"
-      key: "git_version"
+      key: "git_windows_version"
     scmid: default
 
 pullrequests:
@@ -45,3 +49,4 @@ pullrequests:
       labels:
         - enhancement
         - git
+        - windows
