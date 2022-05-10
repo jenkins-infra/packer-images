@@ -181,7 +181,7 @@ $downloads = [ordered]@{
     };
     'chocolatey' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
-        'local' = "$baseDir\chocolatey.nupkg";
+        'local' = "$baseDir\chocolatey.zip";
         'expandTo' = "$baseDir\chocolatey.tmp";
         'postexpand' = {
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
