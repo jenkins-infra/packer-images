@@ -234,7 +234,7 @@ foreach($k in $downloads.Keys) {
     }
 }
 
-## Add $basePath to PATH
+## Add tools folder to PATH
 AddToPath $baseDir
 
 ## Sets the default JDK
