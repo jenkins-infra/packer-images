@@ -59,6 +59,12 @@ Function DownloadFile($url, $targetFile) {
     }
 }
 
+Function AddToPath($path) {
+    $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+    $newPath = '{0};{1}' -f $path,$oldPath
+    Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
+}
+
 # Install OpenSSH (from Windows Features)
 Write-Output "Setting up OpenSSH Server"
 Write-Host "(host) setting up OpenSSH Server"
@@ -172,7 +178,18 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
         };
         'cleanuplocal' = 'true'
-    }
+    };
+    'chocolatey' = @{
+        'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
+        'local' = "$baseDir\chocolatey.nupkg";
+        'expandTo' = "$baseDir\chocolatey.tmp";
+        'postexpand' = {
+            & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
+            & "choco install make"; # -- version $env:MAKE_VERSION";
+            & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
+        };
+        'cleanuplocal' = 'true'
+    };
 }
 
 ## Proceed to install tools
@@ -213,20 +230,17 @@ foreach($k in $downloads.Keys) {
     }
 
     if($download.ContainsKey('path')) {
-        $path = $download['path']
-        $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-        $newPath = "$oldPath;$path"
-        Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
+        AddToPath $download['path']
     }
 }
+
+## Add $basePath to PATH
+AddToPath $baseDir
 
 ## Sets the default JDK
 $defaultJavaHome = '{0}\jdk-{1}' -f $baseDir,$env:DEFAULT_JDK
 $defaultJavaBinPath = '{0}\bin' -f $defaultJavaHome
-# Path
-$oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-$newPath = '{0};{1}' -f $defaultJavaBinPath,$oldPath
-Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
+AddToPath $defaultJavaBinPath
 # env JAVA_HOME
 New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name 'JAVA_HOME' -Value $defaultJavaHome | Out-Null
 
