@@ -223,13 +223,14 @@ $downloads = [ordered]@{
             & "gh.exe" -version;
         }
     };
-    'chocolatey' = @{
+    'chocolatey-and-make-for-windows' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
         'expandTo' = "$baseDir\chocolatey.tmp";
         'postexpand' = {
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
-            & "C:\ProgramData\chocolatey\bin\choco.exe" install make; # -- version $env:MAKE_VERSION";
+            # Installation of make for Windows with Chocolatey
+            & "C:\ProgramData\chocolatey\bin\choco.exe" install make --version "$env:CHOCOLATEY_MAKE_VERSION;
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanuplocal' = 'true'
