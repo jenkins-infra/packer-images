@@ -228,6 +228,7 @@ $downloads = [ordered]@{
         'local' = "$baseDir\chocolatey.zip";
         'expandTo' = "$baseDir\chocolatey.tmp";
         'postexpand' = {
+            # Installation of Chocolatey
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
             # Installation of make for Windows with Chocolatey
             & "C:\ProgramData\chocolatey\bin\choco.exe" install make --version "$env:CHOCOLATEY_MAKE_VERSION;
