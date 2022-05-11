@@ -229,12 +229,12 @@ $downloads = [ordered]@{
         'expandTo' = "$baseDir\chocolatey.tmp";
         'postexpand' = {
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
-            & "C:\ProgramData\Chocolatey\choco.exe install make"; # -- version $env:MAKE_VERSION";
+            & "C:\ProgramData\chocolatey\bin\choco.exe" install make; # -- version $env:MAKE_VERSION";
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanuplocal' = 'true'
         'sanityCheck'= {
-            & "choco.exe" -version;
+            & "choco.exe";
             & "make.exe" -version;
         }
     };
