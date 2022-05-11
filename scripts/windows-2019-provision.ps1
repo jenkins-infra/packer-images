@@ -319,7 +319,7 @@ Write-Host "== Sanity Check of installed tools"
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('sanityCheck')) {
-        echo "Sanity check for $k:"
+        echo "Sanity check for $k"
         Invoke-Command $download['sanityCheck']
     }
 }
