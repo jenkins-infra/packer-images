@@ -27,7 +27,7 @@ sources:
         ## Latest stable x.y.z version
         pattern: 'chocolatey-(\d*)\.(\d*)$'
     transformers:
-      - trimprefix: "chocolatey-"
+      - trimPrefix: "chocolatey-"
 
 targets:
   updateVersion:

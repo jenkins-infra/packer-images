@@ -25,7 +25,7 @@ sources:
       versionfilter:
         kind: latest
     transformers:
-      - trimprefix: "maven-"
+      - trimPrefix: "maven-"
 
 conditions:
   checkIfReleaseIsAvailable:
