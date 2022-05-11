@@ -4,7 +4,7 @@ $ErrorActionPreference = 'Stop'
 ## Uncomment to enable Verbose mode - equivalent of "set -x"
 # https://stackoverflow.com/questions/41324882/how-to-run-a-powershell-script-with-verbose-output
 # $VerbosePreference="Continue"
-# Set-PSDebug -Trace 1
+Set-PSDebug -Trace 1
 
 ## Enable unprivileged actions for this script
 # See https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.1
