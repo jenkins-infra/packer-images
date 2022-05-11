@@ -244,6 +244,15 @@ $downloads = [ordered]@{
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed
 AddToPath $baseDir
 
+## Sets the default JDK
+$defaultJavaHome = '{0}\jdk-{1}' -f $baseDir,$env:DEFAULT_JDK
+$defaultJavaBinPath = '{0}\bin' -f $defaultJavaHome
+AddToPath $defaultJavaBinPath
+# env JAVA_HOME
+New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name 'JAVA_HOME' -Value $defaultJavaHome | Out-Null
+## Maven requires the JAVA_HOME environment variable to be set. We use this value here: it is ephemeral.
+$env:JAVA_HOME = $defaultJavaHome
+
 ## Proceed to install tools
 # TODO: foreach in parallel for downloads
 foreach($k in $downloads.Keys) {
@@ -285,13 +294,6 @@ foreach($k in $downloads.Keys) {
         AddToPath $download['path']
     }
 }
-
-## Sets the default JDK
-$defaultJavaHome = '{0}\jdk-{1}' -f $baseDir,$env:DEFAULT_JDK
-$defaultJavaBinPath = '{0}\bin' -f $defaultJavaHome
-AddToPath $defaultJavaBinPath
-# env JAVA_HOME
-New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name 'JAVA_HOME' -Value $defaultJavaHome | Out-Null
 
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
