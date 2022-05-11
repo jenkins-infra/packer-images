@@ -27,7 +27,7 @@ sources:
         ## Latest stable v{x.y.z}.windows.1
         pattern: 'v(\d*)\.(\d*)\.(\d*)\.windows\.1$'
     transformers:
-      - trimPrefix: "v"
+      - trimprefix: "v"
       - trimSuffix: ".windows.1"
 
 targets:

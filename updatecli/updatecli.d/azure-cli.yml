@@ -27,7 +27,7 @@ sources:
         ## Latest stable x.y.z version
         pattern: 'azure-cli-(\d*)\.(\d*)\.(\d*)$'
     transformers:
-      - trimPrefix: "azure-cli-"
+      - trimprefix: "azure-cli-"
 
 targets:
   updateVersion:

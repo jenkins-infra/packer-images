@@ -27,7 +27,7 @@ sources:
         ## Latest stable x.y.z version
         pattern: 'jq-(\d*)\.(\d*)$'
     transformers:
-      - trimPrefix: "jq-"
+      - trimprefix: "jq-"
 
 targets:
   updateVersion:
