@@ -129,7 +129,7 @@ $downloads = [ordered]@{
         };
         'cleanuplocal' = 'true';
         'sanityCheck'= {
-            & "mvn.exe" -version;
+            & "mvn.exe" -v;
         }
     };
     'git' = @{
@@ -324,8 +324,3 @@ foreach($k in $downloads.Keys) {
         Invoke-Command $download['sanityCheck']
     }
 }
-
-## Maven requires the JAVA_HOME environment variable to be set. We use this value here: it is ephemeral.
-$env:JAVA_HOME = $defaultJavaHome
-$mavenBin = '{0}\apache-maven-{1}\bin\mvn.cmd' -f $baseDir,$env:MAVEN_VERSION
-& "$mavenBin" -v
