@@ -143,7 +143,7 @@ $downloads = [ordered]@{
         'path' = "$baseDir\git\cmd";
         'cleanuplocal' = 'true';
         'sanityCheck'= {
-            & "git.exe" -version;
+            & "git.exe" --version;
         }
     };
     'gitlfs' = @{
@@ -156,7 +156,7 @@ $downloads = [ordered]@{
         'path' = "$baseDir\git\mingw64\bin";
         'cleanuplocal' = 'true';
         'sanityCheck'= {
-            & "git-lfs.exe" -version;
+            & "git-lfs.exe" version;
         }
     };
     'dockercompose' = @{
@@ -170,14 +170,14 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/hadolint/hadolint/releases/download/v{0}/hadolint-Windows-x86_64.exe' -f $env:HADOLINT_VERSION;
         'local' = "$baseDir\hadolint.exe"
         'sanityCheck'= {
-            & "hadolint.exe" -version;
+            & "hadolint.exe" --version;
         }
     };
     'cst' = @{
         'url' = 'https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{0}/container-structure-test-windows-amd64.exe' -f $env:CST_VERSION;
         'local' = "$baseDir\container-structure-test.exe"
         'sanityCheck'= {
-            & "container-structure-test.exe" -version;
+            & "container-structure-test.exe" version;
         }
     };
     'jx-release-version' = @{
@@ -193,7 +193,7 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/stedolan/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
         'local' = "$baseDir\jq.exe"
         'sanityCheck'= {
-            & "jq.exe" -version;
+            & "jq.exe" --version;
         }
     };
     'az' = @{
@@ -207,7 +207,7 @@ $downloads = [ordered]@{
         'cleanuplocal' = 'true';
         'path' = 'C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\';
         'sanityCheck'= {
-            & "az.cmd" -version;
+            & "az.cmd" version;
         }
     };
     'gh' = @{
@@ -220,7 +220,7 @@ $downloads = [ordered]@{
         };
         'cleanuplocal' = 'true';
         'sanityCheck'= {
-            & "gh.exe" -version;
+            & "gh.exe" version;
         }
     };
     'chocolatey-and-make-for-windows' = @{
