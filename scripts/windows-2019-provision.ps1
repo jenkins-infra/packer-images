@@ -129,7 +129,7 @@ $downloads = [ordered]@{
         };
         'cleanuplocal' = 'true';
         'sanityCheck'= {
-            & "maven.exe" -version;
+            & "mvn.exe" -version;
         }
     };
     'git' = @{
