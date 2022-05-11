@@ -1,4 +1,1 @@
 _extends: .github
-
-name-template: 'next'
-tag-template: 'next'
