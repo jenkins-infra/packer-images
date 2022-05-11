@@ -129,7 +129,7 @@ $downloads = [ordered]@{
         };
         'cleanuplocal' = 'true';
         'sanityCheck'= {
-            & "mvn.exe" -v;
+            & "mvn.cmd" -v;
         }
     };
     'git' = @{
@@ -318,12 +318,13 @@ Write-Host "Patch(s) installed"
 Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
 
 Write-Host "== Sanity Check of installed tools"
+echo "- Sanity check for docker"
 & docker -v ## Client only
 
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('sanityCheck')) {
-        echo "Sanity check for $k"
+        echo "- Sanity check for $k"
         Invoke-Command $download['sanityCheck']
     }
 }
