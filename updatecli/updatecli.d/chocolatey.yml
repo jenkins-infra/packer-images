@@ -22,12 +22,6 @@ sources:
       repository: "choco"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
-      versionfilter:
-        kind: regex
-        ## Latest stable x.y.z version
-        pattern: 'chocolatey-(\d*)\.(\d*)$'
-    transformers:
-      - trimPrefix: "chocolatey-"
 
 targets:
   updateVersion:
