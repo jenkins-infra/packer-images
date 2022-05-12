@@ -139,7 +139,8 @@ $downloads = [ordered]@{
         'postexpand' = {
             & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false;
             & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
-            # Cherry-pick common GNU tools compiled for Windows included with git
+            # Cherry-pick common GNU tools compiled for Windows included with Git for Windows
+
             # We don't want all of them as it can interfere with native Windows cli tools
             & Copy-Item -Path "$baseDir\git\usr\bin\awk.exe" -Destination "$baseDir\awk.exe";
             & Copy-Item -Path "$baseDir\git\usr\bin\grep.exe" -Destination "$baseDir\grep.exe";
@@ -155,7 +156,7 @@ $downloads = [ordered]@{
             & "grep.exe" --version;
             & "rm.exe" --version;
             & "sort.exe" --version;
-        };
+        }
     };
     'gitlfs' = @{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
@@ -241,7 +242,8 @@ $downloads = [ordered]@{
         'postexpand' = {
             # Installation of Chocolatey
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
-            # Installation of make for Windows with Chocolatey (not included with git)
+            # Installation of make for Windows with Chocolatey (not included with Git for Windows)
+
             & "C:\ProgramData\chocolatey\bin\choco.exe" install make --version "$env:CHOCOLATEY_MAKE_VERSION";
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
