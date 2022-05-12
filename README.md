@@ -51,7 +51,7 @@ In some cases, you might want to execute the build locally (opposed to opening a
 * A shell (sh, bash, ash, zsh) prompt
 * Packer (check template's version constraints to know which version to use)
 * Define the environment variables `PKR_VAR_image_type`, `PKR_VAR_agent` and `PKR_VAR_architecture` to the target you want to build
-* Configure the cloud (defined on the variable `PKR_VAR_image_type`) credentials (e.g. APi key, or Cloud's CLI access such as `az` or `aws` commands))
+* Configure the cloud (defined on the variable `PKR_VAR_image_type`) credentials (e.g. API key, or clouds own CLI access such as `az` or `aws` commands))
 
 With the requirements verified locally, execute the following command:
 
