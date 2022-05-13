@@ -239,7 +239,7 @@ $downloads = [ordered]@{
         'cleanuplocal' = 'true';
         'path' = "$baseDir\cigwin\bin\";
         'sanityCheck'= {
-            & "choco.exe";
+            & "choco.exe" install cygwin;
             & "make.exe" -version;
             # & "grep.exe" --version;
         }
