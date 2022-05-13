@@ -59,15 +59,15 @@ Function DownloadFile($url, $targetFile) {
     }
 }
 
-Function AddToPath($path) {
+Function AddToPathEnv($path) {
     $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
     $newPath = '{0};{1}' -f $path,$oldPath
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
 }
 
 # Install OpenSSH (from Windows Features)
-Write-Output "Setting up OpenSSH Server"
-Write-Host "(host) setting up OpenSSH Server"
+Write-Output "== Setting up OpenSSH Server"
+Write-Host "== (host) setting up OpenSSH Server"
 
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Set-Service -Name sshd -StartupType 'Automatic'
@@ -84,10 +84,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
         'local' = "$baseDir\temurin11.zip";
         'expandTo' = $baseDir;
-        'postexpand' = {
+        'postExpand' = {
             & Move-Item -Path "$baseDir\jdk-11*" -Destination "$baseDir\jdk-11"
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         # folder included here since it's not in the PATH
         'sanityCheck'= {
             & "$baseDir\jdk-11\bin\java.exe" -version;
@@ -97,10 +97,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-{0}/OpenJDK17U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK17_VERSION),$env:JDK17_VERSION.Replace('+', '_');
         'local' = "$baseDir\temurin17.zip";
         'expandTo' = $baseDir;
-        'postexpand' = {
+        'postExpand' = {
             & Move-Item -Path "$baseDir\jdk-17*" -Destination "$baseDir\jdk-17"
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         # folder included here since it's not in the PATH
         'sanityCheck'= {
             & "$baseDir\jdk-17\bin\java.exe" -version;
@@ -110,10 +110,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '');
         'local' = "$baseDir\temurin8.zip";
         'expandTo' = $baseDir;
-        'postexpand' = {
+        'postExpand' = {
             & Move-Item -Path "$baseDir\jdk8*" -Destination "$baseDir\jdk-8"
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         # folder included here since it's not in the PATH
         'sanityCheck'= {
             & "$baseDir\jdk-17\bin\java.exe" -version;
@@ -127,46 +127,34 @@ $downloads = [ordered]@{
         'env' = @{
             'MAVEN_HOME' = '{0}\apache-maven-{1}' -f $baseDir,$env:MAVEN_VERSION;
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "mvn.cmd" -v;
         }
     };
-    'git-and-gnu-tools' = @{
+    'git' = @{
         'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION;
         'local' = "$baseDir\MinGit.zip";
         'expandTo' = "$baseDir\git";
-        'postexpand' = {
+        'postExpand' = {
             & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false;
             & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
-            # Cherry-pick common GNU tools compiled for Windows included with Git for Windows
-
-            # We don't want all of them as it can interfere with native Windows cli tools
-            & Copy-Item -Path "$baseDir\git\usr\bin\awk.exe" -Destination "$baseDir\awk.exe";
-            & Copy-Item -Path "$baseDir\git\usr\bin\grep.exe" -Destination "$baseDir\grep.exe";
-            & Copy-Item -Path "$baseDir\git\usr\bin\rm.exe" -Destination "$baseDir\rm.exe";
-            & Copy-Item -Path "$baseDir\git\usr\bin\sort.exe" -Destination "$baseDir\sort.exe";
         };
         'path' = "$baseDir\git\cmd";
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "git.exe" --version;
-            # GNU tools
-            & "awk.exe" --version;
-            & "grep.exe" --version;
-            & "rm.exe" --version;
-            & "sort.exe" --version;
         }
     };
     'gitlfs' = @{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
         'local' = "$baseDir\GitLfs.zip";
         'expandTo' = "$baseDir\git\mingw64\bin";
-        'postexpand' = {
+        'postExpand' = {
             & "$baseDir\git\cmd\git.exe" lfs install;
         };
         'path' = "$baseDir\git\mingw64\bin";
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "git-lfs.exe" version;
         }
@@ -196,7 +184,7 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v{0}/jx-release-version-windows-amd64.zip' -f $env:JXRELEASEVERSION_VERSION;
         'local' = "$baseDir\jx-release-version.zip"
         'expandTo' = $baseDir;
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "jx-release-version.exe" -version;
         }
@@ -211,12 +199,12 @@ $downloads = [ordered]@{
     'az' = @{
         'url' = 'https://azcliprod.blob.core.windows.net/msi/azure-cli-{0}.msi' -f $env:AZURECLI_VERSION;
         'local' = "$baseDir\AzureCLI.msi";
-        'postexpand' = {
+        'postExpand' = {
             ## Add these options to msiexec.exe to write debug to the log file
             # /L*V "C:\package.log"
             Start-Process msiexec.exe -Wait -ArgumentList "/i $baseDir\AzureCLI.msi /quiet /L*V C:\package.log";
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'path' = 'C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\';
         'sanityCheck'= {
             & "az.cmd" version;
@@ -226,28 +214,32 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/cli/cli/releases/download/v{0}/gh_{0}_windows_amd64.zip' -f $env:GH_VERSION;
         'local' = "$baseDir\gh.zip";
         'expandTo' = "$baseDir\gh.tmp";
-        'postexpand' = {
+        'postExpand' = {
             & Move-Item -Path "$baseDir\gh.tmp\bin\gh.exe" -Destination "$baseDir\gh.exe";
             & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "gh.exe" version;
         }
     };
-    'chocolatey-and-make-for-windows' = @{
+    'chocolatey-make-cygwin' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
         'expandTo' = "$baseDir\chocolatey.tmp";
-        'postexpand' = {
+        'postExpand' = {
             # Installation of Chocolatey
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
-            # Installation of make for Windows with Chocolatey (not included with Git for Windows)
-
-            & "C:\ProgramData\chocolatey\bin\choco.exe" install make --version "$env:CHOCOLATEY_MAKE_VERSION";
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
-        'cleanuplocal' = 'true'
+        'cleanupLocal' = 'true';
+        'path' = "$baseDir\cigwin\bin\";
+        'postInstall' = {
+            # Installation of make for Windows with Chocolatey
+            & "choco.exe" install make --yes --no-progress --version "$env:CHOCOLATEY_MAKE_VERSION";
+            # Installation of Cygwin with Chocolatey
+            & "choco.exe" install cygwin --yes --no-progress;
+        };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
@@ -256,12 +248,12 @@ $downloads = [ordered]@{
 }
 
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed
-AddToPath $baseDir
+AddToPathEnv $baseDir
 
 ## Sets the default JDK
 $defaultJavaHome = '{0}\jdk-{1}' -f $baseDir,$env:DEFAULT_JDK
 $defaultJavaBinPath = '{0}\bin' -f $defaultJavaHome
-AddToPath $defaultJavaBinPath
+AddToPathEnv $defaultJavaBinPath
 # env JAVA_HOME
 New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name 'JAVA_HOME' -Value $defaultJavaHome | Out-Null
 ## Maven requires the JAVA_HOME environment variable to be set. We use this value here: it is ephemeral.
@@ -289,11 +281,11 @@ foreach($k in $downloads.Keys) {
         Expand-Archive -Path $download['local'] -DestinationPath $download['expandTo']
     }
 
-    if($download.ContainsKey('postexpand')) {
-        Invoke-Command $download['postexpand']
+    if($download.ContainsKey('postExpand')) {
+        Invoke-Command $download['postExpand']
     }
 
-    if($download.ContainsKey('cleanuplocal')) {
+    if($download.ContainsKey('cleanupLocal')) {
         Remove-Item -Force $download['local']
     }
 
@@ -305,7 +297,11 @@ foreach($k in $downloads.Keys) {
     }
 
     if($download.ContainsKey('path')) {
-        AddToPath $download['path']
+        AddToPathEnv $download['path']
+    }
+
+    if($download.ContainsKey('postInstall')) {
+        Invoke-Command $download['postInstall']
     }
 }
 
@@ -318,22 +314,23 @@ foreach($line in Get-Content "$temp_authorized_keys_file") {
 Remove-Item -Force "$temp_authorized_keys_file"
 
 ## Final information: print out status
-Write-Host "OS Version"
+Write-Host "== OS Version"
 [System.Environment]::OSVersion.Version
 
-Write-Host "Disks"
+Write-Host "== Disks"
 Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" |
 Select-Object -Property DeviceID, DriveType, VolumeName,
 @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
 @{L="Capacity";E={"{0:N2}" -f ($_.Size/1GB)}} | Format-Table -Property DeviceID, VolumeName, FreeSpaceGB, Capacity
 
-Write-Host "Patch(s) installed"
+Write-Host "== Patch(s) installed"
 Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
 
 Write-Host "== Sanity Check of installed tools"
-echo "- Sanity check for docker"
+Write-Host "- Path environment"
+Write-Host (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+Write-Host '- Sanity check for docker'
 & docker -v ## Client only
-
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('sanityCheck')) {
@@ -341,3 +338,4 @@ foreach($k in $downloads.Keys) {
         Invoke-Command $download['sanityCheck']
     }
 }
+Write-Host "== End of Sanity Check"
