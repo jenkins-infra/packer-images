@@ -233,16 +233,17 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\cigwin\bin\";
+        'path' = "$baseDir\cygwin\bin\";
         'postInstall' = {
-            # Installation of make for Windows with Chocolatey
+            # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --version "$env:CHOCOLATEY_MAKE_VERSION";
-            # Installation of Cygwin with Chocolatey
+            # Installation of Cygwin
             & "choco.exe" install cygwin --yes --no-progress;
         };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
+            & "grep.exe" --version;
         }
     };
 }
