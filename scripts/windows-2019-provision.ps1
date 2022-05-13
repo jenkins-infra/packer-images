@@ -238,7 +238,7 @@ $downloads = [ordered]@{
             # Installation of make for Windows with Chocolatey
             & "choco.exe" install make --yes --version "$env:CHOCOLATEY_MAKE_VERSION";
             # Installation of Cygwin with Chocolatey
-            & "choco.exe" install cygwin --yes --version "$env:CHOCOLATEY_CYGWIN_VERSION";
+            & "choco.exe" install cygwin --yes;
         };
         'sanityCheck'= {
             & "choco.exe";
