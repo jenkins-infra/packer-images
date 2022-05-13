@@ -65,6 +65,11 @@ Function AddToPathEnv($path) {
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
 }
 
+Function ChocoInstall($tool, $version = '') {
+    $version = ($PackageVersion -ne '') ? "--version $PackageVersion" : ''
+    Invoke-Command "choco.exe" install $tool $version --yes --no-progress --limit-output --fail-on-error-output
+}
+
 # Install OpenSSH (from Windows Features)
 Write-Output "== Setting up OpenSSH Server"
 Write-Host "== (host) setting up OpenSSH Server"
@@ -236,14 +241,17 @@ $downloads = [ordered]@{
         'path' = "$baseDir\cygwin\bin\";
         'postInstall' = {
             # Installation of make for Windows
-            & "choco.exe" install make --yes --no-progress --version "$env:CHOCOLATEY_MAKE_VERSION";
+            & chocoInstall("make", "$env:CHOCOLATEY_MAKE_VERSION");
             # Installation of Cygwin
-            & "choco.exe" install cygwin --yes --no-progress;
+            & chocoInstall("cygwin");
+            # Installation of packer
+            & chocoInstall("packer");
         };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
-            & "grep.exe" --version;
+            & Get-ChildItem -Path "$baseDir\cygwin\bin\" -Name;
+            & "packer.exe" --version;
         }
     };
 }
