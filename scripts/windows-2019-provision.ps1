@@ -242,7 +242,7 @@ $downloads = [ordered]@{
         'postInstall' = {
             # Installation of make for Windows
             & chocoInstall("make", "$env:CHOCOLATEY_MAKE_VERSION");
-            # Installation of Cygwin
+            # Installation of cygwin
             & chocoInstall("cygwin");
             # Installation of packer
             & chocoInstall("packer");
@@ -250,6 +250,7 @@ $downloads = [ordered]@{
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
+            # List cygwin tools tools folder (not available in the PATH)
             & Get-ChildItem -Path "$baseDir\cygwin\bin\" -Name;
             & "packer.exe" --version;
         }
