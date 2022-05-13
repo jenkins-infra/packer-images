@@ -74,16 +74,19 @@ pipeline {
         axes {
           axis {
             name 'PKR_VAR_architecture'
-            values 'amd64', 'arm64'
+            //WIP: values 'amd64', 'arm64'
+            values 'amd64'
           }
           axis {
             name 'PKR_VAR_agent'
-            values 'ubuntu-20', 'windows-2019'
+            //WIP: values 'ubuntu-20', 'windows-2019'
+            values: 'windows-2019'
           }
           axis {
             name 'PKR_VAR_image_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'amazon-ebs', 'azure-arm', 'docker'
+            //WIP: values 'amazon-ebs', 'azure-arm', 'docker'
+            values: 'azure-arm'
           }
         }
         excludes {
