@@ -247,11 +247,11 @@ $downloads = [ordered]@{
         'path' = "$baseDir\cygwin\bin\";
         'postInstall' = {
             # Installation of make for Windows
-            & Choco-Install "make";
+            & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
             # Installation of cygwin
-            & Choco-Install "cygwin";
+            & "choco.exe" install cygwin --yes --no-progress --limit-output --fail-on-error-output;
             # Installation of packer
-            & Choco-Install "packer";
+            & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output;
         };
         'sanityCheck'= {
             & "choco.exe";
