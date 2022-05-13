@@ -243,6 +243,7 @@ $downloads = [ordered]@{
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
+            & "grep.exe" --version;
         }
     };
 }
@@ -338,3 +339,4 @@ foreach($k in $downloads.Keys) {
         Invoke-Command $download['sanityCheck']
     }
 }
+Write-Host "== End of Sanity Check"
