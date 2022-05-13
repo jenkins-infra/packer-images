@@ -230,18 +230,20 @@ $downloads = [ordered]@{
         'postexpand' = {
             # Installation of Chocolatey
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
-            # Installation of make for Windows with Chocolatey
-            & "C:\ProgramData\chocolatey\bin\choco.exe" install make --yes --version "$env:CHOCOLATEY_MAKE_VERSION";
-            # Installation of Cygwin with Chocolatey
-            & "C:\ProgramData\chocolatey\bin\choco.exe" install cygwin --yes --version "$env:CHOCOLATEY_CYGWIN_VERSION";
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanuplocal' = 'true';
         'path' = "$baseDir\cigwin\bin\";
+        'postinstall' = {
+            # Installation of make for Windows with Chocolatey
+            & "choco.exe" install make --yes --version "$env:CHOCOLATEY_MAKE_VERSION";
+            # Installation of Cygwin with Chocolatey
+            & "choco.exe" install cygwin --yes --version "$env:CHOCOLATEY_CYGWIN_VERSION";
+        };
         'sanityCheck'= {
-            & "choco.exe" install cygwin --yes;
+            & "choco.exe";
             & "make.exe" -version;
-            # & "grep.exe" --version;
+            & "grep.exe" --version;
         }
     };
 }
@@ -298,6 +300,10 @@ foreach($k in $downloads.Keys) {
     if($download.ContainsKey('path')) {
         AddToPath $download['path']
     }
+
+    if($download.ContainsKey('postinstall')) {
+        Invoke-Command $download['postinstall']
+    }
 }
 
 ## Add a set of pre-defined SSH keys to allow faster agent startups
@@ -309,22 +315,21 @@ foreach($line in Get-Content "$temp_authorized_keys_file") {
 Remove-Item -Force "$temp_authorized_keys_file"
 
 ## Final information: print out status
-Write-Host "OS Version"
+Write-Host "== OS Version"
 [System.Environment]::OSVersion.Version
 
-Write-Host "Disks"
+Write-Host "== Disks"
 Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" |
 Select-Object -Property DeviceID, DriveType, VolumeName,
 @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
 @{L="Capacity";E={"{0:N2}" -f ($_.Size/1GB)}} | Format-Table -Property DeviceID, VolumeName, FreeSpaceGB, Capacity
 
-Write-Host "Patch(s) installed"
+Write-Host "== Patch(s) installed"
 Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
 
 Write-Host "== Sanity Check of installed tools"
 echo "- Sanity check for docker"
 & docker -v ## Client only
-
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('sanityCheck')) {
