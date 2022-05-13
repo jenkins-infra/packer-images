@@ -65,16 +65,16 @@ Function AddToPathEnv($path) {
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
 }
 
-function Choco-Install {
-	[CmdletBinding()]
-	param(
-		[Parameter(Mandatory, ValueFromPipeline)]
-		[string]$PackageName
-	)
-    Process {
-        Invoke-Command & "choco.exe" install $PackageName --yes --no-progress --limit-output --fail-on-error-output
-    }
-}
+# function Choco-Install {
+# 	[CmdletBinding()]
+# 	param(
+# 		[Parameter(Mandatory, ValueFromPipeline)]
+# 		[string]$PackageName
+# 	)
+#     Process {
+#         Invoke-Command & "choco.exe" install $PackageName --yes --no-progress --limit-output --fail-on-error-output
+#     }
+# }
 
 # Install OpenSSH (from Windows Features)
 Write-Output "== Setting up OpenSSH Server"
