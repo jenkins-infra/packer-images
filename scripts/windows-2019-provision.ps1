@@ -66,8 +66,8 @@ Function AddToPathEnv($path) {
 }
 
 # Install OpenSSH (from Windows Features)
-Write-Output "Setting up OpenSSH Server"
-Write-Host "(host) setting up OpenSSH Server"
+Write-Output "== Setting up OpenSSH Server"
+Write-Host "== (host) setting up OpenSSH Server"
 
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Set-Service -Name sshd -StartupType 'Automatic'
