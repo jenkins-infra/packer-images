@@ -59,7 +59,7 @@ Function DownloadFile($url, $targetFile) {
     }
 }
 
-Function AddToPath($path) {
+Function AddToPathEnv($path) {
     $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
     $newPath = '{0};{1}' -f $path,$oldPath
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
@@ -243,18 +243,17 @@ $downloads = [ordered]@{
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
-            & "grep.exe" --version;
         }
     };
 }
 
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed
-AddToPath $baseDir
+AddToPathEnv $baseDir
 
 ## Sets the default JDK
 $defaultJavaHome = '{0}\jdk-{1}' -f $baseDir,$env:DEFAULT_JDK
 $defaultJavaBinPath = '{0}\bin' -f $defaultJavaHome
-AddToPath $defaultJavaBinPath
+AddToPathEnv $defaultJavaBinPath
 # env JAVA_HOME
 New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name 'JAVA_HOME' -Value $defaultJavaHome | Out-Null
 ## Maven requires the JAVA_HOME environment variable to be set. We use this value here: it is ephemeral.
@@ -298,7 +297,7 @@ foreach($k in $downloads.Keys) {
     }
 
     if($download.ContainsKey('path')) {
-        AddToPath $download['path']
+        AddToPathEnv $download['path']
     }
 
     if($download.ContainsKey('postinstall')) {
@@ -328,7 +327,9 @@ Write-Host "== Patch(s) installed"
 Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
 
 Write-Host "== Sanity Check of installed tools"
-echo "- Sanity check for docker"
+Write-Host "- Path environment"
+Write-Host (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+Write-Host '- Sanity check for docker'
 & docker -v ## Client only
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
