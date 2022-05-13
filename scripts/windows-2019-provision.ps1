@@ -66,7 +66,7 @@ Function AddToPathEnv($path) {
 }
 
 Function ChocoInstall($tool, $version = '') {
-    $version = ($PackageVersion -ne '') ? "--version $PackageVersion" : ''
+    $version = If ($PackageVersion -ne '') {"--version $PackageVersion"} Else {''}
     Invoke-Command "choco.exe" install $tool $version --yes --no-progress --limit-output --fail-on-error-output
 }
 
