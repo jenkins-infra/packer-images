@@ -241,7 +241,7 @@ $downloads = [ordered]@{
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
-            & "grep.exe" --version;
+            # & "grep.exe" --version;
         }
     };
 }
