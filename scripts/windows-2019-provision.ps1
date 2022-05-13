@@ -231,15 +231,15 @@ $downloads = [ordered]@{
             # Installation of Chocolatey
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
             # Installation of make for Windows with Chocolatey
-            & "C:\ProgramData\chocolatey\bin\choco.exe" install make --version "$env:CHOCOLATEY_MAKE_VERSION";
+            & "C:\ProgramData\chocolatey\bin\choco.exe" install make --yes --version "$env:CHOCOLATEY_MAKE_VERSION";
             # Installation of Cygwin with Chocolatey
-            & "C:\ProgramData\chocolatey\bin\choco.exe" install cygwin --version "$env:CHOCOLATEY_CYGWIN_VERSION";
+            & "C:\ProgramData\chocolatey\bin\choco.exe" install cygwin --yes --version "$env:CHOCOLATEY_CYGWIN_VERSION";
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanuplocal' = 'true';
         'path' = "$baseDir\cigwin\bin\";
         'sanityCheck'= {
-            & "choco.exe" install cygwin;
+            & "choco.exe" install cygwin --yes;
             & "make.exe" -version;
             # & "grep.exe" --version;
         }
