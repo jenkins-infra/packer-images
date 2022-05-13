@@ -84,10 +84,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
         'local' = "$baseDir\temurin11.zip";
         'expandTo' = $baseDir;
-        'postexpand' = {
+        'postExpand' = {
             & Move-Item -Path "$baseDir\jdk-11*" -Destination "$baseDir\jdk-11"
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         # folder included here since it's not in the PATH
         'sanityCheck'= {
             & "$baseDir\jdk-11\bin\java.exe" -version;
@@ -97,10 +97,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-{0}/OpenJDK17U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK17_VERSION),$env:JDK17_VERSION.Replace('+', '_');
         'local' = "$baseDir\temurin17.zip";
         'expandTo' = $baseDir;
-        'postexpand' = {
+        'postExpand' = {
             & Move-Item -Path "$baseDir\jdk-17*" -Destination "$baseDir\jdk-17"
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         # folder included here since it's not in the PATH
         'sanityCheck'= {
             & "$baseDir\jdk-17\bin\java.exe" -version;
@@ -110,10 +110,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '');
         'local' = "$baseDir\temurin8.zip";
         'expandTo' = $baseDir;
-        'postexpand' = {
+        'postExpand' = {
             & Move-Item -Path "$baseDir\jdk8*" -Destination "$baseDir\jdk-8"
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         # folder included here since it's not in the PATH
         'sanityCheck'= {
             & "$baseDir\jdk-17\bin\java.exe" -version;
@@ -127,7 +127,7 @@ $downloads = [ordered]@{
         'env' = @{
             'MAVEN_HOME' = '{0}\apache-maven-{1}' -f $baseDir,$env:MAVEN_VERSION;
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "mvn.cmd" -v;
         }
@@ -136,12 +136,12 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION;
         'local' = "$baseDir\MinGit.zip";
         'expandTo' = "$baseDir\git";
-        'postexpand' = {
+        'postExpand' = {
             & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false;
             & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
         };
         'path' = "$baseDir\git\cmd";
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "git.exe" --version;
         }
@@ -150,11 +150,11 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
         'local' = "$baseDir\GitLfs.zip";
         'expandTo' = "$baseDir\git\mingw64\bin";
-        'postexpand' = {
+        'postExpand' = {
             & "$baseDir\git\cmd\git.exe" lfs install;
         };
         'path' = "$baseDir\git\mingw64\bin";
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "git-lfs.exe" version;
         }
@@ -184,7 +184,7 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v{0}/jx-release-version-windows-amd64.zip' -f $env:JXRELEASEVERSION_VERSION;
         'local' = "$baseDir\jx-release-version.zip"
         'expandTo' = $baseDir;
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "jx-release-version.exe" -version;
         }
@@ -199,12 +199,12 @@ $downloads = [ordered]@{
     'az' = @{
         'url' = 'https://azcliprod.blob.core.windows.net/msi/azure-cli-{0}.msi' -f $env:AZURECLI_VERSION;
         'local' = "$baseDir\AzureCLI.msi";
-        'postexpand' = {
+        'postExpand' = {
             ## Add these options to msiexec.exe to write debug to the log file
             # /L*V "C:\package.log"
             Start-Process msiexec.exe -Wait -ArgumentList "/i $baseDir\AzureCLI.msi /quiet /L*V C:\package.log";
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'path' = 'C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\';
         'sanityCheck'= {
             & "az.cmd" version;
@@ -214,11 +214,11 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/cli/cli/releases/download/v{0}/gh_{0}_windows_amd64.zip' -f $env:GH_VERSION;
         'local' = "$baseDir\gh.zip";
         'expandTo' = "$baseDir\gh.tmp";
-        'postexpand' = {
+        'postExpand' = {
             & Move-Item -Path "$baseDir\gh.tmp\bin\gh.exe" -Destination "$baseDir\gh.exe";
             & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "gh.exe" version;
         }
@@ -227,14 +227,14 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
         'expandTo' = "$baseDir\chocolatey.tmp";
-        'postexpand' = {
+        'postExpand' = {
             # Installation of Chocolatey
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
-        'cleanuplocal' = 'true';
+        'cleanupLocal' = 'true';
         'path' = "$baseDir\cigwin\bin\";
-        'postinstall' = {
+        'postInstall' = {
             # Installation of make for Windows with Chocolatey
             & "choco.exe" install make --yes --version "$env:CHOCOLATEY_MAKE_VERSION";
             # Installation of Cygwin with Chocolatey
@@ -282,11 +282,11 @@ foreach($k in $downloads.Keys) {
         Expand-Archive -Path $download['local'] -DestinationPath $download['expandTo']
     }
 
-    if($download.ContainsKey('postexpand')) {
-        Invoke-Command $download['postexpand']
+    if($download.ContainsKey('postExpand')) {
+        Invoke-Command $download['postExpand']
     }
 
-    if($download.ContainsKey('cleanuplocal')) {
+    if($download.ContainsKey('cleanupLocal')) {
         Remove-Item -Force $download['local']
     }
 
@@ -301,8 +301,8 @@ foreach($k in $downloads.Keys) {
         AddToPathEnv $download['path']
     }
 
-    if($download.ContainsKey('postinstall')) {
-        Invoke-Command $download['postinstall']
+    if($download.ContainsKey('postInstall')) {
+        Invoke-Command $download['postInstall']
     }
 }
 
