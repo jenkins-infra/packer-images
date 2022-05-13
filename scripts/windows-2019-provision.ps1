@@ -236,9 +236,9 @@ $downloads = [ordered]@{
         'path' = "$baseDir\cigwin\bin\";
         'postInstall' = {
             # Installation of make for Windows with Chocolatey
-            & "choco.exe" install make --yes --version "$env:CHOCOLATEY_MAKE_VERSION";
+            & "choco.exe" install make --yes --no-progress --version "$env:CHOCOLATEY_MAKE_VERSION";
             # Installation of Cygwin with Chocolatey
-            & "choco.exe" install cygwin --yes;
+            & "choco.exe" install cygwin --yes --no-progress;
         };
         'sanityCheck'= {
             & "choco.exe";
