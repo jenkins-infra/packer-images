@@ -132,18 +132,30 @@ $downloads = [ordered]@{
             & "mvn.cmd" -v;
         }
     };
-    'git' = @{
+    'git-and-gnu-tools' = @{
         'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION;
         'local' = "$baseDir\MinGit.zip";
         'expandTo' = "$baseDir\git";
         'postexpand' = {
             & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false;
             & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
+            # Cherry-pick common GNU tools compiled for Windows included with Git for Windows
+
+            # We don't want all of them as it can interfere with native Windows cli tools
+            & Copy-Item -Path "$baseDir\git\usr\bin\awk.exe" -Destination "$baseDir\awk.exe";
+            & Copy-Item -Path "$baseDir\git\usr\bin\grep.exe" -Destination "$baseDir\grep.exe";
+            & Copy-Item -Path "$baseDir\git\usr\bin\rm.exe" -Destination "$baseDir\rm.exe";
+            & Copy-Item -Path "$baseDir\git\usr\bin\sort.exe" -Destination "$baseDir\sort.exe";
         };
         'path' = "$baseDir\git\cmd";
         'cleanuplocal' = 'true';
         'sanityCheck'= {
             & "git.exe" --version;
+            # GNU tools
+            & "awk.exe" --version;
+            & "grep.exe" --version;
+            & "rm.exe" --version;
+            & "sort.exe" --version;
         }
     };
     'gitlfs' = @{
@@ -230,7 +242,8 @@ $downloads = [ordered]@{
         'postexpand' = {
             # Installation of Chocolatey
             & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
-            # Installation of make for Windows with Chocolatey
+            # Installation of make for Windows with Chocolatey (not included with Git for Windows)
+
             & "C:\ProgramData\chocolatey\bin\choco.exe" install make --version "$env:CHOCOLATEY_MAKE_VERSION";
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
