@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Pod
-spec:
-  automountServiceAccountToken: false
-  containers:
-    - name: jnlp
-      image: jenkinsciinfra/hashicorp-tools:0.5.15

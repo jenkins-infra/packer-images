@@ -31,7 +31,7 @@ targets:
     name: Update the Git-LFS version in the Packer default values
     kind: yaml
     spec:
-      file: "provision-env.yml"
+      file: "provisioning/tools-versions.yml"
       key: "git_lfs_version"
     scmid: default
 

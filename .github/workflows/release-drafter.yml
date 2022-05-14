@@ -15,4 +15,3 @@ jobs:
         env:
           # This token is generated automatically by default in GitHub Actions: no need to create it manually
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-...

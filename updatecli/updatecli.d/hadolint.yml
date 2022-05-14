@@ -31,7 +31,7 @@ targets:
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
-      file: "provision-env.yml"
+      file: "provisioning/tools-versions.yml"
       key: "hadolint_version"
     scmid: default
 

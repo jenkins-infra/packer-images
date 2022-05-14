@@ -39,7 +39,7 @@ targets:
     name: Update the Maven version in the Packer default values
     kind: yaml
     spec:
-      file: "provision-env.yml"
+      file: "provisioning/tools-versions.yml"
       key: "maven_version"
     scmid: default
 

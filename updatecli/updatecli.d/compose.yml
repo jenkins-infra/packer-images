@@ -31,7 +31,7 @@ targets:
     name: Update the DockerCompose version in the Packer default values
     kind: yaml
     spec:
-      file: "provision-env.yml"
+      file: "provisioning/tools-versions.yml"
       key: "compose_version"
     scmid: default
 

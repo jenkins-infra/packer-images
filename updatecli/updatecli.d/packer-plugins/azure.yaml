@@ -1,5 +1,4 @@
----
-title: "Bump jx-release-version version"
+title: "Bump packer's azure plugin version"
 
 scms:
   default:
@@ -16,10 +15,10 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest jx-release-version release version
+    name: Get the latest packer's azure plugin version
     spec:
-      owner: "jenkins-x-plugins"
-      repository: "jx-release-version"
+      owner: "hashicorp"
+      repository: "packer-plugin-azure"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
@@ -27,12 +26,14 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the jx-release-version version in the provision-env.yml file"
+    name: "Update the azure plugin version in main.pkr.hcl"
     sourceid: lastReleaseVersion
-    kind: yaml
+    kind: file
     spec:
-      file: "provisioning/tools-versions.yml"
-      key: "jxreleaseversion_version"
+      file: main.pkr.hcl
+      matchpattern: 'azure = \{((\r\n|\r|\n)(\s+))version = ".*"'
+      replacepattern: >-
+        azure = {${1}version = "{{ source "lastReleaseVersion" }}"
     scmid: default
 
 pullrequests:
@@ -43,5 +44,5 @@ pullrequests:
       - updateVersion
     spec:
       labels:
-        - enhancement
-        - jx-release-version
+        - dependencies
+        - packer-azure-plugin
