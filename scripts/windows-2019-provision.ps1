@@ -250,15 +250,12 @@ $downloads = [ordered]@{
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
             # Installation of cygwin
             & "choco.exe" install cygwin --yes --no-progress --limit-output --fail-on-error-output;
-            # Installation of packer
-            & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output;
         };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
             # List cygwin tools tools folder (not available in the PATH)
             & Get-ChildItem -Path "$baseDir\cygwin\bin\" -Name;
-            & "packer.exe" --version;
         }
     };
 }
