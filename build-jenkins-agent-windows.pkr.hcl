@@ -24,7 +24,7 @@ build {
     winrm_username  = local.windows_winrm_user[var.image_type]
   }
 
-  ## Why repeating? https:#github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
+  ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
   # Note that restarts are only done when required by windows updates
   provisioner "windows-update" { pause_before = "1m" }
   provisioner "windows-update" { pause_before = "1m" }

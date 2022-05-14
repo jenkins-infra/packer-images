@@ -72,7 +72,7 @@ source "azure-arm" "base" {
 source "docker" "base" {
   image = "${var.agent_os_type}:${var.agent_os_version}"
 
-  # persist image on local docker engine
+  # Persist image on local docker engine
   commit = true
 
   # To improve audit and garbage collecting, we provide "labels" to the image

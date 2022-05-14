@@ -26,7 +26,7 @@ pipeline {
   stages {
     stage('Side Tasks') {
       environment {
-        DRYRUN = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
+        DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
       }
       parallel {
         stage('GC on AWS us-east-2') {

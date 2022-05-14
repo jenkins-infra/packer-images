@@ -4,7 +4,7 @@ locals {
   agent_os_version_safe = replace(var.agent_os_version, ".", "_")
   image_name            = format("jenkins-agent-%s-%s", var.agent_os_type, var.agent_os_version)
   aws_instance_type = {
-    "amd64" = "t3.large"  # 2 CPU / 1 GB / $0.0104
+    "amd64" = "t3.large"  # 2 CPU / 8 GB / $0.0835 - https://aws.amazon.com/fr/ec2/instance-types/t3/#Product_Details
     "arm64" = "t4g.micro" # 2 CPU / 1 GB / $0.0084
   }
   windows_winrm_user = {
@@ -12,7 +12,7 @@ locals {
     "amazon-ebs" = "Administrator" # In AWS EC2, WinRM super admin must be the "Administrator" account
     "docker"     = "packer"
   }
-  azure_vm_size        = "Standard_D4s_v3" # Huge size requires - avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
+  azure_vm_size        = "Standard_D4s_v3" # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
   azure_resource_group = "${var.build_type}-packer-images"
   azure_galleries = {
     "prod_packer_images"    = ["East US", "East US 2"]

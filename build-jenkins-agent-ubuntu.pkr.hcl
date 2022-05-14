@@ -23,7 +23,7 @@ build {
     environment_vars = local.provisioning_env_vars
     inline = [
       "export DEBIAN_FRONTEND=noninteractive", # Avoid APT or dpkg asking questions
-      "apt-get update -q",
+      "apt-get update --quiet",
       "apt-get install --yes --no-install-recommends ca-certificates curl sudo software-properties-common",
     ]
   }
