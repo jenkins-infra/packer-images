@@ -5,7 +5,15 @@ of the jenkins-infra project, such as ci.jenkins.io, infra.ci.jenkins.io, etc.
 
 ## Contributing
 
-See the [CONTRIBUTING.md document](./CONTRIBUTING.md).
+If you have:
+
+* Any question about this repository, please ask us on the IRC channel at #jenkins-infra or on <https://community.jenkins.io>
+
+* A problem, a feature request or an unwanted behavior with this code or its artifacts, please open an issue on the GitHub issue tracker of this repository.
+
+* A contribution to make, please fork the GitHub repository to your own account, create a named branch and open a Pull Request with your proposed change/fix
+  * Commit messages should follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) messages
+  * If your PR is not associated to an issue (JIRA, GitHub), there is not guarantee that we will read or review it: please write a message explaining the intent in this case.
 
 ## Continuous Integration/Delivery/Deployment
 
@@ -50,39 +58,36 @@ In some cases, you might want to execute the build locally (opposed to opening a
 
 * A shell (sh, bash, ash, zsh) prompt
 * Packer (check template's version constraints to know which version to use)
-* Define the environment variables `PKR_VAR_image_type`, `PKR_VAR_agent` and `PKR_VAR_architecture` to the target you want to build
-* Configure the cloud (defined on the variable `PKR_VAR_image_type`) credentials (e.g. API key, or clouds own CLI access such as `az` or `aws` commands))
+* Define the environment variables `PKR_VAR_*` to the target you want to build (hint: look at the Jenkinsfile or to the `variable` blocks in the packer template HCL files)
+* Configure *all* the clouds (defined by the possible values of the variable `PKR_VAR_image_type`) credentials (e.g. API key, or clouds own CLI access such as `az` or `aws` commands))
+* Ensure that you have a Docker Engine available
 
 With the requirements verified locally, execute the following command:
 
 * Define the target to build:
 
 ```bash
-# Means: "Build the ubuntu-20 agent for AWS, on ARM64 CPU
-export PKR_VAR_image_type=amazon-ebs
-export PKR_VAR_agent=ubuntu-20
-export PKR_VAR_architecture=arm64
-
-# Verify that you can use AWS API: the command must succeed
-aws ec2 describe-instances
+# Means: "Build the ubuntu-20.04 agent for Docker
+export PKR_VAR_image_type=docker
+export PKR_VAR_agent_os_type=ubuntu
+export PKR_VAR_agent_os_version=20.04
 ```
 
 * Validate the template:
 
 ```bash
-./run-packer.sh validate
+packer validate ./
 ```
 
-* Validate the template:
+* Build only one template (example: Docker Ubuntu):
 
 ```bash
-./run-packer.sh build
+packer build -timestamp-ui -force -only="docker.ubuntu" ./
 ```
 
 ### Azure
 
-* Retrieve the resource group name from the source to build in the template file (directive `managed_image_resource_group_name`)
-  from `*.auto.pkrvars.hcl` file associated to azure/.
+* Retrieve the resource group name from the source to build in the template files (directive `managed_image_resource_group_name`).
 
 * Create a new resource group on your account with this retrieved values
 
@@ -90,11 +95,4 @@ aws ec2 describe-instances
 az group create -n myResourceGroup -l eastus
 ```
 
-* Define the cloud credentials with the 3 additional variables `PKR_VAR_subscription_id`, `PKR_VAR_client_id` and `PKR_VAR_client_secret`:
-
-```bash
-PKR_VAR_subscription_id="$(az account show --query id -o tsv)"
-export PKR_VAR_subscription_id
-
-PKR_VAR_image_type=azure-arm PKR_VAR_agent=windows-2019 PKR_VAR_architecture=amd64 PKR_VAR_client_id=<client id> PKR_VAR_client_secret=<client secret> ./run-packer.sh build
-```
+* Define the cloud credentials with the 3 additional environment variables `PKR_VAR_subscription_id`, `PKR_VAR_client_id` and `PKR_VAR_client_secret`

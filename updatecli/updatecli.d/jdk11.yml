@@ -40,7 +40,7 @@ targets:
     name: Update the JDK11 version in the Packer default values
     kind: yaml
     spec:
-      file: "provision-env.yml"
+      file: "provisioning/tools-versions.yml"
       key: "jdk11_version"
     scmid: default
 

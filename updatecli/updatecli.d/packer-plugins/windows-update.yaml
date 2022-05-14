@@ -1,5 +1,4 @@
----
-title: "Bump jx-release-version version"
+title: "Bump packer's windows-update plugin version"
 
 scms:
   default:
@@ -16,10 +15,10 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest jx-release-version release version
+    name: Get the latest packer's windows-update plugin version
     spec:
-      owner: "jenkins-x-plugins"
-      repository: "jx-release-version"
+      owner: "rgl"
+      repository: "packer-plugin-windows-update"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
@@ -27,12 +26,14 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the jx-release-version version in the provision-env.yml file"
+    name: "Update the windows-update plugin version in main.pkr.hcl"
     sourceid: lastReleaseVersion
-    kind: yaml
+    kind: file
     spec:
-      file: "provisioning/tools-versions.yml"
-      key: "jxreleaseversion_version"
+      file: main.pkr.hcl
+      matchpattern: 'windows-update = \{((\r\n|\r|\n)(\s+))version = ".*"'
+      replacepattern: >-
+        windows-update = {${1}version = "{{ source "lastReleaseVersion" }}"
     scmid: default
 
 pullrequests:
@@ -43,5 +44,5 @@ pullrequests:
       - updateVersion
     spec:
       labels:
-        - enhancement
-        - jx-release-version
+        - dependencies
+        - packer-windows-update-plugin
