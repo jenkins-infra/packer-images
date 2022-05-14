@@ -233,16 +233,18 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\cigwin\bin\";
+        'path' = "$baseDir\cygwin\bin\";
         'postInstall' = {
-            # Installation of make for Windows with Chocolatey
-            & "choco.exe" install make --yes --no-progress --version "$env:CHOCOLATEY_MAKE_VERSION";
-            # Installation of Cygwin with Chocolatey
-            & "choco.exe" install cygwin --yes --no-progress;
+            # Installation of make for Windows
+            & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
+            # Installation of cygwin
+            & "choco.exe" install cygwin --yes --no-progress --limit-output --fail-on-error-output;
         };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
+            # List cygwin tools tools folder (not available in the PATH)
+            & Get-ChildItem -Path "$baseDir\cygwin\bin\" -Name;
         }
     };
 }
@@ -334,7 +336,7 @@ Write-Host '- Sanity check for docker'
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('sanityCheck')) {
-        echo "- Sanity check for $k"
+        Write-Host "- Sanity check for $k"
         Invoke-Command $download['sanityCheck']
     }
 }
