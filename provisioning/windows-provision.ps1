@@ -347,7 +347,7 @@ Write-Host '- Sanity check for docker'
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('sanityCheck')) {
-        echo "- Sanity check for $k"
+        Write-Host "- Sanity check for $k"
         Invoke-Command $download['sanityCheck']
     }
 }
