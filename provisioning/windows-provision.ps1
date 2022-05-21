@@ -74,6 +74,16 @@ Set-Service -Name sshd -StartupType 'Automatic'
 Start-Service sshd
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
 
+# Install Docker-CE if missing
+try {
+    docker -v ## client version only
+} catch {
+    Install-PackageProvider -Name NuGet -Force
+    Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
+    Install-Package -Name docker -ProviderName DockerMsftProvider
+    ## A reboot is required before being able to use start containers (but we don't need to).
+}
+
 ## Prepare Tools Installation
 $baseDir = 'C:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
