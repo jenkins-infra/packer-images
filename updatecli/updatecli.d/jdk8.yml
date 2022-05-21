@@ -27,7 +27,7 @@ sources:
         # jdk8u302-b08 is OK, but jdk8u302-b08.1 is not
         pattern: "^jdk8u(\\d*)-b(\\d*)$"
     transformers:
-      - trimPrefix: "jdk"
+      - trimprefix: "jdk"
 
 conditions:
   checkIfReleaseIsAvailable:
