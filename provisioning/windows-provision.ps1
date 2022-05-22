@@ -66,13 +66,26 @@ Function AddToPathEnv($path) {
 }
 
 # Install OpenSSH (from Windows Features)
-Write-Output "== Setting up OpenSSH Server"
-Write-Host "== (host) setting up OpenSSH Server"
+Write-Output "= Setting up OpenSSH Server"
 
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Set-Service -Name sshd -StartupType 'Automatic'
 Start-Service sshd
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
+
+# Install Docker-CE if missing
+try {
+    docker -v ## client version only
+} catch {
+    Write-Output "= Docker not found: installing..."
+    Write-Output "== Setting up Nuget..."
+    Install-PackageProvider -Name NuGet -Force
+    Write-Output "== Setting up Docker Module..."
+    Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
+    Write-Output "== Setting up Docker Package..."
+    Install-Package -Name docker -ProviderName DockerMsftProvider -Force
+    ## A reboot is required before being able to use start containers (but we don't need to).
+}
 
 ## Prepare Tools Installation
 $baseDir = 'C:\tools'

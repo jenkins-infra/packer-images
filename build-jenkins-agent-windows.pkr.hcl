@@ -10,11 +10,13 @@ build {
   }
 
   source "azure-arm.base" {
-    name            = "windows"
-    communicator    = "winrm"
+    name         = "windows"
+    communicator = "winrm"
+    # List available offers and publishers with the command `az vm image list --output table`
     image_offer     = "WindowsServer"
     image_publisher = "MicrosoftWindowsServer"
-    image_sku       = "${var.agent_os_version}-datacenter-core-with-containers-smalldisk-g2"
+    # List available SKUs with the command `az vm image list-skus --offer WindowsServer --location eastus --publisher MicrosoftWindowsServer --output table`
+    image_sku       = "${var.agent_os_version}-datacenter-core-smalldisk-g2"
     vm_size         = local.azure_vm_size
     os_type         = "Windows"
     os_disk_size_gb = local.windows_disk_size_gb
