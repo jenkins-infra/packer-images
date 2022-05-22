@@ -83,7 +83,7 @@ try {
     Write-Output "== Setting up Docker Module..."
     Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
     Write-Output "== Setting up Docker Package..."
-    Install-Package -Name docker -ProviderName DockerMsftProvider
+    Install-Package -Name docker -ProviderName DockerMsftProvider -Force
     ## A reboot is required before being able to use start containers (but we don't need to).
 }
 
