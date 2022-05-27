@@ -129,7 +129,7 @@ function install_git_gitlfs() {
 
   curl --fail --silent --location --show-error --output "/tmp/${git_lfs_archive}" "${git_lfs_release_url}"
   mkdir -p /tmp/git-lfs
-  tar xzvf "/tmp/${git_lfs_archive}" -C /tmp/git-lfs
+  tar --extract --directory=/tmp/git-lfs --gzip --verbose --file="/tmp/${git_lfs_archive}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name, since git-lfs 3.2.0.
   bash -x /tmp/git-lfs/install.sh # Execute in debug mode in case something goes wrong
   rm -rf /tmp/git-lfs*
 }
