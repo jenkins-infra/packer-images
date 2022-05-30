@@ -145,36 +145,6 @@ $downloads = [ordered]@{
             & "mvn.cmd" -v;
         }
     };
-    'git' = @{
-        'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION;
-        'local' = "$baseDir\MinGit.zip";
-        'expandTo' = "$baseDir\git";
-        'postExpand' = {
-            & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false;
-            & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
-        };
-        'path' = "$baseDir\git\cmd";
-        'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & "git.exe" --version;
-        }
-    };
-    'gitlfs' = @{
-        'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
-        'local' = "$baseDir\GitLfs.zip";
-        'expandTo' = "$baseDir";
-        'postExpand' = {
-            #There is a 1st-level directory in the archive since git-lfs 3.2.0
-            & Move-Item -Path "$baseDir\git-lfs-$env:GIT_LFS_VERSION\*" -Destination "$baseDir\git\mingw64\bin";
-            & Remove-Item -Force -Recurse "$baseDir\git-lfs-$env:GIT_LFS_VERSION";
-            & "$baseDir\git\cmd\git.exe" lfs install;
-        };
-        'path' = "$baseDir\git\mingw64\bin";
-        'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & "git-lfs.exe" version;
-        }
-    };
     'dockercompose' = @{
         'url' = 'https://github.com/docker/compose/releases/download/v{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
         'local' = "$baseDir\docker-compose.exe"
@@ -255,10 +225,16 @@ $downloads = [ordered]@{
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
             # Installation of cygwin
             & "choco.exe" install cygwin --yes --no-progress --limit-output --fail-on-error-output;
+            # Installation of git for Windows (include git-lfs), see https://community.chocolatey.org/packages/git
+            & "choco.exe" install git --yes --no-progress --params "/NoAutoCrlf /NoCredentialManager";
+            # git additional configuration
+            & "git.exe" config --system core.longpaths true;
         };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
+            & "git.exe" --version;
+            & "git-lfs" --version;
             # List cygwin tools tools folder (not available in the PATH)
             & Get-ChildItem -Path "$baseDir\cygwin\bin\" -Name;
         }
