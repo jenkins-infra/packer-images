@@ -1,5 +1,5 @@
 azurecli_version: "2.37.0"
-compose_version: "2.5.1"
+compose_version: "2.6.0"
 cst_version: "1.11.0"
 default_jdk: "11"
 gh_version: "2.11.3"
