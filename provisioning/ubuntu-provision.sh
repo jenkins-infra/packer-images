@@ -123,15 +123,10 @@ function install_git_gitlfs() {
     apt-get install --yes --no-install-recommends git
   fi
 
-  ## Install git-lfs (after git)
-  git_lfs_archive="git-lfs-linux-${ARCHITECTURE}-v${GIT_LFS_VERSION}.tar.gz"
-  git_lfs_release_url="https://github.com/git-lfs/git-lfs/releases/download/v${GIT_LFS_VERSION}/${git_lfs_archive}"
-
-  curl --fail --silent --location --show-error --output "/tmp/${git_lfs_archive}" "${git_lfs_release_url}"
-  mkdir -p /tmp/git-lfs
-  tar --extract --directory=/tmp/git-lfs --gzip --verbose --file="/tmp/${git_lfs_archive}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name, since git-lfs 3.2.0.
-  bash -x /tmp/git-lfs/install.sh # Execute in debug mode in case something goes wrong
-  rm -rf /tmp/git-lfs*
+  ## Install git-lfs (after git) from packagecloud.io
+  curl --silent https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash -x
+  install_package_version git-lfs "${GIT_LFS_VERSION}"
+  git lfs install
 }
 
 function install_jdk() {
