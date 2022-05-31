@@ -153,7 +153,8 @@ $downloads = [ordered]@{
             & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false;
             & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
         };
-        'path' = "$baseDir\git\cmd";
+        # git cmd and gnu tools included with git as paths
+        'path' = "$baseDir\git\cmd;$baseDir\git\usr\bin";
         'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "git.exe" --version;
