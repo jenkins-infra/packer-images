@@ -228,7 +228,8 @@ $downloads = [ordered]@{
             # Installation of git for Windows (include git-lfs), see https://community.chocolatey.org/packages/git
             & "choco.exe" install git --yes --no-progress --params "/NoAutoCrlf /NoCredentialManager";
             # git additional configuration
-            & "C:\Program Files\Git\git.exe" config --system core.longpaths true;
+            & Get-ChildItem -Path "C:\Program Files\Git\bin\git.exe" -Name -Depth 1;
+            & "C:\Program Files\Git\bin\git.exe" config --system core.longpaths true;
         };
         'sanityCheck'= {
             & "choco.exe";
