@@ -14,25 +14,25 @@ scms:
       branch: "{{ .github.branch }}"
 
 sources:
-  mavenVersion:
-    kind: githubrelease
-    name: Get the latest Maven version
+  # Retrieving Maven from VM template to synchronize its version across our infra
+  # See https://github.com/jenkins-infra/docker-inbound-agents/issues/18
+  getMavenVersionFromVMTemplate:
+    kind: file
+    name: Get the latest Maven version set in VM template
     spec:
-      owner: "apache"
-      repository: "maven"
-      token: "{{ requiredEnv .github.token }}"
-      username: "{{ .github.username }}"
-      versionfilter:
-        kind: latest
+      file: https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml
+      matchpattern: 'mvn:\n\s{6}version: (.*)'
     transformers:
-      - trimprefix: "maven-"
+      - findsubmatch:
+          pattern: 'mvn:\n\s{6}version: (.*)'
+          captureindex: 1
 
 conditions:
   checkIfReleaseIsAvailable:
     kind: shell
     disablesourceinput: true
     spec:
-      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `mavenVersion` }}/binaries/apache-maven-{{ source `mavenVersion` }}-bin.tar.gz
+      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `getMavenVersionFromVMTemplate` }}/binaries/apache-maven-{{ source `getMavenVersionFromVMTemplate` }}-bin.tar.gz
 
 targets:
   updateMavenVersion:
