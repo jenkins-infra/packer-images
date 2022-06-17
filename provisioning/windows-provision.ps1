@@ -66,13 +66,26 @@ Function AddToPathEnv($path) {
 }
 
 # Install OpenSSH (from Windows Features)
-Write-Output "== Setting up OpenSSH Server"
-Write-Host "== (host) setting up OpenSSH Server"
+Write-Output "= Setting up OpenSSH Server"
 
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Set-Service -Name sshd -StartupType 'Automatic'
 Start-Service sshd
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
+
+# Install Docker-CE if missing
+try {
+    docker -v ## client version only
+} catch {
+    Write-Output "= Docker not found: installing..."
+    Write-Output "== Setting up Nuget..."
+    Install-PackageProvider -Name NuGet -Force
+    Write-Output "== Setting up Docker Module..."
+    Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
+    Write-Output "== Setting up Docker Package..."
+    Install-Package -Name docker -ProviderName DockerMsftProvider -Force
+    ## A reboot is required before being able to use start containers (but we don't need to).
+}
 
 ## Prepare Tools Installation
 $baseDir = 'C:\tools'
@@ -140,7 +153,8 @@ $downloads = [ordered]@{
             & "$baseDir\git\cmd\git.exe" config --system core.autocrlf false;
             & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
         };
-        'path' = "$baseDir\git\cmd";
+        # git cmd and gnu tools included with git as paths
+        'path' = "$baseDir\git\cmd;$baseDir\git\usr\bin";
         'cleanupLocal' = 'true';
         'sanityCheck'= {
             & "git.exe" --version;
@@ -149,8 +163,11 @@ $downloads = [ordered]@{
     'gitlfs' = @{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
         'local' = "$baseDir\GitLfs.zip";
-        'expandTo' = "$baseDir\git\mingw64\bin";
+        'expandTo' = "$baseDir";
         'postExpand' = {
+            #There is a 1st-level directory in the archive since git-lfs 3.2.0
+            & Move-Item -Path "$baseDir\git-lfs-$env:GIT_LFS_VERSION\*" -Destination "$baseDir\git\mingw64\bin";
+            & Remove-Item -Force -Recurse "$baseDir\git-lfs-$env:GIT_LFS_VERSION";
             & "$baseDir\git\cmd\git.exe" lfs install;
         };
         'path' = "$baseDir\git\mingw64\bin";
@@ -237,14 +254,10 @@ $downloads = [ordered]@{
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
-            # Installation of cygwin
-            & "choco.exe" install cygwin --yes --no-progress --limit-output --fail-on-error-output;
         };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
-            # List cygwin tools tools folder (not available in the PATH)
-            & Get-ChildItem -Path "$baseDir\cygwin\bin\" -Name;
         }
     };
 }

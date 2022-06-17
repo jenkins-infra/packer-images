@@ -10,11 +10,13 @@ build {
   }
 
   source "azure-arm.base" {
-    name            = "windows"
-    communicator    = "winrm"
+    name         = "windows"
+    communicator = "winrm"
+    # List available offers and publishers with the command `az vm image list --output table`
     image_offer     = "WindowsServer"
     image_publisher = "MicrosoftWindowsServer"
-    image_sku       = "${var.agent_os_version}-datacenter-core-with-containers-smalldisk-g2"
+    # List available SKUs with the command `az vm image list-skus --offer WindowsServer --location eastus --publisher MicrosoftWindowsServer --output table`
+    image_sku       = "${var.agent_os_version}-datacenter-core-smalldisk-g2"
     vm_size         = local.azure_vm_size
     os_type         = "Windows"
     os_disk_size_gb = local.windows_disk_size_gb
@@ -48,6 +50,7 @@ build {
   provisioner "windows-restart" {
     max_retries = 3
   }
+  # This provisioner must be the last for Azure builds, after reboots
   provisioner "powershell" {
     only              = ["azure-arm.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
@@ -62,15 +65,14 @@ build {
     source      = "./provisioning/EC2-LaunchConfig.json"
     destination = "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Config\\LaunchConfig.json"
   }
+  # This provisioner must be the last for AWS EBS builds, after reboots
   provisioner "powershell" {
     only              = ["amazon-ebs.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
     # Ref. https:#docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html#user-data-scripts-subsequent
     inline = [
-      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SendWindowsIsReady.ps1 -Schedule",
-      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -Schedule",
-      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"
+      "if($env:AGENT_OS_VERSION = '2019') { C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SendWindowsIsReady.ps1 -Schedule; C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -Schedule; C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown;};"
     ]
   }
 }
