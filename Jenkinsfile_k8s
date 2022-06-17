@@ -68,9 +68,9 @@ pipeline {
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
               script {
-                updatecli(action: 'diff')
+                updatecli(action: 'diff', containerMemory: '1024Mi')
                 if (env.BRANCH_IS_PRIMARY) {
-                  updatecli(action: 'apply', cronTriggerExpression: '@daily')
+                  updatecli(action: 'apply', cronTriggerExpression: '@daily', containerMemory: '1024Mi')
                 }
               }
             }
