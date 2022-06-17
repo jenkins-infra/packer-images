@@ -12,16 +12,18 @@ scms:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       branch: "{{ .github.branch }}"
+  mavenGitHubMirror:
+    kind: git
+    spec:
+      url: "https://github.com/apache/maven.git"
+      branch: master
 
 sources:
-  mavenVersion:
-    kind: githubrelease
+  getLatestMavenVersion:
+    kind: gittag
     name: Get the latest Maven version
+    scmid: mavenGitHubMirror
     spec:
-      owner: "apache"
-      repository: "maven"
-      token: "{{ requiredEnv .github.token }}"
-      username: "{{ .github.username }}"
       versionfilter:
         kind: latest
     transformers:
@@ -32,7 +34,7 @@ conditions:
     kind: shell
     disablesourceinput: true
     spec:
-      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `mavenVersion` }}/binaries/apache-maven-{{ source `mavenVersion` }}-bin.tar.gz
+      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `getLatestMavenVersion` }}/binaries/apache-maven-{{ source `getLatestMavenVersion` }}-bin.tar.gz
 
 targets:
   updateMavenVersion:
