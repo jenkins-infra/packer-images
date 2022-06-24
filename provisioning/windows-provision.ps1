@@ -328,9 +328,11 @@ Write-Output "== Ensure both Windows Powershell and Powershell Core are availabl
 if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
     Write-Output "= Windows Powershell already present, installing Powershell Core..."
     Invoke-Command {& "choco.exe" install pwsh --yes --no-progress --limit-output --fail-on-error-output;}
+    AddToPathEnv "C:\Program Files\PowerShell\7\"
 } else {
     Write-Output "= Powershell Core already present, installing Windows Powershell..."
     Invoke-Command {& "choco.exe" install powershell --yes --no-progress --limit-output --fail-on-error-output;}
+    AddToPathEnv "C:\Windows\System32\WindowsPowerShell\v1.0\"
 }
 Write-Output "= Windows Powershell & Powershell Core sanity checks:"
 Invoke-Command {& "powershell.exe" -command "(Get-Host).Version"}
