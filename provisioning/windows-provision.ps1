@@ -335,8 +335,8 @@ if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
     AddToPathEnv "C:\Windows\System32\WindowsPowerShell\v1.0\"
 }
 Write-Output "= Windows Powershell & Powershell Core sanity checks:"
-Invoke-Command {& "powershell.exe" -command "(Get-Host).Version"}
-Invoke-Command {& "pwsh.exe" -command "(Get-Host).Version"}
+Invoke-Command {& "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -command "(Get-Host).Version"}
+Invoke-Command {& "C:\Program Files\PowerShell\7\pwsh.exe" -command "(Get-Host).Version"}
 
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
