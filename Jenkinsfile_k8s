@@ -20,8 +20,8 @@ spec:
 pipeline {
   agent none
   options {
-    // Average build time is ~30 min. 1 hour timeout indicates that something is wrong and should fail
-    timeout(time: 1, unit: 'HOURS')
+    // Average build time is ~30 min. 1h30 hour timeout indicates that something is wrong and should fail
+    timeout(time: 90, unit: 'MINUTES')
   }
   stages {
     stage('Side Tasks') {
