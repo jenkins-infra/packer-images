@@ -325,7 +325,7 @@ foreach($k in $downloads.Keys) {
 # On nanoserver, Powershell Core 7 is installed by default (pwsh.ex)
 # https://docs.microsoft.com/en-us/powershell/scripting/whats-new/migrating-from-windows-powershell-51-to-powershell-7?view=powershell-7.2#using-powershell-7-side-by-side-with-windows-powershell-51
 Write-Output "= Ensure both Windows Powershell and Powershell Core are available"
-if ((Get-Host | Select-Object Version).Version.Major == 5) {
+if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
     Write-Output "== Windows Powershell already present, installing Powershell Core..."
     Invoke-Command {& "choco.exe" install pwsh --yes --no-progress --limit-output --fail-on-error-output;}
 } else {
