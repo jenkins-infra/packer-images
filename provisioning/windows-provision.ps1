@@ -338,6 +338,10 @@ Write-Output "= Windows Powershell & Powershell Core sanity checks:"
 Invoke-Command {& "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -command "(Get-Host).Version"}
 Invoke-Command {& "C:\Program Files\PowerShell\7\pwsh.exe" -command "(Get-Host).Version"}
 
+# Install Vagrant (requires chocolatey)
+Write-Output "= Windows Powershell already present, installing Powershell Core..."
+Invoke-Command {& "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version $env:VAGRANT_VERSION;}
+
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
 DownloadFile "$env:OPENSSH_AUTHORIZED_KEYS_URL" "$temp_authorized_keys_file"

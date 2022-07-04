@@ -243,6 +243,20 @@ function install_gh() {
   rm -rf /tmp/*
 }
 
+## Install Vagrant as per https://www.vagrantup.com/downloads
+function install_vagrant() {
+  curl --fail --silent --show-error --location https://apt.releases.hashicorp.com/gpg | apt-key add -
+  apt-add-repository "deb [arch=${ARCHITECTURE}] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  if test "${ARCHITECTURE}" == "amd64"
+  then
+    install_package_version vagrant "${VAGRANT_VERSION}"
+  else
+    # Support of vagrant on other CPUs than AMD64 is partial: version are not always the same.
+    # As it is an edge case
+    apt-get install --yes --no-install-recommends vagrant
+  fi
+}
+
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
   username=jenkins
@@ -295,6 +309,7 @@ function sanity_check() {
   parallel --version
   python3 --version
   unzip -v
+  vagrant -v
   zip -v
   echo "== End of sanity check"
   echo "== Installed packages:"
@@ -318,6 +333,7 @@ function main() {
   install_jxreleaseversion
   install_azurecli
   install_gh
+  install_vagrant
   setuser
   cleanup
 }
