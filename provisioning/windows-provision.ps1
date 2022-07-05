@@ -339,7 +339,8 @@ Invoke-Command {& "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -c
 Invoke-Command {& "C:\Program Files\PowerShell\7\pwsh.exe" -command "(Get-Host).Version"}
 
 # Install Vagrant (requires chocolatey)
-Write-Output "= Windows Powershell already present, installing Powershell Core..."
+Write-Output "= Installing Vagrant..."
+
 Invoke-Command {& "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version $env:VAGRANT_VERSION;}
 
 ## Add a set of pre-defined SSH keys to allow faster agent startups
