@@ -285,6 +285,18 @@ function install_asdf() {
   fi
 }
 
+function install_ruby() {
+  # Ensure that ASDF is installed
+  install_asdf
+  # Ensure that require dependencies are present to install Ruby
+  apt-get update
+  apt-get install --yes --no-install-recommends autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev
+  # Install Ruby with ASDF and set it as default installation
+  asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+  asdf install ruby "${RUBY_VERSION}"
+  asdf global ruby "${RUBY_VERSION}"
+}
+
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
   username=jenkins
@@ -324,6 +336,7 @@ function sanity_check() {
   reload_shell
   asdf version
   az --version
+  bundle -v
   container-structure-test version
   docker -v ## Client only
   docker-compose -v
@@ -338,6 +351,7 @@ function sanity_check() {
   mvn -v
   parallel --version
   python3 --version
+  ruby -v
   unzip -v
   vagrant -v
   zip -v
@@ -365,6 +379,7 @@ function main() {
   install_azurecli
   install_gh
   install_vagrant
+  install_ruby
   setuser
   cleanup
 }
