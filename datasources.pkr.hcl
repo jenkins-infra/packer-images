@@ -12,9 +12,7 @@ data "amazon-ami" "ubuntu-20_04" {
 
 data "amazon-ami" "windows-2019" {
   filters = {
-    # Pinned to 20220511 version because of https://github.com/jenkins-infra/packer-images/issues/253
-    # TODO: unpin once 202206* is released on AWS and proven fixed
-    name                = "Windows_Server-2019-English-Core-ContainersLatest-2022.05.11*"
+    name                = "Windows_Server-2019-English-Core-ContainersLatest-*"
     root-device-type    = "ebs"
     virtualization-type = "hvm"
   }
