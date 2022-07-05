@@ -9,6 +9,12 @@ echo "== Provisiong jenkins-infra agent for ubuntu 20"
 echo "ARCHITECTURE=${ARCHITECTURE}"
 export DEBIAN_FRONTEND=noninteractive
 
+function reload_shell() {
+  set +ux
+  source /etc/profile
+  set -ux
+}
+
 ## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
   ## Check for presence of requirements or fail fast
@@ -151,19 +157,19 @@ function install_jdk() {
   fi
   curl -sSL -o /tmp/jdk8.tgz \
     "https://github.com/adoptium/temurin8-binaries/releases/download/jdk${JDK8_VERSION}/OpenJDK8U-jdk_${cpu_arch_short}_linux_hotspot_${jdk8_short_version}.tar.gz"
-  tar xzf /tmp/jdk8.tgz --strip-components=1 -C /opt/jdk-8
+  tar --extract --verbose --gunzip --file=/tmp/jdk8.tgz --directory=/opt/jdk-8 --strip-components=1
 
   # JDK11
   jdk11_short_version="${JDK11_VERSION//+/_}"
   curl -sSL -o /tmp/jdk11.tgz \
     "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${JDK11_VERSION}/OpenJDK11U-jdk_${cpu_arch_short}_linux_hotspot_${jdk11_short_version}.tar.gz"
-  tar xzf /tmp/jdk11.tgz --strip-components=1 -C /opt/jdk-11
+  tar --extract --verbose --gunzip --file=/tmp/jdk11.tgz --directory=/opt/jdk-11 --strip-components=1
 
   # JDK17
   jdk17_short_version="${JDK17_VERSION//+/_}"
   curl -sSL -o /tmp/jdk17.tgz \
     "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17U-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
-  tar xzf /tmp/jdk17.tgz --strip-components=1 -C /opt/jdk-17
+  tar --extract --verbose --gunzip --file=/tmp/jdk17.tgz --directory=/opt/jdk-17 --strip-components=1
 
   # Define JDK installations
   # The priority of a JDK is the last argument.
@@ -188,7 +194,7 @@ function install_maven() {
   curl --fail --silent --location --show-error --output "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
     "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 
-  tar zxf "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" -C /usr/share/
+  tar --extract --verbose --gunzip --file="/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" --directory=/usr/share/
   ln -s "/usr/share/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/bin/mvn
   rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 }
@@ -215,7 +221,7 @@ function install_cst() {
 function install_jxreleaseversion() {
   curl --fail --silent --location --show-error --output /tmp/jx-release-version.tgz \
     "https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v${JXRELEASEVERSION_VERSION}/jx-release-version-linux-${ARCHITECTURE}.tar.gz"
-  tar -xzf /tmp/jx-release-version.tgz -C /tmp
+  tar --extract --verbose --gunzip --file=/tmp/jx-release-version.tgz --directory=/tmp
   cp /tmp/jx-release-version /usr/local/bin/jx-release-version
   rm -rf /tmp/*
 }
@@ -238,7 +244,7 @@ function install_azurecli() {
 function install_gh() {
   curl --silent --show-error --location --output /tmp/gh.tar.gz \
     "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${ARCHITECTURE}.tar.gz"
-  tar xvfz /tmp/gh.tar.gz -C /tmp
+  tar --extract --verbose --gunzip --file=/tmp/gh.tar.gz --directory=/tmp
   cp "/tmp/gh_${GH_VERSION}_linux_${ARCHITECTURE}/bin/gh" /usr/local/bin/gh
   rm -rf /tmp/*
 }
@@ -254,6 +260,28 @@ function install_vagrant() {
     # Support of vagrant on other CPUs than AMD64 is partial: version are not always the same.
     # As it is an edge case
     apt-get install --yes --no-install-recommends vagrant
+  fi
+}
+
+## Install asdf
+function install_asdf() {
+  reload_shell
+  if ! asdf version >/dev/null 2>&1
+  then
+    local archive install_dir profile_script
+    archive=/tmp/asdf.tgz
+    install_dir=/opt/asdf
+    profile_script=/etc/profile.d/asdf.sh
+
+    curl --fail --silent --show-error --location "https://github.com/asdf-vm/asdf/archive/refs/tags/v${ASDF_VERSION}.tar.gz" --output "${archive}"
+    mkdir -p "${install_dir}"
+    tar --extract --verbose --gunzip --file="${archive}" --directory="${install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name (asdf-<version>)
+
+    ## Using /etc/profile.d ensures that it is loaded for ALL users
+    touch "${profile_script}"
+    echo "source ${install_dir}/asdf.sh" > "${profile_script}"
+    chmod a+x "${profile_script}"
+    rm -f "${archive}"
   fi
 }
 
@@ -293,6 +321,8 @@ function cleanup() {
 
 function sanity_check() {
   echo "== Sanity Check of installed tools"
+  reload_shell
+  asdf version
   az --version
   container-structure-test version
   docker -v ## Client only
@@ -320,6 +350,7 @@ function main() {
   check_commands
   copy_custom_scripts
   clean_apt
+  install_asdf # Before all the others
   install_docker
   install_JA_requirements
   install_qemu
