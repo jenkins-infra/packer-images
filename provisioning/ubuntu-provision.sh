@@ -277,7 +277,7 @@ function install_asdf() {
     mkdir -p "${install_dir}"
     tar --extract --verbose --gunzip --file="${archive}" --directory="${install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name (asdf-<version>)
 
-    ## Using /etc/profile.d ensures that it is loaded for ALL users
+    # Using /etc/profile.d ensures that it is loaded for ALL users
     touch "${profile_script}"
     echo "source ${install_dir}/asdf.sh" > "${profile_script}"
     chmod a+x "${profile_script}"
@@ -285,6 +285,7 @@ function install_asdf() {
   fi
 }
 
+## Install Ruby with asdf
 function install_ruby() {
   # Ensure that ASDF is installed
   install_asdf
