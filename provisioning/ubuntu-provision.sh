@@ -17,12 +17,6 @@ groupname=jenkins
 groupid=1001
 asdf_install_dir="${userhome}/.asdf"
 
-function reload_shell() {
-  set +ux
-  source /etc/profile
-  set -ux
-}
-
 ## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
   ## Check for presence of requirements or fail fast
@@ -362,29 +356,30 @@ function cleanup() {
 }
 
 function sanity_check() {
-  echo "== Sanity Check of installed tools"
-  reload_shell
-  asdf version
-  az --version
-  bundle -v
-  container-structure-test version
-  docker -v ## Client only
-  docker-compose -v
-  gh --version
-  git --version
-  git-lfs --version
-  hadolint -v
-  java -version
-  jq --version
-  jx-release-version -version
-  make --version
-  mvn -v
-  parallel --version
-  python3 --version
-  ruby -v
-  unzip -v
-  vagrant -v
-  zip -v
+  echo "== Sanity Check of installed tools, running as user ${username}"
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
+  && asdf version \
+  && az --version \
+  && bundle -v \
+  && container-structure-test version \
+  && docker -v  \
+  && docker-compose -v \
+  && gh --version \
+  && git --version \
+  && git-lfs --version \
+  && hadolint -v \
+  && java -version \
+  && jq --version \
+  && jx-release-version -version \
+  && make --version \
+  && mvn -v \
+  && parallel --version \
+  && python3 --version \
+  && ruby -v \
+  && unzip -v \
+  && vagrant -v \
+  && zip -v \
+  "
   echo "== End of sanity check"
   echo "== Installed packages:"
   dpkg -l
