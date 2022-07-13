@@ -116,7 +116,6 @@ function install_asdf_plugin() {
   # Git is required to install asdf plugins
   command -v git >/dev/null 2>&1
 
-  # sleep 10000
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && asdf plugin add ${plugin_name} ${plugin_url}"
 }
 
