@@ -9,11 +9,13 @@ echo "== Provisiong jenkins-infra agent for ubuntu 20"
 echo "ARCHITECTURE=${ARCHITECTURE}"
 export DEBIAN_FRONTEND=noninteractive
 
-function reload_shell() {
-  set +ux
-  source /etc/profile
-  set -ux
-}
+## Setting up the default Jenkins user
+username=jenkins
+userid=1001
+userhome=/home/jenkins
+groupname=jenkins
+groupid=1001
+asdf_install_dir="${userhome}/.asdf"
 
 ## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
@@ -64,6 +66,71 @@ function clean_apt() {
   apt-get upgrade -y
 }
 
+## Ensure that there is a user named "jenkins" created and configured
+function setuser() {
+  groupadd --gid="${groupid}" "${groupname}"
+
+  # jenkins should not be able to run sudo commands
+  useradd --create-home \
+    --home-dir "${userhome}" \
+    --uid "${userid}" \
+    --gid "${groupid}" \
+    --shell /bin/bash \
+    "${username}"
+
+  # Add authorized keys to jenkins user
+  mkdir -p "${userhome}/.ssh"
+  curl --fail --silent --location --show-error "${OPENSSH_AUTHORIZED_KEYS_URL}" --output "${userhome}/.ssh/authorized_keys"
+  chmod 0700 "${userhome}/.ssh"
+  chmod 0600 "${userhome}/.ssh/authorized_keys"
+  chown -R jenkins:jenkins "${userhome}/.ssh"
+}
+
+## Install asdf on the default user's home
+function install_asdf() {
+  local archive profile_script
+  archive=/tmp/asdf.tgz
+  profile_script="${userhome}/.bashrc"
+
+  if test -f "${userhome}/.asdf/asdf.sh"
+  then
+    return 0
+  fi
+  test -d "${userhome}"
+
+  curl --fail --silent --show-error --location "https://github.com/asdf-vm/asdf/archive/refs/tags/v${ASDF_VERSION}.tar.gz" --output "${archive}"
+  mkdir -p "${asdf_install_dir}"
+  tar --extract --verbose --gunzip --file="${archive}" --directory="${asdf_install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name (asdf-<version>)
+
+  touch "${profile_script}"
+  echo ". ${asdf_install_dir}/asdf.sh" >> "${profile_script}"
+  chown -R "${username}:${groupname}" "${userhome}"
+  rm -f "${archive}"
+}
+
+## Install the ASDF Plugin passed as argument ($1 is the name and $2 the URL)
+function install_asdf_plugin() {
+  local plugin_name="${1}"
+  local plugin_url="${2}"
+
+  # Git is required to install asdf plugins
+  command -v git >/dev/null 2>&1
+
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && asdf plugin add ${plugin_name} ${plugin_url}"
+}
+
+## Install an ASDF Package in the default user's ASDF installation and mark it as the default global installation
+function install_asdf_package() {
+  local package_name="${1}"
+  local package_version="${2}"
+
+  # Git is required to install asdf packages
+  command -v git >/dev/null 2>&1
+
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && asdf install ${package_name} ${package_version}"
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && asdf global ${package_name} ${package_version}"
+}
+
 ## Ensure Docker is installed as per https://docs.docker.com/engine/install/ubuntu/
 function install_docker() {
   apt-get update --quiet
@@ -82,6 +149,10 @@ function install_docker() {
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
   apt-get update --quiet
   apt-get install --yes --no-install-recommends docker-ce
+
+  # Allow the default user to use Docker. https://docs.docker.com/engine/install/linux-postinstall/
+  # Please note that it gives effectively full root permissions to this user so these compute instances must be ephemeral
+  usermod -aG docker "${username}"
 }
 
 ## Ensure that the Jenkins Agent commons requirements are installed
@@ -263,27 +334,6 @@ function install_vagrant() {
   fi
 }
 
-## Install asdf
-function install_asdf() {
-  reload_shell
-  if ! asdf version >/dev/null 2>&1
-  then
-    local archive install_dir profile_script
-    archive=/tmp/asdf.tgz
-    install_dir=/opt/asdf
-    profile_script=/etc/profile.d/asdf.sh
-
-    curl --fail --silent --show-error --location "https://github.com/asdf-vm/asdf/archive/refs/tags/v${ASDF_VERSION}.tar.gz" --output "${archive}"
-    mkdir -p "${install_dir}"
-    tar --extract --verbose --gunzip --file="${archive}" --directory="${install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name (asdf-<version>)
-
-    # Using /etc/profile.d ensures that it is loaded for ALL users
-    touch "${profile_script}"
-    echo "source ${install_dir}/asdf.sh" > "${profile_script}"
-    chmod a+x "${profile_script}"
-    rm -f "${archive}"
-  fi
-}
 
 ## Install Ruby with asdf
 function install_ruby() {
@@ -293,36 +343,8 @@ function install_ruby() {
   apt-get update
   apt-get install --yes --no-install-recommends autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev
   # Install Ruby with ASDF and set it as default installation
-  asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
-  asdf install ruby "${RUBY_VERSION}"
-  asdf global ruby "${RUBY_VERSION}"
-}
-
-## Ensure that there is a user named "jenkins" created and configured
-function setuser() {
-  username=jenkins
-  userid=1001
-  userhome=/home/jenkins
-  groupname=jenkins
-  groupid=1001
-
-  groupadd --gid="${groupid}" "${groupname}"
-
-  # jenkins should not be able to run sudo commands
-  useradd --create-home \
-    --home-dir "${userhome}" \
-    --uid "${userid}" \
-    --gid "${groupid}" \
-    --groups docker \
-    --shell /bin/bash \
-    "${username}"
-
-  # Add authorized keys to jenkins user
-  mkdir -p "${userhome}/.ssh"
-  curl --fail --silent --location --show-error "${OPENSSH_AUTHORIZED_KEYS_URL}" --output "${userhome}/.ssh/authorized_keys"
-  chmod 0700 "${userhome}/.ssh"
-  chmod 0600 "${userhome}/.ssh/authorized_keys"
-  chown -R jenkins:jenkins "${userhome}/.ssh"
+  install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
+  install_asdf_package ruby "${RUBY_VERSION}"
 }
 
 ## Ensure that the VM is cleaned up
@@ -333,29 +355,30 @@ function cleanup() {
 }
 
 function sanity_check() {
-  echo "== Sanity Check of installed tools"
-  reload_shell
-  asdf version
-  az --version
-  bundle -v
-  container-structure-test version
-  docker -v ## Client only
-  docker-compose -v
-  gh --version
-  git --version
-  git-lfs --version
-  hadolint -v
-  java -version
-  jq --version
-  jx-release-version -version
-  make --version
-  mvn -v
-  parallel --version
-  python3 --version
-  ruby -v
-  unzip -v
-  vagrant -v
-  zip -v
+  echo "== Sanity Check of installed tools, running as user ${username}"
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
+  && asdf version \
+  && az --version \
+  && bundle -v \
+  && container-structure-test version \
+  && docker -v  \
+  && docker-compose -v \
+  && gh --version \
+  && git --version \
+  && git-lfs --version \
+  && hadolint -v \
+  && java -version \
+  && jq --version \
+  && jx-release-version -version \
+  && make --version \
+  && mvn -v \
+  && parallel --version \
+  && python3 --version \
+  && ruby -v \
+  && unzip -v \
+  && vagrant -v \
+  && zip -v \
+  "
   echo "== End of sanity check"
   echo "== Installed packages:"
   dpkg -l
@@ -365,7 +388,8 @@ function main() {
   check_commands
   copy_custom_scripts
   clean_apt
-  install_asdf # Before all the others
+  setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
+  install_asdf # Before all the others but after the jenkins home is created
   install_docker
   install_JA_requirements
   install_qemu
@@ -381,7 +405,6 @@ function main() {
   install_gh
   install_vagrant
   install_ruby
-  setuser
   cleanup
 }
 
