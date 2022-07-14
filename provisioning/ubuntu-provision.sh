@@ -334,7 +334,6 @@ function install_vagrant() {
   fi
 }
 
-
 ## Install Ruby with asdf
 function install_ruby() {
   # Ensure that ASDF is installed
@@ -345,6 +344,16 @@ function install_ruby() {
   # Install Ruby with ASDF and set it as default installation
   install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
   install_asdf_package ruby "${RUBY_VERSION}"
+}
+
+## Install Yq with asdf
+function install_yq() {
+  # Ensure that ASDF is installed
+  install_asdf
+
+  # Install Yq with ASDF and set it as default installation
+  install_asdf_plugin yq https://github.com/sudermanjr/asdf-yq.git
+  install_asdf_package yq "${YQ_VERSION}"
 }
 
 ## Ensure that the VM is cleaned up
@@ -377,6 +386,7 @@ function sanity_check() {
   && ruby -v \
   && unzip -v \
   && vagrant -v \
+  && yq --version \
   && zip -v \
   "
   echo "== End of sanity check"
@@ -405,6 +415,7 @@ function main() {
   install_gh
   install_vagrant
   install_ruby
+  install_yq
   cleanup
 }
 
