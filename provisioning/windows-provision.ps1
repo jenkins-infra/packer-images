@@ -349,6 +349,11 @@ Write-Host '- Sanity check for ruby tooling'
 & C:\tools\ruby26\bin\ruby -v
 & C:\tools\ruby26\bin\bundle -v
 
+Write-Output "= Installing Yq..."
+Invoke-Command {& "choco.exe" install yq --yes --no-progress --limit-output --fail-on-error-output --version "${env:YQ_VERSION}";}
+Write-Host '- Sanity check for yq CLI'
+& yq --version
+
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
 DownloadFile "$env:OPENSSH_AUTHORIZED_KEYS_URL" "$temp_authorized_keys_file"
