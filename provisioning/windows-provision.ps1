@@ -263,7 +263,7 @@ $downloads = [ordered]@{
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
-            & "vagrant.exe" --version;
+            # & "vagrant.exe" --version;
             & "ruby.exe" -v;
             & "bundle.exe" -v;
             & "yq.exe" --version;
