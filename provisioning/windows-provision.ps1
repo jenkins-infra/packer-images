@@ -240,7 +240,7 @@ $downloads = [ordered]@{
             & "gh.exe" version;
         }
     };
-    'chocolatey-make-cygwin' = @{
+    'chocolatey-make-vagrant-ruby-yq' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
         'expandTo' = "$baseDir\chocolatey.tmp";
@@ -250,7 +250,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\cygwin\bin\";
+        'path' = "$baseDir\cygwin\bin\;$baseDir\ruby26\bin\";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -263,9 +263,9 @@ $downloads = [ordered]@{
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
-            & "vagrant.exe" -version;
-            & "$baseDir\ruby26\bin\ruby.exe" -v;
-            & "$baseDir\ruby26\bin\bundle.exe" -v;
+            & "vagrant.exe" --version;
+            & "ruby.exe" -v;
+            & "bundle.exe" -v;
             & "yq.exe" --version;
         }
     };
