@@ -240,7 +240,7 @@ $downloads = [ordered]@{
             & "gh.exe" version;
         }
     };
-    'chocolatey-make-vagrant-ruby-yq' = @{
+    'chocolatey-and-packages' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
         'expandTo' = "$baseDir\chocolatey.tmp";
