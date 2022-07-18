@@ -254,10 +254,18 @@ $downloads = [ordered]@{
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
+            & "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version "${env:VAGRANT_VERSION}";
+            # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
+            & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
+            & "choco.exe" install yq --yes --no-progress --limit-output --fail-on-error-output --version "${env:YQ_VERSION}";
+            
         };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
+            & "ruby.exe" -v;
+            & "bundle.exe" -v;
+            & "yq.exe" --version;
         }
     };
 }
@@ -337,22 +345,6 @@ if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
 Write-Output "= Windows Powershell & Powershell Core sanity checks:"
 Invoke-Command {& "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -command "(Get-Host).Version"}
 Invoke-Command {& "C:\Program Files\PowerShell\7\pwsh.exe" -command "(Get-Host).Version"}
-
-# Install Tools with Chocolatey Packages
-Write-Output "= Installing Vagrant..."
-Invoke-Command {& "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version $env:VAGRANT_VERSION;}
-
-Write-Output "= Installing Ruby..."
-# Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
-Invoke-Command {& "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";}
-Write-Host '- Sanity check for ruby tooling'
-& C:\tools\ruby26\bin\ruby -v
-& C:\tools\ruby26\bin\bundle -v
-
-Write-Output "= Installing Yq..."
-Invoke-Command {& "choco.exe" install yq --yes --no-progress --limit-output --fail-on-error-output --version "${env:YQ_VERSION}";}
-Write-Host '- Sanity check for yq CLI'
-& yq --version
 
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
