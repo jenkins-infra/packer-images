@@ -164,9 +164,6 @@ pipeline {
         stages {
           stage('Build Template') {
             steps {
-              def attempt = 0
-              def attempts = 2
-
               // Pass the Azure credentials through Packer Input variables, as environment variables prefixed with 'PKR_VAR_'
                 // Re.f https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
               withCredentials([azureServicePrincipal(
@@ -195,8 +192,7 @@ pipeline {
                 sh 'packer validate ./'
 
                 // Execute build only for this matrix cell's setup
-                retry(count: attempts, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
-                  echo '== Attempt ' + ++attempt + ' of ' + attempts
+                retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
                   sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
                 }
               }
