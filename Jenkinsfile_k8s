@@ -192,7 +192,12 @@ pipeline {
                 sh 'packer validate ./'
 
                 // Execute build only for this matrix cell's setup
-                sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                def attempt = 0
+                def attempts = 2
+                retry(count: attempts, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
+                  echo '== Attempt ' + ++attempt + ' of ' + attempts
+                  sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                }
               }
             }
           }
