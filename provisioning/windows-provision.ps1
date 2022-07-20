@@ -265,7 +265,7 @@ $downloads = [ordered]@{
             & "make.exe" -version;
             # & "vagrant.exe" --version;
             & "$baseDir\ruby26\bin\ruby.exe" -v;
-            & "$baseDir\ruby26\bin\bundle.exe" -v;
+            & "$baseDir\ruby26\bin\bundle" -v;
             & "yq.exe" --version;
         }
     };
