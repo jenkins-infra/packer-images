@@ -71,7 +71,7 @@ build {
 
   post-processors {
     post-processor "docker-tag" {
-      repository = "jenkinsciinfra/${local.image_name}"
+      repository = "${var.docker_repository}/${local.image_name}"
       tags       = [var.image_version]
       only       = ["docker.ubuntu"]
     }
