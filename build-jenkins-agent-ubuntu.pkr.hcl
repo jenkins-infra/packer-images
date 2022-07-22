@@ -32,7 +32,7 @@ build {
 
   # Retrieve agent.jar
   provisioner "shell" {
-    only             = ["docker.ubuntu"]
+    only = ["docker.ubuntu"]
     environment_vars = concat(local.provisioning_env_vars, [
       "LANG=en_US.UTF-8",
       "LANGUAGE=en_US:en",
@@ -69,7 +69,7 @@ build {
     environment_vars = local.provisioning_env_vars
     execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/ubuntu-provision.sh"
- }
+  }
 
   post-processors {
     post-processor "docker-tag" {
