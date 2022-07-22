@@ -415,7 +415,7 @@ function main() {
   install_hadolint
   install_cst
   install_jxreleaseversion
-  install_azurecli
+  # install_azurecli
   install_gh
   # install_vagrant
   # install_ruby
