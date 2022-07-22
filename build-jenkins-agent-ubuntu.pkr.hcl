@@ -41,11 +41,8 @@ build {
     ])
     inline = [
       "echo Retrieve agent.jar",
-      "curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${var.remoting_version}/remoting-${var.remoting_version}.jar",
-      "chmod 755 /usr/share/jenkins",
-      "chmod 644 /usr/share/jenkins/agent.jar",
-      "ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar",
-      "ln -sf /usr/share/jenkins/agent.jar /usr/local/bin/jenkins-agent.jar",
+      "curl --create-dirs -fsSLo /usr/local/bin/jenkins-agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${var.remoting_version}/remoting-${var.remoting_version}.jar",
+      "chmod 644 /usr/local/bin/jenkins-agent.jar",
     ]
   }
 

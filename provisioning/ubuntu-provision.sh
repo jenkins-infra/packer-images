@@ -88,9 +88,6 @@ function setuser() {
   # Create agent folder
   mkdir -p "${userhome}/agent"
   chown -R jenkins:jenkins "${userhome}/agent"
-
-  # Ensure entrypoint script is executable
-  chmod a+x /usr/local/bin/entrypoint.sh
 }
 
 ## Install asdf on the default user's home
