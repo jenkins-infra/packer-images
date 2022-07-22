@@ -82,7 +82,6 @@ source "docker" "base" {
     "LABEL scm_ref       = ${var.scm_ref}",
     "LABEL build_type    = ${var.build_type}",
     "WORKDIR /home/jenkins",
-    // "ENTRYPOINT [\"/usr/local/bin/jenkins-agent\"]",
     "ENTRYPOINT [\"/usr/local/bin/entrypoint.sh\"]",
   ]
 }
