@@ -57,7 +57,7 @@ variable "remoting_version" {
   type    = string
   default = "4.13"
 }
-variable "docker_repository" {
+variable "docker_namespace" {
   type    = string
   default = "jenkinsciinfra"
 }
