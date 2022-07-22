@@ -84,6 +84,10 @@ function setuser() {
   chmod 0700 "${userhome}/.ssh"
   chmod 0600 "${userhome}/.ssh/authorized_keys"
   chown -R jenkins:jenkins "${userhome}/.ssh"
+
+  # Create agent folder
+  mkdir -p "${userhome}/agent"
+  chown -R jenkins:jenkins "${userhome}/agent"
 }
 
 ## Install asdf on the default user's home

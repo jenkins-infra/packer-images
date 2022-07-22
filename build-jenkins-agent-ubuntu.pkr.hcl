@@ -30,6 +30,31 @@ build {
     ]
   }
 
+  # Retrieve agent.jar
+  provisioner "shell" {
+    only             = ["docker.ubuntu"]
+    environment_vars = concat(local.provisioning_env_vars, [
+      "LANG=en_US.UTF-8",
+      "LANGUAGE=en_US:en",
+      "LC_ALL=en_US.UTF-8",
+      "AGENT_WORKDIR=/home/jenkins/agent"
+    ])
+    inline = [
+      "echo Retrieve agent.jar",
+      "curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${var.remoting_version}/remoting-${var.remoting_version}.jar",
+      "chmod 755 /usr/share/jenkins",
+      "chmod 644 /usr/share/jenkins/agent.jar",
+      "ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar",
+    ]
+  }
+
+  # Add entrypoint script
+  provisioner "file" {
+    only        = ["docker.ubuntu"]
+    source      = "./provisioning/entrypoint.sh"
+    destination = "/usr/local/bin/entrypoint.sh"
+  }
+
   provisioner "file" {
     source      = "./provisioning/add_auth_key_to_user.sh"
     destination = "/tmp/add_auth_key_to_user.sh"
@@ -44,5 +69,14 @@ build {
     environment_vars = local.provisioning_env_vars
     execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/ubuntu-provision.sh"
+ }
+
+  post-processors {
+    post-processor "docker-tag" {
+      repository = "jenkinsciinfra/${local.image_name}"
+      tags       = [var.image_version]
+      only       = ["docker.ubuntu"]
+    }
+    post-processor "docker-push" {}
   }
 }
