@@ -32,7 +32,7 @@ build {
 
   # Retrieve agent.jar
   provisioner "shell" {
-    only = ["docker.ubuntu"]
+    only             = ["docker.ubuntu"]
     environment_vars = concat(local.provisioning_env_vars, [
       "LANG=en_US.UTF-8",
       "LANGUAGE=en_US:en",
