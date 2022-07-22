@@ -32,7 +32,7 @@ build {
 
   # Retrieve agent.jar
   provisioner "shell" {
-    only             = ["docker.ubuntu"]
+    only = ["docker.ubuntu"]
     environment_vars = concat(local.provisioning_env_vars, [
       "LANG=en_US.UTF-8",
       "LANGUAGE=en_US:en",
@@ -45,6 +45,7 @@ build {
       "chmod 755 /usr/share/jenkins",
       "chmod 644 /usr/share/jenkins/agent.jar",
       "ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar",
+      "ln -sf /usr/share/jenkins/agent.jar /usr/local/bin/jenkins-agent.jar",
     ]
   }
 
