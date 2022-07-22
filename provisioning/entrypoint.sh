@@ -1,5 +1,5 @@
 #!/bin/bash
 
-. $ASDF_DIR/asdf.sh
+. /home/jenkins/.asdg/asdf.sh
 
 exec /usr/local/bin/jenkins-agent "$@"
