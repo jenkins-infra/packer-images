@@ -81,7 +81,11 @@ source "docker" "base" {
     "LABEL version       = ${var.image_version}",
     "LABEL scm_ref       = ${var.scm_ref}",
     "LABEL build_type    = ${var.build_type}",
+    "LANG                = en_US.UTF-8",
+    "LANGUAGE            = en_US:en",
+    "LC_ALL              = en_US.UTF-8",
+    "AGENT_WORKDIR       = /home/jenkins/agent",
     "WORKDIR /home/jenkins",
-    "ENTRYPOINT [\"/usr/local/bin/entrypoint.sh\"]",
+    "ENTRYPOINT [\"/usr/local/bin/jenkins-agent\"]",
   ]
 }

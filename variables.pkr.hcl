@@ -59,5 +59,5 @@ variable "remoting_version" {
 }
 variable "docker_namespace" {
   type    = string
-  default = "jenkinsciinfra"
+  default = "hlemeur"
 }

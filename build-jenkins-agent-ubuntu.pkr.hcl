@@ -19,6 +19,7 @@ build {
     vm_size   = local.azure_vm_size
   }
 
+/*
   # Docker Ubuntu image are missing required tools: let's install it as a preliminary
   provisioner "shell" {
     only             = ["docker.ubuntu"]
@@ -33,24 +34,31 @@ build {
   # Retrieve agent.jar
   provisioner "shell" {
     only = ["docker.ubuntu"]
-    environment_vars = concat(local.provisioning_env_vars, [
-      "LANG=en_US.UTF-8",
-      "LANGUAGE=en_US:en",
-      "LC_ALL=en_US.UTF-8",
-      "AGENT_WORKDIR=/home/jenkins/agent"
-    ])
+    environment_vars = local.provisioning_env_vars
     inline = [
       "echo Retrieve agent.jar",
-      "curl --create-dirs --fail --silent --show-error --location --output /usr/local/bin/jenkins-agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${var.remoting_version}/remoting-${var.remoting_version}.jar",
-      "chmod 644 /usr/local/bin/jenkins-agent.jar",
+      "curl --create-dirs --fail --silent --show-error --location --output /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${var.remoting_version}/remoting-${var.remoting_version}.jar",
+      "chmod 755 /usr/share/jenkins",
+      "chmod 644 /usr/share/jenkins/agent.jar",
     ]
   }
 
-  # Add entrypoint script
-  provisioner "file" {
-    only        = ["docker.ubuntu"]
-    source      = "./provisioning/entrypoint.sh"
-    destination = "/usr/local/bin/entrypoint.sh"
+  # Retrieve jenkins-agent script
+  provisioner "shell" {
+    only = ["docker.ubuntu"]
+    inline = [
+      "echo Retrieve jenkins-agent script",
+      "curl --create-dirs --fail --silent --show-error --location --output /usr/local/bin/jenkins-agent https://raw.githubusercontent.com/jenkinsci/docker-inbound-agent/master/jenkins-agent",
+      "chmod a+x /usr/local/bin/jenkins-agent",
+      // "chmod +x /usr/local/bin/entrypoint.sh",
+    ]
+  }
+*/
+
+  provisioner "shell" {
+    environment_vars = local.provisioning_env_vars
+    execute_command  = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
+    script           = "./provisioning/docker-jenkins-agent.sh"
   }
 
   provisioner "file" {
@@ -65,7 +73,7 @@ build {
 
   provisioner "shell" {
     environment_vars = local.provisioning_env_vars
-    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+    execute_command  = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
