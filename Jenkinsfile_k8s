@@ -200,10 +200,12 @@ pipeline {
           }
           stage('Publish Docker image') {
             steps {
-              if ((env.BRANCH_IS_PRIMARY) && (env.TAG_NAME)) {
-                infra.withDockerCredentials {
-                  def dockerImage = "jenkinsciinfra/jenkins-agent-${env.agent_type}:${env.TAG_NAME}"
-                  docker push dockerImage
+              script {
+                if ((env.BRANCH_IS_PRIMARY) && (env.TAG_NAME)) {
+                  infra.withDockerCredentials {
+                    def dockerImage = "jenkinsciinfra/jenkins-agent-${env.agent_type}:${env.TAG_NAME}"
+                    docker push dockerImage
+                  }
                 }
               }
             }
