@@ -37,6 +37,7 @@ build {
 
   provisioner "shell" {
     environment_vars = local.provisioning_env_vars
+    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
