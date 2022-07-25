@@ -19,7 +19,6 @@ build {
     vm_size   = local.azure_vm_size
   }
 
-/*
   # Docker Ubuntu image are missing required tools: let's install it as a preliminary
   provisioner "shell" {
     only             = ["docker.ubuntu"]
@@ -31,31 +30,8 @@ build {
     ]
   }
 
-  # Retrieve agent.jar
   provisioner "shell" {
-    only = ["docker.ubuntu"]
-    environment_vars = local.provisioning_env_vars
-    inline = [
-      "echo Retrieve agent.jar",
-      "curl --create-dirs --fail --silent --show-error --location --output /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${var.remoting_version}/remoting-${var.remoting_version}.jar",
-      "chmod 755 /usr/share/jenkins",
-      "chmod 644 /usr/share/jenkins/agent.jar",
-    ]
-  }
-
-  # Retrieve jenkins-agent script
-  provisioner "shell" {
-    only = ["docker.ubuntu"]
-    inline = [
-      "echo Retrieve jenkins-agent script",
-      "curl --create-dirs --fail --silent --show-error --location --output /usr/local/bin/jenkins-agent https://raw.githubusercontent.com/jenkinsci/docker-inbound-agent/master/jenkins-agent",
-      "chmod a+x /usr/local/bin/jenkins-agent",
-      // "chmod +x /usr/local/bin/entrypoint.sh",
-    ]
-  }
-*/
-
-  provisioner "shell" {
+    only             = ["docker.ubuntu"]
     environment_vars = local.provisioning_env_vars
     execute_command  = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/docker-jenkins-agent.sh"
@@ -79,10 +55,9 @@ build {
 
   post-processors {
     post-processor "docker-tag" {
+      only       = ["docker.ubuntu"]
       repository = "${var.docker_namespace}/${local.image_name}"
       tags       = [var.image_version]
-      only       = ["docker.ubuntu"]
     }
-    post-processor "docker-push" {}
   }
 }

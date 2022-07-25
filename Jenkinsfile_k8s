@@ -193,8 +193,12 @@ pipeline {
 
                 // Execute build only for this matrix cell's setup
                 retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
-                  infra.withDockerCredentials {
-                    sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                  sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                  if ((env.BRANCH_IS_PRIMARY) && (env.TAG_NAME)) {
+                    infra.withDockerCredentials {
+                      def dockerImage = "jenkinsciinfra/jenkins-agent-${env.agent_type}:${env.TAG_NAME}"
+                      docker push dockerImage
+                    }
                   }
                 }
               }

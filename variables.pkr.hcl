@@ -53,11 +53,3 @@ variable "provision_env_file" {
   description = "Path (absolute or relative to this packer template) to the YAML file with the list of environment variables forwarded to provisioners (mainly tools versions)"
   default     = "provisioning/tools-versions.yml"
 }
-variable "remoting_version" {
-  type    = string
-  default = "4.13"
-}
-variable "docker_namespace" {
-  type    = string
-  default = "hlemeur"
-}
