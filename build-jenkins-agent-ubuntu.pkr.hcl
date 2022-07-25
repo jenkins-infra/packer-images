@@ -53,11 +53,9 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
-  post-processors {
-    post-processor "docker-tag" {
-      only       = ["docker.ubuntu"]
-      repository = "${var.docker_namespace}/${local.image_name}"
-      tags       = [var.image_version]
-    }
+  post-processor "docker-tag" {
+    only       = ["docker.ubuntu"]
+    repository = "${var.docker_namespace}/${local.image_name}"
+    tags       = [var.image_version]
   }
 }
