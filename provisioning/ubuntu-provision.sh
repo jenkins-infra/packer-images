@@ -83,7 +83,11 @@ function setuser() {
   curl --fail --silent --location --show-error "${OPENSSH_AUTHORIZED_KEYS_URL}" --output "${userhome}/.ssh/authorized_keys"
   chmod 0700 "${userhome}/.ssh"
   chmod 0600 "${userhome}/.ssh/authorized_keys"
-  chown -R jenkins:jenkins "${userhome}/.ssh"
+  chown -R "${username}:${groupname}" "${userhome}/.ssh"
+
+  # Create agent folder
+  mkdir -p "${userhome}/agent"
+  chown -R "${username}:${groupname}" "${userhome}/agent"
 }
 
 ## Install asdf on the default user's home
