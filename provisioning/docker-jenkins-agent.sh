@@ -7,8 +7,9 @@ set -eux -o pipefail
 echo "== Setting up Remoting in the Docker image"
 export DEBIAN_FRONTEND=noninteractive # Avoid APT or dpkg asking questions
 
-# apt-get update --quiet
-# apt-get install --yes --no-install-recommends ca-certificates curl sudo software-properties-common
+# Docker Ubuntu image are missing required tools: let's install it as a preliminary
+apt-get update --quiet
+apt-get install --yes --no-install-recommends ca-certificates curl sudo software-properties-common
 
 echo "= Retrieve agent.jar"
 curl --create-dirs --fail --silent --show-error --location --output /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${JENKINS_REMOTING_VERSION}/remoting-${JENKINS_REMOTING_VERSION}.jar

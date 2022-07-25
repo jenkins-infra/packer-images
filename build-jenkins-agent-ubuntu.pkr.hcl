@@ -19,21 +19,9 @@ build {
     vm_size   = local.azure_vm_size
   }
 
-  # Docker Ubuntu image are missing required tools: let's install it as a preliminary
   provisioner "shell" {
     only             = ["docker.ubuntu"]
     environment_vars = local.provisioning_env_vars
-    inline = [
-      "export DEBIAN_FRONTEND=noninteractive", # Avoid APT or dpkg asking questions
-      "apt-get update --quiet",
-      "apt-get install --yes --no-install-recommends ca-certificates curl sudo software-properties-common",
-    ]
-  }
-
-  provisioner "shell" {
-    only             = ["docker.ubuntu"]
-    environment_vars = local.provisioning_env_vars
-    execute_command  = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/docker-jenkins-agent.sh"
   }
 
@@ -49,7 +37,6 @@ build {
 
   provisioner "shell" {
     environment_vars = local.provisioning_env_vars
-    execute_command  = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
