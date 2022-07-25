@@ -1,7 +1,4 @@
 #!/bin/bash
-# This script provision the Linux Ubuntu 20 images for Jenkins agents
-# Architecture supported: amd64, arm64
-
 set -eux -o pipefail
 
 echo "== Setting up Remoting in the Docker image"

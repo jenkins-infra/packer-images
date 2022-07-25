@@ -407,7 +407,7 @@ function main() {
   install_docker
   install_JA_requirements
   install_qemu
-  # install_python
+  install_python
   install_git_gitlfs
   install_jdk
   install_docker_compose
@@ -415,13 +415,13 @@ function main() {
   install_hadolint
   install_cst
   install_jxreleaseversion
-  # install_azurecli
+  install_azurecli
   install_gh
-  # install_vagrant
-  # install_ruby
+  install_vagrant
+  install_ruby
   install_yq
   cleanup
 }
 
 main
-# sanity_check
+sanity_check
