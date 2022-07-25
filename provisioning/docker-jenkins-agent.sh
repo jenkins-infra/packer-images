@@ -9,7 +9,7 @@ apt-get update --quiet
 apt-get install --yes --no-install-recommends ca-certificates curl sudo software-properties-common
 
 echo "= Retrieve agent.jar"
-curl --create-dirs --fail --silent --show-error --location --output /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${JENKINS_REMOTING_VERSION}/remoting-${JENKINS_REMOTING_VERSION}.jar
+curl --create-dirs --fail --silent --show-error --location --output /usr/share/jenkins/agent.jar "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${JENKINS_REMOTING_VERSION}/remoting-${JENKINS_REMOTING_VERSION}.jar"
 chmod 755 /usr/share/jenkins
 chmod 644 /usr/share/jenkins/agent.jar
 
