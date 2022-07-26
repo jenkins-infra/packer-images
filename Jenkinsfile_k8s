@@ -202,11 +202,13 @@ pipeline {
           stage('Publish Docker image') {
             steps {
               script {
-                if (isPrimaryBranch && env.TAG_NAME && (env.compute_type == 'docker')) {
+                if (env.TAG_NAME && (env.compute_type == 'docker')) {
                   infra.withDockerPushCredentials {
                     def dockerImage = "jenkinsciinfra/jenkins-agent-${env.agent_type}:${env.TAG_NAME}"
                     docker push dockerImage
                   }
+                } else {
+                  echo "Not a docker image and no tag, skipping this step."
                 }
               }
             }
