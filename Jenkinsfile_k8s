@@ -204,7 +204,7 @@ pipeline {
                   infra.withDockerPushCredentials {
                     def dockerImage = "jenkinsciinfra/jenkins-agent-${env.agent_type}:${env.TAG_NAME}"
                     echo "Publishing ${dockerImage}..."
-                    docker push dockerImage
+                    sh "docker push ${dockerImage}"
                   }
                 } else {
                   echo "Not a docker image and no tag, skipping this step."
