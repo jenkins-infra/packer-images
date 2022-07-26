@@ -1,5 +1,6 @@
-
+def isPrimaryBranch = false
 if (env.BRANCH_IS_PRIMARY) {
+  isPrimaryBranch = true
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
     // Daily build is enough: only the tagged build would generate downstream PRs on jenkins-infra
@@ -201,8 +202,8 @@ pipeline {
           stage('Publish Docker image') {
             steps {
               script {
-                if ((env.BRANCH_IS_PRIMARY) && (env.TAG_NAME)) {
-                  infra.withDockerCredentials {
+                if (isPrimaryBranch && env.TAG_NAME && (env.compute_type == 'docker')) {
+                  infra.withDockerPushCredentials {
                     def dockerImage = "jenkinsciinfra/jenkins-agent-${env.agent_type}:${env.TAG_NAME}"
                     docker push dockerImage
                   }
