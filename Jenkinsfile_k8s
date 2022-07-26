@@ -1,4 +1,3 @@
-
 if (env.BRANCH_IS_PRIMARY) {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
@@ -201,11 +200,14 @@ pipeline {
           stage('Publish Docker image') {
             steps {
               script {
-                if ((env.BRANCH_IS_PRIMARY) && (env.TAG_NAME)) {
-                  infra.withDockerCredentials {
+                if (env.TAG_NAME && (env.compute_type == 'docker')) {
+                  infra.withDockerPushCredentials {
                     def dockerImage = "jenkinsciinfra/jenkins-agent-${env.agent_type}:${env.TAG_NAME}"
+                    echo "Publishing ${dockerImage}..."
                     docker push dockerImage
                   }
+                } else {
+                  echo "Not a docker image and no tag, skipping this step."
                 }
               }
             }
