@@ -198,15 +198,13 @@ pipeline {
             }
           }
           stage('Publish Docker image') {
+            when {
+              env.compute_type == 'docker'
+              buildingTag()
+            }
             steps {
-              script {
-                if (env.TAG_NAME && (env.compute_type == 'docker')) {
-                  infra.withDockerPushCredentials {
-                    sh 'docker push jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME}'
-                  }
-                } else {
-                  echo 'Not a docker image and no tag, skipping this step.'
-                }
+              infra.withDockerPushCredentials {
+                sh 'docker push jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME}'
               }
             }
           }
