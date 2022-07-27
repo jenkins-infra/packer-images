@@ -203,6 +203,7 @@ pipeline {
               buildingTag()
             }
             steps {
+              echo "Pushing jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} & jenkinsciinfra/jenkins-agent-${agent_type}:latest"
               infra.withDockerPushCredentials {
                 sh 'docker push jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME}'
               }
