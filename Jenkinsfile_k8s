@@ -203,7 +203,7 @@ pipeline {
                 if (env.TAG_NAME && (env.compute_type == 'docker')) {
                   infra.withDockerPushCredentials {
                     echo "Pushing jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} & jenkinsciinfra/jenkins-agent-${agent_type}:latest"
-                    sh 'docker push  --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
+                    sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
                   }
                 } else {
                   echo 'Not a docker image or no tag, skipping this step.'
