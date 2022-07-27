@@ -199,7 +199,7 @@ pipeline {
           }
           stage('Publish Docker image') {
             when {
-              env.compute_type == 'docker'
+              environment name: 'compute_type', value: 'docker'
               buildingTag()
             }
             steps {
