@@ -17,6 +17,8 @@ build {
     image_sku = "${local.agent_os_version_safe}-lts-gen2"
     os_type   = "Linux"
     vm_size   = local.azure_vm_size
+    # Delete resources asynchronously (faster build and the garbage collector takes care of failed deletion)
+    async_resourcegroup_delete = true
   }
 
   provisioner "shell" {

@@ -24,6 +24,8 @@ build {
     winrm_timeout   = "20m"
     winrm_use_ssl   = true
     winrm_username  = local.windows_winrm_user[var.image_type]
+    # Delete resources asynchronously (faster build and the garbage collector takes care of failed deletion)
+    async_resourcegroup_delete = true
   }
 
   ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
