@@ -258,7 +258,8 @@ $downloads = [ordered]@{
             # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
             & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
             & "choco.exe" install yq --yes --no-progress --limit-output --fail-on-error-output --version "${env:YQ_VERSION}";
-            
+            & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
+
         };
         'sanityCheck'= {
             & "choco.exe";
@@ -267,6 +268,7 @@ $downloads = [ordered]@{
             & "$baseDir\ruby26\bin\ruby.exe" -v;
             & "$baseDir\ruby26\bin\bundle" -v;
             & "yq.exe" --version;
+            & "packer.exe" --version;
         }
     };
 }
