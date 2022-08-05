@@ -360,7 +360,7 @@ function install_yq() {
   install_asdf_package yq "${YQ_VERSION}"
 }
 
-## Install Packer with ASDF (because it checks for integrity with the hashicropt GPG key)
+## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
 function install_packer() {
   # Ensure that ASDF is installed
   install_asdf
