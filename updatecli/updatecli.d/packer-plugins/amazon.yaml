@@ -1,4 +1,4 @@
-title: "Bump packer's amazon plugin version"
+title: Bump packer amazon plugin version
 
 scms:
   default:
@@ -39,6 +39,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump packer amazon plugin version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion

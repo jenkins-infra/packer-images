@@ -1,5 +1,5 @@
 ---
-title: "Bump Docker Compose version"
+title: Bump Docker Compose version
 
 scms:
   default:
@@ -14,7 +14,7 @@ scms:
       branch: "{{ .github.branch }}"
 
 sources:
-  dockerComposeVersion:
+  lastReleaseVersion:
     kind: githubrelease
     name: Get the latest Docker Compose version
     spec:
@@ -39,6 +39,7 @@ pullrequests:
   default:
     kind: github
     scmid: default
+    title: Bump Docker Compose version to {{ source "lastReleaseVersion" }}
     targets:
       - updateDockerComposeVersion
     spec:

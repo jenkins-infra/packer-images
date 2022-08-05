@@ -1,5 +1,5 @@
 ---
-title: "Bump jq version"
+title: Bump JQ version
 
 scms:
   default:
@@ -42,6 +42,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump JQ version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion
