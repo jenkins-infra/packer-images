@@ -1,4 +1,4 @@
-title: "Bump packer's docker plugin version"
+title: Bump packer docker plugin version
 
 scms:
   default:
@@ -39,6 +39,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump packer docker plugin version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion

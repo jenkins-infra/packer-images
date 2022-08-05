@@ -1,5 +1,5 @@
 ---
-title: "Bump Git-LFS version"
+title: Bump Git-LFS version
 
 scms:
   default:
@@ -14,7 +14,7 @@ scms:
       branch: "{{ .github.branch }}"
 
 sources:
-  gitLfsVersion:
+  lastReleaseVersion:
     kind: githubrelease
     name: Get the latest Git-LFS version
     spec:
@@ -38,6 +38,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump Git-LFS version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateGitLfsVersion

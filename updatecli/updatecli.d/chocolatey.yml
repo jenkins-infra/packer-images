@@ -1,5 +1,5 @@
 ---
-title: "Bump chocolatey version"
+title: Bump chocolatey version
 
 scms:
   default:
@@ -36,6 +36,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump chocolatey version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion

@@ -1,5 +1,5 @@
 ---
-title: "Bump container-structure-test version"
+title: Bump container-structure-test version
 
 scms:
   default:
@@ -38,6 +38,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump container-structure-test version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion

@@ -1,5 +1,5 @@
 ---
-title: "Bump azure-cli version"
+title: Bump azure-cli version
 
 scms:
   default:
@@ -42,6 +42,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump azure-cli version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion

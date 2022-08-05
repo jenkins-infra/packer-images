@@ -1,5 +1,5 @@
 ---
-title: "Bump Maven version"
+title: Bump Maven version
 
 scms:
   default:
@@ -19,7 +19,7 @@ scms:
       branch: master
 
 sources:
-  getLatestMavenVersion:
+  lastReleaseVersion:
     kind: gittag
     name: Get the latest Maven version
     scmid: mavenGitHubMirror
@@ -34,7 +34,7 @@ conditions:
     kind: shell
     disablesourceinput: true
     spec:
-      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `getLatestMavenVersion` }}/binaries/apache-maven-{{ source `getLatestMavenVersion` }}-bin.tar.gz
+      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `lastReleaseVersion` }}/binaries/apache-maven-{{ source `lastReleaseVersion` }}-bin.tar.gz
 
 targets:
   updateMavenVersion:
@@ -48,6 +48,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump Maven version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateMavenVersion

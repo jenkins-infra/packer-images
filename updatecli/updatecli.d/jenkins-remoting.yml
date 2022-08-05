@@ -1,5 +1,5 @@
 ---
-title: "Bump remoting version"
+title: Bump Jenkins Remoting version
 
 scms:
   default:
@@ -36,6 +36,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump Jenkins Remoting version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion

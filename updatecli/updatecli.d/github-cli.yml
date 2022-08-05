@@ -1,5 +1,5 @@
 ---
-title: "Bump GitHub CLI (gh) version"
+title: Bump GitHub CLI (gh) version
 
 scms:
   default:
@@ -38,6 +38,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump GitHub CLI (gh) version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion

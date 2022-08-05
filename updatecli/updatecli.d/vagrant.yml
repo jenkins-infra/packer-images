@@ -1,5 +1,5 @@
 ---
-title: "Bump vagrant version"
+title: Bump vagrant version
 
 scms:
   default:
@@ -38,6 +38,7 @@ targets:
 pullrequests:
   default:
     kind: github
+    title: Bump vagrant version to {{ source "lastReleaseVersion" }}
     scmid: default
     targets:
       - updateVersion
