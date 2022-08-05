@@ -360,6 +360,16 @@ function install_yq() {
   install_asdf_package yq "${YQ_VERSION}"
 }
 
+## Install Packer with ASDF (because it checks for integrity with the hashicropt GPG key)
+function install_packer() {
+  # Ensure that ASDF is installed
+  install_asdf
+
+  # Install packer with ASDF and set it as default installation
+  install_asdf_plugin packer https://github.com/asdf-community/asdf-hashicorp.git
+  install_asdf_package packer "${PACKER_VERSION}"
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -385,6 +395,7 @@ function sanity_check() {
   && jx-release-version -version \
   && make --version \
   && mvn -v \
+  && packer -v \
   && parallel --version \
   && python3 --version \
   && ruby -v \
@@ -420,6 +431,7 @@ function main() {
   install_vagrant
   install_ruby
   install_yq
+  install_packer
   cleanup
 }
 
