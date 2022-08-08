@@ -19,15 +19,15 @@ variable "aws_region" {
 }
 variable "azure_client_id" {
   type    = string
-  default = ""
+  default = env("AZURE_CLIENT_ID")
 }
 variable "azure_client_secret" {
   type    = string
-  default = ""
+  default = env("AZURE_CLIENT_SECRET")
 }
 variable "azure_subscription_id" {
-  default = ""
   type    = string
+  default = env("AZURE_SUBSCRIPTION_ID")
 }
 variable "image_version" {
   type    = string
