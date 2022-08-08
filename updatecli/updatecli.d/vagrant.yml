@@ -25,6 +25,15 @@ sources:
       versionfilter:
         kind: semver
 
+conditions:
+  ## Only check for chocolatey package: ASDF package is always faster than chocolatey to publish + both packages are relying on hashicorp
+  checkForChocolateyPackage:
+    kind: shell
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      command: curl https://community.chocolatey.org/packages/vagrant/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
+
+
 targets:
   updateVersion:
     name: "Update the vagrant version in the provision-env.yml file"
