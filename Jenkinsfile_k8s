@@ -1,3 +1,35 @@
+// The node to be used depends on the build type: this function executes the pipeline code block provided as "body"
+// into the correct node type based on the provided arguments
+def withPackerNode(String packer_template, String compute_type, String cpu_architecture, Closure body) {
+  // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
+  if (cpu_architecture == 'arm64' && compute_type == 'docker') {
+    node('linux-arm64-docker') {
+      // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
+      checkout scm
+
+      // New agent means new packer project to initialize (plugins)
+      packerInitPlugins()
+
+      return body.call()
+    }
+  } else {
+    // No node allocation: keep the same default agent node (e.g. declarative top-level)
+    return body.call()
+  }
+}
+
+// Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
+// This function must be called for each distinct agent but only one time (as plugins are OS and CPU specifics)
+def packerInitPlugins() {
+  // Authenticating to the GitHub API with an API token (auto-generated IAT, valid for 1 hour) provided to the environment variable PACKER_GITHUB_API_TOKEN
+  // to avoid hitting the rate limit. Ref. https://www.packer.io/docs/commands/init.
+  withCredentials([usernamePassword(credentialsId: 'github-app-infra',usernameVariable: 'UNUSED',passwordVariable: 'PACKER_GITHUB_API_TOKEN')]) {
+    // Cleanup any remnant of packer plugins on this agent
+    sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
+    sh 'packer init ./'
+  }
+}
+
 if (env.BRANCH_IS_PRIMARY) {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
@@ -17,10 +49,18 @@ spec:
 '''
 
 pipeline {
-  agent none
+  agent {
+    // Default agent for all the packer steps: needs Docker on amd64 Linux
+    // Only a few matrix cells requires another kind of agent other than this default
+    label "linux-amd64-docker"
+  }
   options {
     // Average build time is ~30 min. 1h30 hour timeout indicates that something is wrong and should fail
     timeout(time: 90, unit: 'MINUTES')
+  }
+  environment {
+    // To allow using ASDF shims
+    PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
   }
   stages {
     stage('Side Tasks') {
@@ -28,6 +68,14 @@ pipeline {
         DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
       }
       parallel {
+        stage('Packer Init') {
+          steps {
+            // Call the initializing function once for the default agent
+            script {
+              packerInitPlugins()
+            }
+          }
+        }
         stage('GC on AWS us-east-2') {
           agent {
             kubernetes {
@@ -143,14 +191,16 @@ pipeline {
             }
           }
         }
-        agent {
-          label "linux-${env.cpu_architecture}-docker"
-        }
         environment {
           AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
           AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
+          // Defines the following environment variables: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
+          // Ref. https://plugins.jenkins.io/azure-credentials/#plugin-content-declarative-pipeline
+          AZURE                         = credentials('packer-azure-serviceprincipal')
+          // // Split packer plugins/configuration for each matrix cell - ref. https://www.packer.io/docs/configure
+          // PACKER_PLUGIN_PATH            = "${env.WORKSPACE}/plugins"
           // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
-          // Re.f https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
+          // Ref. https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
           PKR_VAR_build_type            = "${env.TAG_NAME ? 'prod' : (env.BRANCH_IS_PRIMARY ? 'staging' : 'dev') }"
           PKR_VAR_image_version         = "${env.TAG_NAME ?: ''}"
           PKR_VAR_scm_ref               = "${env.GIT_COMMIT}"
@@ -163,36 +213,24 @@ pipeline {
         stages {
           stage('Build Template') {
             steps {
-              // Pass the Azure credentials through Packer Input variables, as environment variables prefixed with 'PKR_VAR_'
-                // Re.f https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
-              withCredentials([azureServicePrincipal(
-                credentialsId: 'packer-azure-serviceprincipal',
-                clientIdVariable: 'PKR_VAR_azure_client_id',
-                clientSecretVariable: 'PKR_VAR_azure_client_secret',
-                subscriptionIdVariable: 'PKR_VAR_azure_subscription_id'
-              ),]) {
-                // Required if packer needs to be installed
-                sh 'command -v packer >/dev/null 2>&1 || bash ./install-packer.sh "${WORKSPACE}/.bin" "1.8.0"'
+              script {
+                // Groovy quirk: create a local copy of these variables in the current loop context, as it matters for the closue scope below
+                // Otherwise the environment variables will be mixed between all the parallel stages, creating weird combinations
+                // - https://stackoverflow.com/questions/22145763/iterate-and-print-content-of-groovy-closures
+                // - http://archive.comsystoreply.de/blog-post/parallel-builds-with-jenkins-pipeline
+                final String pkr_var_agent_os_type = agent_type.split('-')[0]
+                final String pkr_var_agent_os_version = agent_type.split('-')[1]
+                final String pkr_var_architecture = cpu_architecture
+                final String pkr_var_image_type = compute_type
 
-                // Help auditing pipeline execution
-                sh '''
-                echo "= Current Packer environment:"
-                env | grep -i PKR_VAR
-                env | grep -i PACKER
-                '''
+                withPackerNode(pkr_var_agent_os_type + '-' + pkr_var_agent_os_version , pkr_var_image_type, pkr_var_architecture) {
+                  // Validate template (for all elements)
+                  sh 'PACKER_LOG=1 packer validate ./'
 
-                // Initialize the project. To avoid hitting GitHub APi rate limit, Packer authenticates
-                // with an API token (auto-generated IAT, valid for 1 hour) provided to the environment variable PACKER_GITHUB_API_TOKEN
-                withCredentials([usernamePassword(credentialsId: 'github-app-infra',usernameVariable: 'UNUSED',passwordVariable: 'PACKER_GITHUB_API_TOKEN')]) {
-                  sh 'packer init ./'
-                }
-
-                // Validate template (for all elements)
-                sh 'packer validate ./'
-
-                // Execute build only for this matrix cell's setup
-                retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
-                  sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                  // Execute build only for this matrix cell's setup
+                  retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
+                    sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                  }
                 }
               }
             }
