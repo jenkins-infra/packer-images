@@ -264,12 +264,10 @@ $downloads = [ordered]@{
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
-            # & "vagrant.exe" --version;
             & "$baseDir\ruby26\bin\ruby.exe" -v;
             & "$baseDir\ruby26\bin\bundle" -v;
             & "yq.exe" --version;
             & "packer.exe" --version;
-            & "datadog-agent.exe" version;
         }
     };
 }
