@@ -370,6 +370,23 @@ function install_packer() {
   install_asdf_package packer "${PACKER_VERSION}"
 }
 
+## Install Datadog agent but not starting it and not enabling it (that will be the role of the system spinning up VM through cloud-init usually)
+function install_datadog() {
+  apt-get update
+  apt-get install --yes --no-install-recommends apt-transport-https ca-certificates curl gnupg # Should already be there but this function should be autonomous
+
+  echo 'deb [signed-by=/usr/share/keyrings/datadog-archive-keyring.gpg] https://apt.datadoghq.com/ stable 7' > /etc/apt/sources.list.d/datadog.list
+  touch /usr/share/keyrings/datadog-archive-keyring.gpg
+  chmod a+r /usr/share/keyrings/datadog-archive-keyring.gpg
+
+  curl https://keys.datadoghq.com/DATADOG_APT_KEY_CURRENT.public | gpg --no-default-keyring --keyring /usr/share/keyrings/datadog-archive-keyring.gpg --import --batch
+  curl https://keys.datadoghq.com/DATADOG_APT_KEY_382E94DE.public | gpg --no-default-keyring --keyring /usr/share/keyrings/datadog-archive-keyring.gpg --import --batch
+  curl https://keys.datadoghq.com/DATADOG_APT_KEY_F14F620E.public | gpg --no-default-keyring --keyring /usr/share/keyrings/datadog-archive-keyring.gpg --import --batch
+
+  apt-get update
+  apt-get install --yes --no-install-recommends datadog-agent datadog-signing-keys
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -384,6 +401,7 @@ function sanity_check() {
   && az --version \
   && bundle -v \
   && container-structure-test version \
+  && datadog-agent version \
   && docker -v  \
   && docker-compose -v \
   && gh --version \
@@ -416,6 +434,7 @@ function main() {
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
   install_asdf # Before all the others but after the jenkins home is created
   install_docker
+  install_datadog
   install_JA_requirements
   install_qemu
   install_python

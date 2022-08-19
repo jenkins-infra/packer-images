@@ -259,12 +259,11 @@ $downloads = [ordered]@{
             & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
             & "choco.exe" install yq --yes --no-progress --limit-output --fail-on-error-output --version "${env:YQ_VERSION}";
             & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
-
+            & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
         };
         'sanityCheck'= {
             & "choco.exe";
             & "make.exe" -version;
-            # & "vagrant.exe" --version;
             & "$baseDir\ruby26\bin\ruby.exe" -v;
             & "$baseDir\ruby26\bin\bundle" -v;
             & "yq.exe" --version;
