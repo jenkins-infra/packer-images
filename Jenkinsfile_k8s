@@ -1,21 +1,34 @@
 // The node to be used depends on the build type: this function executes the pipeline code block provided as "body"
 // into the correct node type based on the provided arguments
 def withPackerNode(String packer_template, String compute_type, String cpu_architecture, Closure body) {
-  // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
-  if (cpu_architecture == 'arm64' && compute_type == 'docker') {
-    node('linux-arm64-docker') {
-      // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
-      checkout scm
+  echo "DEBUG: (withPackerNode) packer_template=${packer_template} compute_type=${compute_type}"
+  if (compute_type == 'docker') {
+    // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
+    if (cpu_architecture == 'arm64') {
+      node('linux-arm64-docker') {
+        // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
+        checkout scm
 
-      // New agent means new packer project to initialize (plugins)
-      packerInitPlugins()
+        // New agent means new packer project to initialize (plugins)
+        packerInitPlugins()
 
-      return body.call()
+        return body.call()
+      }
+    } else if (packer_template == 'windows-2019') {
+      node('windows-amd64-docker') {
+        // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
+        checkout scm
+
+        // New agent means new packer project to initialize (plugins)
+        packerInitPlugins()
+
+        return body.call()
+      }
     }
-  } else {
-    // No node allocation: keep the same default agent node (e.g. declarative top-level)
-    return body.call()
   }
+
+  // No node allocation: keep the same default agent node (e.g. declarative top-level)
+  return body.call()
 }
 
 // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
@@ -24,9 +37,23 @@ def packerInitPlugins() {
   // Authenticating to the GitHub API with an API token (auto-generated IAT, valid for 1 hour) provided to the environment variable PACKER_GITHUB_API_TOKEN
   // to avoid hitting the rate limit. Ref. https://www.packer.io/docs/commands/init.
   withCredentials([usernamePassword(credentialsId: 'github-app-infra',usernameVariable: 'UNUSED',passwordVariable: 'PACKER_GITHUB_API_TOKEN')]) {
-    // Cleanup any remnant of packer plugins on this agent
-    sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
-    sh 'packer init ./'
+    if (isUnix()) {
+      // Cleanup any remnant of packer plugins on this agent
+      sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
+    }
+    universalShell 'packer init ./'
+  }
+}
+
+def universalShell(String command) {
+  if (isUnix()) {
+    // To allow using ASDF shims
+    withEnv(["PATH+ASDF=/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"]) {
+      sh command
+    }
+  } else {
+    windowsifiedCommand = command.replaceAll(/packer /, 'packer.exe ')
+    bat windowsifiedCommand
   }
 }
 
@@ -57,10 +84,6 @@ pipeline {
   options {
     // Average build time is ~30 min. 1h30 hour timeout indicates that something is wrong and should fail
     timeout(time: 90, unit: 'MINUTES')
-  }
-  environment {
-    // To allow using ASDF shims
-    PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
   }
   stages {
     stage('Side Tasks') {
@@ -143,7 +166,7 @@ pipeline {
           }
         }
         excludes {
-          // Do NOT build ARM images in Azure
+          // Do NOT build ARM64 images in Azure (Resource Manager)
           exclude {
             axis {
               name 'cpu_architecture'
@@ -154,7 +177,7 @@ pipeline {
               values 'azure-arm'
             }
           }
-          // Only build Ubuntu images for arm64 CPU in AWS
+          // Do NOT build ARM64 images for Windows operating systems
           exclude {
             axis {
               name 'cpu_architecture'
@@ -162,24 +185,20 @@ pipeline {
             }
             axis {
               name 'agent_type'
-              notValues 'ubuntu-20.04'
-            }
-            axis {
-              name 'compute_type'
-              values 'amazon-ebs'
+              values 'windows-2022'
             }
           }
-          // No build on Windows or Docker, not yet implemented
           exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
             axis {
               name 'agent_type'
               values 'windows-2019'
             }
-            axis {
-              name 'compute_type'
-              values 'docker'
-            }
           }
+          // Do not build Windows 2022 with Docker computing
           exclude {
             axis {
               name 'agent_type'
@@ -197,8 +216,6 @@ pipeline {
           // Defines the following environment variables: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
           // Ref. https://plugins.jenkins.io/azure-credentials/#plugin-content-declarative-pipeline
           AZURE                         = credentials('packer-azure-serviceprincipal')
-          // // Split packer plugins/configuration for each matrix cell - ref. https://www.packer.io/docs/configure
-          // PACKER_PLUGIN_PATH            = "${env.WORKSPACE}/plugins"
           // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
           // Ref. https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
           PKR_VAR_build_type            = "${env.TAG_NAME ? 'prod' : (env.BRANCH_IS_PRIMARY ? 'staging' : 'dev') }"
@@ -208,7 +225,6 @@ pipeline {
           PKR_VAR_agent_os_version      = "${env.agent_type.split('-')[1]}"
           PKR_VAR_architecture          = "${env.cpu_architecture}"
           PKR_VAR_image_type            = "${env.compute_type}"
-          PATH                          = "${WORKSPACE}/.bin:${env.PATH}" // Required if packer needs to be installed
         }
         stages {
           stage('Build Template') {
@@ -225,11 +241,11 @@ pipeline {
 
                 withPackerNode(pkr_var_agent_os_type + '-' + pkr_var_agent_os_version , pkr_var_image_type, pkr_var_architecture) {
                   // Validate template (for all elements)
-                  sh 'PACKER_LOG=1 packer validate ./'
+                  universalShell 'packer validate .'
 
                   // Execute build only for this matrix cell's setup
                   retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
-                    sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                    universalShell "packer build -timestamp-ui -force -only=${env.PKR_VAR_image_type}.${env.PKR_VAR_agent_os_type} ."
                   }
                 }
               }
@@ -244,7 +260,7 @@ pipeline {
               script {
                 echo "Pushing jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} & jenkinsciinfra/jenkins-agent-${agent_type}:latest"
                 infra.withDockerPushCredentials {
-                  sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
+                  universalShell "docker push --all-tags jenkinsciinfra/jenkins-agent-${env.agent_type}"
                 }
               }
             }

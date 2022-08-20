@@ -28,7 +28,7 @@ locals {
       "AGENT_OS_TYPE=${var.agent_os_type}",
       "AGENT_OS_VERSION=${var.agent_os_version}",
       "LANG=${var.locale}",
-      "LANGUAGE=${element(split(".", var.locale),0)}:C",
+      "LANGUAGE=${element(split(".", var.locale), 0)}:C",
       "LC_ALL=${var.locale}",
     ],
   )
