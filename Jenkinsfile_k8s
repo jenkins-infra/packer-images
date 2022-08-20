@@ -1,9 +1,13 @@
 // The node to be used depends on the build type: this function executes the pipeline code block provided as "body"
 // into the correct node type based on the provided arguments
 def withPackerNode(String packer_template, String compute_type, String cpu_architecture, Closure body) {
-  // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
-  if (cpu_architecture == 'amd64' && compute_type == 'docker') {
-    node('linux-amd64-docker') {
+  // Docker images need to run with a local Docker Engine
+  if (compute_type == 'docker') {
+    String agentLabel = compute_type + '-' + packer_template
+    if (packer_template ==~ /ubuntu.*/) {
+      agentLabel = 'linux-amd64-docker'
+    }
+    node(agentLabel) {
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       checkout scm
 
@@ -18,15 +22,25 @@ def withPackerNode(String packer_template, String compute_type, String cpu_archi
   }
 }
 
+def universalShell(String command) {
+  if (isUnix()) {
+    // To allow using ASDF shims
+    withEnv(["PATH+ASDF=/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"]) {
+      sh command
+    }
+  } else {
+    windowsifiedCommand = command.replaceAll(/packer /, 'packer.exe ')
+    bat windowsifiedCommand
+  }
+}
+
 // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
 // This function must be called for each distinct agent but only one time (as plugins are OS and CPU specifics)
 def packerInitPlugins() {
   // Authenticating to the GitHub API with an API token (auto-generated IAT, valid for 1 hour) provided to the environment variable PACKER_GITHUB_API_TOKEN
   // to avoid hitting the rate limit. Ref. https://www.packer.io/docs/commands/init.
   withCredentials([usernamePassword(credentialsId: 'github-app-infra',usernameVariable: 'UNUSED',passwordVariable: 'PACKER_GITHUB_API_TOKEN')]) {
-    // Cleanup any remnant of packer plugins on this agent
-    sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
-    sh 'packer init ./'
+    universalShell 'packer init .'
   }
 }
 
@@ -55,10 +69,6 @@ pipeline {
   }
   options {
     timeout(time: 120, unit: 'MINUTES')
-  }
-  environment {
-    // To allow using ASDF shims
-    PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
   }
   stages {
     stage('Side Tasks') {
@@ -159,16 +169,6 @@ pipeline {
               values 'docker'
             }
           }
-          exclude {
-            axis {
-              name 'agent_type'
-              values 'windows-2022'
-            }
-            axis {
-              name 'compute_type'
-              values 'docker'
-            }
-          }
         }
         environment {
           // Defines the following environment variables: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
@@ -203,14 +203,14 @@ pipeline {
 
                 withPackerNode(pkr_var_agent_os_type + '-' + pkr_var_agent_os_version , pkr_var_image_type, pkr_var_architecture) {
                   // Validate template (for all elements)
-                  sh 'PACKER_LOG=1 packer validate ./'
+                  universalShell 'packer validate .'
 
                   // Execute build only for this matrix cell's setup
                   retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
-                    sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                    universalShell 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" .'
                     // adding manually a cpu architecture tag to the docker image
                     if (pkr_var_image_type == 'docker') {
-                      sh 'docker tag "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest" "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"'
+                      universalShell 'docker tag "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest" "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"'
                     }
                   }
                   // if docker and building a tag, push to dockerhub from inside the node
@@ -219,7 +219,7 @@ pipeline {
                     stage('Publish all tags for Docker image') {
                       echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
                       infra.withDockerPushCredentials {
-                        sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
+                        universalShell 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
                       }
                     }
                   }

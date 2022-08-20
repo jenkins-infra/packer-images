@@ -42,8 +42,5 @@ Match User $args[1]
   echo "$partialSSHConfig" | Out-File -Encoding ASCII -Append 'C:\ProgramData\ssh\sshd_config'
 }
 
-## Ensure OpenSSH is reloaded
-Restart-Service sshd
-
 Write-Output "Key $publicKey added!"
 Write-Host "Key $publicKey added!"

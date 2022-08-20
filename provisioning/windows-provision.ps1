@@ -67,13 +67,19 @@ Function AddToPathEnv($path) {
 
 # Install OpenSSH (from Windows Features)
 Write-Output "= Installing OpenSSH Server..."
-Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-Write-Output "= Setting up OpenSSH Server..."
-Set-Service -Name sshd -StartupType 'Automatic'
-Write-Output "= Starting OpenSSH Server..."
-Start-Service sshd
-Write-Output "= Adding OpenSSH to the Firewall..."
-New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
+if ($env:CLOUD_TYPE = "docker") {
+    Write-Output "== Docker Container: Setting up only OpenSSH client"
+    # No Service Manager in Docker
+    Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+} else {
+    Write-Output "== Virtual Machine: Setting up both OpenSSH client and server"
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+    Set-Service -Name sshd -StartupType 'Automatic'
+    Write-Output "= Starting OpenSSH Server..."
+    Start-Service sshd
+    Write-Output "= Adding OpenSSH to the Firewall..."
+    New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
+}
 
 # Prepare Tools Installation
 $baseDir = 'C:\tools'

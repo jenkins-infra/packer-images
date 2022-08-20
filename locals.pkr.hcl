@@ -11,7 +11,7 @@ locals {
   }
   windows_winrm_user = {
     "azure-arm"  = "packer"
-    "docker"     = "packer"
+    "docker"     = "containeradministrator"
   }
   azure_vm_size = {
     "amd64" = "Standard_D4s_v3"  # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
