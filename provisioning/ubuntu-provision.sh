@@ -386,6 +386,7 @@ function install_datadog() {
 
   apt-get update
   apt-get install --yes --no-install-recommends datadog-agent datadog-signing-keys
+  systemctl disable datadog-agent
 }
 
 ## Ensure that the VM is cleaned up
