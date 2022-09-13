@@ -310,7 +310,8 @@ function install_azurecli() {
     libsodium-dev \
     python3-dev
   export SODIUM_INSTALL="system"
-  python3 -m pip install --no-cache-dir pynacl
+  # Python dependencies for the azure-cli
+  python3 -m pip install --no-cache-dir --upgrade cryptography pynacl pyOpenSSL
   # Using the Python installation to ensure that both Intel and ARM are supported (Microsoft only provides a package for Intel)
   python3 -m pip install --no-cache-dir azure-cli=="${AZURECLI_VERSION}"
 }
