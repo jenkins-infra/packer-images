@@ -386,6 +386,8 @@ function install_datadog() {
 
   apt-get update
   apt-get install --yes --no-install-recommends datadog-agent datadog-signing-keys
+  # Disabling service at startup to avoid error log before cloud-init providing the datadog parameters
+  systemctl disable datadog-agent
 }
 
 ## Ensure that the VM is cleaned up
