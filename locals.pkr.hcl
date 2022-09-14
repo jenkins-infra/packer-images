@@ -10,7 +10,6 @@ locals {
   windows_winrm_user = {
     "azure-arm"  = "packer"
     "amazon-ebs" = "Administrator" # In AWS EC2, WinRM super admin must be the "Administrator" account
-    "docker"     = "packer"
   }
   azure_vm_size        = "Standard_D4s_v3" # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
   azure_resource_group = "${var.build_type}-packer-images"
