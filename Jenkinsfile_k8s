@@ -99,53 +99,53 @@ pipeline {
             }
           }
         }
-        stage('GC on AWS us-east-2') {
-          agent {
-            kubernetes {
-              yaml podAgentDefinition
-            }
-          }
-          environment {
-            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
-            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
-            AWS_DEFAULT_REGION    = 'us-east-2'
-          }
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh './cleanup/aws.sh'
-              sh './cleanup/aws_images.sh'
-            }
-          }
-        }
-        stage('GC on Azure') {
-          agent {
-            kubernetes {
-              yaml podAgentDefinition
-            }
-          }
-          environment {
-            PACKER_AZURE = credentials('packer-azure-serviceprincipal')
-          }
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
-              sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
-              sh './cleanup/azure.sh'
-            }
-          }
-        }
-        stage('Updatecli') {
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              script {
-                updatecli(action: 'diff', containerMemory: '1024Mi')
-                if (env.BRANCH_IS_PRIMARY) {
-                  updatecli(action: 'apply', cronTriggerExpression: '@daily', containerMemory: '1024Mi')
-                }
-              }
-            }
-          }
-        }
+        // stage('GC on AWS us-east-2') {
+        //   agent {
+        //     kubernetes {
+        //       yaml podAgentDefinition
+        //     }
+        //   }
+        //   environment {
+        //     AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+        //     AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+        //     AWS_DEFAULT_REGION    = 'us-east-2'
+        //   }
+        //   steps {
+        //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        //       sh './cleanup/aws.sh'
+        //       sh './cleanup/aws_images.sh'
+        //     }
+        //   }
+        // }
+        // stage('GC on Azure') {
+        //   agent {
+        //     kubernetes {
+        //       yaml podAgentDefinition
+        //     }
+        //   }
+        //   environment {
+        //     PACKER_AZURE = credentials('packer-azure-serviceprincipal')
+        //   }
+        //   steps {
+        //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        //       sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
+        //       sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
+        //       sh './cleanup/azure.sh'
+        //     }
+        //   }
+        // }
+        // stage('Updatecli') {
+        //   steps {
+        //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        //       script {
+        //         updatecli(action: 'diff', containerMemory: '1024Mi')
+        //         if (env.BRANCH_IS_PRIMARY) {
+        //           updatecli(action: 'apply', cronTriggerExpression: '@daily', containerMemory: '1024Mi')
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
       }
     }
     stage('Packer Images') {
