@@ -15,6 +15,9 @@ Add-Type -AssemblyName System.Web
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 
+Write-Output "= Starting Provisioning..."
+Write-Output "== Cloud type is: $env:CLOUD_TYPE"
+
 ## Reusable Functions (must be declared before calling)
 Function Retry-Command {
     [CmdletBinding()]
