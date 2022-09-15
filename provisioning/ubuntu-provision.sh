@@ -66,6 +66,10 @@ function clean_apt() {
   apt-get upgrade -y
 }
 
+function setlocale() {
+  localectl set-locale LANG=en_US.UTF-8
+}
+
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
   groupadd --gid="${groupid}" "${groupname}"
@@ -435,6 +439,7 @@ function main() {
   copy_custom_scripts
   clean_apt
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
+  setlocale # Define the locale to en_US.UTF8
   install_asdf # Before all the others but after the jenkins home is created
   install_docker
   install_datadog
