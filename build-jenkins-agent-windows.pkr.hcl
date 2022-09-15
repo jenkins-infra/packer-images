@@ -75,18 +75,11 @@ build {
   }
 
   provisioner "powershell" {
-    only              = ["azure-arm.windows", "azure-ebs.windows"]
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
     script            = "./provisioning/windows-provision.ps1"
-  }
 
-  # No elevated user for Docker provisioning
-  provisioner "powershell" {
-    only             = ["docker.windows"]
-    environment_vars = local.provisioning_env_vars
-    script = "provisioning/windows-provision.ps1"
   }
 
   # Recommended (and sometimes required) before running deprovisioning (sysprep or AWS scripts)
