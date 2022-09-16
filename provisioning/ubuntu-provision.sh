@@ -51,6 +51,14 @@ function copy_custom_scripts() {
   chmod a+x /usr/local/bin/add_auth_key_to_user.sh
 }
 
+## Set the locale
+function set_local(){
+  echo "LC_ALL=${LC_ALL}" >> /etc/environment
+  echo "${LANG} ${element(split('.', var.locale),1)}" >> /etc/locale.gen
+  echo "LANG=${LANG}" > /etc/locale.conf
+  locale-gen ${LANG}
+}
+
 ## All the clean for apt
 function clean_apt() {
   ## Disable and remove Unattended APT upgrades
