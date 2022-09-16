@@ -66,6 +66,11 @@ function clean_apt() {
   apt-get upgrade -y
 }
 
+function install_ssh_requirements() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends openssh-client
+}
+
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
   groupadd --gid="${groupid}" "${groupname}"
@@ -416,6 +421,7 @@ function sanity_check() {
   && jx-release-version -version \
   && make --version \
   && mvn -v \
+  && command -v ssh-agent \
   && packer -v \
   && parallel --version \
   && python3 --version \
@@ -434,6 +440,7 @@ function main() {
   check_commands
   copy_custom_scripts
   clean_apt
+  install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
   install_asdf # Before all the others but after the jenkins home is created
   install_docker
