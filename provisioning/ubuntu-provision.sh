@@ -6,6 +6,24 @@ set -eux -o pipefail
 
 ## Check for environment variables or fail miserably (due to set -u enabled)
 echo "== Provisiong jenkins-infra agent for ubuntu 20"
+case "$(uname -m)" in
+    x86_64)
+      if test "${ARCHITECTURE}" != "amd64"; then
+        echo "Architecture mismatch: $(uname -m) != ${ARCHITECTURE}"
+        exit 1
+      fi
+      ;;
+    arm64 | aarch64) # macOS M1 arm64 while ubuntu 20 is aarch64
+      if test "${ARCHITECTURE}" != "arm64"; then
+        echo "Architecture mismatch: $(uname -m) != ${ARCHITECTURE}"
+        exit 1
+      fi
+      ;;
+    *)
+      echo "Unsupported architecture: $(uname -m)"
+      exit 1
+      ;;
+esac
 echo "ARCHITECTURE=${ARCHITECTURE}"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -52,11 +70,11 @@ function copy_custom_scripts() {
 }
 
 ## Set the locale
-function set_local(){
+function set_locale(){
   echo "LC_ALL=${LC_ALL}" >> /etc/environment
-  echo "${LANG} ${element(split('.', var.locale),1)}" >> /etc/locale.gen
+  echo "${LANG} ${LANG##*.}" >> /etc/locale.gen
   echo "LANG=${LANG}" > /etc/locale.conf
-  locale-gen ${LANG}
+  locale-gen "${LANG}"
 }
 
 ## All the clean for apt
@@ -452,6 +470,7 @@ function sanity_check() {
 function main() {
   check_commands
   copy_custom_scripts
+  set_locale # Define the locale
   clean_apt
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
