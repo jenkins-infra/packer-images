@@ -87,5 +87,6 @@ source "docker" "base" {
     "ENV AGENT_WORKDIR=/home/jenkins/agent",
     "WORKDIR /home/jenkins",
     "ENTRYPOINT [\"/usr/local/bin/jenkins-agent\"]",
+    "USER jenkins",
   ]
 }
