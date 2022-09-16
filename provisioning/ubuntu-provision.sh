@@ -62,7 +62,7 @@ function clean_apt() {
   apt-get autoremove --purge -y
 
   ## Ensure the machine is up-to-date
-  apt-get update
+  apt-get update --quiet
   apt-get upgrade -y
 }
 
@@ -166,6 +166,7 @@ function install_docker() {
 
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
+  apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     make \
     unzip \
@@ -176,6 +177,7 @@ function install_JA_requirements(){
 
 ## setup qemu
 function install_qemu() {
+  apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     qemu \
     binfmt-support \
@@ -188,6 +190,7 @@ function install_qemu() {
 
 ## Install Python 3
 function install_python() {
+  apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     python3 \
     python3-docker \
@@ -221,6 +224,7 @@ function install_git_gitlfs() {
 }
 
 function install_jdk() {
+  apt-get update --quiet
   ## Prevent Java null pointer exception due to missing fontconfig
   apt-get install --yes --no-install-recommends fontconfig
 
@@ -308,6 +312,7 @@ function install_jxreleaseversion() {
 
 ## Ensure that azure-cli is installed
 function install_azurecli() {
+  apt-get update --quiet
   ## From https://github.com/Azure/azure-cli/issues/7368#issuecomment-921578936
   apt-get install --yes --no-install-recommends \
     gcc \
@@ -349,7 +354,7 @@ function install_ruby() {
   # Ensure that ASDF is installed
   install_asdf
   # Ensure that require dependencies are present to install Ruby
-  apt-get update
+  apt-get update --quiet
   apt-get install --yes --no-install-recommends autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev
   # Install Ruby with ASDF and set it as default installation
   install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
@@ -378,7 +383,7 @@ function install_packer() {
 
 ## Install Datadog agent but not starting it and not enabling it (that will be the role of the system spinning up VM through cloud-init usually)
 function install_datadog() {
-  apt-get update
+  apt-get update --quiet
   apt-get install --yes --no-install-recommends apt-transport-https ca-certificates curl gnupg # Should already be there but this function should be autonomous
 
   echo 'deb [signed-by=/usr/share/keyrings/datadog-archive-keyring.gpg] https://apt.datadoghq.com/ stable 7' > /etc/apt/sources.list.d/datadog.list
@@ -389,7 +394,7 @@ function install_datadog() {
   curl https://keys.datadoghq.com/DATADOG_APT_KEY_382E94DE.public | gpg --no-default-keyring --keyring /usr/share/keyrings/datadog-archive-keyring.gpg --import --batch
   curl https://keys.datadoghq.com/DATADOG_APT_KEY_F14F620E.public | gpg --no-default-keyring --keyring /usr/share/keyrings/datadog-archive-keyring.gpg --import --batch
 
-  apt-get update
+  apt-get update --quiet
   apt-get install --yes --no-install-recommends datadog-agent datadog-signing-keys
   # Disabling service at startup to avoid error log before cloud-init providing the datadog parameters
   systemctl disable datadog-agent
