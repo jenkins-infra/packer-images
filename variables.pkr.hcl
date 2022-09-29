@@ -57,3 +57,7 @@ variable "docker_namespace" {
   type    = string
   default = "jenkinsciinfra"
 }
+variable "locale" {
+  type    = string
+  default = "en_US.UTF-8"
+}
