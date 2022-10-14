@@ -426,6 +426,16 @@ function install_datadog() {
   systemctl disable datadog-agent
 }
 
+## Install Tfsec with ASDF
+function install_tfsec() {
+  # Ensure that ASDF is installed
+  install_asdf
+
+  # Install tfsec with ASDF and set it as default installation
+  install_asdf_plugin tfsec https://github.com/woneill/asdf-tfsec.git
+  install_asdf_package tfsec "${TFSEC_VERSION}"
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -457,6 +467,7 @@ function sanity_check() {
   && parallel --version \
   && python3 --version \
   && ruby -v \
+  && tfsec --version \
   && unzip -v \
   && vagrant -v \
   && yq --version \
@@ -493,6 +504,7 @@ function main() {
   install_ruby
   install_yq
   install_packer
+  install_tfsec
   cleanup
 }
 
