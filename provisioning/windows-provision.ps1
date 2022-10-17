@@ -261,6 +261,7 @@ $downloads = [ordered]@{
             & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
             & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
+            & "choco.exe" install openssl --yes --no-progress --limit-output --fail-on-error-output --version "${env:OPENSSL_VERSION}";
         };
         'sanityCheck'= {
             & "choco.exe";
@@ -269,6 +270,7 @@ $downloads = [ordered]@{
             & "$baseDir\ruby26\bin\bundle" -v;
             & "yq.exe" --version;
             & "packer.exe" --version;
+            & "openssl.exe" version;
         }
     };
 }
