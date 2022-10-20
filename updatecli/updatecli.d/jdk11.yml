@@ -48,7 +48,7 @@ targets:
 pullrequests:
   default:
     kind: github
-    title: Bump JDK8 version to {{ source "lastReleaseVersion" }}
+    title: Bump JDK11 version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:
