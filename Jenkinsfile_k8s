@@ -35,6 +35,8 @@ if (env.BRANCH_IS_PRIMARY) {
     buildDiscarder(logRotator(numToKeepStr: '10')),
     // Daily build is enough: only the tagged build would generate downstream PRs on jenkins-infra
     pipelineTriggers([cron('@daily')]),
+    // Do not build concurently on the principal branch (to avoid Azure ARM issues with shared resources)
+    disableConcurrentBuilds(),
   ])
 }
 
