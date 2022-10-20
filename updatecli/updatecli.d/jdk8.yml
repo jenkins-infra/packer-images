@@ -1,5 +1,5 @@
 ---
-title: Bump JDK8 version
+name: Bump JDK8 version
 
 scms:
   default:
@@ -24,7 +24,7 @@ sources:
       username: "{{ .github.username }}"
       versionfilter:
         kind: regex
-        # jdk8u302-b08 is OK, but jdk8u302-b08.1 is not
+        # (https://github.com/adoptium/temurin8-binaries/releases/tag/jdk8u345-b01) is OK but jdk8u302-b08.1 is not
         pattern: "^jdk8u(\\d*)-b(\\d*)$"
     transformers:
       - trimprefix: "jdk"
@@ -49,8 +49,6 @@ pullrequests:
     kind: github
     title: Bump JDK8 version to {{ source "lastReleaseVersion" }}
     scmid: default
-    targets:
-      - updateJDK8Version
     spec:
       labels:
         - enhancement

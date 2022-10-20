@@ -1,5 +1,5 @@
 ---
-title: Bump Docker Compose version
+name: Bump Docker Compose version
 
 scms:
   default:
@@ -23,8 +23,9 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
-        ## Semver removes any 'v' prefix and get the latest version following semantic
         kind: semver
+    transformers:
+      - trimprefix: v
 
 targets:
   updateDockerComposeVersion:
@@ -40,8 +41,6 @@ pullrequests:
     kind: github
     scmid: default
     title: Bump Docker Compose version to {{ source "lastReleaseVersion" }}
-    targets:
-      - updateDockerComposeVersion
     spec:
       labels:
         - enhancement

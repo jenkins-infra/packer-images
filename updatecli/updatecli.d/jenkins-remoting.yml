@@ -1,5 +1,5 @@
 ---
-title: Bump Jenkins Remoting version
+name: Bump Jenkins Remoting version
 
 scms:
   default:
@@ -22,6 +22,7 @@ sources:
       repository: "remoting"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
+    
 
 targets:
   updateVersion:
@@ -38,8 +39,6 @@ pullrequests:
     kind: github
     title: Bump Jenkins Remoting version to {{ source "lastReleaseVersion" }}
     scmid: default
-    targets:
-      - updateVersion
     spec:
       labels:
         - enhancement

@@ -1,5 +1,5 @@
 ---
-title: Bump Git version on Windows
+name: Bump Git version on Windows
 
 scms:
   default:
@@ -44,8 +44,6 @@ pullrequests:
     kind: github
     title: Bump Git version on Windows to {{ source "lastReleaseVersion" }}
     scmid: default
-    targets:
-      - updateGitVersion
     spec:
       labels:
         - enhancement

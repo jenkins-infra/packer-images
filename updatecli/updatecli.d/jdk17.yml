@@ -1,5 +1,5 @@
 ---
-title: Bump JDK17 version
+name: Bump JDK17 version
 
 scms:
   default:
@@ -25,7 +25,8 @@ sources:
       versionfilter:
         kind: regex
         # jdk-17.0.2+8(https://github.com/adoptium/temurin17-binaries/releases/tag/jdk-17.0.2%2B8) is OK
-        pattern: "^jdk-17.(\\d*).(\\d*).(\\d*)+(\\d*)$"
+        # jdk-17.0.4.1+1(https://github.com/adoptium/temurin17-binaries/releases/tag/jdk-17.0.4.1%2B1) is OK
+        pattern: "^jdk-17.(\\d*).(\\d*).(\\d*)(.(\\d*))+(\\d*)$"
     transformers:
       - trimprefix: "jdk-"
 
@@ -49,8 +50,6 @@ pullrequests:
     kind: github
     title: Bump JDK17 version to {{ source "lastReleaseVersion" }}
     scmid: default
-    targets:
-      - updateJDK17Version
     spec:
       labels:
         - enhancement

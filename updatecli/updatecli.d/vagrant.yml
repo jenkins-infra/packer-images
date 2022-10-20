@@ -1,5 +1,5 @@
 ---
-title: Bump vagrant version
+name: Bump vagrant version
 
 scms:
   default:
@@ -24,6 +24,8 @@ sources:
       username: "{{ .github.username }}"
       versionfilter:
         kind: semver
+    transformers:
+      - trimprefix: v
 
 conditions:
   ## Only check for chocolatey package: ASDF package is always faster than chocolatey to publish + both packages are relying on hashicorp
@@ -49,8 +51,6 @@ pullrequests:
     kind: github
     title: Bump vagrant version to {{ source "lastReleaseVersion" }}
     scmid: default
-    targets:
-      - updateVersion
     spec:
       labels:
         - enhancement
