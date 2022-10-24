@@ -1,6 +1,7 @@
 asdf_version: "0.10.2"
 azurecli_version: "2.41.0"
 chocolatey_version: "1.2.0"
+chromium_version: "105.0.5195.102"
 compose_version: "2.12.2"
 cst_version: "1.11.0"
 default_jdk: "11"

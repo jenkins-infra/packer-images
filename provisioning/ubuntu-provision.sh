@@ -246,7 +246,7 @@ Pin: release o=LP-PPA-phd-chromium-browser
 Pin-Priority: 1001
 ' | tee /etc/apt/preferences.d/phd-chromium-browser
 
-  apt-get install --yes chromium-browser
+  apt-get install --yes chromium-browser="${CHROMIUM_VERSION}"-0ubuntu0.18.04.1
 
 }
 
