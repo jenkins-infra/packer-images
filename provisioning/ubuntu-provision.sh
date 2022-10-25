@@ -226,6 +226,30 @@ function install_python() {
   python3 -m pip install --no-cache-dir pip --upgrade
 }
 
+## Install chromium
+### Using chromium because chrome is not available on arm64
+### see https://bugs.chromium.org/p/chromium/issues/detail?id=677140
+function install_chromium() {
+  apt-get remove chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
+  apt-get update --quiet
+  apt-get install --yes software-properties-common
+
+  # chromium default repositories require snap which doesn't work in docker
+  # see https://askubuntu.com/questions/1255692/is-it-still-possible-to-install-chromium-as-a-deb-package-on-20-04-lts-using-som
+  add-apt-repository --yes ppa:phd/chromium-browser
+
+  apt-get update --quiet
+
+  echo '
+Package: *
+Pin: release o=LP-PPA-phd-chromium-browser
+Pin-Priority: 1001
+' | tee /etc/apt/preferences.d/phd-chromium-browser
+
+  apt-get install --yes chromium-browser="${CHROMIUM_VERSION}"-0ubuntu0.18.04.1
+
+}
+
 ## Install git and git-lfs
 function install_git_gitlfs() {
   if [ -n "${GIT_LINUX_VERSION}" ]
@@ -439,6 +463,7 @@ function sanity_check() {
   && asdf version \
   && az --version \
   && bundle -v \
+  && chromium-browser --version \
   && container-structure-test version \
   && datadog-agent version \
   && docker -v  \
@@ -475,6 +500,7 @@ function main() {
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
   install_asdf # Before all the others but after the jenkins home is created
+  install_chromium
   install_docker
   install_datadog
   install_JA_requirements
