@@ -450,6 +450,29 @@ function install_datadog() {
   systemctl disable datadog-agent
 }
 
+## Install infracost
+function install_infracost() {
+  # Download archive and checksum
+  curl --silent --show-error --location --output "/tmp/infracost-linux-${ARCHITECTURE}.tar.gz" \
+      "https://github.com/infracost/infracost/releases/download/v${INFRACOST_VERSION}/infracost-linux-${ARCHITECTURE}.tar.gz"
+  curl --silent --show-error --location --output "/tmp/infracost-linux-${ARCHITECTURE}.tar.gz.sha256" \
+      "https://github.com/infracost/infracost/releases/download/v${INFRACOST_VERSION}/infracost-linux-${ARCHITECTURE}.tar.gz.sha256"
+
+  # Verify checksum
+  cd /tmp
+  shasum -sc "infracost-linux-${ARCHITECTURE}.tar.gz.sha256"
+  if [ $? -eq 0 ]
+  then
+    # Install infracost
+    tar --extract --verbose --gunzip --file="/tmp/infracost-linux-${ARCHITECTURE}.tar.gz" --directory=/tmp
+    cp "/tmp/infracost-linux-${ARCHITECTURE}" /usr/local/bin/infracost
+    chmod a+x /usr/local/bin/infracost
+    rm -rf /tmp/*
+  else
+    echo "Infracost checksum failed"
+  fi
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -472,6 +495,7 @@ function sanity_check() {
   && git --version \
   && git-lfs --version \
   && hadolint -v \
+  && infracost --version \
   && java -version \
   && jq --version \
   && jx-release-version -version \
@@ -519,6 +543,7 @@ function main() {
   install_ruby
   install_yq
   install_packer
+  install_infracost
   cleanup
 }
 
