@@ -1,5 +1,5 @@
 ---
-title: Bump JDK11 version
+name: Bump JDK11 version
 
 scms:
   default:
@@ -25,7 +25,8 @@ sources:
       versionfilter:
         kind: regex
         # jdk-11.0.12+7(https://github.com/adoptium/temurin11-binaries/releases/tag/jdk-11.0.12%2B7) is OK
-        pattern: "^jdk-11.(\\d*).(\\d*).(\\d*)+(\\d*)$"
+        # jdk-11.0.16.1+1 (https://github.com/adoptium/temurin11-binaries/releases/tag/jdk-11.0.16.1%2B1) is OK
+        pattern: "^jdk-11.(\\d*).(\\d*).(\\d*)(.(\\d*))+(\\d*)$"
     transformers:
       - trimprefix: "jdk-"
 
@@ -47,10 +48,8 @@ targets:
 pullrequests:
   default:
     kind: github
-    title: Bump JDK8 version to {{ source "lastReleaseVersion" }}
+    title: Bump JDK11 version to {{ source "lastReleaseVersion" }}
     scmid: default
-    targets:
-      - updateJDK11Version
     spec:
       labels:
         - enhancement

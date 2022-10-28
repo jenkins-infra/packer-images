@@ -1,5 +1,5 @@
 ---
-title: Bump Maven version
+name: Bump Maven version
 
 scms:
   default:
@@ -12,20 +12,20 @@ scms:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       branch: "{{ .github.branch }}"
-  mavenGitHubMirror:
-    kind: git
-    spec:
-      url: "https://github.com/apache/maven.git"
-      branch: master
 
 sources:
-  lastReleaseVersion:
-    kind: gittag
+  mavenVersion:
+    kind: githubrelease
     name: Get the latest Maven version
-    scmid: mavenGitHubMirror
     spec:
+      owner: "apache"
+      repository: "maven"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
       versionfilter:
-        kind: latest
+        kind: regex
+        # Only full releases (semver with "maven-" prefix")
+        pattern: "^maven-(\\d*).(\\d*).(\\d*)$"
     transformers:
       - trimprefix: "maven-"
 
@@ -34,7 +34,7 @@ conditions:
     kind: shell
     disablesourceinput: true
     spec:
-      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `lastReleaseVersion` }}/binaries/apache-maven-{{ source `lastReleaseVersion` }}-bin.tar.gz
+      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://archive.apache.org/dist/maven/maven-3/{{ source `mavenVersion` }}/binaries/apache-maven-{{ source `mavenVersion` }}-bin.tar.gz
 
 targets:
   updateMavenVersion:
@@ -48,10 +48,8 @@ targets:
 pullrequests:
   default:
     kind: github
-    title: Bump Maven version to {{ source "lastReleaseVersion" }}
+    title: Bump Maven version to {{ source "mavenVersion" }}
     scmid: default
-    targets:
-      - updateMavenVersion
     spec:
       labels:
         - enhancement

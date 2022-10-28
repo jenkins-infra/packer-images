@@ -1,5 +1,5 @@
 ---
-title: Bump Git version on Linux
+name: Bump Git version on Linux
 
 scms:
   default:
@@ -23,8 +23,9 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
-        # Latest version which is semver "stable" (removes any 'v' prefix)
         kind: semver
+    transformers:
+      - trimprefix: v
 
 targets:
   updateGitVersion:
@@ -40,8 +41,6 @@ pullrequests:
     kind: github
     title: Bump Git version on Linux to {{ source "lastReleaseVersion" }}
     scmid: default
-    targets:
-      - updateGitVersion
     spec:
       labels:
         - enhancement

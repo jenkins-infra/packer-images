@@ -1,5 +1,5 @@
 ---
-title: Bump Git-LFS version
+name: Bump Git-LFS version
 
 scms:
   default:
@@ -23,8 +23,9 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
-        # Latest version which is semver "stable" (removes any 'v' prefix)
         kind: semver
+    transformers:
+      - trimprefix: v
 
 targets:
   updateGitLfsVersion:
@@ -40,8 +41,6 @@ pullrequests:
     kind: github
     title: Bump Git-LFS version to {{ source "lastReleaseVersion" }}
     scmid: default
-    targets:
-      - updateGitLfsVersion
     spec:
       labels:
         - enhancement
