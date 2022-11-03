@@ -234,6 +234,21 @@ $downloads = [ordered]@{
         'postExpand' = {
             & Move-Item -Path "$baseDir\gh.tmp\bin\gh.exe" -Destination "$baseDir\gh.exe";
             & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
+            & Remove-Item -Force -Recurse "$baseDir\gh.zip";
+        };
+        'cleanupLocal' = 'true';
+        'sanityCheck'= {
+            & "gh.exe" version;
+        }
+    };
+    'updatecli' = @{
+        'url' = 'https://github.com/updatecli/updatecli/releases/download/v{0}/updatecli_Windows_x86_64.zip' -f $env:UPDATECLI_VERSION;
+        'local' = "$baseDir\updatecli.zip";
+        'expandTo' = "$baseDir\updatecli.tmp";
+        'postExpand' = {
+            & Move-Item -Path "$baseDir\updatecli.tmp\updatecli.exe" -Destination "$baseDir\updatecli.exe";
+            & Remove-Item -Force -Recurse "$baseDir\updatecli.tmp";
+            & Remove-Item -Force -Recurse "$baseDir\updatecli.zip";
         };
         'cleanupLocal' = 'true';
         'sanityCheck'= {
@@ -270,6 +285,7 @@ $downloads = [ordered]@{
             & "$baseDir\ruby26\bin\bundle" -v;
             & "yq.exe" --version;
             & "packer.exe" --version;
+            & "updatecli.exe" version;
         }
     };
 }
