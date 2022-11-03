@@ -1,0 +1,49 @@
+---
+name: Bump chromium version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    name: Get latest chromium version
+    kind: shell
+    spec:
+      command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-chromium-latest-version.sh
+
+conditions:
+  ## Only check for chocolatey package: APT packages are always faster than chocolatey to publish new versions
+  checkForChocolateyPackage:
+    kind: shell
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      command: curl https://community.chocolatey.org/packages/chromium/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
+
+targets:
+  updateVersion:
+    name: "Update the chromium version in the provision-env.yml file"
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: "provisioning/tools-versions.yml"
+      key: "chromium_version"
+    scmid: default
+
+pullrequests:
+  default:
+    kind: github
+    title: Bump chromium version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - chromium

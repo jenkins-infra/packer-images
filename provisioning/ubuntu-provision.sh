@@ -239,7 +239,7 @@ function install_python() {
 ### Using chromium because chrome is not available on arm64
 ### see https://bugs.chromium.org/p/chromium/issues/detail?id=677140
 function install_chromium() {
-  apt-get remove chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
+  apt-get remove --yes chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
   apt-get update --quiet
   apt-get install --yes software-properties-common
 
@@ -255,8 +255,8 @@ Pin: release o=LP-PPA-phd-chromium-browser
 Pin-Priority: 1001
 ' | tee /etc/apt/preferences.d/phd-chromium-browser
 
+  # Uses 18.04 package to avoid using snap (20.04 requires snap, but snap does not run inside Docker)
   apt-get install --yes chromium-browser="${CHROMIUM_VERSION}"-0ubuntu0.18.04.1
-
 }
 
 ## Install git and git-lfs
