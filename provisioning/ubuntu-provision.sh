@@ -450,6 +450,13 @@ function install_datadog() {
   systemctl disable datadog-agent
 }
 
+function install_updatecli() {
+  local archive_path=/var/cache/apt/archives/updatecli.deb
+  curl --silent --location --show-error "https://github.com/updatecli/updatecli/releases/download/v${UPDATECLI_VERSION}/updatecli_${ARCHITECTURE}.deb" --output "${archive_path}"
+  dpkg -i "${archive_path}"
+  rm -f "${archive_path}"
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -483,6 +490,7 @@ function sanity_check() {
   && python3 --version \
   && ruby -v \
   && unzip -v \
+  && updatecli version \
   && vagrant -v \
   && yq --version \
   && zip -v \
@@ -519,6 +527,7 @@ function main() {
   install_ruby
   install_yq
   install_packer
+  install_updatecli
   cleanup
 }
 
