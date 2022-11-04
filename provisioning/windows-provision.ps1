@@ -240,6 +240,19 @@ $downloads = [ordered]@{
             & "gh.exe" version;
         }
     };
+    'updatecli' = @{
+        'url' = 'https://github.com/updatecli/updatecli/releases/download/v{0}/updatecli_Windows_x86_64.zip' -f $env:UPDATECLI_VERSION;
+        'local' = "$baseDir\updatecli.zip";
+        'expandTo' = "$baseDir\updatecli.tmp";
+        'postExpand' = {
+            & Move-Item -Path "$baseDir\updatecli.tmp\updatecli.exe" -Destination "$baseDir\updatecli.exe";
+            & Remove-Item -Force -Recurse "$baseDir\updatecli.tmp";
+        };
+        'cleanupLocal' = 'true';
+        'sanityCheck'= {
+            & "gh.exe" version;
+        }
+    };
     'chocolatey-and-packages' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
@@ -270,6 +283,7 @@ $downloads = [ordered]@{
             & "$baseDir\ruby26\bin\bundle" -v;
             & "yq.exe" --version;
             & "packer.exe" --version;
+            & "updatecli.exe" version;
         }
     };
 }
