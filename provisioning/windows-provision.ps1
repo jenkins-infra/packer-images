@@ -234,7 +234,6 @@ $downloads = [ordered]@{
         'postExpand' = {
             & Move-Item -Path "$baseDir\gh.tmp\bin\gh.exe" -Destination "$baseDir\gh.exe";
             & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
-            & Remove-Item -Force -Recurse "$baseDir\gh.zip";
         };
         'cleanupLocal' = 'true';
         'sanityCheck'= {
@@ -248,7 +247,6 @@ $downloads = [ordered]@{
         'postExpand' = {
             & Move-Item -Path "$baseDir\updatecli.tmp\updatecli.exe" -Destination "$baseDir\updatecli.exe";
             & Remove-Item -Force -Recurse "$baseDir\updatecli.tmp";
-            & Remove-Item -Force -Recurse "$baseDir\updatecli.zip";
         };
         'cleanupLocal' = 'true';
         'sanityCheck'= {
