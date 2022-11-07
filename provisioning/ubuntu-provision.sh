@@ -466,6 +466,21 @@ function install_updatecli() {
   rm -f "${archive_path}"
 }
 
+# https://docs.aws.amazon.com/cli/latest/userguide/getting-started-version.html
+function install_awscli() {
+  local archive_path download_url
+  archive_path=/tmp/awscli.zip
+  download_url="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_VERSION}.zip"
+  if test "${ARCHITECTURE}" == "arm64"
+  then
+    download_url="https://awscli.amazonaws.com/awscli-exe-linux-aarch64-${AWSCLI_VERSION}.zip"
+  fi
+  curl --silent --location --show-error "${download_url}" --output "${archive_path}"
+  unzip "${archive_path}" -d /tmp
+  bash /tmp/aws/install
+  rm -rf /tmp/aws*
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -477,6 +492,7 @@ function sanity_check() {
   echo "== Sanity Check of installed tools, running as user ${username}"
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
   && asdf version \
+  && aws --version \
   && az --version \
   && bundle -v \
   && chromium-browser --version \
@@ -537,6 +553,7 @@ function main() {
   install_yq
   install_packer
   install_updatecli
+  install_awscli
   cleanup
 }
 
