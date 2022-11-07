@@ -180,7 +180,7 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/docker/compose/releases/download/v{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
         'local' = "$baseDir\docker-compose.exe"
         'sanityCheck'= {
-            & "docker-compose.exe" -version;
+            & "docker-compose.exe" -v;
         }
     };
     'hadolint' = @{
@@ -263,7 +263,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\";
+        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -273,17 +273,19 @@ $downloads = [ordered]@{
             & "choco.exe" install yq --yes --no-progress --limit-output --fail-on-error-output --version "${env:YQ_VERSION}";
             & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
             & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output --version "${env:CHROMIUM_VERSION}";
+            & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
             & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
         };
         'sanityCheck'= {
             & "choco.exe";
+            & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" --version;
             & "make.exe" -version;
+            & packer.exe --version;
             & "$baseDir\ruby26\bin\ruby.exe" -v;
             & "$baseDir\ruby26\bin\bundle" -v;
-            & "yq.exe" --version;
-            & "packer.exe" --version;
-            & "updatecli.exe" version;
+            & updatecli.exe version;
+            & yq.exe --version;
         }
     };
 }

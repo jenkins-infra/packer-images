@@ -1,4 +1,5 @@
 asdf_version: "0.10.2"
+awscli_version: "2.8.9"
 azurecli_version: "2.42.0"
 chocolatey_version: "1.2.0"
 chromium_version: "105.0.5195.102"
