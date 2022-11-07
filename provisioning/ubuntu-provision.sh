@@ -183,6 +183,15 @@ function install_docker() {
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
   apt-get update --quiet
+
+  # Ensure that version is fixed
+  echo "
+Package: docker-ce*
+Pin: version 5:${DOCKER_VERSION}*
+Pin-Priority: 1001
+" | tee /etc/apt/preferences.d/docker-ce
+
+  # Install pinned version
   apt-get install --yes --no-install-recommends docker-ce
 
   # Allow the default user to use Docker. https://docs.docker.com/engine/install/linux-postinstall/
