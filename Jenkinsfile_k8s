@@ -117,10 +117,18 @@ pipeline {
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
               script {
-                // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518
-                sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
-                if (env.BRANCH_IS_PRIMARY) {
-                  sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+                // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
+                withCredentials([
+                  usernamePassword(
+                  credentialsId: 'github-app-updatecli-on-jenkins-infra',
+                  usernameVariable: 'USERNAME_VALUE', // Setting this variable is mandatory, even if of not used when the credentials is a githubApp one
+                  passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
+                  )
+                ]) {
+                  sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+                  if (env.BRANCH_IS_PRIMARY) {
+                    sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+                  }
                 }
               }
             }
