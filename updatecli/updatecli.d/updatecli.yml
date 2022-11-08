@@ -1,0 +1,48 @@
+---
+name: Bump `updatecli` version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest updatecli version
+    spec:
+      owner: "updatecli"
+      repository: "updatecli"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: v
+
+targets:
+  updateVersion:
+    name: Update the `updatecli` version in the provision-env.yml file
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: "provisioning/tools-versions.yml"
+      key: "updatecli_version"
+    scmid: default
+
+pullrequests:
+  default:
+    kind: github
+    scmid: default
+    title: Bump the `updatecli` CLI version to {{ source "lastReleaseVersion" }}
+    spec:
+      labels:
+        - enhancement
+        - updatecli
