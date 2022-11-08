@@ -16,7 +16,7 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest `aws` CLI` version
+    name: Get the latest `aws` CLI version
     spec:
       owner: "aws"
       repository: "aws-cli"
