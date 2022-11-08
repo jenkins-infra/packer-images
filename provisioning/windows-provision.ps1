@@ -250,7 +250,21 @@ $downloads = [ordered]@{
         };
         'cleanupLocal' = 'true';
         'sanityCheck'= {
-            & "gh.exe" version;
+            & gh.exe version;
+        }
+    };
+    'netlify-deploy' = @{
+        'url' = 'https://github.com/halkeye/netlify-golang-deploy/releases/download/v{0}/netlify-golang-deploy_{0}_Windows_x86_64.tar.gz' -f $env:NETLIFYDEPLOY_VERSION;
+        'local' = "$baseDir\netlify-golang-deploy.tgz";
+        'postExpand' = {
+            & tar.exe --extract --verbose --gunzip --file="$baseDir\netlify-golang-deploy.tgz" --directory="$baseDir"
+            & Move-Item -Path "$baseDir\netlify-golang-deploy.exe" -Destination "$baseDir\netlify-deploy.exe";
+            & Remove-Item -Force -Recurse "$baseDir\LICENSE";
+            & Remove-Item -Force -Recurse "$baseDir\README.md";
+        };
+        'cleanupLocal' = 'true';
+        'sanityCheck'= {
+            & netlify-deploy.exe --help;
         }
     };
     'chocolatey-and-packages' = @{
@@ -278,9 +292,9 @@ $downloads = [ordered]@{
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
         };
         'sanityCheck'= {
-            & "choco.exe";
+            & choco.exe;
             & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" --version;
-            & "make.exe" -version;
+            & make.exe -version;
             & packer.exe --version;
             & "$baseDir\ruby26\bin\ruby.exe" -v;
             & "$baseDir\ruby26\bin\bundle" -v;

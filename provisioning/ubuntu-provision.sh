@@ -481,6 +481,20 @@ function install_awscli() {
   rm -rf /tmp/aws*
 }
 
+function install_netlifydeploy() {
+  local archive_path download_url
+  archive_path=/tmp/netlifydeploy.tgz
+  download_url="https://github.com/halkeye/netlify-golang-deploy/releases/download/v${NETLIFYDEPLOY_VERSION}/netlify-golang-deploy_${NETLIFYDEPLOY_VERSION}_Linux_x86_64.tar.gz"
+  if test "${ARCHITECTURE}" == "arm64"
+  then
+    download_url="https://github.com/halkeye/netlify-golang-deploy/releases/download/v${NETLIFYDEPLOY_VERSION}/netlify-golang-deploy_${NETLIFYDEPLOY_VERSION}_Linux_arm64.tar.gz"
+  fi
+  curl --silent --location --show-error "${download_url}" --output "${archive_path}"
+  tar --extract --verbose --gunzip --file="${archive_path}" --directory=/tmp
+  mv /tmp/netlify-golang-deploy /usr/local/bin/netlify-deploy
+  rm -rf /tmp/netlify*
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -509,6 +523,7 @@ function sanity_check() {
   && jx-release-version -version \
   && make --version \
   && mvn -v \
+  && netlify-deploy --help \
   && command -v ssh-agent \
   && packer -v \
   && parallel --version \
@@ -554,6 +569,7 @@ function main() {
   install_packer
   install_updatecli
   install_awscli
+  install_netlifydeploy
   cleanup
 }
 
