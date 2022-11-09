@@ -129,7 +129,7 @@ $downloads = [ordered]@{
         'cleanupLocal' = 'true';
         # folder included here since it's not in the PATH
         'sanityCheck'= {
-            & "$baseDir\jdk-17\bin\java.exe" -version;
+            & "$baseDir\jdk-8\bin\java.exe" -version;
         }
     }
     'maven' = @{
