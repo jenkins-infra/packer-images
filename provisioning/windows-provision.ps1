@@ -369,7 +369,7 @@ foreach($k in $downloads.Keys) {
 Write-Output "== Ensure both Windows Powershell and Powershell Core are available"
 if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
     Write-Output "= Windows Powershell already present, installing Powershell Core..."
-    Invoke-Command {& "choco.exe" install pwsh --yes --no-progress --limit-output --fail-on-error-output;}
+    Invoke-Command {& "choco.exe" install pwsh --yes --no-progress --limit-output --fail-on-error-output --version "${env:WINDOWS_PWSH_VERSION}";}
     AddToPathEnv "C:\Program Files\PowerShell\7\"
 } else {
     Write-Output "= Powershell Core already present, installing Windows Powershell..."
