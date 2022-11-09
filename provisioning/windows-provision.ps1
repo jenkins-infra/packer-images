@@ -267,6 +267,15 @@ $downloads = [ordered]@{
             & netlify-deploy.exe --help;
         }
     };
+    'terraform' = @{
+        'url' = 'https://releases.hashicorp.com/terraform/{0}/terraform_{0}_windows_amd64.zip' -f $env:TERRAFORM_VERSION;
+        'local' = "$baseDir\terraform.zip";
+        'expandTo' = "$baseDir"; # Only terraform.exe
+        'cleanupLocal' = 'true';
+        'sanityCheck'= {
+            & terraform.exe -v;
+        }
+    };
     'chocolatey-and-packages' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
