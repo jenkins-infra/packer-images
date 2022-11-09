@@ -495,6 +495,18 @@ function install_netlifydeploy() {
   rm -rf /tmp/netlify*
 }
 
+function install_terraform(){
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends curl unzip # Should already be there but this function should be autonomous
+
+  local archive_path download_url
+  archive_path=/tmp/terraform.zip
+  download_url="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${ARCHITECTURE}.zip"
+  curl --silent --show-error --location --output "${archive_path}" "${download_url}"
+  unzip "${archive_path}" -d /usr/local/bin
+  rm -f "${archive_path}"
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -529,6 +541,7 @@ function sanity_check() {
   && parallel --version \
   && python3 --version \
   && ruby -v \
+  && terraform -v \
   && unzip -v \
   && updatecli version \
   && vagrant -v \
@@ -570,6 +583,7 @@ function main() {
   install_updatecli
   install_awscli
   install_netlifydeploy
+  install_terraform
   cleanup
 }
 
