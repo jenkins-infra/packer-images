@@ -1,0 +1,61 @@
+---
+name: Bump pwsh version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest pwsh version
+    spec:
+      owner: "PowerShell"
+      repository: "PowerShell"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: semver
+    transformers:
+      - trimprefix: v
+
+conditions:
+  ## check for pwsh AND powershell-core as per : https://github.com/jenkins-infra/packer-images/issues/409#issuecomment-1308795902
+  checkForChocolateyPackagePWSH:
+    kind: shell
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      command: curl https://community.chocolatey.org/packages/pwsh/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
+  checkForChocolateyPackagePOWERSHELLCORE:
+    kind: shell
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      command: curl https://community.chocolatey.org/packages/powershell-core/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
+
+targets:
+  updateVersion:
+    name: "Update the pwsh version in the provisioning/tools-versions.yml file"
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: "provisioning/tools-versions.yml"
+      key: "pwsh_version"
+    scmid: default
+
+pullrequests:
+  default:
+    kind: github
+    title: Bump pwsh version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - pwsh
