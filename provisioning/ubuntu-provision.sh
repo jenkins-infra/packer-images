@@ -507,6 +507,14 @@ function install_terraform(){
   rm -f "${archive_path}"
 }
 
+function install_kubectl() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
+
+  curl --silent --location --show-error "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${ARCHITECTURE}/kubectl" --output /usr/local/bin/kubectl
+  chmod a+x /usr/local/bin/kubectl
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -533,6 +541,7 @@ function sanity_check() {
   && java -version \
   && jq --version \
   && jx-release-version -version \
+  && kubectl version --client \
   && make --version \
   && mvn -v \
   && netlify-deploy --help \
@@ -584,6 +593,7 @@ function main() {
   install_awscli
   install_netlifydeploy
   install_terraform
+  install_kubectl
   cleanup
 }
 

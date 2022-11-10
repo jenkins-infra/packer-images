@@ -210,7 +210,7 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/stedolan/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
         'local' = "$baseDir\jq.exe"
         'sanityCheck'= {
-            & "jq.exe" --version;
+            & jq.exe --version;
         }
     };
     'az' = @{
@@ -237,7 +237,7 @@ $downloads = [ordered]@{
         };
         'cleanupLocal' = 'true';
         'sanityCheck'= {
-            & "gh.exe" version;
+            & gh.exe version;
         }
     };
     'updatecli' = @{
@@ -274,6 +274,13 @@ $downloads = [ordered]@{
         'cleanupLocal' = 'true';
         'sanityCheck'= {
             & terraform.exe -v;
+        };
+    };
+    'kubectl' = @{
+        'url' = 'https://dl.k8s.io/release/v{0}/bin/windows/amd64/kubectl.exe'  -f $env:KUBECTL_VERSION;
+        'local' = "$baseDir\kubectl.exe"
+        'sanityCheck'= {
+            & kubectl.exe version --client;
         }
     };
     'chocolatey-and-packages' = @{
