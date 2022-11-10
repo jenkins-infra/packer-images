@@ -47,7 +47,7 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "pwsh_version"
+      key: "windows_pwsh_version"
     scmid: default
 
 pullrequests:
@@ -59,3 +59,4 @@ pullrequests:
       labels:
         - enhancement
         - pwsh
+        - powershell-core
