@@ -302,7 +302,7 @@ $downloads = [ordered]@{
             & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
             & "choco.exe" install yq --yes --no-progress --limit-output --fail-on-error-output --version "${env:YQ_VERSION}";
             & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
-            & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output --version "${env:CHROMIUM_VERSION}";
+            & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
             & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
