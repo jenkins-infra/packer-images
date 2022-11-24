@@ -243,20 +243,21 @@ function install_chromium() {
   apt-get update --quiet
   apt-get install --yes software-properties-common
 
-  # chromium default repositories require snap which doesn't work in docker
+  # Using this PPA as the chromium default repositories require snap which doesn't work in docker.
   # see https://askubuntu.com/questions/1255692/is-it-still-possible-to-install-chromium-as-a-deb-package-on-20-04-lts-using-som
   add-apt-repository --yes ppa:phd/chromium-browser
-
   apt-get update --quiet
 
+  # Pin 'chromium' package to this PPA repository (to avoid chromium installed from another source)
+  # Then the candidate will always be the 18.04 package version (20.04 packages require snap but snap does not run inside Docker)
+  # Check with apt-cache policy chromium-browser
   echo '
 Package: *
 Pin: release o=LP-PPA-phd-chromium-browser
 Pin-Priority: 1001
 ' | tee /etc/apt/preferences.d/phd-chromium-browser
 
-  # Uses 18.04 package to avoid using snap (20.04 requires snap, but snap does not run inside Docker)
-  apt-get install --yes chromium-browser="${CHROMIUM_VERSION}"-0ubuntu0.18.04.1
+  apt-get install --yes chromium-browser
 }
 
 ## Install git and git-lfs
