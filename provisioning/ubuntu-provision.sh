@@ -315,12 +315,19 @@ function install_jdk() {
     "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17U-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
   tar --extract --verbose --gunzip --file=/tmp/jdk17.tgz --directory=/opt/jdk-17 --strip-components=1
 
+  # JDK19
+  jdk19_short_version="${JDK19_VERSION//+/_}"
+  curl -sSL -o /tmp/jdk19.tgz \
+    "https://github.com/adoptium/temurin19-binaries/releases/download/jdk-${JDK19_VERSION}/OpenJDK19U-jdk_${cpu_arch_short}_linux_hotspot_${jdk19_short_version}.tar.gz"
+  tar --extract --verbose --gunzip --file=/tmp/jdk19.tgz --directory=/opt/jdk-19 --strip-components=1
+
   # Define JDK installations
   # The priority of a JDK is the last argument.
   # Starts by setting priority to the JDK major version: higher version is the expected default
   update-alternatives --install /usr/bin/java java /opt/jdk-8/bin/java 8
   update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 11
   update-alternatives --install /usr/bin/java java /opt/jdk-17/bin/java 17
+  update-alternatives --install /usr/bin/java java /opt/jdk-19/bin/java 19
   # Then, use the DEFAULT_JDK env var to set the priority of the specified default JDK to 1000 to ensure its the one used by update-alternatives
   update-alternatives --install /usr/bin/java java "/opt/jdk-${DEFAULT_JDK}/bin/java" 1000
   echo "JAVA_HOME=/opt/jdk-${DEFAULT_JDK}" >> /etc/environment
