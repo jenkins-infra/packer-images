@@ -289,7 +289,7 @@ function install_jdk() {
   apt-get install --yes --no-install-recommends fontconfig
 
   ## OpenJDKs: Adoptium - https://adoptium.net/installation.html
-  mkdir -p /opt/jdk-8 /opt/jdk-11 /opt/jdk-17
+  mkdir -p /opt/jdk-8 /opt/jdk-11 /opt/jdk-17 /opt/jdk-19
 
   # JDK8
   jdk8_short_version="${JDK8_VERSION//-/}"
