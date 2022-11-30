@@ -258,8 +258,6 @@ pipeline {
                       }
                     }
                   }
-                } else {
-                  echo 'Not a docker image and/or no tag, skipping this step.'
                 }
               }
             }
