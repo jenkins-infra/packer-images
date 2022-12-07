@@ -1,7 +1,7 @@
 asdf_version: "0.10.2"
 awscli_version: "2.9.4"
 azurecli_version: "2.42.0"
-chocolatey_version: "1.2.0"
+chocolatey_version: "1.2.1"
 compose_version: "2.14.0"
 cst_version: "1.14.0"
 default_jdk: "11"
