@@ -582,7 +582,7 @@ function sanity_check() {
 
 function goss_check() {
   echo "== Goss Check"
-  su - "${username}" -c "goss validate"
+  su - "${username}" -c "goss --gossfile /goss/goss.yaml validate"
 }
 
 function main() {
