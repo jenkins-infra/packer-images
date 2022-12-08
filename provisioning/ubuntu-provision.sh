@@ -523,6 +523,15 @@ function install_kubectl() {
   chmod a+x /usr/local/bin/kubectl
 }
 
+## Ensure Goss is installed
+function install_goss() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
+
+  curl --silent --location --show-error "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss-linux-amd64" --output /usr/local/bin/goss
+  chmod +rx /usr/local/bin/goss
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -545,6 +554,7 @@ function sanity_check() {
   && gh --version \
   && git --version \
   && git-lfs --version \
+  && goss --version \
   && hadolint -v \
   && java -version \
   && jq --version \
@@ -568,6 +578,11 @@ function sanity_check() {
   echo "== End of sanity check"
   echo "== Installed packages:"
   dpkg -l
+}
+
+function goss_check() {
+  echo "== Goss Check"
+  su - "${username}" -c "goss validate"
 }
 
 function main() {
@@ -602,8 +617,10 @@ function main() {
   install_netlifydeploy
   install_terraform
   install_kubectl
+  install_goss
   cleanup
 }
 
 main
 sanity_check
+goss_check
