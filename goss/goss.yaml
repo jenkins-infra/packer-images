@@ -1,0 +1,38 @@
+file:
+  /opt/jdk-8:
+    filetype: directory
+    exists: true
+  /opt/jdk-11:
+    filetype: directory
+    exists: true
+  /opt/jdk-17:
+    filetype: directory
+    exists: true
+  /opt/jdk-19:
+    filetype: directory
+    exists: true
+command:
+  /opt/jdk-8/bin/java -version:
+    exit-status: 0
+    stderr:
+      - 8u352-b08
+    stdout: []
+    timeout: 1000
+  /opt/jdk-11/bin/java --version:
+    exit-status: 0
+    stdout:
+      - 11.0.17+8
+    stderr: []
+    timeout: 1000
+  /opt/jdk-17/bin/java --version:
+    exit-status: 0
+    stdout:
+      - 17.0.5+8
+    stderr: []
+    timeout: 1000
+  /opt/jdk-19/bin/java --version:
+    exit-status: 0
+    stdout:
+      - 19.0.1+10
+    stderr: []
+    timeout: 1000

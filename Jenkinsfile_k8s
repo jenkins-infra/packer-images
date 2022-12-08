@@ -65,6 +65,18 @@ pipeline {
     PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
   }
   stages {
+    stage('Goss Checks') {
+      stage('install Goss') {
+        steps {
+          sh './goss/ubuntu-goss-install.sh'
+        }
+      }
+      stage('Goss validate') {
+        steps {
+          sh 'goss validate'
+        }
+      }
+    }
     stage('Side Tasks') {
       environment {
         DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
