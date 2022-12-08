@@ -41,6 +41,15 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
+  provisioner "file" {
+    source      = "./goos/goos.yaml"
+    destination = "/tmp/goos.yaml"
+  }
+
+  provisioner "shell" {
+    script           = "goos validate --gossfile /tmp/goos.yaml"
+  }
+
   post-processor "docker-tag" {
     only       = ["docker.ubuntu"]
     repository = "${var.docker_namespace}/${local.image_name}"

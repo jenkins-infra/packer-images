@@ -580,11 +580,6 @@ function sanity_check() {
   dpkg -l
 }
 
-function goss_check() {
-  echo "== Goss Check"
-  su - "${username}" -c "goss --gossfile /goss/goss.yaml validate"
-}
-
 function main() {
   check_commands
   copy_custom_scripts
@@ -623,4 +618,3 @@ function main() {
 
 main
 sanity_check
-goss_check
