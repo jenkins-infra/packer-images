@@ -42,12 +42,12 @@ build {
   }
 
   provisioner "file" {
-    source      = "./goos/goos.yaml"
-    destination = "/tmp/goos.yaml"
+    source      = "./goss/goss.yaml"
+    destination = "/tmp/goss.yaml"
   }
 
   provisioner "shell" {
-    script           = "goos validate --gossfile /tmp/goos.yaml"
+    script           = "goss validate --gossfile /tmp/goss.yaml"
   }
 
   post-processor "docker-tag" {
