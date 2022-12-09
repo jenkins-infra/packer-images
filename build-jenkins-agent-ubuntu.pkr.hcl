@@ -47,9 +47,7 @@ build {
   }
 
   provisioner "shell" {
-    inline = [
-      "/usr/local/bin/goss validate --gossfile /tmp/goss.yaml",
-    ]
+    inline = ["goss --gossfile /tmp/goss.yaml validate"]
   }
 
   post-processor "docker-tag" {
