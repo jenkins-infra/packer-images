@@ -528,7 +528,7 @@ function install_goss() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
 
-  curl --silent --location --show-error "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss-linux-amd64" --output /usr/local/bin/goss
+  curl --silent --location --show-error "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss-linux-${ARCHITECTURE}" --output /usr/local/bin/goss
   chmod +rx /usr/local/bin/goss
 }
 
