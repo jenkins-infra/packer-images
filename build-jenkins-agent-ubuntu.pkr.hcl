@@ -47,7 +47,11 @@ build {
   }
 
   provisioner "shell" {
-    inline = ["goss --gossfile /tmp/goss.yaml validate"]
+    inline = [
+      "set -xeu",
+      "goss --version",
+      "goss --gossfile /tmp/goss.yaml validate --retry-timeout 5s",
+    ]
   }
 
   post-processor "docker-tag" {

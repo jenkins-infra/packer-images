@@ -4,25 +4,21 @@ command:
     stderr:
       - 1.8.0_352
     stdout: []
-    timeout: 1000
   /opt/jdk-11/bin/java --version:
     exit-status: 0
     stdout:
       - 11.0.17+8
     stderr: []
-    timeout: 1000
   /opt/jdk-17/bin/java --version:
     exit-status: 0
     stdout:
       - 17.0.5+8
     stderr: []
-    timeout: 1000
   /opt/jdk-19/bin/java --version:
     exit-status: 0
     stdout:
       - 19.0.1+10
     stderr: []
-    timeout: 1000
 file:
   /home/jenkins:
     exists: true
