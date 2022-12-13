@@ -201,17 +201,6 @@ pipeline {
               values 'docker'
             }
           }
-          // Temp. exclusion until https://github.com/jenkins-infra/packer-images/issues/396 is fixed
-          exclude {
-            axis {
-              name 'agent_type'
-              values 'windows-2022'
-            }
-            axis {
-              name 'compute_type'
-              values 'amazon-ebs'
-            }
-          }
         }
         environment {
           AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
