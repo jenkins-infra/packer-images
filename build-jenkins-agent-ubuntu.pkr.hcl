@@ -41,6 +41,19 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
+  provisioner "file" {
+    source      = "./goss/goss.yaml"
+    destination = "/tmp/goss.yaml"
+  }
+
+  provisioner "shell" {
+    inline = [
+      "set -xeu",
+      "goss --version",
+      "goss --gossfile /tmp/goss.yaml validate --retry-timeout 5s",
+    ]
+  }
+
   post-processor "docker-tag" {
     only       = ["docker.ubuntu"]
     repository = "${var.docker_namespace}/${local.image_name}"

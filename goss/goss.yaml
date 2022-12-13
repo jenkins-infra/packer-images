@@ -1,0 +1,29 @@
+command:
+  /opt/jdk-8/bin/java -version:
+    exit-status: 0
+    stderr:
+      - 1.8.0_352
+    stdout: []
+  /opt/jdk-11/bin/java --version:
+    exit-status: 0
+    stdout:
+      - 11.0.17+8
+    stderr: []
+  /opt/jdk-17/bin/java --version:
+    exit-status: 0
+    stdout:
+      - 17.0.5+8
+    stderr: []
+  /opt/jdk-19/bin/java --version:
+    exit-status: 0
+    stdout:
+      - 19.0.1+10
+    stderr: []
+file:
+  /home/jenkins:
+    exists: true
+    mode: "0755"
+    owner: jenkins
+    group: jenkins
+    filetype: directory
+    contains: []
