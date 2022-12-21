@@ -87,7 +87,7 @@ try {
     ## A reboot is required before being able to use start containers (but we don't need to).
 }
 
-## Prepare Tools Installation
+# Prepare Tools Installation
 $baseDir = 'C:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 

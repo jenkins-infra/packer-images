@@ -65,6 +65,7 @@ build {
     source      = "./provisioning/EC2-LaunchConfig.json"
     destination = "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Config\\LaunchConfig.json"
   }
+
   # This provisioner must be the last for AWS EBS builds, after reboots
   provisioner "powershell" {
     only              = ["amazon-ebs.windows"]
@@ -72,7 +73,9 @@ build {
     elevated_password = build.Password
     # Ref. https:#docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html#user-data-scripts-subsequent
     inline = [
-      "if($env:AGENT_OS_VERSION = '2019') { C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SendWindowsIsReady.ps1 -Schedule; C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -Schedule; C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown;};"
+      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -Schedule;",
+      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SendWindowsIsReady.ps1 -Schedule;",
+      "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown;",
     ]
   }
 }
