@@ -1,9 +1,0 @@
-{
-  "setComputerName": false,
-  "setMonitorAlwaysOn": true,
-  "setWallpaper": false,
-  "addDnsSuffixList": true,
-  "extendBootVolumeSize": false,
-  "handleUserData": true,
-  "adminPasswordType": "Random"
-}

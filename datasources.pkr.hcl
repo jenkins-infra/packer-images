@@ -12,7 +12,8 @@ data "amazon-ami" "ubuntu-20_04" {
 
 data "amazon-ami" "windows-2019" {
   filters = {
-    name                = "Windows_Server-2019-English-Core-ContainersLatest-*"
+    # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2launch-v2.html
+    name =                "EC2LaunchV2-Windows_Server-2019-English-Full-ContainersLatest-*"
     root-device-type    = "ebs"
     virtualization-type = "hvm"
   }
@@ -23,7 +24,7 @@ data "amazon-ami" "windows-2019" {
 
 data "amazon-ami" "windows-2022" {
   filters = {
-    name                = "Windows_Server-2022-English-Core-ContainersLatest-*"
+    name                = "Windows_Server-2022-English-Full-ContainersLatest-*"
     root-device-type    = "ebs"
     virtualization-type = "hvm"
   }
