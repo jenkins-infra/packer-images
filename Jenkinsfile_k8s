@@ -57,8 +57,8 @@ pipeline {
     label "linux-amd64-docker"
   }
   options {
-    // Average build time is ~30 min. 1h30 hour timeout indicates that something is wrong and should fail
-    timeout(time: 90, unit: 'MINUTES')
+    // Average build time is ~50 min but windows can takes 45min of updates on AWS
+    timeout(time: 120, unit: 'MINUTES')
   }
   environment {
     // To allow using ASDF shims
