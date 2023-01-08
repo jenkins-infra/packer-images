@@ -532,6 +532,14 @@ function install_goss() {
   chmod +rx /usr/local/bin/goss
 }
 
+function install_tfsec() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
+
+  curl --silent --location --show-error "https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-checkgen-linux-${ARCHITECTURE}" --output /usr/local/bin/tfsec
+  chmod +rx /usr/local/bin/tfsec
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -569,6 +577,7 @@ function sanity_check() {
   && python3 --version \
   && ruby -v \
   && terraform -v \
+  && tfsec --version \
   && unzip -v \
   && updatecli version \
   && vagrant -v \
@@ -613,6 +622,7 @@ function main() {
   install_terraform
   install_kubectl
   install_goss
+  install_tfsec
   cleanup
 }
 
