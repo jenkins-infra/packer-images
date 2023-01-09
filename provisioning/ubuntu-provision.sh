@@ -536,7 +536,7 @@ function install_tfsec() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
 
-  curl --silent --location --show-error "https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-checkgen-linux-${ARCHITECTURE}" --output /usr/local/bin/tfsec
+  curl --silent --location --show-error "https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-linux-${ARCHITECTURE}" --output /usr/local/bin/tfsec
   chmod +rx /usr/local/bin/tfsec
 }
 

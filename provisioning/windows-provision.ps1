@@ -297,7 +297,8 @@ $downloads = [ordered]@{
         }
     };
     'tfsec' = @{
-        'url' = 'https://github.com/aquasecurity/tfsec/releases/download/v{0}/tfsec-checkgen-windows-amd64.exe' -f $env:TFSEC_VERSION;
+        'url' = 'https://github.com/aquasecurity/tfsec/releases/download/v{0}/tfsec-windows-amd64.exe' -f $env:TFSEC_VERSION;
+
         'local' = "$baseDir\tfsec.exe"
         'sanityCheck'= {
             & tfsec.exe --version;
