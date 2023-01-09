@@ -296,6 +296,14 @@ $downloads = [ordered]@{
             & kubectl.exe version --client;
         }
     };
+    'tfsec' = @{
+        'url' = 'https://github.com/aquasecurity/tfsec/releases/download/v{0}/tfsec-windows-amd64.exe' -f $env:TFSEC_VERSION;
+
+        'local' = "$baseDir\tfsec.exe"
+        'sanityCheck'= {
+            & tfsec.exe --version;
+        }
+    };
     'chocolatey-and-packages' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
