@@ -540,6 +540,36 @@ function install_tfsec() {
   chmod +rx /usr/local/bin/tfsec
 }
 
+function install_playwright_dependencies() {
+  apt-get update --quiet
+  # Playwright dependencies. https://ci.jenkins.io/job/Websites/job/jenkins-io-components/view/change-requests/job/PR-55/4/console
+  apt-get install --yes --no-install-recommends \
+    libglib2.0-0\
+    libnss3\
+    libnspr4\
+    libatk1.0-0\
+    libatk-bridge2.0-0\
+    libcups2\
+    libdrm2\
+    libdbus-1-3\
+    libxcb1\
+    libxkbcommon0\
+    libx11-6\
+    libxcomposite1\
+    libxdamage1\
+    libxext6\
+    libxfixes3\
+    libxrandr2\
+    libgbm1\
+    libpango-1.0-0\
+    libcairo2\
+    libasound2\
+    libatspi2.0-0\
+    libwayland-client0
+}
+
+
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -621,8 +651,9 @@ function main() {
   install_netlifydeploy
   install_terraform
   install_kubectl
-  install_goss
   install_tfsec
+  install_goss
+  install_playwright_dependencies
   cleanup
 }
 
