@@ -165,21 +165,6 @@ pipeline {
               values 'azure-arm'
             }
           }
-          // Only build Ubuntu images for arm64 CPU in AWS
-          exclude {
-            axis {
-              name 'cpu_architecture'
-              values 'arm64'
-            }
-            axis {
-              name 'agent_type'
-              notValues 'ubuntu-20.04'
-            }
-            axis {
-              name 'compute_type'
-              values 'amazon-ebs'
-            }
-          }
           // No build on Windows or Docker, not yet implemented
           exclude {
             axis {
