@@ -540,6 +540,107 @@ function install_tfsec() {
   chmod +rx /usr/local/bin/tfsec
 }
 
+## Install Nodejs with asdf
+function install_nodejs() {
+  # Ensure that ASDF is installed
+  install_asdf
+  # Install NodeJS with ASDF and set it as default installation
+  install_asdf_plugin nodejs https://github.com/asdf-vm/asdf-nodejs.git
+  install_asdf_package nodejs "${NODEJS_VERSION}"
+}
+
+function install_playwright_dependencies() {
+  apt-get update --quiet
+  # Playwright dependencies. https://ci.jenkins.io/job/Websites/job/jenkins-io-components/view/change-requests/job/PR-55/4/console
+  apt-get install --yes --no-install-recommends \
+    ffmpeg \
+    fonts-ipafont-gothic \
+    fonts-liberation \
+    fonts-noto-color-emoji \
+    fonts-tlwg-loma-otf \
+    fonts-wqy-zenhei \
+    gstreamer1.0-libav \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libatomic1 \
+    libatspi2.0-0 \
+    libcairo-gobject2 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libdbus-glib-1-2 \
+    libdrm2 \
+    libegl1 \
+    libenchant-2-2 \
+    libenchant1c2a \
+    libepoxy0 \
+    libevdev2 \
+    libevent-2.1-7 \
+    libfontconfig \
+    libfontconfig1 \
+    libfreetype6 \
+    libgbm1 \
+    libgdk-pixbuf2.0-0 \
+    libgl1 \
+    libgles2 \
+    libglib2.0-0 \
+    libgstreamer-gl1.0-0 \
+    libgstreamer1.0-0 \
+    libgtk-3-0 \
+    libharfbuzz-icu0 \
+    libharfbuzz0b \
+    libhyphen0 \
+    libicu66 \
+    libjpeg-turbo8 \
+    libnotify4 \
+    libnspr4 \
+    libnss3 \
+    libopengl0 \
+    libopenjp2-7 \
+    libopus0 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libpangoft2-1.0-0 \
+    libpng16-16 \
+    libsecret-1-0 \
+    libsoup2.4-1 \
+    libvpx6 \
+    libwayland-client0 \
+    libwayland-client0 \
+    libwayland-egl1 \
+    libwayland-server0 \
+    libwebp6 \
+    libwebpdemux2 \
+    libwoff1 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb-shm0 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxkbcommon0 \
+    libxml2 \
+    libxrandr2 \
+    libxrender1 \
+    libxshmfence1 \
+    libxslt1.1 \
+    libxt6 \
+    libxtst6 \
+    ttf-ubuntu-font-family \
+    ttf-unifont \
+    xfonts-cyrillic \
+    xfonts-scalable \
+    xvfb
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -550,39 +651,78 @@ function cleanup() {
 function sanity_check() {
   echo "== Sanity Check of installed tools, running as user ${username}"
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
+  && echo 'asdf version:' \
   && asdf version \
+  && echo 'aws version:' \
   && aws --version \
+  && echo 'az version:' \
   && az --version \
+  && echo 'bundle version:' \
   && bundle -v \
+  && echo 'chromium-browser version:' \
   && chromium-browser --version \
+  && echo 'container-structure-test version:' \
   && container-structure-test version \
+  && echo 'datadog-agent version:' \
   && datadog-agent version \
+  && echo 'docker version:' \
   && docker -v  \
+  && echo 'docker-compose version:' \
   && docker-compose -v \
+  && echo 'gh version:' \
   && gh --version \
+  && echo 'git version:' \
   && git --version \
+  && echo 'git-lfs version:' \
   && git-lfs --version \
+  && echo 'goss version:' \
   && goss --version \
+  && echo 'hadolint version:' \
   && hadolint -v \
+  && echo 'java version:' \
   && java -version \
+  && echo 'jq version:' \
   && jq --version \
+  && echo 'jx-release-version version:' \
   && jx-release-version -version \
+  && echo 'kubectl version:' \
   && kubectl version --client \
+  && echo 'make version:' \
   && make --version \
+  && echo 'maven version:' \
   && mvn -v \
+  && echo 'netlify-deploy version:' \
   && netlify-deploy --help \
+  && echo 'ssh-agent version:' \
   && command -v ssh-agent \
+  && echo 'packer version:' \
   && packer -v \
+  && echo 'parallel version:' \
   && parallel --version \
+  && echo 'python3 version:' \
   && python3 --version \
+  && echo 'ruby version:' \
   && ruby -v \
+  && echo 'terraform version:' \
   && terraform -v \
+  && echo 'tfsec version:' \
   && tfsec --version \
+  && echo 'unzip version:' \
   && unzip -v \
+  && echo 'updatecli version:' \
   && updatecli version \
+  && echo 'vagrant version:' \
   && vagrant -v \
+  && echo 'yq version:' \
   && yq --version \
+  && echo 'zip version:' \
   && zip -v \
+  && echo 'npm version:' \
+  && npm --version \
+  && echo 'playwright install:' \
+  && npm install playwright-test \
+  && echo 'playwright version:' \
+  && npm @playwright/test --version
   "
   echo "== End of sanity check"
   echo "== Installed packages:"
@@ -621,8 +761,10 @@ function main() {
   install_netlifydeploy
   install_terraform
   install_kubectl
-  install_goss
   install_tfsec
+  install_goss
+  install_nodejs
+  install_playwright_dependencies
   cleanup
 }
 
