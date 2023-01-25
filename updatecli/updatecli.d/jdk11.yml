@@ -44,13 +44,20 @@ targets:
       file: "provisioning/tools-versions.yml"
       key: "jdk11_version"
     scmid: default
+  updateJDK11VersionInGoss:
+    name: Update the JDK11 version in the goss test
+    kind: yaml
+    spec:
+      file: "goss/goss.yaml"
+      key: command./opt/jdk-11/bin/java --version.stdout[0]
+    scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
-    title: Bump JDK11 version to {{ source "lastReleaseVersion" }}
+    kind: github/pullrequest
     scmid: default
     spec:
+      title: Bump JDK11 version to {{ source "lastReleaseVersion" }}
       labels:
         - enhancement
         - jdk11
