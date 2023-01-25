@@ -51,6 +51,7 @@ targets:
           pattern: '8u(.*)-'
           captureindex: 1
       - addprefix: '1.8.0_'
+    scmid: default
 
 actions:
   default:
