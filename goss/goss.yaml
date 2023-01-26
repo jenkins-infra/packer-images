@@ -2,12 +2,12 @@ command:
   /opt/jdk-8/bin/java -version:
     exit-status: 0
     stderr:
-      - 1.8.0_352
+      - 1.8.0_362
     stdout: []
   /opt/jdk-11/bin/java --version:
     exit-status: 0
     stdout:
-      - 11.0.17+8
+      - 11.0.18+10
     stderr: []
   /opt/jdk-17/bin/java --version:
     exit-status: 0
