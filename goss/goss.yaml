@@ -17,7 +17,7 @@ command:
   /opt/jdk-19/bin/java --version:
     exit-status: 0
     stdout:
-      - 19.0.1+10
+      - 19.0.2+7
     stderr: []
 file:
   /home/jenkins:
