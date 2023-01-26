@@ -1,5 +1,5 @@
 asdf_version: "0.11.1"
-awscli_version: "2.9.17"
+awscli_version: "2.9.18"
 azurecli_version: "2.44.1"
 chocolatey_version: "1.2.1"
 compose_version: "2.15.1"
