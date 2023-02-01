@@ -19,41 +19,6 @@ build {
     vm_size   = local.azure_vm_size
   }
 
-  provisioner "shell" {
-    only             = ["docker.ubuntu"]
-    environment_vars = local.provisioning_env_vars
-    script           = "./provisioning/docker-jenkins-agent.sh"
-  }
-
-  provisioner "file" {
-    source      = "./provisioning/add_auth_key_to_user.sh"
-    destination = "/tmp/add_auth_key_to_user.sh"
-  }
-
-  provisioner "file" {
-    source      = "./provisioning/docker.gpg"
-    destination = "/tmp/docker.gpg"
-  }
-
-  provisioner "shell" {
-    environment_vars = local.provisioning_env_vars
-    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-    script           = "./provisioning/ubuntu-provision.sh"
-  }
-
-  provisioner "file" {
-    source      = "./goss/goss.yaml"
-    destination = "/tmp/goss.yaml"
-  }
-
-  provisioner "shell" {
-    inline = [
-      "set -xeu",
-      "goss --version",
-      "goss --gossfile /tmp/goss.yaml validate --retry-timeout 5s",
-    ]
-  }
-
   post-processor "docker-tag" {
     only       = ["docker.ubuntu"]
     repository = "${var.docker_namespace}/${local.image_name}"
