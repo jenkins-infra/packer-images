@@ -150,7 +150,7 @@ pipeline {
           axis {
             name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'amazon-ebs', 'azure-arm', 'docker'
+            values 'docker'
           }
         }
         excludes {
