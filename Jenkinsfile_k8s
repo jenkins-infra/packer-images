@@ -247,7 +247,7 @@ pipeline {
                   // else we would loose the docker image
                   if (pkr_var_image_type == 'docker' && pkr_var_tag_name != null) {
                     stage('Publish all tags for Docker image') {
-                      echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest"
+                      echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
                       infra.withDockerPushCredentials {
                         sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
                       }
