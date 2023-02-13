@@ -249,7 +249,7 @@ pipeline {
                     stage('Publish all tags for Docker image') {
                       echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
                       infra.withDockerPushCredentials {
-                        sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}:${pkr_var_architecture}'
+                        sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}:${cpu_architecture}'
                       }
                     }
                   }
