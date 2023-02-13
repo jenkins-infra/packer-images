@@ -249,7 +249,7 @@ pipeline {
                     stage('Publish all tags for Docker image') {
                       echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
                       infra.withDockerPushCredentials {
-                        sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
+                        sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}:${pkr_var_architecture}'
                       }
                     }
                   }
@@ -269,6 +269,12 @@ pipeline {
                   --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
                   --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
               sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:latest'
+
+              sh 'docker manifest create \
+                  jenkinsciinfra/jenkins-agent-${agent_type}:${pkr_var_tag_name} \
+                  --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                  --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+              sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:${pkr_var_tag_name}'
             }
           }
         }
