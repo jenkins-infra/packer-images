@@ -257,22 +257,23 @@ pipeline {
               }
             }
           }
+          stage('Build Docker Manifest') {
+            when {
+              expression {
+                return env.TAG_NAME != null
+              }
+            }
+            steps {
+              sh 'docker manifest create \
+                  jenkinsciinfra/jenkins-agent-${agent_type}:latest \
+                  --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                  --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+              sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:latest'
+            }
+          }
         }
       }
     }
-    stage('Build Docker Manifest') {
-      when {
-        expression {
-          return env.TAG_NAME != null
-        }
-      }
-      steps {
-        sh 'docker manifest create \
-            jenkinsciinfra/jenkins-agent-${agent_type}:latest \
-            --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-            --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-        sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:latest'
-      }
-    }
+
   }
 }
