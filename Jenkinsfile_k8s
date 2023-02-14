@@ -78,62 +78,62 @@ pipeline {
             }
           }
         }
-        stage('GC on AWS us-east-2') {
-          agent {
-            kubernetes {
-              yaml podAgentDefinition
-            }
-          }
-          environment {
-            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
-            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
-            AWS_DEFAULT_REGION    = 'us-east-2'
-          }
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh './cleanup/aws.sh'
-              sh './cleanup/aws_images.sh'
-            }
-          }
-        }
-        stage('GC on Azure') {
-          agent {
-            kubernetes {
-              yaml podAgentDefinition
-            }
-          }
-          environment {
-            PACKER_AZURE = credentials('packer-azure-serviceprincipal')
-          }
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
-              sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
-              sh './cleanup/azure.sh'
-            }
-          }
-        }
-        stage('Updatecli') {
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              script {
-                // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
-                withCredentials([
-                  usernamePassword(
-                  credentialsId: 'github-app-updatecli-on-jenkins-infra',
-                  usernameVariable: 'USERNAME_VALUE', // Setting this variable is mandatory, even if of not used when the credentials is a githubApp one
-                  passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
-                  )
-                ]) {
-                  sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
-                  if (env.BRANCH_IS_PRIMARY) {
-                    sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
-                  }
-                }
-              }
-            }
-          }
-        }
+        // stage('GC on AWS us-east-2') {
+        //   agent {
+        //     kubernetes {
+        //       yaml podAgentDefinition
+        //     }
+        //   }
+        //   environment {
+        //     AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+        //     AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+        //     AWS_DEFAULT_REGION    = 'us-east-2'
+        //   }
+        //   steps {
+        //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        //       sh './cleanup/aws.sh'
+        //       sh './cleanup/aws_images.sh'
+        //     }
+        //   }
+        // }
+        // stage('GC on Azure') {
+        //   agent {
+        //     kubernetes {
+        //       yaml podAgentDefinition
+        //     }
+        //   }
+        //   environment {
+        //     PACKER_AZURE = credentials('packer-azure-serviceprincipal')
+        //   }
+        //   steps {
+        //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        //       sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
+        //       sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
+        //       sh './cleanup/azure.sh'
+        //     }
+        //   }
+        // }
+        // stage('Updatecli') {
+        //   steps {
+        //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        //       script {
+        //         // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
+        //         withCredentials([
+        //           usernamePassword(
+        //           credentialsId: 'github-app-updatecli-on-jenkins-infra',
+        //           usernameVariable: 'USERNAME_VALUE', // Setting this variable is mandatory, even if of not used when the credentials is a githubApp one
+        //           passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
+        //           )
+        //         ]) {
+        //           sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+        //           if (env.BRANCH_IS_PRIMARY) {
+        //             sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
       }
     }
     stage('Packer Images') {
@@ -150,7 +150,8 @@ pipeline {
           axis {
             name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'amazon-ebs', 'azure-arm', 'docker'
+            //values 'amazon-ebs', 'azure-arm', 'docker'
+            values 'docker'
           }
         }
         excludes {
