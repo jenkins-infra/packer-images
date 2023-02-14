@@ -270,9 +270,11 @@ pipeline {
           return env.TAG_NAME != ''
         }
       }
+      environment {
+        agent_type = 'ubuntu-20.04'
+      }
       steps {
         script {
-          env.agent_type='ubuntu-20.04'
           infra.withDockerPushCredentials {
             sh 'docker manifest create \
                 jenkinsciinfra/jenkins-agent-${agent_type}:latest \
@@ -281,10 +283,10 @@ pipeline {
             sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:latest'
 
             sh 'docker manifest create \
-                jenkinsciinfra/jenkins-agent-${agent_type}:${env.TAG_NAME} \
+                jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} \
                 --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
                 --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-            sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:${env.TAG_NAME}'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME}'
           }
         }
       }
