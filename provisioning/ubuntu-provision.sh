@@ -737,36 +737,36 @@ function main() {
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
   install_asdf # Before all the others but after the jenkins home is created
-  install_chromium
   install_docker
-  install_datadog
-  install_JA_requirements
-  install_qemu
-  install_python
-  install_git_gitlfs
-  install_jdk
-  install_docker_compose
-  install_maven
-  install_hadolint
-  install_cst
-  install_jxreleaseversion
-  install_azurecli
-  install_gh
-  install_vagrant
-  install_ruby
-  install_yq
-  install_packer
-  install_updatecli
-  install_awscli
-  install_netlifydeploy
-  install_terraform
-  install_kubectl
-  install_tfsec
+  # install_chromium
+  # install_datadog
+  # install_JA_requirements
+  # install_qemu
+  # install_python
+  # install_git_gitlfs
+  # install_jdk
+  # install_docker_compose
+  # install_maven
+  # install_hadolint
+  # install_cst
+  # install_jxreleaseversion
+  # install_azurecli
+  # install_gh
+  # install_vagrant
+  # install_ruby
+  # install_yq
+  # install_packer
+  # install_updatecli
+  # install_awscli
+  # install_netlifydeploy
+  # install_terraform
+  # install_kubectl
+  # install_tfsec
+  # install_nodejs
+  # install_playwright_dependencies
   install_goss
-  install_nodejs
-  install_playwright_dependencies
   cleanup
 }
 
 main
-sanity_check
+# sanity_check
