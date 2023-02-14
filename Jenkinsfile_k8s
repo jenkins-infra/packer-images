@@ -145,6 +145,7 @@ pipeline {
           }
           axis {
             name 'agent_type'
+            // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
             values 'ubuntu-20.04', 'windows-2019', 'windows-2022'
           }
           axis {
@@ -271,6 +272,7 @@ pipeline {
       }
       steps {
         script {
+          env.agent_type='ubuntu-20.04'
           infra.withDockerPushCredentials {
             sh 'docker manifest create \
                 jenkinsciinfra/jenkins-agent-${agent_type}:latest \
