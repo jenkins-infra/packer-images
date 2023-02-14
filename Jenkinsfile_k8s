@@ -243,7 +243,7 @@ pipeline {
                   retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
                     sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
                     // adding manually a cpu architecture tag to the docker image
-                    sh 'docker tag jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}:${PKR_VAR_architecture}'
+                    sh 'docker tag "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest" "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"'
                   }
                   // if docker and building a tag, push to dockerhub from inside the node
                   // else we would loose the docker image
@@ -259,29 +259,28 @@ pipeline {
               }
             }
           }
-          stage('Build Docker Manifest') {
-            when {
-              expression {
-                return env.TAG_NAME != null
-              }
-            }
-            steps {
-              sh 'docker manifest create \
-                  jenkinsciinfra/jenkins-agent-${agent_type}:latest \
-                  --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-                  --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-              sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:latest'
-
-              sh 'docker manifest create \
-                  jenkinsciinfra/jenkins-agent-${agent_type}:${pkr_var_tag_name} \
-                  --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-                  --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-              sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:${pkr_var_tag_name}'
-            }
-          }
         }
       }
     }
+    stage('Build Docker Manifest') {
+      when {
+        expression {
+          return env.TAG_NAME != null
+        }
+      }
+      steps {
+        sh 'docker manifest create \
+            jenkinsciinfra/jenkins-agent-${agent_type}:latest \
+            --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+            --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+        sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:latest'
 
+        sh 'docker manifest create \
+            jenkinsciinfra/jenkins-agent-${agent_type}:${env.TAG_NAME} \
+            --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+            --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+        sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:${env.TAG_NAME}'
+      }
+    }
   }
 }
