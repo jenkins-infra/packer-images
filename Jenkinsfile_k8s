@@ -269,17 +269,21 @@ pipeline {
         }
       }
       steps {
-        sh 'docker manifest create \
-            jenkinsciinfra/jenkins-agent-${agent_type}:latest \
-            --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-            --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-        sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:latest'
+        script {
+          infra.withDockerPushCredentials {
+            sh 'docker manifest create \
+                jenkinsciinfra/jenkins-agent-${agent_type}:latest \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:latest'
 
-        sh 'docker manifest create \
-            jenkinsciinfra/jenkins-agent-${agent_type}:${env.TAG_NAME} \
-            --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-            --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-        sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:${env.TAG_NAME}'
+            sh 'docker manifest create \
+                jenkinsciinfra/jenkins-agent-${agent_type}:${env.TAG_NAME} \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-${agent_type}:${env.TAG_NAME}'
+          }
+        }
       }
     }
   }
