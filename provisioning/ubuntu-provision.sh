@@ -265,7 +265,7 @@ function install_git_gitlfs() {
   if [ -n "${GIT_LINUX_VERSION}" ]
   then
     ## a specific git version is required: search it on the official git PPA repositories
-    add-apt-repository -y ppa:git-core/candidate
+    add-apt-repository -y ppa:git-core/ppa
     install_package_version git "${GIT_LINUX_VERSION}"
   else
     ## No git version: install the latest git available in the default repos
