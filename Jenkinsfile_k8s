@@ -267,7 +267,7 @@ pipeline {
     stage('Build Docker Manifest') {
       when {
         expression {
-          return env.TAG_NAME != ''
+          return env.TAG_NAME != null
         }
       }
       environment {
