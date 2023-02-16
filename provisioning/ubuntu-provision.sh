@@ -737,14 +737,15 @@ function main() {
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
   install_asdf # Before all the others but after the jenkins home is created
+  install_goss # needed by the pipeline
+  install_docker # needed by the pipeline
+  install_jdk # needed by the pipeline
   install_chromium
-  install_docker
   install_datadog
   install_JA_requirements
   install_qemu
   install_python
   install_git_gitlfs
-  install_jdk
   install_docker_compose
   install_maven
   install_hadolint
@@ -762,7 +763,6 @@ function main() {
   install_terraform
   install_kubectl
   install_tfsec
-  install_goss
   install_nodejs
   install_playwright_dependencies
   cleanup
