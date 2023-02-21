@@ -176,7 +176,7 @@ function install_docker() {
     lsb-release \
     gnupg-agent \
     software-properties-common
-
+  
   gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
 
   echo \
@@ -192,7 +192,7 @@ Pin-Priority: 1001
 " | tee /etc/apt/preferences.d/docker-ce
 
   # Install pinned version
-  apt-get install --yes --no-install-recommends docker-ce
+  apt-get install --yes --no-install-recommends docker-ce docker-ce-cli docker-buildx-plugin
 
   # Allow the default user to use Docker. https://docs.docker.com/engine/install/linux-postinstall/
   # Please note that it gives effectively full root permissions to this user so these compute instances must be ephemeral
@@ -666,7 +666,9 @@ function sanity_check() {
   && echo 'datadog-agent version:' \
   && datadog-agent version \
   && echo 'docker version:' \
-  && docker -v  \
+  && docker -v \
+  && echo 'docker BuildX version:' \
+  && docker buildx version \
   && echo 'docker-compose version:' \
   && docker-compose -v \
   && echo 'gh version:' \
