@@ -43,13 +43,25 @@ targets:
       file: "provisioning/tools-versions.yml"
       key: "jdk8_version"
     scmid: default
+  updateJDK8VersionInGoss:
+    name: Update the JDK8 version in the goss test
+    kind: yaml
+    transformers:
+      - findsubmatch:
+          pattern: '8u(.*)-'
+          captureindex: 1
+      - addprefix: '1.8.0_'
+    spec:
+      file: "goss/goss.yaml"
+      key: command./opt/jdk-8/bin/java -version.stderr[0]
+    scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
-    title: Bump JDK8 version to {{ source "lastReleaseVersion" }}
+    kind: github/pullrequest
     scmid: default
     spec:
+      title: Bump JDK8 version to {{ source "lastReleaseVersion" }}
       labels:
         - enhancement
         - jdk8

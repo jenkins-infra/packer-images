@@ -44,13 +44,20 @@ targets:
       file: "provisioning/tools-versions.yml"
       key: "jdk19_version"
     scmid: default
+  updateJDK19VersionInGoss:
+    name: Update the JDK19 version in the goss test
+    kind: yaml
+    spec:
+      file: "goss/goss.yaml"
+      key: command./opt/jdk-19/bin/java --version.stdout[0]
+    scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
-    title: Bump JDK19 version to {{ source "lastReleaseVersion" }}
+    kind: github/pullrequest
     scmid: default
     spec:
+      title: Bump JDK19 version to {{ source "lastReleaseVersion" }}
       labels:
         - enhancement
         - jdk19

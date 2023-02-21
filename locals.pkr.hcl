@@ -19,7 +19,7 @@ locals {
     "staging_packer_images" = ["East US", "East US 2"] # Only the "main" branch, should map the production as much as possible
     "dev_packer_images"     = ["East US"]              # Faster builds for branches, pull requests or local development
   }
-  windows_disk_size_gb = 128 # Must be greater than 127 Gb to allow Azure template to work with
+  windows_disk_size_gb = 150 # Must be greater than 127 Gb to allow Azure template to work with
   provisioning_env_vars = concat(
     [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"],
     [
