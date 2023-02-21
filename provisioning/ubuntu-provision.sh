@@ -666,7 +666,9 @@ function sanity_check() {
   && echo 'datadog-agent version:' \
   && datadog-agent version \
   && echo 'docker version:' \
-  && docker -v  \
+  && docker -v \
+  && echo 'docker BuildX version:' \
+  && docker buildx version \
   && echo 'docker-compose version:' \
   && docker-compose -v \
   && echo 'gh version:' \
