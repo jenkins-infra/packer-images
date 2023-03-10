@@ -270,13 +270,12 @@ $downloads = [ordered]@{
         }
     };
     'netlify-deploy' = @{
-        'url' = 'https://github.com/halkeye/netlify-golang-deploy/releases/download/v{0}/netlify-golang-deploy_{0}_Windows_x86_64.tar.gz' -f $env:NETLIFYDEPLOY_VERSION;
-        'local' = "$baseDir\netlify-golang-deploy.tgz";
+        'url' = 'https://github.com/halkeye/netlify-golang-deploy/releases/download/v{0}/netlify-golang-deploy_{0}_Windows_x86_64.zip' -f $env:NETLIFYDEPLOY_VERSION;
+        'local' = "$baseDir\netlify-golang-deploy.zip";
+        'expandTo' = "$baseDir\netlify-golang-deploy.tmp";
         'postExpand' = {
-            & tar.exe --extract --verbose --gunzip --file="$baseDir\netlify-golang-deploy.tgz" --directory="$baseDir"
-            & Move-Item -Path "$baseDir\netlify-golang-deploy.exe" -Destination "$baseDir\netlify-deploy.exe";
-            & Remove-Item -Force -Recurse "$baseDir\LICENSE";
-            & Remove-Item -Force -Recurse "$baseDir\README.md";
+            & Move-Item -Path "$baseDir\netlify-golang-deploy.tmp\netlify-golang-deploy.exe" -Destination "$baseDir\netlify-deploy.exe";
+            & Remove-Item -Force -Recurse "$baseDir\netlify-golang-deploy.tmp";
         };
         'cleanupLocal' = 'true';
         'sanityCheck'= {
