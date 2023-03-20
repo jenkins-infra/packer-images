@@ -125,6 +125,7 @@ pipeline {
                   passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
                   )
                 ]) {
+                  sh 'updatecli version'
                   sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
                   if (env.BRANCH_IS_PRIMARY) {
                     sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
