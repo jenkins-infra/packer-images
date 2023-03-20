@@ -36,21 +36,19 @@ source "amazon-ebs" "base" {
 # This source defines all the common settings for any Azure image (whatever Operating System)
 source "azure-arm" "base" {
   managed_image_name                = local.image_name
-  managed_image_resource_group_name = local.azure_resource_group
-  async_resourcegroup_delete        = true # Faster builds, but no deletion error reporting
+  managed_image_resource_group_name = local.azure_destination_resource_group
+  # Resource group where to create the VM resources (required to scope permissions into this resource group)
+  build_resource_group_name = "${var.build_type}-packer-builds"
 
   # Azure API connection
   client_id       = var.azure_client_id
   client_secret   = var.azure_client_secret
   subscription_id = var.azure_subscription_id
 
-  # Where to build the VM
-  location = "East US"
-
   # Where to export the image
   shared_image_gallery_destination {
     subscription        = var.azure_subscription_id
-    resource_group      = local.azure_resource_group
+    resource_group      = local.azure_destination_resource_group
     gallery_name        = "${var.build_type}_packer_images"
     image_name          = local.image_name
     image_version       = var.image_version
@@ -82,7 +80,7 @@ source "docker" "base" {
     "LABEL scm_ref       = ${var.scm_ref}",
     "LABEL build_type    = ${var.build_type}",
     "ENV LANG=${var.locale}",
-    "ENV LANGUAGE=${element(split(".", var.locale),0)}:${element(split("_", var.locale),0)}",
+    "ENV LANGUAGE=${element(split(".", var.locale), 0)}:${element(split("_", var.locale), 0)}",
     "ENV LC_ALL=${var.locale}",
     "ENV AGENT_WORKDIR=/home/jenkins/agent",
     "WORKDIR /home/jenkins",
