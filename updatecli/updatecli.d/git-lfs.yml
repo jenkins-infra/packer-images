@@ -36,9 +36,9 @@ targets:
       key: "git_lfs_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump Git-LFS version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

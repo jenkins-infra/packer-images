@@ -37,9 +37,9 @@ targets:
       key: "cst_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump container-structure-test version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

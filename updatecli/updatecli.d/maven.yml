@@ -45,9 +45,9 @@ targets:
       key: "maven_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump Maven version to {{ source "mavenVersion" }}
     scmid: default
     spec:

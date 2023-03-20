@@ -39,9 +39,9 @@ targets:
         amazon = {${1}version = "{{ source "lastReleaseVersion" }}"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump packer amazon plugin version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

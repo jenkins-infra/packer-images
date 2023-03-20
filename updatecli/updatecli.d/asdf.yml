@@ -37,9 +37,9 @@ targets:
       key: "asdf_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump ASDF version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

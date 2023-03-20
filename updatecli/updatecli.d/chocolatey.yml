@@ -37,9 +37,9 @@ targets:
       key: "chocolatey_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump chocolatey version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

@@ -39,9 +39,9 @@ targets:
       key: "jq_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump JQ version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

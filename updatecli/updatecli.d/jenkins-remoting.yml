@@ -22,7 +22,7 @@ sources:
       repository: "remoting"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
-    
+
 
 targets:
   updateVersion:
@@ -34,9 +34,9 @@ targets:
       key: "jenkins_remoting_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump Jenkins Remoting version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
