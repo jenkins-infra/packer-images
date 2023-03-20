@@ -37,9 +37,9 @@ targets:
       key: "gh_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump GitHub CLI (gh) version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

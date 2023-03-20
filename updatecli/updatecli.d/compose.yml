@@ -36,9 +36,9 @@ targets:
       key: "compose_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     scmid: default
     title: Bump Docker Compose version to {{ source "lastReleaseVersion" }}
     spec:

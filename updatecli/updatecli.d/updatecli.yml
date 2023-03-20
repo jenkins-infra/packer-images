@@ -37,9 +37,9 @@ targets:
       key: "updatecli_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     scmid: default
     title: Bump the `updatecli` CLI version to {{ source "lastReleaseVersion" }}
     spec:

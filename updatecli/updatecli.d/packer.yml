@@ -45,9 +45,9 @@ targets:
       key: "packer_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump packer version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

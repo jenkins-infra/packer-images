@@ -39,9 +39,9 @@ targets:
         windows-update = {${1}version = "{{ source "lastReleaseVersion" }}"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump packer windows-update plugin version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

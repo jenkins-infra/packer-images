@@ -36,9 +36,9 @@ targets:
       key: "git_linux_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump Git version on Linux to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:

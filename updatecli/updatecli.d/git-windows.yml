@@ -39,9 +39,9 @@ targets:
       key: "git_windows_version"
     scmid: default
 
-pullrequests:
+actions:
   default:
-    kind: github
+    kind: github/pullrequest
     title: Bump Git version on Windows to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
