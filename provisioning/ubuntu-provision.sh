@@ -92,6 +92,17 @@ function clean_apt() {
   apt-get upgrade -y
 }
 
+function install_common_requirements() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends \
+    apt-transport-https \
+    ca-certificates `# Adds certificate authority for proper use of TLS` \
+    curl `# A nice HTTP client` \
+    lsb-release `# Provides CLI for distribution detction` \
+    gpg-agent `# Required for GPG management` \
+    software-properties-common `# Provides a LOT of APT utilities`
+}
+
 function install_ssh_requirements() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends openssh-client
@@ -168,16 +179,7 @@ function install_asdf_package() {
 
 ## Ensure Docker is installed as per https://docs.docker.com/engine/install/ubuntu/
 function install_docker() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release \
-    gnupg-agent \
-    software-properties-common
-
-  gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
+  gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/gpg-keys/docker.gpg
 
   echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
@@ -240,8 +242,6 @@ function install_python() {
 ### see https://bugs.chromium.org/p/chromium/issues/detail?id=677140
 function install_chromium() {
   apt-get remove --yes chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
-  apt-get update --quiet
-  apt-get install --yes software-properties-common
 
   # Using this PPA as the chromium default repositories require snap which doesn't work in docker.
   # see https://askubuntu.com/questions/1255692/is-it-still-possible-to-install-chromium-as-a-deb-package-on-20-04-lts-using-som
@@ -374,7 +374,7 @@ function install_jxreleaseversion() {
     "https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v${JXRELEASEVERSION_VERSION}/jx-release-version-linux-${ARCHITECTURE}.tar.gz"
   tar --extract --verbose --gunzip --file=/tmp/jx-release-version.tgz --directory=/tmp
   cp /tmp/jx-release-version /usr/local/bin/jx-release-version
-  rm -rf /tmp/*
+  rm -rf /tmp/jx*
 }
 
 ## Ensure that azure-cli is installed
@@ -399,13 +399,16 @@ function install_gh() {
     "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${ARCHITECTURE}.tar.gz"
   tar --extract --verbose --gunzip --file=/tmp/gh.tar.gz --directory=/tmp
   cp "/tmp/gh_${GH_VERSION}_linux_${ARCHITECTURE}/bin/gh" /usr/local/bin/gh
-  rm -rf /tmp/*
+  rm -rf /tmp/gh*
 }
 
 ## Install Vagrant as per https://www.vagrantup.com/downloads
 function install_vagrant() {
-  curl --fail --silent --show-error --location https://apt.releases.hashicorp.com/gpg | apt-key add -
-  apt-add-repository "deb [arch=${ARCHITECTURE}] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  local keyring_file=/usr/share/keyrings/hashicorp-archive-keyring.gpg
+  gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/hashicorp.gpg
+  echo "deb [signed-by=${keyring_file}] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list
+  apt update --quiet
+
   if test "${ARCHITECTURE}" == "amd64"
   then
     install_package_version vagrant "${VAGRANT_VERSION}"
@@ -450,16 +453,9 @@ function install_packer() {
 
 ## Install Datadog agent but not starting it and not enabling it (that will be the role of the system spinning up VM through cloud-init usually)
 function install_datadog() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends apt-transport-https ca-certificates curl gnupg # Should already be there but this function should be autonomous
-
-  echo 'deb [signed-by=/usr/share/keyrings/datadog-archive-keyring.gpg] https://apt.datadoghq.com/ stable 7' > /etc/apt/sources.list.d/datadog.list
-  touch /usr/share/keyrings/datadog-archive-keyring.gpg
-  chmod a+r /usr/share/keyrings/datadog-archive-keyring.gpg
-
-  curl https://keys.datadoghq.com/DATADOG_APT_KEY_CURRENT.public | gpg --no-default-keyring --keyring /usr/share/keyrings/datadog-archive-keyring.gpg --import --batch
-  curl https://keys.datadoghq.com/DATADOG_APT_KEY_382E94DE.public | gpg --no-default-keyring --keyring /usr/share/keyrings/datadog-archive-keyring.gpg --import --batch
-  curl https://keys.datadoghq.com/DATADOG_APT_KEY_F14F620E.public | gpg --no-default-keyring --keyring /usr/share/keyrings/datadog-archive-keyring.gpg --import --batch
+  keyring_file=/usr/share/keyrings/docker-archive-keyring.gpg
+  gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/datadog.gpg
+  echo "deb [signed-by=${keyring_file}] https://apt.datadoghq.com/ stable 7" > /etc/apt/sources.list.d/datadog.list
 
   apt-get update --quiet
   apt-get install --yes --no-install-recommends datadog-agent datadog-signing-keys
@@ -668,8 +664,10 @@ function main() {
   copy_custom_scripts
   set_locale # Define the locale
   clean_apt
-  install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
+  install_common_requirements
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
+  install_git_gitlfs
+  install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   install_asdf # Before all the others but after the jenkins home is created
   install_goss # needed by the pipeline
   install_docker # needed by the pipeline
@@ -679,7 +677,7 @@ function main() {
   install_JA_requirements
   install_qemu
   install_python
-  install_git_gitlfs
+
   install_docker_compose
   install_maven
   install_hadolint

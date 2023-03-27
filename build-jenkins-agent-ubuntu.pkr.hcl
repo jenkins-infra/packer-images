@@ -31,8 +31,8 @@ build {
   }
 
   provisioner "file" {
-    source      = "./provisioning/docker.gpg"
-    destination = "/tmp/docker.gpg"
+    source      = "./gpg-keys"
+    destination = "/tmp/gpg-keys"
   }
 
   provisioner "shell" {
