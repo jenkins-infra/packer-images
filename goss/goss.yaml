@@ -19,6 +19,74 @@ command:
     stdout:
       - 19.0.2+7
     stderr: []
+  asdf version:
+    exit-status: 0
+  aws --version:
+    exit-status: 0
+  az --version:
+    exit-status: 0
+  bundle -v:
+    exit-status: 0
+  chromium-browser --version:
+    exit-status: 0
+  container-structure-test version:
+    exit-status: 0
+  datadog-agent version:
+    exit-status: 0
+  docker -v:
+    exit-status: 0
+  docker buildx version:
+    exit-status: 0
+  docker-compose -v:
+    exit-status: 0
+  gh --version:
+    exit-status: 0
+  git --version:
+    exit-status: 0
+  git-lfs --version:
+    exit-status: 0
+  hadolint -v:
+    exit-status: 0
+  java -version:
+    exit-status: 0
+  jq --version:
+    exit-status: 0
+  jx-release-version -version:
+    exit-status: 0
+  kubectl version --client:
+    exit-status: 0
+  make --version:
+    exit-status: 0
+  mvn -v:
+    exit-status: 0
+  netlify-deploy --help:
+    exit-status: 0
+  command -v ssh-agent:
+    exit-status: 0
+  packer -v:
+    exit-status: 0
+  parallel --version:
+    exit-status: 0
+  python3 --version:
+    exit-status: 0
+  ruby -v:
+    exit-status: 0
+  terraform -v:
+    exit-status: 0
+  tfsec --version:
+    exit-status: 0
+  unzip -v:
+    exit-status: 0
+  updatecli version:
+    exit-status: 0
+  vagrant -v:
+    exit-status: 0
+  yq --version:
+    exit-status: 0
+  zip -v:
+    exit-status: 0
+  npm --version:
+    exit-status: 0
 file:
   /home/jenkins:
     exists: true

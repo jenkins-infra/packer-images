@@ -176,7 +176,7 @@ function install_docker() {
     lsb-release \
     gnupg-agent \
     software-properties-common
-  
+
   gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
 
   echo \
@@ -648,89 +648,6 @@ function cleanup() {
   sync
 }
 
-function sanity_check() {
-  echo "== Sanity Check of installed tools, running as user ${username}"
-  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
-  && echo 'asdf version:' \
-  && asdf version \
-  && echo 'aws version:' \
-  && aws --version \
-  && echo 'az version:' \
-  && az --version \
-  && echo 'bundle version:' \
-  && bundle -v \
-  && echo 'chromium-browser version:' \
-  && chromium-browser --version \
-  && echo 'container-structure-test version:' \
-  && container-structure-test version \
-  && echo 'datadog-agent version:' \
-  && datadog-agent version \
-  && echo 'docker version:' \
-  && docker -v \
-  && echo 'docker BuildX version:' \
-  && docker buildx version \
-  && echo 'docker-compose version:' \
-  && docker-compose -v \
-  && echo 'gh version:' \
-  && gh --version \
-  && echo 'git version:' \
-  && git --version \
-  && echo 'git-lfs version:' \
-  && git-lfs --version \
-  && echo 'goss version:' \
-  && goss --version \
-  && echo 'hadolint version:' \
-  && hadolint -v \
-  && echo 'java version:' \
-  && java -version \
-  && echo 'jq version:' \
-  && jq --version \
-  && echo 'jx-release-version version:' \
-  && jx-release-version -version \
-  && echo 'kubectl version:' \
-  && kubectl version --client \
-  && echo 'make version:' \
-  && make --version \
-  && echo 'maven version:' \
-  && mvn -v \
-  && echo 'netlify-deploy version:' \
-  && netlify-deploy --help \
-  && echo 'ssh-agent version:' \
-  && command -v ssh-agent \
-  && echo 'packer version:' \
-  && packer -v \
-  && echo 'parallel version:' \
-  && parallel --version \
-  && echo 'python3 version:' \
-  && python3 --version \
-  && echo 'ruby version:' \
-  && ruby -v \
-  && echo 'terraform version:' \
-  && terraform -v \
-  && echo 'tfsec version:' \
-  && tfsec --version \
-  && echo 'unzip version:' \
-  && unzip -v \
-  && echo 'updatecli version:' \
-  && updatecli version \
-  && echo 'vagrant version:' \
-  && vagrant -v \
-  && echo 'yq version:' \
-  && yq --version \
-  && echo 'zip version:' \
-  && zip -v \
-  && echo 'npm version:' \
-  && npm --version \
-  && echo 'playwright install:' \
-  && npm install playwright-test \
-  && echo 'playwright version:' \
-  && npm @playwright/test --version
-  "
-  echo "== End of sanity check"
-  echo "== Installed packages:"
-  dpkg -l
-}
-
 function main() {
   check_commands
   copy_custom_scripts
@@ -771,4 +688,6 @@ function main() {
 }
 
 main
-sanity_check
+
+echo "== Installed packages:"
+dpkg -l
