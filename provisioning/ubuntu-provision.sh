@@ -176,7 +176,7 @@ function install_docker() {
     lsb-release \
     gnupg-agent \
     software-properties-common
-  
+
   gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
 
   echo \
@@ -419,7 +419,7 @@ function install_vagrant() {
 ## Install Ruby with asdf
 function install_ruby() {
   # Ensure that ASDF is installed
-  install_asdf
+  test -f "${asdf_install_dir}/asdf.sh"
   # Ensure that require dependencies are present to install Ruby
   apt-get update --quiet
   apt-get install --yes --no-install-recommends autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev
@@ -431,7 +431,7 @@ function install_ruby() {
 ## Install Yq with asdf
 function install_yq() {
   # Ensure that ASDF is installed
-  install_asdf
+  test -f "${asdf_install_dir}/asdf.sh"
 
   # Install Yq with ASDF and set it as default installation
   install_asdf_plugin yq https://github.com/sudermanjr/asdf-yq.git
@@ -441,7 +441,7 @@ function install_yq() {
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
 function install_packer() {
   # Ensure that ASDF is installed
-  install_asdf
+  test -f "${asdf_install_dir}/asdf.sh"
 
   # Install packer with ASDF and set it as default installation
   install_asdf_plugin packer https://github.com/asdf-community/asdf-hashicorp.git
@@ -543,7 +543,7 @@ function install_tfsec() {
 ## Install Nodejs with asdf
 function install_nodejs() {
   # Ensure that ASDF is installed
-  install_asdf
+  test -f "${asdf_install_dir}/asdf.sh"
   # Install NodeJS with ASDF and set it as default installation
   install_asdf_plugin nodejs https://github.com/asdf-vm/asdf-nodejs.git
   install_asdf_package nodejs "${NODEJS_VERSION}"
