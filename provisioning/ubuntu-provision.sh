@@ -179,11 +179,11 @@ function install_asdf_package() {
 
 ## Ensure Docker is installed as per https://docs.docker.com/engine/install/ubuntu/
 function install_docker() {
-  gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/gpg-keys/docker.gpg
+  keyring_file=/usr/share/keyrings/docker-archive-keyring.gpg
+  gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/docker.gpg
+  chmod a+r "${keyring_file}"
 
-  echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=${keyring_file}] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
   apt-get update --quiet
 
   # Ensure that version is fixed
@@ -406,6 +406,7 @@ function install_gh() {
 function install_vagrant() {
   local keyring_file=/usr/share/keyrings/hashicorp-archive-keyring.gpg
   gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/hashicorp.gpg
+  chmod a+r "${keyring_file}"
   echo "deb [signed-by=${keyring_file}] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list
   apt update --quiet
 
@@ -455,6 +456,7 @@ function install_packer() {
 function install_datadog() {
   keyring_file=/usr/share/keyrings/docker-archive-keyring.gpg
   gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/datadog.gpg
+  chmod a+r "${keyring_file}"
   echo "deb [signed-by=${keyring_file}] https://apt.datadoghq.com/ stable 7" > /etc/apt/sources.list.d/datadog.list
 
   apt-get update --quiet
