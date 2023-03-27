@@ -419,7 +419,7 @@ function install_vagrant() {
 ## Install Ruby with asdf
 function install_ruby() {
   # Ensure that ASDF is installed
-  install_asdf
+  test -f "${asdf_install_dir}/asdf.sh"
   # Ensure that require dependencies are present to install Ruby
   apt-get update --quiet
   apt-get install --yes --no-install-recommends autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev
@@ -431,7 +431,7 @@ function install_ruby() {
 ## Install Yq with asdf
 function install_yq() {
   # Ensure that ASDF is installed
-  install_asdf
+  test -f "${asdf_install_dir}/asdf.sh"
 
   # Install Yq with ASDF and set it as default installation
   install_asdf_plugin yq https://github.com/sudermanjr/asdf-yq.git
@@ -441,7 +441,7 @@ function install_yq() {
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
 function install_packer() {
   # Ensure that ASDF is installed
-  install_asdf
+  test -f "${asdf_install_dir}/asdf.sh"
 
   # Install packer with ASDF and set it as default installation
   install_asdf_plugin packer https://github.com/asdf-community/asdf-hashicorp.git
@@ -543,102 +543,34 @@ function install_tfsec() {
 ## Install Nodejs with asdf
 function install_nodejs() {
   # Ensure that ASDF is installed
-  install_asdf
+  test -f "${asdf_install_dir}/asdf.sh"
   # Install NodeJS with ASDF and set it as default installation
   install_asdf_plugin nodejs https://github.com/asdf-vm/asdf-nodejs.git
   install_asdf_package nodejs "${NODEJS_VERSION}"
+
+  # Bump NPM to its latest available version
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g npm"
 }
 
 function install_playwright_dependencies() {
-  apt-get update --quiet
-  # Playwright dependencies. https://ci.jenkins.io/job/Websites/job/jenkins-io-components/view/change-requests/job/PR-55/4/console
-  apt-get install --yes --no-install-recommends \
-    ffmpeg \
-    fonts-ipafont-gothic \
-    fonts-liberation \
-    fonts-noto-color-emoji \
-    fonts-tlwg-loma-otf \
-    fonts-wqy-zenhei \
-    gstreamer1.0-libav \
-    gstreamer1.0-plugins-bad \
-    gstreamer1.0-plugins-base \
-    gstreamer1.0-plugins-good \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libatomic1 \
-    libatspi2.0-0 \
-    libcairo-gobject2 \
-    libcairo2 \
-    libcups2 \
-    libdbus-1-3 \
-    libdbus-glib-1-2 \
-    libdrm2 \
-    libegl1 \
-    libenchant-2-2 \
-    libenchant1c2a \
-    libepoxy0 \
-    libevdev2 \
-    libevent-2.1-7 \
-    libfontconfig \
-    libfontconfig1 \
-    libfreetype6 \
-    libgbm1 \
-    libgdk-pixbuf2.0-0 \
-    libgl1 \
-    libgles2 \
-    libglib2.0-0 \
-    libgstreamer-gl1.0-0 \
-    libgstreamer1.0-0 \
-    libgtk-3-0 \
-    libharfbuzz-icu0 \
-    libharfbuzz0b \
-    libhyphen0 \
-    libicu66 \
-    libjpeg-turbo8 \
-    libnotify4 \
-    libnspr4 \
-    libnss3 \
-    libopengl0 \
-    libopenjp2-7 \
-    libopus0 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libpangoft2-1.0-0 \
-    libpng16-16 \
-    libsecret-1-0 \
-    libsoup2.4-1 \
-    libvpx6 \
-    libwayland-client0 \
-    libwayland-client0 \
-    libwayland-egl1 \
-    libwayland-server0 \
-    libwebp6 \
-    libwebpdemux2 \
-    libwoff1 \
-    libx11-6 \
-    libx11-xcb1 \
-    libxcb-shm0 \
-    libxcb1 \
-    libxcomposite1 \
-    libxcursor1 \
-    libxdamage1 \
-    libxext6 \
-    libxfixes3 \
-    libxi6 \
-    libxkbcommon0 \
-    libxml2 \
-    libxrandr2 \
-    libxrender1 \
-    libxshmfence1 \
-    libxslt1.1 \
-    libxt6 \
-    libxtst6 \
-    ttf-ubuntu-font-family \
-    ttf-unifont \
-    xfonts-cyrillic \
-    xfonts-scalable \
-    xvfb
+  ## The command 'npx playwright install-deps --dry-run' prints the expectd command for installing dependencies.
+  # But this commad requires `sudo` access (which the ${username} user does not have.
+  # Also, the `root` user does not have access to the ASDF setup.
+  # Finally, we want to cleanup the playwright installation (which is in a temporary directory)
+  temp_dir=/tmp/playwright
+  su - "${username}" -c " \
+    source ${asdf_install_dir}/asdf.sh \
+    && mkdir -p ${temp_dir} \
+    && cd ${temp_dir} \
+    && npm install playwright@latest"
+  # Don't forget to change dir and to remove any `stderr` to avoid polluting the evakuated command
+  playwright_deps_install_command="$(su - "${username}" -c "\
+    source ${asdf_install_dir}/asdf.sh \
+    && cd ${temp_dir} \
+    && npx playwright install-deps --dry-run" \
+  2>/dev/null)"
+  eval "${playwright_deps_install_command}"
+  rm -rf "${temp_dir}"
 }
 
 ## Ensure that the VM is cleaned up
