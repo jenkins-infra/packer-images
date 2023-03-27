@@ -547,6 +547,9 @@ function install_nodejs() {
   # Install NodeJS with ASDF and set it as default installation
   install_asdf_plugin nodejs https://github.com/asdf-vm/asdf-nodejs.git
   install_asdf_package nodejs "${NODEJS_VERSION}"
+
+  # Bump NPM to its latest available version
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g npm"
 }
 
 function install_playwright_dependencies() {
