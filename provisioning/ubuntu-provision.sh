@@ -679,7 +679,6 @@ function main() {
   install_JA_requirements
   install_qemu
   install_python
-
   install_docker_compose
   install_maven
   install_hadolint
