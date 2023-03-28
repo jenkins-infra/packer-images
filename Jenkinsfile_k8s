@@ -2,7 +2,7 @@
 // into the correct node type based on the provided arguments
 def withPackerNode(String packer_template, String compute_type, String cpu_architecture, Closure body) {
   // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
-  if (cpu_architecture == 'arm64' && compute_type == 'docker') {
+  if (cpu_architecture == 'arm64') {
     node('linux-arm64-docker') {
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       checkout scm
@@ -65,123 +65,25 @@ pipeline {
     PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
   }
   stages {
-    stage('Side Tasks') {
-      environment {
-        DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
-      }
-      parallel {
-        stage('Packer Init') {
-          steps {
-            // Call the initializing function once for the default agent
-            script {
-              packerInitPlugins()
-            }
-          }
-        }
-        stage('GC on AWS us-east-2') {
-          agent {
-            kubernetes {
-              yaml podAgentDefinition
-            }
-          }
-          environment {
-            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
-            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
-            AWS_DEFAULT_REGION    = 'us-east-2'
-          }
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh './cleanup/aws.sh'
-              sh './cleanup/aws_images.sh'
-            }
-          }
-        }
-        stage('GC on Azure') {
-          agent {
-            kubernetes {
-              yaml podAgentDefinition
-            }
-          }
-          environment {
-            PACKER_AZURE = credentials('packer-azure-serviceprincipal')
-          }
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
-              sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
-              sh './cleanup/azure.sh'
-            }
-          }
-        }
-        stage('Updatecli') {
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              script {
-                // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
-                withCredentials([
-                  usernamePassword(
-                  credentialsId: 'github-app-updatecli-on-jenkins-infra',
-                  usernameVariable: 'USERNAME_VALUE', // Setting this variable is mandatory, even if of not used when the credentials is a githubApp one
-                  passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
-                  )
-                ]) {
-                  sh 'updatecli version'
-                  sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
-                  if (env.BRANCH_IS_PRIMARY) {
-                    sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
     stage('Packer Images') {
       matrix {
         axes {
           axis {
             name 'cpu_architecture'
-            values 'amd64', 'arm64'
+            values 'arm64'
           }
           axis {
             name 'agent_type'
             // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
-            values 'ubuntu-20.04', 'windows-2019', 'windows-2022'
+            values 'ubuntu-20.04'
           }
           axis {
             name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'amazon-ebs', 'azure-arm', 'docker'
+            values 'azure-arm'
           }
         }
         excludes {
-          // Do NOT build ARM images in Azure
-          exclude {
-            axis {
-              name 'cpu_architecture'
-              values 'arm64'
-            }
-            axis {
-              name 'compute_type'
-              values 'azure-arm'
-            }
-          }
-          // Only build Ubuntu images for arm64 CPU in AWS
-          exclude {
-            axis {
-              name 'cpu_architecture'
-              values 'arm64'
-            }
-            axis {
-              name 'agent_type'
-              notValues 'ubuntu-20.04'
-            }
-            axis {
-              name 'compute_type'
-              values 'amazon-ebs'
-            }
-          }
           // No build on Windows or Docker, not yet implemented
           exclude {
             axis {
@@ -262,35 +164,6 @@ pipeline {
                 }
               }
             }
-          }
-        }
-      }
-    }
-    stage('Build Docker Manifest') {
-      when {
-        expression {
-          return env.TAG_NAME != null
-        }
-      }
-      environment {
-        // Static variable definition as this stage is outside the matrix scope
-        // Improvement: pass dynamically the list of images from the matrix (e.g. use full scripted pipeline) to support other Docker agent types (such as windows-2019 or windows-2022)
-        agent_type = 'ubuntu-20.04'
-      }
-      steps {
-        script {
-          infra.withDockerPushCredentials {
-            sh 'docker manifest create \
-                jenkinsciinfra/jenkins-agent-${agent_type}:latest \
-                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-            sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":latest'
-
-            sh 'docker manifest create \
-                jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} \
-                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-            sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":"${TAG_NAME}"'
           }
         }
       }
