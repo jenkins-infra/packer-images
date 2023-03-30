@@ -7,7 +7,7 @@ set -eux -o pipefail
 ## Check for environment variables or fail miserably (due to set -u enabled)
 echo "== Provisiong jenkins-infra agent for ubuntu 20: $HOSTNAME"
 echo "=== IP START"
-ifconfig
+ip address
 echo "==== IP END"
 case "$(uname -m)" in
     x86_64)
