@@ -11,7 +11,8 @@ build {
   source "azure-arm.base" {
     name = "ubuntu"
     # List available offers and publishers with the command `az vm image list --output table`
-    image_offer     = "0001-com-ubuntu-server-focal"
+    #image_offer     = "0001-com-ubuntu-server-focal"
+    image_offer     = local.aws_instance_type[var.architecture]
     image_publisher = "canonical"
     # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-focal --location eastus --publisher canonical --output table`
     image_sku = "${local.agent_os_version_safe}-lts-gen2"
