@@ -42,6 +42,32 @@ build {
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
+    inline = [
+      "Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1' -o install-docker-ce.ps1",
+      "install-docker-ce.ps1 -DockerVersion $env:DOCKER_VERSION -Verbose",
+    ]
+  }
+
+  provisioner "powershell" {
+    environment_vars  = local.provisioning_env_vars
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+    inline = [
+      "Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1' -o install-docker-ce.ps1",
+      "install-docker-ce.ps1 -DockerVersion $env:DOCKER_VERSION -Verbose",
+    ]
+  }
+  # Install Docker-CE
+  # Write-Output "= Ensuring that Docker CE version $env:DOCKER_VERSION is installed in $baseDir\Docker..."
+  # Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1' -o install-docker-ce.ps1
+  # ## A reboot would be required before being able to use start containers (but we don't need to in this script).
+  # ./install-docker-ce.ps1 -DockerVersion $env:DOCKER_VERSION -NoRestart -Verbose -DockerPath $baseDir\Docker
+
+  provisioner "powershell" {
+    pause_before      = "1m"
+    environment_vars  = local.provisioning_env_vars
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
     script            = "./provisioning/windows-provision.ps1"
   }
 
