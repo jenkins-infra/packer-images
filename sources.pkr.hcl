@@ -51,7 +51,7 @@ source "azure-arm" "base" {
     subscription        = var.azure_subscription_id
     resource_group      = local.azure_destination_resource_group
     gallery_name        = "${var.build_type}_packer_images"
-    image_name          = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
+    image_name          = "${local.image_name}-${var.architecture}"
     image_version       = var.image_version
     replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
   }
