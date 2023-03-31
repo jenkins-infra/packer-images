@@ -81,13 +81,9 @@ try {
     docker -v ## client version only
 } catch {
     Write-Output "= Docker not found: installing..."
-    Write-Output "== Setting up Nuget..."
-    Install-PackageProvider -Name NuGet -Force
-    Write-Output "== Setting up Docker Module..."
-    Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
-    Write-Output "== Setting up Docker Package..."
-    Install-Package -Name docker -ProviderName DockerMsftProvider -Force
-    ## A reboot is required before being able to use start containers (but we don't need to).
+    Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1' -o install-docker-ce.ps1
+    ./install-docker-ce.ps1 -DockerVersion $env:DOCKER_VERSION
+    ## A reboot would be required before being able to use start containers (but we don't need to in this script).
 }
 
 # Prepare Tools Installation
