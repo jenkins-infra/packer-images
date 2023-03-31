@@ -75,16 +75,11 @@ Start-Service sshd
 Write-Output "= Adding OpenSSH to the Firewall..."
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
 
-# Install Docker-CE if missing
-Write-Output "= Ensuring that Docker CE is installed..."
-try {
-    docker -v ## client version only
-} catch {
-    Write-Output "= Docker not found: installing..."
-    Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1' -o install-docker-ce.ps1
-    ./install-docker-ce.ps1 -DockerVersion $env:DOCKER_VERSION
-    ## A reboot would be required before being able to use start containers (but we don't need to in this script).
-}
+# Install Docker-CE
+Write-Output "= Ensuring that Docker CE version $env:DOCKER_VERSION is installed..."
+Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1' -o install-docker-ce.ps1
+## A reboot would be required before being able to use start containers (but we don't need to in this script).
+./install-docker-ce.ps1 -DockerVersion $env:DOCKER_VERSION -NoRestart
 
 # Prepare Tools Installation
 $baseDir = 'C:\tools'
