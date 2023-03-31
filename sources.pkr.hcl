@@ -35,10 +35,9 @@ source "amazon-ebs" "base" {
 
 # This source defines all the common settings for any Azure image (whatever Operating System)
 source "azure-arm" "base" {
-  managed_image_name                = local.image_name
-  managed_image_resource_group_name = local.azure_destination_resource_group
-  # Resource group where to create the VM resources (required to scope permissions into this resource group)
-  build_resource_group_name = "${var.build_type}-packer-builds"
+  managed_image_name                = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
+  managed_image_resource_group_name = local.azure_resource_group
+  async_resourcegroup_delete        = true # Faster builds, but no deletion error reporting
 
   # Azure API connection
   client_id       = var.azure_client_id
@@ -50,7 +49,7 @@ source "azure-arm" "base" {
     subscription        = var.azure_subscription_id
     resource_group      = local.azure_destination_resource_group
     gallery_name        = "${var.build_type}_packer_images"
-    image_name          = local.image_name
+    image_name          = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
     image_version       = var.image_version
     replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
   }
