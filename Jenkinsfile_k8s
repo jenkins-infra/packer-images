@@ -40,6 +40,13 @@ if (env.BRANCH_IS_PRIMARY) {
   ])
 }
 
+if (env.CHANGE_ID) {
+  properties([
+    // Do not build concurently on pull requests (to avoid Azure ARM issues with shared resources), and abort previous running build
+    disableConcurrentBuilds(abortPrevious: true)
+  ])
+}
+
 final String podAgentDefinition = '''
 apiVersion: v1
 kind: Pod
