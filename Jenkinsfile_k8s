@@ -146,8 +146,7 @@ pipeline {
           }
           axis {
             name 'agent_type'
-            // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
-            values 'ubuntu-20.04', 'windows-2019', 'windows-2022'
+            values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
           }
           axis {
             name 'compute_type'
@@ -175,7 +174,7 @@ pipeline {
             }
             axis {
               name 'agent_type'
-              notValues 'ubuntu-20.04'
+              notValues 'ubuntu-22.04'
             }
             axis {
               name 'compute_type'
@@ -275,7 +274,7 @@ pipeline {
       environment {
         // Static variable definition as this stage is outside the matrix scope
         // Improvement: pass dynamically the list of images from the matrix (e.g. use full scripted pipeline) to support other Docker agent types (such as windows-2019 or windows-2022)
-        agent_type = 'ubuntu-20.04'
+        agent_type = 'ubuntu-22.04'
       }
       steps {
         script {
