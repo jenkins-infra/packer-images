@@ -146,7 +146,7 @@ function install_asdf() {
 
   curl --fail --silent --show-error --location "https://github.com/asdf-vm/asdf/archive/refs/tags/v${ASDF_VERSION}.tar.gz" --output "${archive}"
   mkdir -p "${asdf_install_dir}"
-  tar --extract --verbose --gunzip --file="${archive}" --directory="${asdf_install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name (asdf-<version>)
+  tar --extract --gunzip --file="${archive}" --directory="${asdf_install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name (asdf-<version>)
 
   touch "${profile_script}"
   echo ". ${asdf_install_dir}/asdf.sh" >> "${profile_script}"
@@ -301,25 +301,25 @@ function install_jdk() {
   fi
   curl -sSL -o /tmp/jdk8.tgz \
     "https://github.com/adoptium/temurin8-binaries/releases/download/jdk${JDK8_VERSION}/OpenJDK8U-jdk_${cpu_arch_short}_linux_hotspot_${jdk8_short_version}.tar.gz"
-  tar --extract --verbose --gunzip --file=/tmp/jdk8.tgz --directory=/opt/jdk-8 --strip-components=1
+  tar --extract --gunzip --file=/tmp/jdk8.tgz --directory=/opt/jdk-8 --strip-components=1
 
   # JDK11
   jdk11_short_version="${JDK11_VERSION//+/_}"
   curl -sSL -o /tmp/jdk11.tgz \
     "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${JDK11_VERSION}/OpenJDK11U-jdk_${cpu_arch_short}_linux_hotspot_${jdk11_short_version}.tar.gz"
-  tar --extract --verbose --gunzip --file=/tmp/jdk11.tgz --directory=/opt/jdk-11 --strip-components=1
+  tar --extract --gunzip --file=/tmp/jdk11.tgz --directory=/opt/jdk-11 --strip-components=1
 
   # JDK17
   jdk17_short_version="${JDK17_VERSION//+/_}"
   curl -sSL -o /tmp/jdk17.tgz \
     "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17U-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
-  tar --extract --verbose --gunzip --file=/tmp/jdk17.tgz --directory=/opt/jdk-17 --strip-components=1
+  tar --extract --gunzip --file=/tmp/jdk17.tgz --directory=/opt/jdk-17 --strip-components=1
 
   # JDK19
   jdk19_short_version="${JDK19_VERSION//+/_}"
   curl -sSL -o /tmp/jdk19.tgz \
     "https://github.com/adoptium/temurin19-binaries/releases/download/jdk-${JDK19_VERSION}/OpenJDK19U-jdk_${cpu_arch_short}_linux_hotspot_${jdk19_short_version}.tar.gz"
-  tar --extract --verbose --gunzip --file=/tmp/jdk19.tgz --directory=/opt/jdk-19 --strip-components=1
+  tar --extract --gunzip --file=/tmp/jdk19.tgz --directory=/opt/jdk-19 --strip-components=1
 
   # Define JDK installations
   # The priority of a JDK is the last argument.
@@ -345,7 +345,7 @@ function install_maven() {
   curl --fail --silent --location --show-error --output "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
     "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 
-  tar --extract --verbose --gunzip --file="/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" --directory=/usr/share/
+  tar --extract --gunzip --file="/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" --directory=/usr/share/
   ln -s "/usr/share/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/bin/mvn
   rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 }
@@ -372,7 +372,7 @@ function install_cst() {
 function install_jxreleaseversion() {
   curl --fail --silent --location --show-error --output /tmp/jx-release-version.tgz \
     "https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v${JXRELEASEVERSION_VERSION}/jx-release-version-linux-${ARCHITECTURE}.tar.gz"
-  tar --extract --verbose --gunzip --file=/tmp/jx-release-version.tgz --directory=/tmp
+  tar --extract --gunzip --file=/tmp/jx-release-version.tgz --directory=/tmp
   cp /tmp/jx-release-version /usr/local/bin/jx-release-version
   rm -rf /tmp/jx*
 }
@@ -397,7 +397,7 @@ function install_azurecli() {
 function install_gh() {
   curl --silent --show-error --location --output /tmp/gh.tar.gz \
     "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${ARCHITECTURE}.tar.gz"
-  tar --extract --verbose --gunzip --file=/tmp/gh.tar.gz --directory=/tmp
+  tar --extract --gunzip --file=/tmp/gh.tar.gz --directory=/tmp
   cp "/tmp/gh_${GH_VERSION}_linux_${ARCHITECTURE}/bin/gh" /usr/local/bin/gh
   rm -rf /tmp/gh*
 }
@@ -496,7 +496,7 @@ function install_netlifydeploy() {
     download_url="https://github.com/halkeye/netlify-golang-deploy/releases/download/v${NETLIFYDEPLOY_VERSION}/netlify-golang-deploy_${NETLIFYDEPLOY_VERSION}_Linux_arm64.tar.gz"
   fi
   curl --silent --location --show-error "${download_url}" --output "${archive_path}"
-  tar --extract --verbose --gunzip --file="${archive_path}" --directory=/tmp
+  tar --extract --gunzip --file="${archive_path}" --directory=/tmp
   mv /tmp/netlify-golang-deploy /usr/local/bin/netlify-deploy
   rm -rf /tmp/netlify*
 }

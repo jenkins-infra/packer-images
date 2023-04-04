@@ -22,7 +22,7 @@ command:
 file:
   /home/jenkins:
     exists: true
-    mode: "0755"
+    mode: "0750"
     owner: jenkins
     group: jenkins
     filetype: directory
