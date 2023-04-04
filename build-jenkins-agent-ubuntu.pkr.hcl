@@ -11,11 +11,10 @@ build {
   source "azure-arm.base" {
     name = "ubuntu"
     # List available offers and publishers with the command `az vm image list --output table`
-    #image_offer     = "0001-com-ubuntu-server-focal"
-    image_offer     = local.az_instance_image_offer[var.architecture]
+    image_offer     = "0001-com-ubuntu-server-jammy"
     image_publisher = "canonical"
     # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
-    image_sku = "${local.agent_os_version_safe}-lts-gen2"
+    image_sku = local.az_instance_image_sku[var.architecture]
     os_type   = "Linux"
     vm_size   = local.azure_vm_size
   }

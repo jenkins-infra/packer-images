@@ -7,9 +7,10 @@ locals {
     "amd64" = "t3a.xlarge" # 4 vCPU AMD / 16 GB / $0.1504 - https://aws.amazon.com/fr/ec2/instance-types/t3/#Product_Details
     "arm64" = "t4g.xlarge" # 4 vCPU / 16 GB / $0.1344 - https://aws.amazon.com/fr/ec2/instance-types/t4/#Product_Details
   }
-  az_instance_image_offer = {
-    "amd64" = "0001-com-ubuntu-server-focal"
-    "arm64" = "0001-com-ubuntu-server-arm-preview-focal-preview"
+  # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
+  az_instance_image_sku = {
+    "amd64" = "${local.agent_os_version_safe}-lts-gen2"
+    "arm64" = "${local.agent_os_version_safe}-lts-arm64"
   }
   windows_winrm_user = {
     "azure-arm"  = "packer"
