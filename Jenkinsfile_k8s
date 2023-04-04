@@ -251,7 +251,7 @@ pipeline {
           axis {
             name 'agent_type'
             // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
-            values 'ubuntu-20.04'
+            values 'ubuntu-22.04'
           }
           axis {
             name 'compute_type'
