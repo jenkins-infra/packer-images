@@ -10,7 +10,7 @@ build_type="${2:-dev}"
 
 set -eu -o pipefail
 
-run_aws_ec2_deletion_command() {
+run_aws_ec2_command() {
   # Check the DRYRUN environment variable
   if [ "${DRYRUN:-true}" = "false" ] || [ "${DRYRUN:-true}" = "no" ]
   then
@@ -49,26 +49,13 @@ aws sts get-caller-identity >/dev/null || \
 
 ## STEP 1
 ## Remove images older than $1 day(s) of build_type $2
-INSTANCE_IDS="$(aws ec2 describe-images --owners self --filters "Name=tag:build_type,Values=${build_type}" \
-  --query 'Images[?CreationDate<=`'"${creation_date_threshold}"'`][].ImageId' | jq -r '.[]' | xargs)"
+ami_ids="$(aws ec2 describe-images --owners self --filters "Name=tag:build_type,Values=${build_type}" \
+  --query 'Images[?CreationDate<=`'"${creation_date_threshold}"'`][].ImageId' | jq -r '.[]')"
 
-if [ -n "${INSTANCE_IDS}" ]
+if [ -n "${ami_ids}" ]
 then
-  #shellcheck disable=SC2086
-  #has to run on each instance
-  cpt="0"
-  for theimageid in ${INSTANCE_IDS}
-  do
-    run_aws_ec2_deletion_command deregister-image --image-id "${theimageid}"
-    ((cpt=cpt+1))
-  done
-
-  if [ "${DRYRUN:-true}" = "false" ] || [ "${DRYRUN:-true}" = "no" ]
-  then
-    echo "== $cpt images have been deregistered"
-  else
-    echo "==DRYRUN $cpt images would have been deregistered"
-  fi
+  export -f run_aws_ec2_command
+  echo "${ami_ids}" | parallel --halt-on-error never --no-run-if-empty run_aws_ec2_command deregister-image --image-id {} :::
 else
   echo "== No dangling images found to delete."
 fi
