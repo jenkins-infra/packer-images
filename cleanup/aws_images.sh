@@ -40,7 +40,7 @@ aws sts get-caller-identity >/dev/null || \
   { echo "[ERROR] Unable to request the AWS API: the command 'sts get-caller-identity' failed. Please check your AWS credentials"; exit 1; }
 
 ## STEP 1
-## Remove images older than 1 month from dev
+## Remove images older than <timeshift_month> month(s) from dev
 INSTANCE_IDS="$(aws ec2 describe-images --owners self --filters 'Name=tag:build_type,Values=dev' \
   --query 'Images[?CreationDate<=`'"${lastmonthdate}"'`][].ImageId' | jq -r '.[]' | xargs)"
 

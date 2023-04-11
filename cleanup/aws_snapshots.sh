@@ -39,7 +39,7 @@ aws sts get-caller-identity >/dev/null || \
   { echo "[ERROR] Unable to request the AWS API: the command 'sts get-caller-identity' failed. Please check your AWS credentials"; exit 1; }
 
 ## STEP 1
-## Remove snapshots older than 1 month from dev
+## Remove snapshots older than <timeshift_month> month(s) from dev
 snapshot_ids="$(aws ec2 describe-snapshots \
   --owner-ids self \
   --query "Snapshots[?StartTime<='${start_time_threshold}'].[SnapshotId]" \
