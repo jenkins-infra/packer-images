@@ -41,7 +41,7 @@ aws sts get-caller-identity >/dev/null || \
 
 ## STEP 1
 ## Remove images older than 1 month from dev
-INSTANCE_IDS="$(aws ec2 describe-images --owners self  --filters 'Name=tag:build_type,Values=dev' \
+INSTANCE_IDS="$(aws ec2 describe-images --owners self --filters 'Name=tag:build_type,Values=dev' \
   --query 'Images[?CreationDate<=`'"${lastmonthdate}"'`][].ImageId' | jq -r '.[]' | xargs)"
 
 if [ -n "${INSTANCE_IDS}" ]

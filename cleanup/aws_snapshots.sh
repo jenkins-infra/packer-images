@@ -24,15 +24,14 @@ do
   command -v "${cli}" >/dev/null || { echo "[ERROR] no '${cli}' command found."; exit 1; }
 done
 
-## When is last month exactly?
-lastmonthdate=""
-timeshift_month="1"
+start_time_threshold=""
+timeshift_month="12"
 if date -v-${timeshift_month}m > /dev/null 2>&1; then
     # BSD systems (Mac OS X)
-    lastmonthdate="$(date -v-${timeshift_month}m +%Y-%m-%d)"
+    start_time_threshold="$(date -v-${timeshift_month}m +%Y-%m-%d)"
 else
     # GNU systems (Linux)
-    lastmonthdate="$(date --date="-${timeshift_month} months" +%Y-%m-%d)"
+    start_time_threshold="$(date --date="-${timeshift_month} months" +%Y-%m-%d)"
 fi
 
 ## Check for aws API reachibility (is it configured?)
@@ -43,7 +42,7 @@ aws sts get-caller-identity >/dev/null || \
 ## Remove snapshots older than 1 month from dev
 snapshot_ids="$(aws ec2 describe-snapshots \
   --owner-ids self \
-  --query "Snapshots[?StartTime<='${lastmonthdate}'].[SnapshotId]" \
+  --query "Snapshots[?StartTime<='${start_time_threshold}'].[SnapshotId]" \
   --no-paginate \
   --region=us-east-2 \
   | jq -r '.[][]' | xargs)"
