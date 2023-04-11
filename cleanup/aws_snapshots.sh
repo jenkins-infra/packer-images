@@ -45,25 +45,12 @@ snapshot_ids="$(aws ec2 describe-snapshots \
   --query "Snapshots[?StartTime<='${start_time_threshold}'].[SnapshotId]" \
   --no-paginate \
   --region=us-east-2 \
-  | jq -r '.[][]' | xargs)"
+  | jq -r '.[][]')"
 
 if [ -n "${snapshot_ids}" ]
 then
-  #shellcheck disable=SC2086
-  #has to run on each instance
-  cpt="0"
-  for thesnapshot_id in ${snapshot_ids}
-  do
-    run_aws_ec2_command delete-snapshot --snapshot-id "${thesnapshot_id}"
-    ((cpt=cpt+1))
-  done
-
-  if [ "${DRYRUN:-true}" = "false" ] || [ "${DRYRUN:-true}" = "no" ]
-  then
-    echo "== $cpt snapshots have been deleted"
-  else
-    echo "==DRYRUN $cpt snapshots would have been deleted"
-  fi
+  export -f run_aws_ec2_command
+  echo "${snapshot_ids}" | parallel --halt-on-error never --no-run-if-empty run_aws_ec2_command delete-snapshot --snapshot-id {} :::
 else
   echo "== No dangling snapshots found to delete."
 fi

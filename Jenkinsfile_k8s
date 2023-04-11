@@ -54,7 +54,7 @@ spec:
   automountServiceAccountToken: false
   containers:
     - name: jnlp
-      image: jenkinsciinfra/hashicorp-tools:latest
+      image: jenkinsciinfra/jenkins-agent-ubuntu-22.04:latest
 '''
 
 pipeline {
