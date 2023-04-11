@@ -75,21 +75,6 @@ Start-Service sshd
 Write-Output "= Adding OpenSSH to the Firewall..."
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
 
-# Install Docker-CE if missing
-Write-Output "= Ensuring that Docker CE is installed..."
-try {
-    docker -v ## client version only
-} catch {
-    Write-Output "= Docker not found: installing..."
-    Write-Output "== Setting up Nuget..."
-    Install-PackageProvider -Name NuGet -Force
-    Write-Output "== Setting up Docker Module..."
-    Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
-    Write-Output "== Setting up Docker Package..."
-    Install-Package -Name docker -ProviderName DockerMsftProvider -Force
-    ## A reboot is required before being able to use start containers (but we don't need to).
-}
-
 # Prepare Tools Installation
 $baseDir = 'C:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null

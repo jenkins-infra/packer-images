@@ -20,6 +20,13 @@ sources:
     spec:
       command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-docker-ce-latest-version.sh
 
+conditions:
+  checkIfWindowsReleaseIsAvailable:
+    kind: shell
+    disablesourceinput: true
+    spec:
+      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://download.docker.com/win/static/stable/x86_64/docker-{{ source `lastReleaseVersion` }}.zip
+
 targets:
   updateVersion:
     name: "Update the docker-ce version in the provision-env.yml file"
