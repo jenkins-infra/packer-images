@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Check input parameteres
+if ! [[ "${1:-1}" =~ ^[0-9]+$ ]]; then
+  echo "ERROR: argument $1 is not a number" >&2
+  exit 1
+fi
+timeshift_day="${1}"
+build_type="${2:-dev}"
+
 set -eu -o pipefail
 
 run_aws_ec2_deletion_command() {
@@ -25,14 +33,14 @@ do
 done
 
 ## When is last month exactly?
-lastmonthdate=""
-timeshift_month="1"
-if date -v-${timeshift_month}m > /dev/null 2>&1; then
+creation_date_threshold=""
+timeshift_day="1"
+if date -v-${timeshift_day}d > /dev/null 2>&1; then
     # BSD systems (Mac OS X)
-    lastmonthdate="$(date -v-${timeshift_month}m +%Y-%m-%d)"
+    creation_date_threshold="$(date -v-${timeshift_day}d +%Y-%m-%d)"
 else
     # GNU systems (Linux)
-    lastmonthdate="$(date --date="-${timeshift_month} months" +%Y-%m-%d)"
+    creation_date_threshold="$(date --date="-${timeshift_day} days" +%Y-%m-%d)"
 fi
 
 ## Check for aws API reachibility (is it configured?)
@@ -40,9 +48,9 @@ aws sts get-caller-identity >/dev/null || \
   { echo "[ERROR] Unable to request the AWS API: the command 'sts get-caller-identity' failed. Please check your AWS credentials"; exit 1; }
 
 ## STEP 1
-## Remove images older than <timeshift_month> month(s) from dev
-INSTANCE_IDS="$(aws ec2 describe-images --owners self --filters 'Name=tag:build_type,Values=dev' \
-  --query 'Images[?CreationDate<=`'"${lastmonthdate}"'`][].ImageId' | jq -r '.[]' | xargs)"
+## Remove images older than $1 day(s) of build_type $2
+INSTANCE_IDS="$(aws ec2 describe-images --owners self --filters "Name=tag:build_type,Values=${build_type}" \
+  --query 'Images[?CreationDate<=`'"${creation_date_threshold}"'`][].ImageId' | jq -r '.[]' | xargs)"
 
 if [ -n "${INSTANCE_IDS}" ]
 then
@@ -51,7 +59,7 @@ then
   cpt="0"
   for theimageid in ${INSTANCE_IDS}
   do
-    run_aws_ec2_deletion_command deregister-image --image-id ${theimageid}
+    run_aws_ec2_deletion_command deregister-image --image-id "${theimageid}"
     ((cpt=cpt+1))
   done
 
