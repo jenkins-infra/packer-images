@@ -99,7 +99,8 @@ pipeline {
           steps {
             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
               sh './cleanup/aws.sh'
-              sh './cleanup/aws_images.sh'
+              sh './cleanup/aws_images.sh 1 dev'
+              sh './cleanup/aws_images.sh 7 staging'
               sh './cleanup/aws_snapshots.sh'
             }
           }
