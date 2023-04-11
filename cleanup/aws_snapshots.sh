@@ -2,7 +2,7 @@
 
 set -eu -o pipefail
 
-run_aws_ec2_deletion_command() {
+run_aws_ec2_command() {
   # Check the DRYRUN environment variable
   if [ "${DRYRUN:-true}" = "false" ] || [ "${DRYRUN:-true}" = "no" ]
   then
@@ -24,15 +24,14 @@ do
   command -v "${cli}" >/dev/null || { echo "[ERROR] no '${cli}' command found."; exit 1; }
 done
 
-## When is last month exactly?
-lastmonthdate=""
-timeshift_month="1"
+start_time_threshold=""
+timeshift_month="12"
 if date -v-${timeshift_month}m > /dev/null 2>&1; then
     # BSD systems (Mac OS X)
-    lastmonthdate="$(date -v-${timeshift_month}m +%Y-%m-%d)"
+    start_time_threshold="$(date -v-${timeshift_month}m +%Y-%m-%d)"
 else
     # GNU systems (Linux)
-    lastmonthdate="$(date --date="-${timeshift_month} months" +%Y-%m-%d)"
+    start_time_threshold="$(date --date="-${timeshift_month} months" +%Y-%m-%d)"
 fi
 
 ## Check for aws API reachibility (is it configured?)
@@ -40,29 +39,33 @@ aws sts get-caller-identity >/dev/null || \
   { echo "[ERROR] Unable to request the AWS API: the command 'sts get-caller-identity' failed. Please check your AWS credentials"; exit 1; }
 
 ## STEP 1
-## Remove images older than <timeshift_month> month(s) from dev
-INSTANCE_IDS="$(aws ec2 describe-images --owners self --filters 'Name=tag:build_type,Values=dev' \
-  --query 'Images[?CreationDate<=`'"${lastmonthdate}"'`][].ImageId' | jq -r '.[]' | xargs)"
+## Remove snapshots older than <timeshift_month> month(s) from dev
+snapshot_ids="$(aws ec2 describe-snapshots \
+  --owner-ids self \
+  --query "Snapshots[?StartTime<='${start_time_threshold}'].[SnapshotId]" \
+  --no-paginate \
+  --region=us-east-2 \
+  | jq -r '.[][]' | xargs)"
 
-if [ -n "${INSTANCE_IDS}" ]
+if [ -n "${snapshot_ids}" ]
 then
   #shellcheck disable=SC2086
   #has to run on each instance
   cpt="0"
-  for theimageid in ${INSTANCE_IDS}
+  for thesnapshot_id in ${snapshot_ids}
   do
-    run_aws_ec2_deletion_command deregister-image --image-id ${theimageid}
+    run_aws_ec2_command delete-snapshot --snapshot-id "${thesnapshot_id}"
     ((cpt=cpt+1))
   done
 
   if [ "${DRYRUN:-true}" = "false" ] || [ "${DRYRUN:-true}" = "no" ]
   then
-    echo "== $cpt images have been deregistered"
+    echo "== $cpt snapshots have been deleted"
   else
-    echo "==DRYRUN $cpt images would have been deregistered"
+    echo "==DRYRUN $cpt snapshots would have been deleted"
   fi
 else
-  echo "== No dangling images found to delete."
+  echo "== No dangling snapshots found to delete."
 fi
 
-echo "== AWS Packer Cleanup IMAGES finished."
+echo "== AWS Packer Cleanup SNAPSHOTS finished."
