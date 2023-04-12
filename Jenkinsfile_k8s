@@ -152,20 +152,59 @@ pipeline {
         axes {
           axis {
             name 'cpu_architecture'
-            values 'arm64'
+            values 'amd64', 'arm64'
           }
           axis {
             name 'agent_type'
             // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
-            values 'ubuntu-22.04'
+            values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
           }
           axis {
             name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'azure-arm'
+            values 'amazon-ebs', 'azure-arm', 'docker'
           }
         }
         excludes {
+          /**
+          Since https://github.com/jenkins-infra/helpdesk/issues/3421 and https://github.com/jenkins-infra/helpdesk/issues/3502, EC2 is only used for Linux + `arm64` VMs.
+          **/
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'amd64'
+            }
+            axis {
+              name 'compute_type'
+              values 'amazon-ebs'
+            }
+          }
+          // Do NOT build ARM images in Azure
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'compute_type'
+              values 'azure-arm'
+            }
+          }
+          // Only build Ubuntu images for arm64 CPU in AWS
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'agent_type'
+              notValues 'ubuntu-22.04'
+            }
+            axis {
+              name 'compute_type'
+              values 'amazon-ebs'
+            }
+          }
           // No build on Windows or Docker, not yet implemented
           exclude {
             axis {

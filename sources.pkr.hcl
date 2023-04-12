@@ -53,15 +53,7 @@ source "azure-arm" "base" {
     image_version       = var.image_version
     replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
   }
-  #legacy image destination
-  # shared_image_gallery_destination {
-  #   subscription        = var.azure_subscription_id
-  #   resource_group      = local.azure_destination_resource_group
-  #   gallery_name        = "${var.build_type}_packer_images"
-  #   image_name          = local.image_name
-  #   image_version       = var.image_version
-  #   replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
-  # }
+
   # To improve audit and garbage collecting, we provide tags
   azure_tags = {
     imageplatform = var.architecture
