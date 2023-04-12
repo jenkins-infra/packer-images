@@ -34,7 +34,7 @@ build {
 
   # Installing Docker requires a restart: this first call to the installation script will prepare requirements
   provisioner "powershell" {
-    pause_before = "1m"
+    pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
@@ -49,7 +49,7 @@ build {
 
   # Install Docker-CE with Container feature loaded
   provisioner "powershell" {
-    pause_before = "1m"
+    pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password

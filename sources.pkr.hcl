@@ -38,7 +38,6 @@ source "azure-arm" "base" {
   # Resource group where to create the VM resources (required to scope permissions into this resource group)
   build_resource_group_name = "${var.build_type}-packer-builds"
 
-
   # Azure API connection
   client_id       = var.azure_client_id
   client_secret   = var.azure_client_secret
