@@ -101,6 +101,7 @@ pipeline {
               sh './cleanup/aws.sh'
               sh './cleanup/aws_images.sh 1 dev'
               sh './cleanup/aws_images.sh 7 staging'
+              sh './cleanup/aws_images.sh 60 prod'
               sh './cleanup/aws_snapshots.sh'
             }
           }
