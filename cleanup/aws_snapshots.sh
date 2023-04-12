@@ -25,13 +25,13 @@ do
 done
 
 start_time_threshold=""
-timeshift_month="2"
-if date -v-${timeshift_month}m > /dev/null 2>&1; then
+timeshift_days="1"
+if date -v-${timeshift_days}d > /dev/null 2>&1; then
     # BSD systems (Mac OS X)
-    start_time_threshold="$(date -v-${timeshift_month}m +%Y-%m-%d)"
+    start_time_threshold="$(date -v-${timeshift_days}d +%Y-%m-%d)"
 else
     # GNU systems (Linux)
-    start_time_threshold="$(date --date="-${timeshift_month} months" +%Y-%m-%d)"
+    start_time_threshold="$(date --date="-${timeshift_days} days" +%Y-%m-%d)"
 fi
 
 ## Check for aws API reachibility (is it configured?)
@@ -39,7 +39,7 @@ aws sts get-caller-identity >/dev/null || \
   { echo "[ERROR] Unable to request the AWS API: the command 'sts get-caller-identity' failed. Please check your AWS credentials"; exit 1; }
 
 ## STEP 1
-## Remove snapshots older than <timeshift_month> month(s) from dev
+## Remove snapshots older than <timeshift_days> day(s)
 snapshot_ids="$(aws ec2 describe-snapshots \
   --owner-ids self \
   --query "Snapshots[?StartTime<='${start_time_threshold}'].[SnapshotId]" \
