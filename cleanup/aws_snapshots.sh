@@ -25,7 +25,7 @@ do
 done
 
 start_time_threshold=""
-timeshift_month="12"
+timeshift_month="2"
 if date -v-${timeshift_month}m > /dev/null 2>&1; then
     # BSD systems (Mac OS X)
     start_time_threshold="$(date -v-${timeshift_month}m +%Y-%m-%d)"
