@@ -3,9 +3,11 @@ locals {
   agent                 = format("%s-%s", var.agent_os_type, var.agent_os_version)
   agent_os_version_safe = replace(var.agent_os_version, ".", "_")
   image_name            = format("jenkins-agent-%s-%s", var.agent_os_type, var.agent_os_version)
-  aws_instance_type = {
-    "amd64" = "t3a.xlarge" # 4 vCPU AMD / 16 GB / $0.1504 - https://aws.amazon.com/fr/ec2/instance-types/t3/#Product_Details
-    "arm64" = "t4g.xlarge" # 4 vCPU / 16 GB / $0.1344 - https://aws.amazon.com/fr/ec2/instance-types/t4/#Product_Details
+  aws_spot_instance_types = {
+    # 4 vCPU x86 / 16 GB / $0.1504 - https://aws.amazon.com/fr/ec2/instance-types/t3/#Product_Details
+    "amd64" = ["t3.xlarge", "t3a.xlarge", "t2.xlarge", "m6a.xlarge"]
+    # 4 vCPU ARM64 (Gravitnb)/ 16 GB / $0.1344 - https://aws.amazon.com/fr/ec2/instance-types/t4/#Product_Details
+    "arm64" = ["t4g.xlarge", "m7g.xlarge"]
   }
   windows_winrm_user = {
     "azure-arm"  = "packer"
