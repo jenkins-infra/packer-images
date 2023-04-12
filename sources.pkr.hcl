@@ -35,8 +35,6 @@ source "amazon-ebs" "base" {
 
 # This source defines all the common settings for any Azure image (whatever Operating System)
 source "azure-arm" "base" {
-  managed_image_name                = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
-  managed_image_resource_group_name = local.azure_destination_resource_group
   # Resource group where to create the VM resources (required to scope permissions into this resource group)
   build_resource_group_name = "${var.build_type}-packer-builds"
 
