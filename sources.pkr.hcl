@@ -38,7 +38,7 @@ source "azure-arm" "base" {
   managed_image_name                = local.image_name
   managed_image_resource_group_name = local.azure_destination_resource_group
 
-  vm_size = local.azure_vm_size
+  vm_size = local.azure_vm_size[var.architecture]
   spot {
     eviction_policy = "Delete"
   }
@@ -56,7 +56,7 @@ source "azure-arm" "base" {
     subscription        = var.azure_subscription_id
     resource_group      = local.azure_destination_resource_group
     gallery_name        = "${var.build_type}_packer_images"
-    image_name          = local.image_name
+    image_name          = "${local.image_name}-${var.architecture}"
     image_version       = var.image_version
     replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
   }
