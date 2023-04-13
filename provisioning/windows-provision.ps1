@@ -79,6 +79,9 @@ New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled Tru
 $baseDir = 'C:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 
+# Ensure NuGet package provider is initialized (non-interactively)
+Get-PackageProvider NuGet -ForceBootstrap
+
 ## List of tools to use
 $downloads = [ordered]@{
     'jdk11' = @{
