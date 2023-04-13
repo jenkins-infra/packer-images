@@ -2,7 +2,7 @@
 source "amazon-ebs" "base" {
   ami_name            = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
   spot_instance_types = local.aws_spot_instance_types[var.architecture]
-
+  spot_price          = "auto"
   # Define custom rootfs for build to avoid later filesystem extension during agent startups
   launch_block_device_mappings {
     delete_on_termination = true
