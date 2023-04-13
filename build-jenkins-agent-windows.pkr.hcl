@@ -17,7 +17,6 @@ build {
     image_publisher = "MicrosoftWindowsServer"
     # List available SKUs with the command `az vm image list-skus --offer WindowsServer --location eastus --publisher MicrosoftWindowsServer --output table`
     image_sku       = "${var.agent_os_version}-datacenter-core-g2"
-    vm_size         = local.azure_vm_size[var.architecture]
     os_type         = "Windows"
     os_disk_size_gb = local.windows_disk_size_gb
     winrm_insecure  = true
