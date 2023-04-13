@@ -38,7 +38,7 @@ source "azure-arm" "base" {
   managed_image_name                = local.image_name
   managed_image_resource_group_name = local.azure_destination_resource_group
 
-  vm_size = local.azure_vm_size
+  vm_size = local.azure_vm_size[var.architecture]
   spot {
     eviction_policy = "Delete"
   }
