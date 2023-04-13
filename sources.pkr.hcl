@@ -1,8 +1,8 @@
 # This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
-  ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
-  instance_type = local.aws_instance_type[var.architecture]
-
+  ami_name            = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
+  spot_instance_types = local.aws_spot_instance_types[var.architecture]
+  spot_price          = "auto"
   # Define custom rootfs for build to avoid later filesystem extension during agent startups
   launch_block_device_mappings {
     delete_on_termination = true
@@ -37,6 +37,12 @@ source "amazon-ebs" "base" {
 source "azure-arm" "base" {
   managed_image_name                = local.image_name
   managed_image_resource_group_name = local.azure_destination_resource_group
+
+  vm_size = local.azure_vm_size
+  spot {
+    eviction_policy = "Delete"
+  }
+
   # Resource group where to create the VM resources (required to scope permissions into this resource group)
   build_resource_group_name = "${var.build_type}-packer-builds"
 
