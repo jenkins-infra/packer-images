@@ -39,7 +39,9 @@ source "azure-arm" "base" {
   managed_image_resource_group_name = local.azure_destination_resource_group
 
   vm_size = local.azure_vm_size
-  spot    = true
+  spot {
+    eviction_policy = "Delete"
+  }
 
   # Resource group where to create the VM resources (required to scope permissions into this resource group)
   build_resource_group_name = "${var.build_type}-packer-builds"
