@@ -2,7 +2,8 @@ locals {
   now_unix_timestamp    = formatdate("YYYYMMDDhhmmss", timestamp())
   agent                 = format("%s-%s", var.agent_os_type, var.agent_os_version)
   agent_os_version_safe = replace(var.agent_os_version, ".", "_")
-  image_name            = format("jenkins-agent-%s-%s", var.agent_os_type, var.agent_os_version)
+  docker_image_name     = format("jenkins-agent-%s-%s", var.agent_os_type, var.agent_os_version)
+  image_name            = format("jenkins-agent-%s-%s-%s", var.agent_os_type, var.agent_os_version, var.architecture)
   aws_spot_instance_types = {
     # 4 vCPU x86 / 16 GB / $0.1504 - https://aws.amazon.com/fr/ec2/instance-types/t3/#Product_Details
     "amd64" = ["t3.xlarge", "t3a.xlarge", "t2.xlarge", "m6a.xlarge"]

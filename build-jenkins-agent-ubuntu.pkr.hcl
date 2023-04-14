@@ -55,7 +55,7 @@ build {
 
   post-processor "docker-tag" {
     only       = ["docker.ubuntu"]
-    repository = "${var.docker_namespace}/${local.image_name}"
+    repository = "${var.docker_namespace}/${local.docker_image_name}"
     tags       = [var.image_version, "latest"]
   }
 }
