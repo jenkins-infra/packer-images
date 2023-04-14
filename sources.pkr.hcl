@@ -1,6 +1,6 @@
 # This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
-  ami_name            = "${local.image_name}-${local.now_unix_timestamp}"
+  ami_name            = "${local.amazon_image_name}-${var.architecture}-${local.now_unix_timestamp}"
   spot_instance_types = local.aws_spot_instance_types[var.architecture]
   spot_price          = "auto"
   # Define custom rootfs for build to avoid later filesystem extension during agent startups
@@ -25,7 +25,7 @@ source "amazon-ebs" "base" {
   # To improve audit and garbage collecting, we provide tags
   tags = {
     imageplatform = var.architecture
-    imagetype     = local.image_name
+    imagetype     = local.amazon_image_name
     timestamp     = local.now_unix_timestamp
     version       = var.image_version
     scm_ref       = var.scm_ref
@@ -35,7 +35,7 @@ source "amazon-ebs" "base" {
 
 # This source defines all the common settings for any Azure image (whatever Operating System)
 source "azure-arm" "base" {
-  managed_image_name                = "${local.image_name}-${local.now_unix_timestamp}"
+  managed_image_name                = "${local.azure_image_name}-${local.now_unix_timestamp}"
   managed_image_resource_group_name = local.azure_destination_resource_group
 
   vm_size = local.azure_vm_size[var.architecture]
@@ -56,7 +56,7 @@ source "azure-arm" "base" {
     subscription        = var.azure_subscription_id
     resource_group      = local.azure_destination_resource_group
     gallery_name        = "${var.build_type}_packer_images"
-    image_name          = "${local.image_name}"
+    image_name          = "${local.azure_image_name}"
     image_version       = var.image_version
     replication_regions = lookup(local.azure_galleries, "${var.build_type}_packer_images", [])
   }
@@ -64,7 +64,7 @@ source "azure-arm" "base" {
   # To improve audit and garbage collecting, we provide tags
   azure_tags = {
     imageplatform = var.architecture
-    imagetype     = local.image_name
+    imagetype     = local.azure_image_name
     timestamp     = local.now_unix_timestamp
     version       = var.image_version
     scm_ref       = var.scm_ref
