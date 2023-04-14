@@ -179,17 +179,6 @@ pipeline {
               values 'amazon-ebs'
             }
           }
-          // Do NOT build ARM images in Azure
-          exclude {
-            axis {
-              name 'cpu_architecture'
-              values 'arm64'
-            }
-            axis {
-              name 'compute_type'
-              values 'azure-arm'
-            }
-          }
           // Only build Ubuntu images for arm64 CPU in AWS
           exclude {
             axis {
