@@ -35,8 +35,8 @@ source "amazon-ebs" "base" {
 
 # This source defines all the common settings for any Azure image (whatever Operating System)
 source "azure-arm" "base" {
-  # must be the image_name to get into the correct shared image gallery destination
-  managed_image_name                = "${local.image_name}"
+  # must to be unique to avoid concurrent builds to conflict
+  #managed_image_name                = "${local.unique_image_name}"
   managed_image_resource_group_name = local.azure_destination_resource_group
 
   vm_size = local.azure_vm_size[var.architecture]
