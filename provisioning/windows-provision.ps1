@@ -320,7 +320,7 @@ $downloads = [ordered]@{
             # Installation of python3 for Launchable
             & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
             # Installation of Launchable
-            & "c:\python311\python3.11.exe" -m venv "$baseDir\launchable";
+            & "c:\python311\python.exe" -m venv "$baseDir\launchable";
             & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install setuptools wheel;
             & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
             # Debug
@@ -335,7 +335,7 @@ $downloads = [ordered]@{
             & "$baseDir\ruby26\bin\bundle" -v;
             & updatecli.exe version;
             & yq.exe --version;
-            & python3.exe --version;
+            & python.exe --version;
             & "$baseDir\launchable\bin\launchable" --version;
         }
     };
