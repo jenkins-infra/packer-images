@@ -660,7 +660,7 @@ function sanity_check() {
   && echo 'playwright version:' \
   && npm @playwright/test --version \
   && echo 'launchable version:' \
-  && launchable/bin/launchable --version
+  && /launchable/bin/launchable --version
   "
   echo "== End of sanity check"
   echo "== Installed packages:"
