@@ -225,7 +225,7 @@ function install_qemu() {
 function install_python() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
-    python3 \
+    python3=${PYTHON3_VERSION} \
     python3-docker \
     python3-pip \
     python3-venv \
@@ -567,6 +567,14 @@ function install_playwright_dependencies() {
   rm -rf "${temp_dir}"
 }
 
+# Install Launchable with python3
+function install_launchable() {
+  # Install Launchable with python3 in its own virtual environment
+  python3 -m venv launchable
+  launchable/bin/pip --require-virtualenv --no-cache-dir install setuptools wheel
+  launchable/bin/pip --require-virtualenv --no-cache-dir install launchable==${LAUNCHABLE_VERSION}
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -650,7 +658,9 @@ function sanity_check() {
   && echo 'playwright install:' \
   && npm install playwright-test \
   && echo 'playwright version:' \
-  && npm @playwright/test --version
+  && npm @playwright/test --version \
+  && echo 'launchable version:' \
+  && launchable/bin/launchable --version
   "
   echo "== End of sanity check"
   echo "== Installed packages:"
@@ -694,6 +704,7 @@ function main() {
   install_tfsec
   install_nodejs
   install_playwright_dependencies
+  install_launchable
   cleanup
 }
 
