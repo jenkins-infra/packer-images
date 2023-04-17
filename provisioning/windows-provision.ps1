@@ -304,7 +304,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2;c:\python311\;";
+        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2;c:\python311\;$baseDir\launchable;";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -319,12 +319,12 @@ $downloads = [ordered]@{
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
             # Installation of python3 for Launchable
             & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
-            # debug
-            & "cd";
             # Installation of Launchable
-            & "c:\python311\python3.exe" -m venv launchable;
-            & "launchable\bin\pip" --require-virtualenv --no-cache-dir install setuptools wheel;
-            & "launchable\bin\pip" --require-virtualenv --no-cache-dir install launchable==${env:LAUNCHABLE_VERSION}
+            & "c:\python311\python3.11.exe" -m venv "$baseDir\launchable";
+            & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install setuptools wheel;
+            & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+            # Debug
+            & Get-ChildItem -Path "$baseDir\launchable" -Recurse;
         };
         'sanityCheck'= {
             & choco.exe;
@@ -336,7 +336,7 @@ $downloads = [ordered]@{
             & updatecli.exe version;
             & yq.exe --version;
             & python3.exe --version;
-            & "launchable\bin\launchable" --version;
+            & "$baseDir\launchable\bin\launchable" --version;
         }
     };
 }
