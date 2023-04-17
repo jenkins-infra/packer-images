@@ -304,7 +304,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2";
+        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2;c:\python311\;";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -322,7 +322,7 @@ $downloads = [ordered]@{
             # debug
             & "echo" %cd%;
             # Installation of Launchable
-            & "python3" -m venv launchable;
+            & "c:\python311\python3" -m venv launchable;
             & "launchable\bin\pip" --require-virtualenv --no-cache-dir install setuptools wheel;
             & "launchable\bin\pip" --require-virtualenv --no-cache-dir install launchable==${env:LAUNCHABLE_VERSION}
         };
