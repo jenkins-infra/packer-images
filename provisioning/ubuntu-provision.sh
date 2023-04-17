@@ -34,6 +34,7 @@ userhome=/home/jenkins
 groupname=jenkins
 groupid=1001
 asdf_install_dir="${userhome}/.asdf"
+launchable_venv_dir="/usr/bin/launchable"
 
 ## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
@@ -570,9 +571,9 @@ function install_playwright_dependencies() {
 # Install Launchable with python3
 function install_launchable() {
   # Install Launchable with python3 in its own virtual environment
-  python3 -m venv launchable
-  launchable/bin/pip --require-virtualenv --no-cache-dir install setuptools wheel
-  launchable/bin/pip --require-virtualenv --no-cache-dir install launchable==${LAUNCHABLE_VERSION}
+  python3 -m venv "${launchable_venv_dir}"
+  "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install setuptools wheel
+  "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install launchable=="${LAUNCHABLE_VERSION}"
 }
 
 ## Ensure that the VM is cleaned up
@@ -660,7 +661,7 @@ function sanity_check() {
   && echo 'playwright version:' \
   && npm @playwright/test --version \
   && echo 'launchable version:' \
-  && /launchable/bin/launchable --version
+  && ${launchable_venv_dir}/bin/launchable --version
   "
   echo "== End of sanity check"
   echo "== Installed packages:"
