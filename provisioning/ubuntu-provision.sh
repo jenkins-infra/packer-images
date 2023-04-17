@@ -225,7 +225,7 @@ function install_qemu() {
 function install_python() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
-    python3=${PYTHON3_VERSION} \
+    python3 \
     python3-docker \
     python3-pip \
     python3-venv \
