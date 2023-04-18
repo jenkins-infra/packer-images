@@ -33,7 +33,7 @@ def packerInitPlugins() {
 // The image version name should follow Major(int).Minor(int).Patch(int) format, where int is between 0 and 2,147,483,647 (inclusive). For e.g: 1.0.0, 2018.12.1 etc." Target="galleryImageVersionName"
 def currentVersionMajor = 0
 def currentVersionMinor = 0
-def currentVersionPatch = currentBuild.startTimeInMillis
+def currentVersionPatch = currentBuild.startTimeInMillis.intdiv(100)
 
 if (env.BRANCH_IS_PRIMARY) {
   properties([
