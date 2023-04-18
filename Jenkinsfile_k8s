@@ -179,7 +179,18 @@ pipeline {
               values 'amazon-ebs'
             }
           }
-          // Only build Ubuntu images for arm64 CPU in AWS (notValues)
+          // Do NOT build ARM images in Azure
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'compute_type'
+              values 'azure-arm'
+            }
+          }
+          // Only build Ubuntu images for arm64 CPU in AWS
           exclude {
             axis {
               name 'cpu_architecture'
@@ -192,21 +203,6 @@ pipeline {
             axis {
               name 'compute_type'
               values 'amazon-ebs'
-            }
-          }
-          // Only build Ubuntu images for arm64 CPU in Azure (notValues)
-          exclude {
-            axis {
-              name 'cpu_architecture'
-              values 'arm64'
-            }
-            axis {
-              name 'agent_type'
-              notValues 'ubuntu-22.04'
-            }
-            axis {
-              name 'compute_type'
-              values 'azure-arm'
             }
           }
           // No build on Windows or Docker, not yet implemented
