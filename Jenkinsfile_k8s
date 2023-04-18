@@ -32,7 +32,7 @@ def packerInitPlugins() {
 
 def currentVersionMajor = 0
 def currentVersionMinor = 0
-def currentVersionPatch = env.BUILD_NUMBER + '-' + new Date.format('yyyyMMddHHmm')
+def currentVersionPatch = env.BUILD_NUMBER + '-' + currentBuild.startTimeInMillis
 
 if (env.BRANCH_IS_PRIMARY) {
   properties([
