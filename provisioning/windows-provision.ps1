@@ -304,7 +304,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python311\;$baseDir\launchable\Script\;";
+        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python311\;%APPDATA%\Python;";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -320,9 +320,14 @@ $downloads = [ordered]@{
             # Installation of python3 for Launchable
             & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
             # Installation of Launchable
-            & "c:\python311\python.exe" -m venv "$baseDir\launchable";
-            & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install setuptools wheel;
-            & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+            # & "c:\python311\python.exe" -m venv "$baseDir\launchable";
+            # & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir --upgrade install setuptools wheel pip;
+            # & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+            & "c:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+            & "c:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+            # Debug
+            & echo %APPDATA%;
+            & Get-ChildItem -Path %APPDATA%\Python;
         };
         'sanityCheck'= {
             & choco.exe;
@@ -334,7 +339,8 @@ $downloads = [ordered]@{
             & updatecli.exe version;
             & yq.exe --version;
             & "c:\python311\python.exe" --version;
-            & "$baseDir\launchable\Script\launchable.exe" --version;
+            & "%APPDATA%\Python\launchable.exe" --version;
+            & "launchable.exe" --version;
         }
     };
 }
