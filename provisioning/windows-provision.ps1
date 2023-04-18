@@ -337,7 +337,6 @@ $downloads = [ordered]@{
             & yq.exe --version;
             & "c:\python311\python.exe" --version;
             & "C:\python311\Scripts\launchable.exe" --version;
-            & "launchable.exe" --version;
         }
     };
 }
