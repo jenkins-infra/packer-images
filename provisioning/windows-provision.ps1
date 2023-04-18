@@ -304,7 +304,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python311\;%APPDATA%\Python;";
+        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python311\;C:\python311\Scripts\;";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -325,9 +325,6 @@ $downloads = [ordered]@{
             # & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
             & "c:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
             & "c:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
-            # Debug
-            & echo %APPDATA%;
-            & Get-ChildItem -Path %APPDATA%\Python;
         };
         'sanityCheck'= {
             & choco.exe;
@@ -339,7 +336,7 @@ $downloads = [ordered]@{
             & updatecli.exe version;
             & yq.exe --version;
             & "c:\python311\python.exe" --version;
-            & "%APPDATA%\Python\launchable.exe" --version;
+            & "C:\python311\Scripts\launchable.exe" --version;
             & "launchable.exe" --version;
         }
     };
