@@ -55,7 +55,8 @@ build {
 
   post-processor "docker-tag" {
     only       = ["docker.ubuntu"]
-    repository = "${var.docker_namespace}/${local.image_name}"
+    # TODO specify architecture in image name with local.image_name
+    repository = format("%s/jenkins-agent-%s-%s",var.docker_namespace, var.agent_os_type, var.agent_os_version)
     tags       = [var.image_version, "latest"]
   }
 }
