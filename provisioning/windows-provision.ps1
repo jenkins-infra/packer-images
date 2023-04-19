@@ -319,10 +319,7 @@ $downloads = [ordered]@{
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
             # Installation of python3 for Launchable
             & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
-            # Installation of Launchable
-            # & "c:\python311\python.exe" -m venv "$baseDir\launchable";
-            # & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir --upgrade install setuptools wheel pip;
-            # & "$baseDir\launchable\Scripts\python.exe" -m pip --require-virtualenv --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+            # Installation of Launchable globally (no other python tool)
             & "c:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
             & "c:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
         };

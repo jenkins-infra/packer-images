@@ -568,12 +568,12 @@ function install_playwright_dependencies() {
   rm -rf "${temp_dir}"
 }
 
-# Install Launchable with python3
+## Install Launchable with python3 in its own virtual environment
 function install_launchable() {
-  # Install Launchable with python3 in its own virtual environment
   python3 -m venv "${launchable_venv_dir}"
   "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install setuptools wheel
   "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install launchable=="${LAUNCHABLE_VERSION}"
+  # Simlink to common tools folder
   ln -s "${launchable_venv_dir}/bin/launchable" /usr/local/bin/launchable
 }
 
