@@ -573,7 +573,7 @@ function install_launchable() {
   python3 -m venv "${launchable_venv_dir}"
   "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install setuptools wheel
   "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install launchable=="${LAUNCHABLE_VERSION}"
-  # Simlink to common tools folder
+  # Simlink to a folder in the PATH
   ln -s "${launchable_venv_dir}/bin/launchable" /usr/local/bin/launchable
 }
 
