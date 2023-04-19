@@ -1,7 +1,9 @@
 def cronExpr = env.BRANCH_IS_PRIMARY ? 'H/30 * * * *' : ''
 
 pipeline {
-  agent none
+  agent {
+    docker { image 'jenkinsciinfra/helmfile:2.5.92' }
+  }
   options {
     buildDiscarder(logRotator(numToKeepStr: '10'))
     timeout(time: 30, unit: 'MINUTES')
