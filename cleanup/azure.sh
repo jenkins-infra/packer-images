@@ -67,7 +67,7 @@ fi
 for environment in dev staging
 do
   GALLERY_NAME="${environment}_packer_images"
-  RESOURCE_GROUP=$(echo $GALLERY_NAME | tr '_' '-' | tr -u '[:lower:]' '[:upper:]')
+  RESOURCE_GROUP=$(echo $GALLERY_NAME | tr '_' '-' | tr '[:lower:]' '[:upper:]')
 
   IMAGE_DEFINITION_NAMES="$(az sig image-definition list --gallery-name $GALLERY_NAME --resource-group $RESOURCE_GROUP | jq -r '.[].name' | xargs)" 
 
