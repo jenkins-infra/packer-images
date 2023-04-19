@@ -1,12 +1,7 @@
 def cronExpr = env.BRANCH_IS_PRIMARY ? 'H/30 * * * *' : ''
 
 pipeline {
-  agent {
-    kubernetes {
-      yamlFile 'podTemplate.yaml'
-    }
-  }
-
+  agent none
   options {
     buildDiscarder(logRotator(numToKeepStr: '10'))
     timeout(time: 30, unit: 'MINUTES')
