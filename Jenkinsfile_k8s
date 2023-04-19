@@ -30,11 +30,6 @@ def packerInitPlugins() {
   }
 }
 
-// The image version name should follow Major(int).Minor(int).Patch(int) format, where int is between 0 and 2,147,483,647 (inclusive). For e.g: 1.0.0, 2018.12.1 etc." Target="galleryImageVersionName"
-def currentVersionMajor = 0
-def currentVersionMinor = 0
-def currentVersionPatch = currentBuild.startTimeInMillis.intdiv(1000)
-
 if (env.BRANCH_IS_PRIMARY) {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
@@ -43,7 +38,6 @@ if (env.BRANCH_IS_PRIMARY) {
     // Do not build concurently on the principal branch (to avoid Azure ARM issues with shared resources)
     disableConcurrentBuilds(),
   ])
-  currentVersionMajor = 1
 }
 
 if (env.CHANGE_ID) {
@@ -51,12 +45,7 @@ if (env.CHANGE_ID) {
     // Do not build concurently on pull requests (to avoid Azure ARM issues with shared resources), and abort previous running build
     disableConcurrentBuilds(abortPrevious: true)
   ])
-  currentVersionMinor = env.CHANGE_ID
 }
-
-def currentVersion = currentVersionMajor + '.' + currentVersionMinor + '.' + currentVersionPatch
-
-echo "current version: $currentVersion"
 
 final String podAgentDefinition = '''
 apiVersion: v1
@@ -253,7 +242,7 @@ pipeline {
           // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
           // Ref. https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
           PKR_VAR_build_type            = "${env.TAG_NAME ? 'prod' : (env.BRANCH_IS_PRIMARY ? 'staging' : 'dev') }"
-          PKR_VAR_image_version         = "${env.TAG_NAME ?: currentVersion}"
+          PKR_VAR_image_version         = "${env.TAG_NAME ?: ((env.BRANCH_IS_PRIMARY ? 1 : 0) + '.' (env.CHANGE_ID ?: 0) + '.' + env.EPOCHSECONDS)}"
           PKR_VAR_scm_ref               = "${env.GIT_COMMIT}"
           PKR_VAR_agent_os_type         = "${env.agent_type.split('-')[0]}"
           PKR_VAR_agent_os_version      = "${env.agent_type.split('-')[1]}"
