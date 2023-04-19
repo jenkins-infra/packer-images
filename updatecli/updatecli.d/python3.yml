@@ -18,7 +18,7 @@ sources:
     kind: shell
     name: Get the latest python3 version
     spec:
-      command: curl https://endoflife.date/api/python.json --silent --show-error | jq '.[0].latest'
+      command: curl https://endoflife.date/api/python.json --silent --show-error | jq -r '.[0].latest'
 
 conditions:
   ## Only check for chocolatey package
