@@ -304,7 +304,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2";
+        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python311\;C:\python311\Scripts\;";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -317,6 +317,11 @@ $downloads = [ordered]@{
             & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
             & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
+            # Installation of python3 for Launchable
+            & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
+            # Installation of Launchable globally (no other python tool)
+            & "c:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+            & "c:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
         };
         'sanityCheck'= {
             & choco.exe;
@@ -327,6 +332,8 @@ $downloads = [ordered]@{
             & "$baseDir\ruby26\bin\bundle" -v;
             & updatecli.exe version;
             & yq.exe --version;
+            & "c:\python311\python.exe" --version;
+            & "C:\python311\Scripts\launchable.exe" --version;
         }
     };
 }
