@@ -242,7 +242,7 @@ pipeline {
           // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
           // Ref. https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
           PKR_VAR_build_type            = "${env.TAG_NAME ? 'prod' : (env.BRANCH_IS_PRIMARY ? 'staging' : 'dev') }"
-          PKR_VAR_image_version         = "${env.TAG_NAME ?: ''}"
+          PKR_VAR_image_version         = "${env.TAG_NAME ?: ((env.BRANCH_IS_PRIMARY ? 1 : 0) + '.' + (env.CHANGE_ID ?: 0) + '.' + env.BUILD_ID)}"
           PKR_VAR_scm_ref               = "${env.GIT_COMMIT}"
           PKR_VAR_agent_os_type         = "${env.agent_type.split('-')[0]}"
           PKR_VAR_agent_os_version      = "${env.agent_type.split('-')[1]}"
