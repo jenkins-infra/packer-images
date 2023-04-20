@@ -156,6 +156,7 @@ pipeline {
           }
           axis {
             name 'agent_type'
+            // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
             values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
           }
           axis {
@@ -178,18 +179,7 @@ pipeline {
               values 'amazon-ebs'
             }
           }
-          // Do NOT build ARM images in Azure
-          exclude {
-            axis {
-              name 'cpu_architecture'
-              values 'arm64'
-            }
-            axis {
-              name 'compute_type'
-              values 'azure-arm'
-            }
-          }
-          // Only build Ubuntu images for arm64 CPU in AWS
+          // Only build Ubuntu images for arm64 CPU in AWS (notValues)
           exclude {
             axis {
               name 'cpu_architecture'
@@ -202,6 +192,21 @@ pipeline {
             axis {
               name 'compute_type'
               values 'amazon-ebs'
+            }
+          }
+          // Only build Ubuntu images for arm64 CPU in Azure (notValues)
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'agent_type'
+              notValues 'ubuntu-22.04'
+            }
+            axis {
+              name 'compute_type'
+              values 'azure-arm'
             }
           }
           // No build on Windows or Docker, not yet implemented
@@ -237,7 +242,7 @@ pipeline {
           // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
           // Ref. https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
           PKR_VAR_build_type            = "${env.TAG_NAME ? 'prod' : (env.BRANCH_IS_PRIMARY ? 'staging' : 'dev') }"
-          PKR_VAR_image_version         = "${env.TAG_NAME ?: ''}"
+          PKR_VAR_image_version         = "${env.TAG_NAME ?: ((env.BRANCH_IS_PRIMARY ? 1 : 0) + '.' + (env.CHANGE_ID ?: 0) + '.' + env.BUILD_ID)}"
           PKR_VAR_scm_ref               = "${env.GIT_COMMIT}"
           PKR_VAR_agent_os_type         = "${env.agent_type.split('-')[0]}"
           PKR_VAR_agent_os_version      = "${env.agent_type.split('-')[1]}"

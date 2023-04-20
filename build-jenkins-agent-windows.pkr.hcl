@@ -17,7 +17,6 @@ build {
     image_publisher = "MicrosoftWindowsServer"
     # List available SKUs with the command `az vm image list-skus --offer WindowsServer --location eastus --publisher MicrosoftWindowsServer --output table`
     image_sku       = "${var.agent_os_version}-datacenter-core-g2"
-    vm_size         = local.azure_vm_size
     os_type         = "Windows"
     os_disk_size_gb = local.windows_disk_size_gb
     winrm_insecure  = true
@@ -34,7 +33,7 @@ build {
 
   # Installing Docker requires a restart: this first call to the installation script will prepare requirements
   provisioner "powershell" {
-    pause_before = "1m"
+    pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
@@ -49,7 +48,7 @@ build {
 
   # Install Docker-CE with Container feature loaded
   provisioner "powershell" {
-    pause_before = "1m"
+    pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password

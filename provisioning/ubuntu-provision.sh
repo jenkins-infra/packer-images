@@ -34,6 +34,7 @@ userhome=/home/jenkins
 groupname=jenkins
 groupid=1001
 asdf_install_dir="${userhome}/.asdf"
+launchable_venv_dir="/usr/local/launchable"
 
 ## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
@@ -375,18 +376,21 @@ function install_jxreleaseversion() {
 
 ## Ensure that azure-cli is installed
 function install_azurecli() {
+  local az_repo
   apt-get update --quiet
-  ## From https://github.com/Azure/azure-cli/issues/7368#issuecomment-921578936
   apt-get install --yes --no-install-recommends \
-    gcc \
-    libffi-dev \
-    libsodium-dev \
-    python3-dev
-  export SODIUM_INSTALL="system"
-  # Python dependencies for the azure-cli
-  python3 -m pip install --no-cache-dir --upgrade cryptography pynacl pyOpenSSL
-  # Using the Python installation to ensure that both Intel and ARM are supported (Microsoft only provides a package for Intel)
-  python3 -m pip install --no-cache-dir azure-cli=="${AZURECLI_VERSION}"
+    gpg \
+    lsb-release
+  # Download and install the Microsoft signing key
+  mkdir -p /etc/apt/keyrings
+  curl -sLS https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/keyrings/microsoft.gpg > /dev/null
+  chmod go+r /etc/apt/keyrings/microsoft.gpg
+  # Add the Azure CLI software repository
+  az_repo=$(lsb_release -cs)
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ ${az_repo} main" | tee /etc/apt/sources.list.d/azure-cli.list
+  # Update repository information and install the azure-cli package
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends azure-cli="${AZURECLI_VERSION}-1~${az_repo}"
 }
 
 ## Ensure that the GitHub command line (`gh`) is installed
@@ -567,6 +571,15 @@ function install_playwright_dependencies() {
   rm -rf "${temp_dir}"
 }
 
+## Install Launchable with python3 in its own virtual environment
+function install_launchable() {
+  python3 -m venv "${launchable_venv_dir}"
+  "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install setuptools wheel
+  "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install launchable=="${LAUNCHABLE_VERSION}"
+  # Symlink to a folder in the PATH
+  ln -s "${launchable_venv_dir}/bin/launchable" /usr/local/bin/launchable
+}
+
 ## Ensure that the VM is cleaned up
 function cleanup() {
   export HISTSIZE=0
@@ -650,7 +663,9 @@ function sanity_check() {
   && echo 'playwright install:' \
   && npm install playwright-test \
   && echo 'playwright version:' \
-  && npm @playwright/test --version
+  && npm @playwright/test --version \
+  && echo 'launchable version:' \
+  && launchable --version
   "
   echo "== End of sanity check"
   echo "== Installed packages:"
@@ -694,6 +709,7 @@ function main() {
   install_tfsec
   install_nodejs
   install_playwright_dependencies
+  install_launchable
   cleanup
 }
 
