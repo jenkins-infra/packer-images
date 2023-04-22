@@ -56,8 +56,8 @@ actions:
   default:
     kind: github/pullrequest
     scmid: default
+    title: Bump JDK11 version to {{ source "lastReleaseVersion" }}
     spec:
-      title: Bump JDK11 version to {{ source "lastReleaseVersion" }}
       labels:
         - enhancement
         - jdk11
