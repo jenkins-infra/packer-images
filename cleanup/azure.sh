@@ -82,7 +82,7 @@ do
       then
         for imageVersion in ${IMAGE_VERSIONS}
         do
-          run_az_command sig image-version delete --gallery-image-version $imageVersion --gallery-image-definition $imageDefinitionName --gallery-name $GALLERY_NAME --resource-group $RESOURCE_GROUP --yes --no-wait
+          run_az_command sig image-version delete --gallery-image-version $imageVersion --gallery-image-definition $imageDefinitionName --gallery-name $GALLERY_NAME --resource-group $RESOURCE_GROUP
           ((cpt=cpt+1))
         done
       else
