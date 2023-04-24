@@ -12,7 +12,7 @@ command:
   /opt/jdk-17/bin/java --version:
     exit-status: 0
     stdout:
-      - 17.0.6+10
+      - 17.0.7+7
     stderr: []
   /opt/jdk-19/bin/java --version:
     exit-status: 0
