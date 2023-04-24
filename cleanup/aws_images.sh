@@ -49,27 +49,31 @@ aws sts get-caller-identity >/dev/null || \
 ## STEP 1
 ## Remove images older than $1 day(s) of build_type $2
 found_ami_ids="$(aws ec2 describe-images --owners self --filters "Name=tag:build_type,Values=${build_type}" \
-  --query 'Images[?CreationDate<=`'"${creation_date_threshold}"'`][].ImageId' | jq -r '.[]')"
+  --query 'Images[?CreationDate<=`'"${creation_date_threshold}"'`][].ImageId' | jq -r '.[]' | sort -u)"
 
 echo "== Checking the following AMIs (before creation_date_threshold=${creation_date_threshold}, with tag build_type=${build_type}) for deletion:"
 echo "${found_ami_ids}"
+echo "======"
 
 # Exclude AMI defined in production for Puppet VMs (non puppet managed controllers should have the same, if not then it's sad)
 production_amis="$(curl --silent --show-error --location https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml | grep ami- | cut -d'"' -f2)"
-ami_ids=""
-for ami_id in ${found_ami_ids};
+ami_ids=()
+for ami_id in ${found_ami_ids}
 do
   # Add this AMI to the list if not present in the "production_amis"
-  echo "${production_amis}" | grep "${ami_id}" || ami_ids="${ami_ids} ${ami_id}"
+  if echo "${production_amis}" | grep -v "${ami_id}"
+  then
+    ami_ids+=("${ami_id}")
+  fi
 done
 
-if [ -n "${ami_ids}" ]
+if [ -n "${ami_ids[*]}" ]
 then
   echo "== Deleting the following AMIs:"
-  echo "${ami_ids}"
+  echo "${ami_ids[*]}"
   echo "======"
   export -f run_aws_ec2_command
-  echo "${ami_ids}" | parallel --halt-on-error never --no-run-if-empty run_aws_ec2_command deregister-image --image-id {} :::
+  parallel --halt-on-error never --no-run-if-empty run_aws_ec2_command deregister-image --image-id {} ::: "${ami_ids[@]}"
 else
   echo "== No dangling images found to delete."
 fi
