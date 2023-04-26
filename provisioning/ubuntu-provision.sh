@@ -454,7 +454,7 @@ function install_packer() {
 
 ## Install Datadog agent but not starting it and not enabling it (that will be the role of the system spinning up VM through cloud-init usually)
 function install_datadog() {
-  keyring_file=/usr/share/keyrings/docker-archive-keyring.gpg
+  keyring_file=/usr/share/keyrings/datadog-keyring.gpg
   gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/datadog.gpg
   chmod a+r "${keyring_file}"
   echo "deb [signed-by=${keyring_file}] https://apt.datadoghq.com/ stable 7" > /etc/apt/sources.list.d/datadog.list
