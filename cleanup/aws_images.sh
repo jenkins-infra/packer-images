@@ -32,7 +32,6 @@ do
   command -v "${cli}" >/dev/null || { echo "[ERROR] no '${cli}' command found."; exit 1; }
 done
 
-## When is last month exactly?
 creation_date_threshold=""
 if date -v-"${timeshift_day}d" > /dev/null 2>&1; then
     # BSD systems (Mac OS X)
