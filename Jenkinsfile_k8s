@@ -121,7 +121,9 @@ pipeline {
               sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
               sh './cleanup/azure_gallery_images.sh 1 dev'
               sh './cleanup/azure_gallery_images.sh 7 staging'
-              sh './cleanup/azure.sh'
+              sh './cleanup/azure.sh 1 dev'
+              sh './cleanup/azure.sh 1 staging'
+              sh './cleanup/azure.sh 1 prod'
             }
           }
         }
