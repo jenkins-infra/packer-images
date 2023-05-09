@@ -3,7 +3,7 @@
 def withPackerNode(String packer_template, String compute_type, String cpu_architecture, Closure body) {
   // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
   if (cpu_architecture == 'arm64' && compute_type == 'docker') {
-    node('ubuntu-22-arm64') {
+    node('linux-arm64-docker && azure') {
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       checkout scm
 
