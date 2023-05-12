@@ -2,8 +2,8 @@
 // into the correct node type based on the provided arguments
 def withPackerNode(String packer_template, String compute_type, String cpu_architecture, Closure body) {
   // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
-  if (cpu_architecture == 'arm64' && compute_type == 'docker') {
-    node('linux-arm64-docker') {
+  if (cpu_architecture == 'amd64' && compute_type == 'docker') {
+    node('linux-amd64-docker') {
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       checkout scm
 
@@ -61,7 +61,7 @@ pipeline {
   agent {
     // Default agent for all the packer steps: needs Docker on amd64 Linux
     // Only a few matrix cells requires another kind of agent other than this default
-    label "linux-amd64-docker"
+    label "linux-arm64-docker"
   }
   options {
     // Average build time is ~50 min but windows can takes 45min of updates on AWS
