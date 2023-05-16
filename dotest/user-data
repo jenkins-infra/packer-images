@@ -1,0 +1,4 @@
+#cloud-config
+
+package_update: false
+package_upgrade: false
