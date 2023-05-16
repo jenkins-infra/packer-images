@@ -1,5 +1,5 @@
 ---
-name: Bump TERRAFORM version
+name: Bump `terraform` version
 
 scms:
   default:
@@ -47,7 +47,7 @@ targets:
 actions:
   default:
     kind: github/pullrequest
-    title: Bump TERRAFORM version to {{ source "lastReleaseVersion" }}
+    title: Bump`terraform` version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:
