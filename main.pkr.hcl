@@ -19,7 +19,7 @@ packer {
     }
     digitalocean = {
       version = "1.1.1"
-      source = "github.com/digitalocean/packer-plugin-digitalocean"
+      source = "github.com/digitalocean/digitalocean"
     }
   }
 }
