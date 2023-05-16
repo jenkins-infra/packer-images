@@ -1,0 +1,48 @@
+---
+name: Bump TERRAFORM version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest TERRAFORM version
+    spec:
+      owner: "hashicorp"
+      repository: "terraform"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: semver
+    transformers:
+      - trimprefix: v
+
+targets:
+  updateVersion:
+    name: "Update the TERRAFORM version in the provisioning/tools-versions.yml file"
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: "provisioning/tools-versions.yml"
+      key: "terraform_version"
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump TERRAFORM version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - terraform
