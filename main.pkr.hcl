@@ -17,5 +17,9 @@ packer {
       version = "1.0.8"
       source  = "github.com/hashicorp/docker"
     }
+    digitalocean = {
+      version = "1.1.1"
+      source = "github.com/digitalocean/packer-plugin-digitalocean"
+    }
   }
 }

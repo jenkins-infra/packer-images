@@ -84,6 +84,9 @@ function clean_apt() {
   echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
   apt-get purge -y unattended-upgrades || true # Do not fail if the package does not exist
 
+  # add to avoid "jammy InRelease: Splitting up /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_jammy_InRelease into data and signature failed" for digital ocean
+  rm -rf /var/lib/apt/lists/*
+
   ## Remove unused packages
   apt-get purge -y snap lxd || true # Do not fail if the package does not exist
   apt-get autoremove --purge -y
