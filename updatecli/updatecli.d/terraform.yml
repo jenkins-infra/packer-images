@@ -27,6 +27,13 @@ sources:
     transformers:
       - trimprefix: v
 
+conditions:
+  checkIfWindowsReleaseIsAvailable:
+    kind: shell
+    disablesourceinput: true
+    spec:
+      command: curl --connect-timeout 5 --location --head --fail --silent --show-error https://releases.hashicorp.com/terraform/{{ source `lastReleaseVersion` }}/terraform_{{ source `lastReleaseVersion` }}_windows_amd64.zip
+
 targets:
   updateVersion:
     name: "Update the TERRAFORM version in the provisioning/tools-versions.yml file"
