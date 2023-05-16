@@ -38,6 +38,7 @@ launchable_venv_dir="/usr/local/launchable"
 
 ## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
+  echo I am inside "$FUNCNAME"
   ## Check for presence of requirements or fail fast
   for cli in add-apt-repository apt-get apt-cache awk curl grep groupadd head tar uname useradd
   do
@@ -54,6 +55,7 @@ function check_commands() {
 # When there are different packages builds available for the provided version
 # then the most recent one ise installed
 function install_package_version() {
+  echo I am inside "$FUNCNAME"
   local package_version
 
   package_version="$(apt-cache madison "${1}" \
@@ -66,12 +68,14 @@ function install_package_version() {
 
 ## Copy custom scripts
 function copy_custom_scripts() {
+  echo I am inside "$FUNCNAME"
   cp /tmp/add_auth_key_to_user.sh /usr/local/bin/add_auth_key_to_user.sh
   chmod a+x /usr/local/bin/add_auth_key_to_user.sh
 }
 
 ## Set the locale
 function set_locale(){
+  echo I am inside "$FUNCNAME"
   echo "LC_ALL=${LC_ALL}" >> /etc/environment
   echo "${LANG} ${LANG##*.}" >> /etc/locale.gen
   echo "LANG=${LANG}" > /etc/locale.conf
@@ -80,6 +84,7 @@ function set_locale(){
 
 ## All the clean for apt
 function clean_apt() {
+  echo I am inside "$FUNCNAME"
   ## Disable and remove Unattended APT upgrades
   echo 'APT::Periodic::Enable "0";' > /etc/apt/apt.conf.d/10cloudinit-disable
   apt-get purge -y unattended-upgrades || true # Do not fail if the package does not exist
@@ -97,6 +102,7 @@ function clean_apt() {
 }
 
 function install_common_requirements() {
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     apt-transport-https \
@@ -108,12 +114,14 @@ function install_common_requirements() {
 }
 
 function install_ssh_requirements() {
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends openssh-client
 }
 
 ## Ensure that there is a user named "jenkins" created and configured
 function setuser() {
+  echo I am inside "$FUNCNAME"
   groupadd --gid="${groupid}" "${groupname}"
 
   # jenkins should not be able to run sudo commands
@@ -138,6 +146,7 @@ function setuser() {
 
 ## Install asdf on the default user's home
 function install_asdf() {
+  echo I am inside "$FUNCNAME"
   local archive profile_script
   archive=/tmp/asdf.tgz
   profile_script="${userhome}/.bashrc"
@@ -160,6 +169,7 @@ function install_asdf() {
 
 ## Install the ASDF Plugin passed as argument ($1 is the name and $2 the URL)
 function install_asdf_plugin() {
+  echo I am inside "$FUNCNAME"
   local plugin_name="${1}"
   local plugin_url="${2}"
 
@@ -171,6 +181,7 @@ function install_asdf_plugin() {
 
 ## Install an ASDF Package in the default user's ASDF installation and mark it as the default global installation
 function install_asdf_package() {
+  echo I am inside "$FUNCNAME"
   local package_name="${1}"
   local package_version="${2}"
 
@@ -183,6 +194,7 @@ function install_asdf_package() {
 
 ## Ensure Docker is installed as per https://docs.docker.com/engine/install/ubuntu/
 function install_docker() {
+  echo I am inside "$FUNCNAME"
   keyring_file=/usr/share/keyrings/docker-archive-keyring.gpg
   gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/docker.gpg
   chmod a+r "${keyring_file}"
@@ -203,6 +215,7 @@ function install_docker() {
 
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     make \
@@ -214,6 +227,7 @@ function install_JA_requirements(){
 
 ## setup qemu
 function install_qemu() {
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     qemu \
@@ -227,6 +241,7 @@ function install_qemu() {
 
 ## Install Python 3
 function install_python() {
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     python3 \
@@ -241,6 +256,7 @@ function install_python() {
 ### Using chromium because chrome is not available on arm64
 ### see https://bugs.chromium.org/p/chromium/issues/detail?id=677140
 function install_chromium() {
+  echo I am inside "$FUNCNAME"
   apt-get remove --yes chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
 
   # Using this PPA as the chromium default repositories require snap which doesn't work in docker.
@@ -262,6 +278,7 @@ Pin-Priority: 1001
 
 ## Install git and git-lfs
 function install_git_gitlfs() {
+  echo I am inside "$FUNCNAME"
   if [ -n "${GIT_LINUX_VERSION}" ]
   then
     ## a specific git version is required: search it on the official git PPA repositories
@@ -284,6 +301,7 @@ function install_git_gitlfs() {
 }
 
 function install_jdk() {
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   ## Prevent Java null pointer exception due to missing fontconfig
   apt-get install --yes --no-install-recommends fontconfig
@@ -335,6 +353,7 @@ function install_jdk() {
 
 ## Ensure that docker-compose is installed (version from environment)
 function install_docker_compose(){
+  echo I am inside "$FUNCNAME"
   curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
     "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-Linux-$(uname -m)"
   chmod a+x /usr/local/bin/docker-compose
@@ -342,6 +361,7 @@ function install_docker_compose(){
 
 ## Ensure that maven is installed and configured (version from environment)
 function install_maven() {
+  echo I am inside "$FUNCNAME"
   curl --fail --silent --location --show-error --output "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
     "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 
@@ -352,6 +372,7 @@ function install_maven() {
 
 ## Ensure that hadolint is installed
 function install_hadolint() {
+  echo I am inside "$FUNCNAME"
   hadolint_arch_suffix="${ARCHITECTURE}"
   if [ "${hadolint_arch_suffix}" == "amd64" ]; then
     hadolint_arch_suffix="x86_64"
@@ -363,6 +384,7 @@ function install_hadolint() {
 
 ## Ensure that google container-structure-test is installed
 function install_cst() {
+  echo I am inside "$FUNCNAME"
   curl --fail --silent --location --show-error --output /usr/local/bin/container-structure-test \
     "https://github.com/GoogleContainerTools/container-structure-test/releases/download/v${CST_VERSION}/container-structure-test-linux-${ARCHITECTURE}"
   chmod a+x /usr/local/bin/container-structure-test
@@ -370,6 +392,7 @@ function install_cst() {
 
 ## Ensure that jx-release-version is installed
 function install_jxreleaseversion() {
+  echo I am inside "$FUNCNAME"
   curl --fail --silent --location --show-error --output /tmp/jx-release-version.tgz \
     "https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v${JXRELEASEVERSION_VERSION}/jx-release-version-linux-${ARCHITECTURE}.tar.gz"
   tar --extract --gunzip --file=/tmp/jx-release-version.tgz --directory=/tmp
@@ -379,6 +402,7 @@ function install_jxreleaseversion() {
 
 ## Ensure that azure-cli is installed
 function install_azurecli() {
+  echo I am inside "$FUNCNAME"
   local az_repo
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
@@ -398,6 +422,7 @@ function install_azurecli() {
 
 ## Ensure that the GitHub command line (`gh`) is installed
 function install_gh() {
+  echo I am inside "$FUNCNAME"
   curl --silent --show-error --location --output /tmp/gh.tar.gz \
     "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${ARCHITECTURE}.tar.gz"
   tar --extract --gunzip --file=/tmp/gh.tar.gz --directory=/tmp
@@ -407,6 +432,7 @@ function install_gh() {
 
 ## Install Vagrant as per https://www.vagrantup.com/downloads
 function install_vagrant() {
+  echo I am inside "$FUNCNAME"
   local keyring_file=/usr/share/keyrings/hashicorp-archive-keyring.gpg
   gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/hashicorp.gpg
   chmod a+r "${keyring_file}"
@@ -425,6 +451,7 @@ function install_vagrant() {
 
 ## Install Ruby with asdf
 function install_ruby() {
+  echo I am inside "$FUNCNAME"
   # Ensure that ASDF is installed
   test -f "${asdf_install_dir}/asdf.sh"
   # Ensure that require dependencies are present to install Ruby
@@ -437,6 +464,7 @@ function install_ruby() {
 
 ## Install Yq with asdf
 function install_yq() {
+  echo I am inside "$FUNCNAME"
   # Ensure that ASDF is installed
   test -f "${asdf_install_dir}/asdf.sh"
 
@@ -447,6 +475,7 @@ function install_yq() {
 
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
 function install_packer() {
+  echo I am inside "$FUNCNAME"
   # Ensure that ASDF is installed
   test -f "${asdf_install_dir}/asdf.sh"
 
@@ -457,6 +486,7 @@ function install_packer() {
 
 ## Install Datadog agent but not starting it and not enabling it (that will be the role of the system spinning up VM through cloud-init usually)
 function install_datadog() {
+  echo I am inside "$FUNCNAME"
   keyring_file=/usr/share/keyrings/datadog-keyring.gpg
   gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/datadog.gpg
   chmod a+r "${keyring_file}"
@@ -469,6 +499,7 @@ function install_datadog() {
 }
 
 function install_updatecli() {
+  echo I am inside "$FUNCNAME"
   local archive_path=/var/cache/apt/archives/updatecli.deb
   curl --silent --location --show-error "https://github.com/updatecli/updatecli/releases/download/v${UPDATECLI_VERSION}/updatecli_${ARCHITECTURE}.deb" --output "${archive_path}"
   dpkg -i "${archive_path}"
@@ -477,6 +508,7 @@ function install_updatecli() {
 
 # https://docs.aws.amazon.com/cli/latest/userguide/getting-started-version.html
 function install_awscli() {
+  echo I am inside "$FUNCNAME"
   local archive_path download_url
   archive_path=/tmp/awscli.zip
   download_url="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_VERSION}.zip"
@@ -491,6 +523,7 @@ function install_awscli() {
 }
 
 function install_netlifydeploy() {
+  echo I am inside "$FUNCNAME"
   local archive_path download_url
   archive_path=/tmp/netlifydeploy.tgz
   download_url="https://github.com/halkeye/netlify-golang-deploy/releases/download/v${NETLIFYDEPLOY_VERSION}/netlify-golang-deploy_${NETLIFYDEPLOY_VERSION}_Linux_x86_64.tar.gz"
@@ -505,6 +538,7 @@ function install_netlifydeploy() {
 }
 
 function install_terraform(){
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends curl unzip # Should already be there but this function should be autonomous
 
@@ -517,6 +551,7 @@ function install_terraform(){
 }
 
 function install_kubectl() {
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
 
@@ -526,6 +561,7 @@ function install_kubectl() {
 
 ## Ensure Goss is installed
 function install_goss() {
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
 
@@ -534,6 +570,7 @@ function install_goss() {
 }
 
 function install_tfsec() {
+  echo I am inside "$FUNCNAME"
   apt-get update --quiet
   apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
 
@@ -543,6 +580,7 @@ function install_tfsec() {
 
 ## Install Nodejs with asdf
 function install_nodejs() {
+  echo I am inside "$FUNCNAME"
   # Ensure that ASDF is installed
   test -f "${asdf_install_dir}/asdf.sh"
   # Install NodeJS with ASDF and set it as default installation
@@ -554,6 +592,7 @@ function install_nodejs() {
 }
 
 function install_playwright_dependencies() {
+  echo I am inside "$FUNCNAME"
   ## The command 'npx playwright install-deps --dry-run' prints the expectd command for installing dependencies.
   # But this commad requires `sudo` access (which the ${username} user does not have.
   # Also, the `root` user does not have access to the ASDF setup.
@@ -576,6 +615,7 @@ function install_playwright_dependencies() {
 
 ## Install Launchable with python3 in its own virtual environment
 function install_launchable() {
+  echo I am inside "$FUNCNAME"
   python3 -m venv "${launchable_venv_dir}"
   "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install setuptools wheel
   "${launchable_venv_dir}"/bin/pip --require-virtualenv --no-cache-dir install launchable=="${LAUNCHABLE_VERSION}"
@@ -585,12 +625,14 @@ function install_launchable() {
 
 ## Ensure that the VM is cleaned up
 function cleanup() {
+  echo I am inside "$FUNCNAME"
   export HISTSIZE=0
   rm -rf /tmp/* /var/log/*
   sync
 }
 
 function sanity_check() {
+  echo I am inside "$FUNCNAME"
   echo "== Sanity Check of installed tools, running as user ${username}"
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
   && echo 'asdf version:' \
