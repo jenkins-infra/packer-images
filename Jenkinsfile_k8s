@@ -47,16 +47,6 @@ if (env.CHANGE_ID) {
   ])
 }
 
-final String podAgentDefinition = '''
-apiVersion: v1
-kind: Pod
-spec:
-  automountServiceAccountToken: false
-  containers:
-    - name: jnlp
-      image: jenkinsciinfra/jenkins-agent-ubuntu-22.04:latest
-'''
-
 pipeline {
   agent {
     // Default agent for all the packer steps: needs Docker on amd64 Linux
@@ -87,9 +77,7 @@ pipeline {
         }
         stage('GC on AWS us-east-2') {
           agent {
-            kubernetes {
-              yaml podAgentDefinition
-            }
+            label "linux-arm64-docker"
           }
           environment {
             AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
@@ -108,9 +96,7 @@ pipeline {
         }
         stage('GC on Azure') {
           agent {
-            kubernetes {
-              yaml podAgentDefinition
-            }
+            label "linux-arm64-docker"
           }
           environment {
             PACKER_AZURE = credentials('packer-azure-serviceprincipal')
