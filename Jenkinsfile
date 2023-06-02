@@ -31,6 +31,34 @@ if (env.CHANGE_ID) {
   ])
 }
 
+// Define the matrix axes
+Map matrix_axes = [
+  cpu_architecture: ['amd64', 'arm64'],
+  agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022'],
+  compute_type: ['amazon-ebs', 'azure-arm', 'docker']
+]
+
+@NonCPS
+List getMatrixAxes(Map matrix_axes) {
+    List axes = []
+    matrix_axes.each { axis, values ->
+        List axisList = []
+        values.each { value ->
+            axisList << [(axis): value]
+        }
+        axes << axisList
+    }
+    // calculate cartesian product
+    axes.combinations()*.sum()
+}
+List axes = getMatrixAxes(matrix_axes).findAll { axis ->
+  !(axis['cpu_architecture'] == 'amd64' && axis['compute_type'] == 'amazon-ebs') &&
+  !(axis['cpu_architecture'] == 'arm64' && axis['compute_type'] == 'amazon-ebs' && axis['agent_type'] != 'ubuntu-22.04') &&
+  !(axis['cpu_architecture'] == 'arm64' && axis['compute_type'] == 'azure-arm' && axis['agent_type'] != 'ubuntu-22.04') &&
+  !(axis['compute_type'] == 'docker' && axis['agent_type'] == 'windows-2019') &&
+  !(axis['compute_type'] == 'docker' && axis['agent_type'] == 'windows-2022')
+}
+
 // Average build time is ~50 min but windows can takes 45min of updates on AWS
 timeout(time: 120, unit: 'MINUTES') {
 
@@ -47,94 +75,9 @@ timeout(time: 120, unit: 'MINUTES') {
       }
     }
 
+    // Define parrallels stages
     stage('parrallels') {
       def stages = [:]
-
-      stages["updatecli"] = {
-        // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'github-app-updatecli-on-jenkins-infra',
-            usernameVariable: 'USERNAME_VALUE', // Setting this variable is mandatory, even if of not used when the credentials is a githubApp one
-            passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
-          )
-        ]) {
-          sh 'updatecli version'
-          sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
-          if (env.BRANCH_IS_PRIMARY) {
-            sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
-          }
-        }
-      }
-      stages["GC on AWS us-east-2"] = {
-        env.AWS_DEFAULT_REGION    = 'us-east-2'
-        withCredentials([
-          string(
-              credentialsId: 'packer-aws-access-key-id',
-              variable: 'AWS_ACCESS_KEY_ID'
-          ),
-          string(
-              credentialsId: 'packer-aws-secret-access-key',
-              variable: 'AWS_SECRET_ACCESS_KEY'
-          )
-        ]) {
-          catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-            sh './cleanup/aws.sh'
-            sh './cleanup/aws_images.sh 1 dev'
-            sh './cleanup/aws_images.sh 7 staging'
-            sh './cleanup/aws_images.sh 60 prod'
-            sh './cleanup/aws_snapshots.sh'
-          }
-        }
-      }
-
-      stages["GC on Azure"] = {
-        withCredentials([
-          azureServicePrincipal(
-            credentialsId: 'packer-azure-serviceprincipal',
-            subscriptionIdVariable: 'PACKER_AZURE_SUBSCRIPTION_ID',
-            clientIdVariable: 'PACKER_AZURE_CLIENT_ID',
-            clientSecretVariable: 'PACKER_AZURE_CLIENT_SECRET',
-            tenantIdVariable: 'PACKER_AZURE_TENANT_ID'
-          )
-        ]) {
-          catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-            sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
-            sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
-            sh './cleanup/azure_gallery_images.sh 1 dev'
-            sh './cleanup/azure_gallery_images.sh 7 staging'
-            sh './cleanup/azure.sh 1 dev'
-            sh './cleanup/azure.sh 1 staging'
-            sh './cleanup/azure.sh 1 prod'
-          }
-        }
-      }
-
-      Map matrix_axes = [
-        cpu_architecture: ['amd64', 'arm64']
-        agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022']
-        compute_type: ['amazon-ebs', 'azure-arm', 'docker']
-      ]
-      @NonCPS
-      List getMatrixAxes(Map matrix_axes) {
-          List axes = []
-          matrix_axes.each { axis, values ->
-              List axisList = []
-              values.each { value ->
-                  axisList << [(axis): value]
-              }
-              axes << axisList
-          }
-          // calculate cartesian product
-          axes.combinations()*.sum()
-      }
-      List axes = getMatrixAxes(matrix_axes).findAll { axis ->
-        !(axis['cpu_architecture'] == 'amd64' && axis['compute_type'] == 'amazon-ebs') &&
-        !(axis['cpu_architecture'] == 'arm64' && axis['compute_type'] == 'amazon-ebs' && axis['agent_type'] != 'ubuntu-22.04') &&
-        !(axis['cpu_architecture'] == 'arm64' && axis['compute_type'] == 'azure-arm' && axis['agent_type'] != 'ubuntu-22.04') &&
-        !(axis['compute_type'] == 'docker' && axis['agent_type'] == 'windows-2019') &&
-        !(axis['compute_type'] == 'docker' && axis['agent_type'] == 'windows-2022')
-      }
 
       // parallel task map
       //Map tasks = [failFast: false]
@@ -186,6 +129,66 @@ timeout(time: 120, unit: 'MINUTES') {
           }
         }
       }
+      stages["updatecli"] = {
+        // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'github-app-updatecli-on-jenkins-infra',
+            usernameVariable: 'USERNAME_VALUE', // Setting this variable is mandatory, even if of not used when the credentials is a githubApp one
+            passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
+          )
+        ]) {
+          sh 'updatecli version'
+          sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+          if (env.BRANCH_IS_PRIMARY) {
+            sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+          }
+        }
+      }
+
+      stages["GC on AWS us-east-2"] = {
+        env.AWS_DEFAULT_REGION    = 'us-east-2'
+        withCredentials([
+          string(
+              credentialsId: 'packer-aws-access-key-id',
+              variable: 'AWS_ACCESS_KEY_ID'
+          ),
+          string(
+              credentialsId: 'packer-aws-secret-access-key',
+              variable: 'AWS_SECRET_ACCESS_KEY'
+          )
+        ]) {
+          catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+            sh './cleanup/aws.sh'
+            sh './cleanup/aws_images.sh 1 dev'
+            sh './cleanup/aws_images.sh 7 staging'
+            sh './cleanup/aws_images.sh 60 prod'
+            sh './cleanup/aws_snapshots.sh'
+          }
+        }
+      }
+
+      stages["GC on Azure"] = {
+        withCredentials([
+          azureServicePrincipal(
+            credentialsId: 'packer-azure-serviceprincipal',
+            subscriptionIdVariable: 'PACKER_AZURE_SUBSCRIPTION_ID',
+            clientIdVariable: 'PACKER_AZURE_CLIENT_ID',
+            clientSecretVariable: 'PACKER_AZURE_CLIENT_SECRET',
+            tenantIdVariable: 'PACKER_AZURE_TENANT_ID'
+          )
+        ]) {
+          catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+            sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
+            sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
+            sh './cleanup/azure_gallery_images.sh 1 dev'
+            sh './cleanup/azure_gallery_images.sh 7 staging'
+            sh './cleanup/azure.sh 1 dev'
+            sh './cleanup/azure.sh 1 staging'
+            sh './cleanup/azure.sh 1 prod'
+          }
+        }
+      }
 
       stages["Build Docker Manifest"] = {
         if (env.TAG_NAME != null){
@@ -207,9 +210,8 @@ timeout(time: 120, unit: 'MINUTES') {
           }
         }
       }
-
-      //run
-      parallel(stages)
     }
+    //run
+    parallel(stages)
   }
 }
