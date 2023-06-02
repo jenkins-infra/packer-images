@@ -12,7 +12,7 @@ git_linux_version: "2.40.1"
 git_windows_version: "2.40.1"
 goss_version: "0.3.20"
 hadolint_version: "2.12.0"
-jdk11_version: "11.0.19+7"
+jdk11_version: 11.0.19+7
 jdk17_version: "17.0.7+7"
 jdk19_version: "19.0.2+7"
 jdk8_version: "8u372-b07"
