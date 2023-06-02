@@ -43,7 +43,6 @@ timeout(time: 120, unit: 'MINUTES') {
     stage('startup') {
       packerinit: {
         checkout scm
-        echo "dry run: ${env.DRYRUN}"
         packerInitPlugins()
       }
     }
@@ -138,7 +137,7 @@ timeout(time: 120, unit: 'MINUTES') {
       }
 
       // parallel task map
-      Map tasks = [failFast: false]
+      //Map tasks = [failFast: false]
 
       for(int i = 0; i < axes.size(); i++) {
         // convert the Axis into valid values for withEnv step
@@ -150,7 +149,7 @@ timeout(time: 120, unit: 'MINUTES') {
         if (axis['compute_type'] == 'docker' && axis['cpu_architecture'] == 'amd64') {
           nodeLabel = "linux-amd64-docker"
         }
-        tasks[axisEnv.join(', ')] = { ->
+        stages[axisEnv.join(', ')] = { ->
           node(nodeLabel) {
             withEnv(axisEnv) {
               stage("Build ${axis['compute_type']} ${axis['agent_type']} ${axis['cpu_architecture']} image") {
@@ -160,7 +159,8 @@ timeout(time: 120, unit: 'MINUTES') {
                 final String pkr_var_image_type = compute_type
                 final String pkr_var_tag_name = env.TAG_NAME
                 echo nodeLabel
-                sh 'PACKER_LOG=1 packer validate ./'
+                echo "sh 'PACKER_LOG=1 packer validate ./'"
+                ////sh 'PACKER_LOG=1 packer validate ./'
                 // Execute build only for this matrix cell's setup
                 retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
                   echo "sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'"
@@ -186,8 +186,30 @@ timeout(time: 120, unit: 'MINUTES') {
           }
         }
       }
+
+      stages["Build Docker Manifest"] = {
+        if (env.TAG_NAME != null){
+          // Static variable definition as this stage is outside the matrix scope
+          // Improvement: pass dynamically the list of images from the matrix (e.g. use full scripted pipeline) to support other Docker agent types (such as windows-2019 or windows-2022)
+          agent_type = 'ubuntu-22.04'
+          infra.withDockerPushCredentials {
+            sh 'docker manifest create \
+                jenkinsciinfra/jenkins-agent-${agent_type}:latest \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":latest'
+
+            sh 'docker manifest create \
+                jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":"${TAG_NAME}"'
+          }
+        }
+      }
+
       //run
-      parallel(stages + tasks)
+      parallel(stages)
     }
   }
 }
