@@ -1,6 +1,6 @@
 asdf_version: "0.11.3"
 awscli_version: "2.11.24"
-azurecli_version: "2.49.0"
+azurecli_version: 2.49.0
 chocolatey_version: "1.4.0"
 compose_version: "2.18.1"
 cst_version: "1.15.0"
