@@ -120,15 +120,15 @@ timeout(time: 120, unit: 'MINUTES') {
       }
 
       // packer builds
-      def listbuilds = []
-      listbuilds.add("[cpu_architecture: amd64, agent_type: ubuntu-22.04, compute_type: azure-arm]")
-      listbuilds.add("[cpu_architecture: amd64, agent_type: ubuntu-22.04, compute_type: docker]")
-      listbuilds.add("[cpu_architecture: amd64, agent_type: windows-2019, compute_type: azure-arm]")
-      listbuilds.add("[cpu_architecture: amd64, agent_type: windows-2022, compute_type: azure-arm]")
-      listbuilds.add("[cpu_architecture: arm64, agent_type: ubuntu-22.04, compute_type: amazon-ebs]")
-      listbuilds.add("[cpu_architecture: arm64, agent_type: ubuntu-22.04, compute_type: azure-arm]")
-      listbuilds.add("[cpu_architecture: arm64, agent_type: ubuntu-22.04, compute_type: docker]")
-
+      def listbuilds = [
+        [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
+        [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'docker'],
+        [cpu_architecture:'amd64', agent_type:'windows-2019', compute_type:'azure-arm'],
+        [cpu_architecture:'amd64', agent_type:'windows-2022', compute_type:'azure-arm'],
+        [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'amazon-ebs'],
+        [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
+        [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'docker']
+      ]
       for(int i = 0; i < listbuilds.size(); i++) {
         // convert the Axis into valid values for withEnv step
         Map axis = listbuilds[i]
