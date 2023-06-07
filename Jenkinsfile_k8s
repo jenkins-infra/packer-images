@@ -119,7 +119,7 @@ timeout(time: 120, unit: 'MINUTES') {
       }
     }
 
-     def buildstages = [failFast:true]
+    def buildstages = [failFast:true]
     // packer builds
     def listbuilds = [
       [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
@@ -131,11 +131,8 @@ timeout(time: 120, unit: 'MINUTES') {
       [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'docker']
     ]
     for(int i = 0; i < listbuilds.size(); i++) {
-      // convert the Axis into valid values for withEnv step
-      // Map axis = listbuilds[i]
-      // List axisEnv = axis.collect { k, v ->
-      //     "${k}=${v}"
-      // }
+      // convert the Axis into valid values
+      Map axis = listbuilds[i]
       stagetitle="Build ${listbuilds[i].cpu_architecture} ${listbuilds[i].agent_type} ${listbuilds[i].compute_type} image"
       // dynamically choose node to use
       if (axis['compute_type'] == 'docker' && axis['cpu_architecture'] == 'amd64') {
