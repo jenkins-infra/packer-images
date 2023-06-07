@@ -158,10 +158,10 @@ timeout(time: 120, unit: 'MINUTES') {
               tenantIdVariable: 'PACKER_AZURE_TENANT_ID'
             )
           ]) {
-            final String pkr_var_agent_os_type = agent_type.split('-')[0]
-            final String pkr_var_agent_os_version = agent_type.split('-')[1]
-            final String pkr_var_architecture = cpu_architecture
-            final String pkr_var_image_type = compute_type
+            final String pkr_var_agent_os_type = axis['agent_type'].split('-')[0]
+            final String pkr_var_agent_os_version = axis['agent_type'].split('-')[1]
+            final String pkr_var_architecture = axis['cpu_architecture']
+            final String pkr_var_image_type = axis['compute_type']
             final String pkr_var_tag_name = env.TAG_NAME
             echo nodeLabel
             echo "sh 'PACKER_LOG=1 packer validate ./'"
