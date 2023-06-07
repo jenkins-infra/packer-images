@@ -152,7 +152,7 @@ timeout(time: 120, unit: 'MINUTES') {
             string(
                 credentialsId: 'packer-aws-secret-access-key',
                 variable: 'AWS_SECRET_ACCESS_KEY'
-            )
+            ),
             azureServicePrincipal(
               credentialsId: 'packer-azure-serviceprincipal',
               subscriptionIdVariable: 'PACKER_AZURE_SUBSCRIPTION_ID',
