@@ -131,45 +131,61 @@ timeout(time: 120, unit: 'MINUTES') {
       ]
       for(int i = 0; i < listbuilds.size(); i++) {
         // convert the Axis into valid values for withEnv step
-        Map axis = listbuilds[i]
-        List axisEnv = axis.collect { k, v ->
-            "${k}=${v}"
-        }
+        // Map axis = listbuilds[i]
+        // List axisEnv = axis.collect { k, v ->
+        //     "${k}=${v}"
+        // }
+        stagetitle="Build ${listbuilds[i].cpu_architecture} ${listbuilds[i].agent_type} ${listbuilds[i].compute_type} image"
         // dynamically choose node to use
         if (axis['compute_type'] == 'docker' && axis['cpu_architecture'] == 'amd64') {
           nodeLabel = "linux-amd64-docker"
         }
-        stages[axisEnv.join(', ')] = { ->
+        stages[stagetitle] = { ->
           node(nodeLabel) {
-            withEnv(axisEnv) {
-              stage("Build ${axis['compute_type']} ${axis['agent_type']} ${axis['cpu_architecture']} image") {
-                final String pkr_var_agent_os_type = agent_type.split('-')[0]
-                final String pkr_var_agent_os_version = agent_type.split('-')[1]
-                final String pkr_var_architecture = cpu_architecture
-                final String pkr_var_image_type = compute_type
-                final String pkr_var_tag_name = env.TAG_NAME
-                echo nodeLabel
-                echo "sh 'PACKER_LOG=1 packer validate ./'"
-                ////sh 'PACKER_LOG=1 packer validate ./'
-                // Execute build only for this matrix cell's setup
-                retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
-                  echo "sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'"
-                  ////sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
-                  // adding manually a cpu architecture tag to the docker image
-                  if (pkr_var_image_type == 'docker') {
-                    echo "docker tag jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"
-                    ////sh 'docker tag "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest" "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"'
-                  }
+            env.AWS_DEFAULT_REGION    = 'us-east-2'
+            withCredentials([
+              string(
+                  credentialsId: 'packer-aws-access-key-id',
+                  variable: 'AWS_ACCESS_KEY_ID'
+              ),
+              string(
+                  credentialsId: 'packer-aws-secret-access-key',
+                  variable: 'AWS_SECRET_ACCESS_KEY'
+              )
+              azureServicePrincipal(
+                credentialsId: 'packer-azure-serviceprincipal',
+                subscriptionIdVariable: 'PACKER_AZURE_SUBSCRIPTION_ID',
+                clientIdVariable: 'PACKER_AZURE_CLIENT_ID',
+                clientSecretVariable: 'PACKER_AZURE_CLIENT_SECRET',
+                tenantIdVariable: 'PACKER_AZURE_TENANT_ID'
+              )
+            ]) {
+              final String pkr_var_agent_os_type = agent_type.split('-')[0]
+              final String pkr_var_agent_os_version = agent_type.split('-')[1]
+              final String pkr_var_architecture = cpu_architecture
+              final String pkr_var_image_type = compute_type
+              final String pkr_var_tag_name = env.TAG_NAME
+              echo nodeLabel
+              echo "sh 'PACKER_LOG=1 packer validate ./'"
+              ////sh 'PACKER_LOG=1 packer validate ./'
+              // Execute build only for this matrix cell's setup
+              retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
+                echo "sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'"
+                ////sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                // adding manually a cpu architecture tag to the docker image
+                if (pkr_var_image_type == 'docker') {
+                  echo "docker tag jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"
+                  ////sh 'docker tag "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest" "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"'
                 }
-                // if docker and building a tag, push to dockerhub from inside the node
-                // else we would loose the docker image
-                if (pkr_var_image_type == 'docker' && pkr_var_tag_name != null) {
-                  stage('Publish all tags for Docker image') {
-                    echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
-                    ////infra.withDockerPushCredentials {
-                      ////sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
-                    ////}
-                  }
+              }
+              // if docker and building a tag, push to dockerhub from inside the node
+              // else we would loose the docker image
+              if (pkr_var_image_type == 'docker' && pkr_var_tag_name != null) {
+                stage('Publish all tags for Docker image') {
+                  echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
+                  ////infra.withDockerPushCredentials {
+                    ////sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
+                  ////}
                 }
               }
             }
