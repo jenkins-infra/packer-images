@@ -119,7 +119,7 @@ timeout(time: 120, unit: 'MINUTES') {
       }
     }
 
-    def buildstages = []
+    def buildstages = [:]
     // packer builds
     def listbuilds = [
       [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
