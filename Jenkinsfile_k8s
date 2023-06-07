@@ -161,11 +161,11 @@ timeout(time: 120, unit: 'MINUTES') {
               tenantIdVariable: 'PACKER_AZURE_TENANT_ID'
             )
           ]) {
-            echo 'build for: "${pkr_var_image_type}.${pkr_var_agent_os_type} ${pkr_var_agent_os_type}-${pkr_var_agent_os_version}:latest jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}-${pkr_var_agent_os_version}:${pkr_var_architecture}"'
+            echo "build for: ${pkr_var_image_type}.${pkr_var_agent_os_type} ${pkr_var_agent_os_type}-${pkr_var_agent_os_version}:latest jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}-${pkr_var_agent_os_version}:${pkr_var_architecture}"
             sh 'PACKER_LOG=1 packer validate ./'
             // Execute build only for this matrix cell's setup
             retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
-              sh 'packer build -timestamp-ui -force -only="${pkr_var_image_type}.${pkr_var_agent_os_type}" ./'
+              sh "packer build -timestamp-ui -force -only=${pkr_var_image_type}.${pkr_var_agent_os_type} ./"
               // adding manually a cpu architecture tag to the docker image
               if (pkr_var_image_type == 'docker') {
                 sh 'docker tag "jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}-${pkr_var_agent_os_version}:latest" "jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}-${pkr_var_agent_os_version}:${pkr_var_architecture}"'
@@ -177,7 +177,7 @@ timeout(time: 120, unit: 'MINUTES') {
               stage('Publish all tags for Docker image') {
                 echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
                 infra.withDockerPushCredentials {
-                  sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
+                  sh "docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}"
                 }
               }
             }
