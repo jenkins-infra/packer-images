@@ -41,8 +41,7 @@ if (env.CHANGE_ID) {
 timeout(time: 120, unit: 'MINUTES') {
 
   // main script block
-  // main node is a pod
-  node("jnlp-linux") {
+  node(nodeLabel) {
     // To allow using ASDF shims
     env.PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
     env.DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
