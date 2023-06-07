@@ -127,11 +127,11 @@ timeout(time: 120, unit: 'MINUTES') {
       if (listbuilds[i].compute_type == 'docker' && listbuilds[i].cpu_architecture == 'amd64') {
         nodeLabel = "linux-amd64-docker"
       }
-      String env.PKR_VAR_agent_os_type = listbuilds[i].agent_type.split('-')[0]
-      String env.PKR_VAR_agent_os_version = listbuilds[i].agent_type.split('-')[1]
-      String env.PKR_VAR_architecture = listbuilds[i].cpu_architecture
-      String env.PKR_VAR_image_type = listbuilds[i].compute_type
-      String env.PKR_VAR_tag_name = env.TAG_NAME
+      env.PKR_VAR_agent_os_type = listbuilds[i].agent_type.split('-')[0]
+      env.PKR_VAR_agent_os_version = listbuilds[i].agent_type.split('-')[1]
+      env.PKR_VAR_architecture = listbuilds[i].cpu_architecture
+      env.PKR_VAR_image_type = listbuilds[i].compute_type
+      env.PKR_VAR_tag_name = env.TAG_NAME
 
       buildstages[stagetitle] = {
         node(nodeLabel) {
