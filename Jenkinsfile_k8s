@@ -133,11 +133,16 @@ timeout(time: 120, unit: 'MINUTES') {
     for(int i = 0; i < listbuilds.size(); i++) {
       // convert the Axis into valid values
       Map axis = listbuilds[i]
-      stagetitle="Build ${listbuilds[i].cpu_architecture} ${listbuilds[i].agent_type} ${listbuilds[i].compute_type} image"
+      String stagetitle="Build ${listbuilds[i].cpu_architecture} ${listbuilds[i].agent_type} ${listbuilds[i].compute_type} image"
       // dynamically choose node to use
       if (axis['compute_type'] == 'docker' && axis['cpu_architecture'] == 'amd64') {
         nodeLabel = "linux-amd64-docker"
       }
+      String pkr_var_agent_os_type = axis['agent_type'].split('-')[0]
+      String pkr_var_agent_os_version = axis['agent_type'].split('-')[1]
+      String pkr_var_architecture = axis['cpu_architecture']
+      String pkr_var_image_type = axis['compute_type']
+      String pkr_var_tag_name = env.TAG_NAME
       buildstages[stagetitle] = {
         node(nodeLabel) {
           env.AWS_DEFAULT_REGION    = 'us-east-2'
@@ -158,11 +163,7 @@ timeout(time: 120, unit: 'MINUTES') {
               tenantIdVariable: 'PACKER_AZURE_TENANT_ID'
             )
           ]) {
-            final String pkr_var_agent_os_type = axis['agent_type'].split('-')[0]
-            final String pkr_var_agent_os_version = axis['agent_type'].split('-')[1]
-            final String pkr_var_architecture = axis['cpu_architecture']
-            final String pkr_var_image_type = axis['compute_type']
-            final String pkr_var_tag_name = env.TAG_NAME
+
             echo nodeLabel
             echo "sh 'PACKER_LOG=1 packer validate ./'"
             ////sh 'PACKER_LOG=1 packer validate ./'
