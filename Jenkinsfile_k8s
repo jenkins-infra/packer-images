@@ -41,7 +41,8 @@ if (env.CHANGE_ID) {
 timeout(time: 120, unit: 'MINUTES') {
 
   // main script block
-  node(nodeLabel) {
+  // main node is a pod
+  node("jnlp-linux") {
     // To allow using ASDF shims
     env.PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
     env.DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
@@ -132,14 +133,6 @@ timeout(time: 120, unit: 'MINUTES') {
       String pkr_var_architecture = listbuilds[i].cpu_architecture
       String pkr_var_image_type = listbuilds[i].compute_type
       String pkr_var_tag_name = env.TAG_NAME
-
-      echo stagetitle
-      echo pkr_var_agent_os_type
-      echo pkr_var_agent_os_version
-      echo pkr_var_architecture
-      echo pkr_var_image_type
-      echo pkr_var_tag_name
-
 
       buildstages[stagetitle] = {
         node(nodeLabel) {
