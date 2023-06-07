@@ -147,10 +147,10 @@ timeout(time: 120, unit: 'MINUTES') {
             ),
             azureServicePrincipal(
               credentialsId: 'packer-azure-serviceprincipal',
-              subscriptionIdVariable: 'PACKER_AZURE_SUBSCRIPTION_ID',
-              clientIdVariable: 'PACKER_AZURE_CLIENT_ID',
-              clientSecretVariable: 'PACKER_AZURE_CLIENT_SECRET',
-              tenantIdVariable: 'PACKER_AZURE_TENANT_ID'
+              subscriptionIdVariable: 'AZURE_SUBSCRIPTION_ID',
+              clientIdVariable: 'AZURE_CLIENT_ID',
+              clientSecretVariable: 'AZURE_CLIENT_SECRET',
+              tenantIdVariable: 'AZURE_TENANT_ID'
             ),
             usernamePassword(
               credentialsId: 'github-app-infra',
