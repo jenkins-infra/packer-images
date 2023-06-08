@@ -7,17 +7,17 @@ timeout(time: 120, unit: 'MINUTES') {
   node(nodeLabel) {
     String testingvariable = "VALUEOFTESTINGVARIABLE"
     stage('TESTING') {
-      withEnv([
-        "TESTINGVARIABLE = $testingvariable"
-      ]){
-        withCredentials([
-          string(
-              credentialsId: 'packer-aws-access-key-id',
-              variable: 'AWS_ACCESS_KEY_ID'
-          )
-        ]) {
+      withCredentials([
+        string(
+            credentialsId: 'packer-aws-access-key-id',
+            variable: 'AWS_ACCESS_KEY_ID'
+        )
+      ]) {
+        withEnv([
+          "TESTINGVARIABLE = $testingvariable"
+        ]){
           echo 'testing echo testingvariable $testingvariable and environement value "${TESTINGVARIABLE}" done echo'
-          sh 'testing sh output $testingvariable and environement value "${TESTINGVARIABLE}" done sh'
+          sh 'echo testing sh output $testingvariable and environement value "${TESTINGVARIABLE}" done sh'
         }
       }
     }
