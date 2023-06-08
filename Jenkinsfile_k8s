@@ -111,16 +111,26 @@ timeout(time: 120, unit: 'MINUTES') {
       if (listbuilds[i].compute_type == 'docker' && listbuilds[i].cpu_architecture == 'amd64') {
         nodeLabel = "linux-amd64-docker"
       }
+      // Groovy quirk: create a local copy of these variables in the current loop context, as it matters for the closure scope below
+      // Otherwise the environment variables will be mixed between all the parallel stages, creating weird combinations
+      // - https://stackoverflow.com/questions/22145763/iterate-and-print-content-of-groovy-closures
+      // - http://archive.comsystoreply.de/blog-post/parallel-builds-with-jenkins-pipeline
+      final String pkr_var_agent = listbuilds[i].agent_type
+      final String pkr_var_agent_os_type = listbuilds[i].agent_type.split('-')[0]
+      final String pkr_var_agent_os_version = listbuilds[i].agent_type.split('-')[1]
+      final String pkr_var_architecture = listbuilds[i].cpu_architecture
+      final String pkr_var_image_type = listbuilds[i].compute_type
+      final String pkr_var_tag_name = env.TAG_NAME
       buildstages[stagetitle] = {
         node(nodeLabel) {
           withEnv([
             AWS_DEFAULT_REGION = 'us-east-2',
-            AGENT_TYPE = listbuilds[i].agent_type,
-            PKR_VAR_agent_os_type = listbuilds[i].agent_type.split('-')[0]
-            PKR_VAR_agent_os_version = listbuilds[i].agent_type.split('-')[1]
-            PKR_VAR_architecture = listbuilds[i].cpu_architecture
-            PKR_VAR_image_type = listbuilds[i].compute_type
-            PKR_VAR_tag_name = TAG_NAME
+            AGENT_TYPE = pkr_var_agent,
+            PKR_VAR_agent_os_type = pkr_var_agent_os_type
+            PKR_VAR_agent_os_version = pkr_var_agent_os_version
+            PKR_VAR_architecture = pkr_var_architecture
+            PKR_VAR_image_type = pkr_var_image_type
+            PKR_VAR_tag_name = pkr_var_tag_name
           ]){
             withCredentials([
               string(
