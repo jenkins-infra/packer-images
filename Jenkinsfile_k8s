@@ -124,13 +124,13 @@ timeout(time: 120, unit: 'MINUTES') {
       buildstages[stagetitle] = {
         node(nodeLabel) {
           withEnv([
-            AWS_DEFAULT_REGION = 'us-east-2',
-            AGENT_TYPE = pkr_var_agent,
-            PKR_VAR_agent_os_type = pkr_var_agent_os_type,
-            PKR_VAR_agent_os_version = pkr_var_agent_os_version,
-            PKR_VAR_architecture = pkr_var_architecture,
-            PKR_VAR_image_type = pkr_var_image_type,
-            PKR_VAR_tag_name = pkr_var_tag_name
+            "AWS_DEFAULT_REGION = 'us-east-2'",
+            "AGENT_TYPE = $pkr_var_agent",
+            "PKR_VAR_agent_os_type = $pkr_var_agent_os_type",
+            "PKR_VAR_agent_os_version = $pkr_var_agent_os_version",
+            "PKR_VAR_architecture = $pkr_var_architecture",
+            "PKR_VAR_image_type = $pkr_var_image_type",
+            "PKR_VAR_tag_name = $pkr_var_tag_name"
           ]){
             withCredentials([
               string(
