@@ -2,24 +2,6 @@
 //default node for pipeline and stages except for the amd/intel builds
 String nodeLabel="linux-arm64-docker"
 
-// Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
-// This function must be called for each distinct agent but only one time (as plugins are OS and CPU specifics)
-def packerInitPlugins() {
-  // Authenticating to the GitHub API with an API token (auto-generated IAT, valid for 1 hour) provided to the environment variable PACKER_GITHUB_API_TOKEN
-  // to avoid hitting the rate limit. Ref. https://www.packer.io/docs/commands/init.
-  withCredentials([
-    usernamePassword(
-      credentialsId: 'github-app-infra',
-      usernameVariable: 'UNUSED',
-      passwordVariable: 'PACKER_GITHUB_API_TOKEN'
-    )
-  ]) {
-    // Cleanup any remnant of packer plugins on this agent
-    sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
-    sh 'packer init ./'
-  }
-}
-
 if (env.BRANCH_IS_PRIMARY) {
     properties([
         buildDiscarder(logRotator(numToKeepStr: '10')),
@@ -58,6 +40,8 @@ timeout(time: 120, unit: 'MINUTES') {
           passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
         )
       ]) {
+        checkout scm
+
         sh 'updatecli version'
         sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
         if (env.BRANCH_IS_PRIMARY) {
@@ -79,6 +63,8 @@ timeout(time: 120, unit: 'MINUTES') {
         )
       ]) {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+          checkout scm
+
           sh './cleanup/aws.sh'
           sh './cleanup/aws_images.sh 1 dev'
           sh './cleanup/aws_images.sh 7 staging'
@@ -99,6 +85,8 @@ timeout(time: 120, unit: 'MINUTES') {
         )
       ]) {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+          checkout scm
+
           sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
           sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
           sh './cleanup/azure_gallery_images.sh 1 dev'
@@ -113,10 +101,10 @@ timeout(time: 120, unit: 'MINUTES') {
     def buildstages = [:]
     // packer builds
     def listbuilds = [
-      [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
-      [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'docker'],
-      [cpu_architecture:'amd64', agent_type:'windows-2019', compute_type:'azure-arm'],
-      [cpu_architecture:'amd64', agent_type:'windows-2022', compute_type:'azure-arm'],
+      // [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
+      // [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'docker'],
+      // [cpu_architecture:'amd64', agent_type:'windows-2019', compute_type:'azure-arm'],
+      // [cpu_architecture:'amd64', agent_type:'windows-2022', compute_type:'azure-arm'],
       [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'amazon-ebs'],
       [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
       [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'docker']
@@ -163,6 +151,8 @@ timeout(time: 120, unit: 'MINUTES') {
             checkout scm
             // Cleanup any remnant of packer plugins on this agent
             sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
+            // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
+            // This function must be called for each distinct agent but only one time (as plugins are OS and CPU specifics)
             sh 'packer init ./'
             // packer validate
             sh 'PACKER_LOG=1 packer validate ./'
