@@ -115,12 +115,12 @@ timeout(time: 120, unit: 'MINUTES') {
       // Otherwise the environment variables will be mixed between all the parallel stages, creating weird combinations
       // - https://stackoverflow.com/questions/22145763/iterate-and-print-content-of-groovy-closures
       // - http://archive.comsystoreply.de/blog-post/parallel-builds-with-jenkins-pipeline
-      final String pkr_var_agent = listbuilds[i].agent_type
-      final String pkr_var_agent_os_type = listbuilds[i].agent_type.split('-')[0]
-      final String pkr_var_agent_os_version = listbuilds[i].agent_type.split('-')[1]
-      final String pkr_var_architecture = listbuilds[i].cpu_architecture
-      final String pkr_var_image_type = listbuilds[i].compute_type
-      final String pkr_var_tag_name = env.TAG_NAME
+      String pkr_var_agent = listbuilds[i].agent_type
+      String pkr_var_agent_os_type = listbuilds[i].agent_type.split('-')[0]
+      String pkr_var_agent_os_version = listbuilds[i].agent_type.split('-')[1]
+      String pkr_var_architecture = listbuilds[i].cpu_architecture
+      String pkr_var_image_type = listbuilds[i].compute_type
+      String pkr_var_tag_name = env.TAG_NAME
       buildstages[stagetitle] = {
         node(nodeLabel) {
           withEnv([
