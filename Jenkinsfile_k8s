@@ -107,12 +107,12 @@ timeout(time: 120, unit: 'MINUTES') {
             }
           }
         }
-        
+
       }
     }
 
     //run in parallel
-    parallel(sidestages + buildstages)
+    parallel(buildstages)
 
     // after parallel
     stage('Build Docker Manifest') {
