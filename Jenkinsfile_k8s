@@ -110,10 +110,10 @@ timeout(time: 120, unit: 'MINUTES') {
       // dynamically choose node to use
 
       if (listbuilds[i].cpu_architecture == 'amd64') {
-        echo "node choosen as AMD"
+        echo "${listbuilds[i]} node choosen as AMD"
         nodeLabel = "linux-amd64-docker"
       } else {
-        echo "node choosen as ARM64"
+        echo "${listbuilds[i]} node choosen as ARM64"
         nodeLabel = mainNodeLabel
       }
       echo "nodeLabel ${nodeLabel}"
