@@ -27,6 +27,7 @@ timeout(time: 120, unit: 'MINUTES') {
     checkout scm
     // To set pkr_var_scm_ref globally
     def gitCommit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
+    echo $gitCommit
     String pkr_var_scm_ref = $gitCommit
     echo $pkr_var_scm_ref
 
