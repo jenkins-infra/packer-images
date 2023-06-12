@@ -29,14 +29,8 @@ timeout(time: 120, unit: 'MINUTES') {
     env.DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
 
     // To set pkr_var_scm_ref globally
-    stage('Prepare') {
-      if (env.GIT_COMMIT == null){
-        scm_variables = checkout scm
-        echo scm_variables.get('GIT_COMMIT')
-      }
-      String pkr_var_scm_ref = $env.GIT_COMMIT
-      echo $pkr_var_scm_ref
-    }
+    def gitCommit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
+    String pkr_var_scm_ref = $gitCommit
 
     // Define parrallels stages
     def sidestages = [failFast:false]
