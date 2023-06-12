@@ -116,6 +116,7 @@ timeout(time: 120, unit: 'MINUTES') {
         echo "${listbuilds[i]} node choosen as $mainNodeLabel"
       }
       echo "nodeLabel ${nodeLabel}"
+      checkout scm
       // Groovy quirk: create a local copy of these variables in the current loop context, as it matters for the closure scope below
       // Otherwise the environment variables will be mixed between all the parallel stages, creating weird combinations
       // - https://stackoverflow.com/questions/22145763/iterate-and-print-content-of-groovy-closures
