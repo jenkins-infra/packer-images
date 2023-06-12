@@ -24,12 +24,16 @@ timeout(time: 120, unit: 'MINUTES') {
 
   // main script block
   node(mainNodeLabel) {
-    checkout scm
-    // To set pkr_var_scm_ref globally
-    def gitCommit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
-    echo $gitCommit
-    String pkr_var_scm_ref = $gitCommit
-    echo $pkr_var_scm_ref
+
+    stage('Checkout') {
+      // To set pkr_var_scm_ref globally
+      checkout scm
+      sh 'git rev-parse HEAD > GIT_COMMIT'
+      gitCommit = readFile('GIT_COMMIT').trim()
+      echo $gitCommit
+      String pkr_var_scm_ref = $gitCommit
+      echo $pkr_var_scm_ref
+    }
 
     // To allow using ASDF shims
     env.PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
