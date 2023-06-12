@@ -24,14 +24,24 @@ timeout(time: 120, unit: 'MINUTES') {
 
   // main script block
   node(mainNodeLabel) {
+    checkout scm
+
     // To allow using ASDF shims
     env.PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
     env.DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
 
+    stage('Prepare') {
+      if (env.GIT_COMMIT == null){
+        sh 'git rev-parse --short HEAD > GIT_COMMIT'
+      }
+      $pkr_var_scm_ref = env.GIT_COMMIT
+
+      echo $pkr_var_scm_ref
+    }
+
     // Define parrallels stages
     def sidestages = [failFast:false]
     // as in scripted we need to checkout the code in the node
-    checkout scm
 
     sidestages["updatecli"] = {
       // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
@@ -129,7 +139,7 @@ timeout(time: 120, unit: 'MINUTES') {
       String pkr_var_architecture = listbuilds[i].cpu_architecture
       String pkr_var_image_type = listbuilds[i].compute_type
       String pkr_var_tag_name = env.TAG_NAME
-      String pkr_var_scm_ref = env.GIT_COMMIT
+      //String pkr_var_scm_ref = env.GIT_COMMIT
 
       echo env.GIT_COMMIT
       echo pkr_var_scm_ref
