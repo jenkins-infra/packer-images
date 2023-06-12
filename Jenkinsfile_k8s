@@ -22,17 +22,16 @@ if (env.CHANGE_ID) {
 // Average build time is ~50 min but windows can takes 45min of updates on AWS
 timeout(time: 120, unit: 'MINUTES') {
 
-// To set pkr_var_scm_ref globally
-def gitCommit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
-String pkr_var_scm_ref = $gitCommit
-
   // main script block
   node(mainNodeLabel) {
+    // To set pkr_var_scm_ref globally
+    def gitCommit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
+    String pkr_var_scm_ref = $gitCommit
+    echo $pkr_var_scm_ref
+
     // To allow using ASDF shims
     env.PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
     env.DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
-
-    echo $pkr_var_scm_ref
 
     // Define parrallels stages
     def sidestages = [failFast:false]
