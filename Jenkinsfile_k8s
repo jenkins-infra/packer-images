@@ -24,12 +24,15 @@ if (env.CHANGE_ID) {
 // into the correct node type based on the provided arguments
 def withPackerNode(String nodeLabel, Closure body) {
   if (nodeLabel != null) {
+    echo "Launch node : $nodeLabel"
     node(nodeLabel) {
+      echo "Within node : $nodeLabel"
       checkout scm
       return body.call()
     }
   } else {
     // No node allocation: keep the same default agent node (e.g. declarative top-level)
+    echo "Using Main node"
     return body.call()
   }
 }
