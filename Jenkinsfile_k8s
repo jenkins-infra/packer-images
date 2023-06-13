@@ -23,7 +23,7 @@ if (env.CHANGE_ID) {
 // The node to be used depends on the build type: this function executes the pipeline code block provided as "body"
 // into the correct node type based on the provided arguments
 def withPackerNode(String nodeLabel, Closure body) {
-  if (nodeLabel != null) {
+  if (nodeLabel != '') {
     echo "Launch node : $nodeLabel"
     node(nodeLabel) {
       echo "Within node : $nodeLabel"
