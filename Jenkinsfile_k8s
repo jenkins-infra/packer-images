@@ -2,6 +2,7 @@
 //default node for pipeline and stages except for the amd/intel builds
 String mainNodeLabel="linux-arm64-docker"
 String gitCommit = ''
+Boolean isPackerBuildDone = false
 
 if (env.BRANCH_IS_PRIMARY) {
     properties([
@@ -40,6 +41,15 @@ def withPackerNode(String nodeLabel, Closure body) {
     // No node allocation: keep the same default agent node (e.g. declarative top-level)
     echo "Using Main node"
     sh 'env'
+    // packer build only once for the main node
+    if isPackerBuildDone == false {
+      // Cleanup any remnant of packer plugins on this agent
+      sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
+      // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
+      // This function must be called for each distinct agent but only one time (as plugins are OS and CPU specifics)
+      sh 'packer init ./'
+      isPackerBuildDone = true
+    }
     return body.call()
   }
 }
@@ -54,12 +64,6 @@ timeout(time: 120, unit: 'MINUTES') {
       // To set pkr_var_scm_ref globally
       scmvars = checkout scm
       gitCommit = scmvars.GIT_COMMIT
-
-      // Cleanup any remnant of packer plugins on this agent
-      sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
-      // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
-      // This function must be called for each distinct agent but only one time (as plugins are OS and CPU specifics)
-      sh 'packer init ./'
     }
 
     // To allow using ASDF shims
