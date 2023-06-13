@@ -42,7 +42,7 @@ def withPackerNode(String nodeLabel, Closure body) {
     echo "Using Main node"
     sh 'env'
     // packer build only once for the main node
-    if isPackerBuildDone == false {
+    if (!isPackerBuildDone) {
       // Cleanup any remnant of packer plugins on this agent
       sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
       // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
