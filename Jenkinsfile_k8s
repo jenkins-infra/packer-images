@@ -20,6 +20,20 @@ if (env.CHANGE_ID) {
   ])
 }
 
+// The node to be used depends on the build type: this function executes the pipeline code block provided as "body"
+// into the correct node type based on the provided arguments
+def withPackerNode(String nodeLabel, Closure body) {
+  if (nodeLabel != null) {
+    node(nodeLabel) {
+      checkout scm
+      return body.call()
+    }
+  } else {
+    // No node allocation: keep the same default agent node (e.g. declarative top-level)
+    return body.call()
+  }
+}
+
 // Average build time is ~50 min but windows can takes 45min of updates on AWS
 timeout(time: 120, unit: 'MINUTES') {
 
@@ -28,9 +42,8 @@ timeout(time: 120, unit: 'MINUTES') {
 
     stage('Checkout') {
       // To set pkr_var_scm_ref globally
-      checkout scm
-      sh 'git rev-parse HEAD > GIT_COMMIT'
-      gitCommit = readFile('GIT_COMMIT').trim()
+      scmvars = checkout scm
+      gitCommit = scmvars.GIT_COMMIT
     }
 
     // To allow using ASDF shims
@@ -39,8 +52,6 @@ timeout(time: 120, unit: 'MINUTES') {
 
     // Define parrallels stages
     def sidestages = [failFast:false]
-    // as in scripted we need to checkout the code in the node
-
     sidestages["updatecli"] = {
       // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
       withCredentials([
@@ -105,25 +116,16 @@ timeout(time: 120, unit: 'MINUTES') {
     def buildstages = [:]
     // packer builds
     def listbuilds = [
-      [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
-      [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'docker'],
-      [cpu_architecture:'amd64', agent_type:'windows-2019', compute_type:'azure-arm'],
-      [cpu_architecture:'amd64', agent_type:'windows-2022', compute_type:'azure-arm'],
-      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'amazon-ebs'],
-      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'azure-arm'],
-      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'docker']
+      [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm',   nodeLabel:'linux-amd64-docker'],
+      [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'docker',      nodeLabel:'linux-amd64-docker'],
+      [cpu_architecture:'amd64', agent_type:'windows-2019', compute_type:'azure-arm',   nodeLabel:''],
+      [cpu_architecture:'amd64', agent_type:'windows-2022', compute_type:'azure-arm',   nodeLabel:''],
+      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'amazon-ebs',  nodeLabel:''],
+      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'azure-arm',   nodeLabel:''],
+      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'docker',      nodeLabel:'']
     ]
     for(int i = 0; i < listbuilds.size(); i++) {
-      String stagetitle="Build ${listbuilds[i].cpu_architecture} ${listbuilds[i].agent_type} ${listbuilds[i].compute_type} image"
-      // dynamically choose node to use
-      String nodeLabel = mainNodeLabel
-      if (listbuilds[i].cpu_architecture == 'amd64') {
-        echo "${listbuilds[i]} node choosen as AMD"
-        nodeLabel = "linux-amd64-docker"
-      } else {
-        echo "${listbuilds[i]} node choosen as $mainNodeLabel"
-      }
-      echo "nodeLabel ${nodeLabel}"
+      String stagetitle="Build ${listbuilds[i].cpu_architecture} ${listbuilds[i].agent_type} ${listbuilds[i].compute_type} image on ${listbuilds[i].nodeLabel}"
 
       // Groovy quirk: create a local copy of these variables in the current loop context, as it matters for the closure scope below
       // Otherwise the environment variables will be mixed between all the parallel stages, creating weird combinations
@@ -137,17 +139,13 @@ timeout(time: 120, unit: 'MINUTES') {
       String pkr_var_architecture = listbuilds[i].cpu_architecture
       String pkr_var_image_type = listbuilds[i].compute_type
       String pkr_var_tag_name = env.TAG_NAME
-
-      echo gitCommit
+      String nodeLabel = listbuilds[i].nodeLabel
 
       buildstages[stagetitle] = {
-        node(nodeLabel) {
-          checkout scm
+        withPackerNode(nodeLabel) {
           withEnv([
-            "PKR_VAR_dryrun=$env.DRYRUN",
             "PKR_VAR_build_type=$pkr_var_build_type",
             "PKR_VAR_image_version=$pkr_var_image_version",
-            "PKR_VAR_scm_ref=$gitCommit",
             "PKR_VAR_agent_os_type=$pkr_var_agent_os_type",
             "PKR_VAR_agent_os_version=$pkr_var_agent_os_version",
             "PKR_VAR_architecture=$pkr_var_architecture",
@@ -157,7 +155,6 @@ timeout(time: 120, unit: 'MINUTES') {
             "AGENT_TYPE=$pkr_var_agent",
             "PATH=${WORKSPACE}/.bin:${env.PATH}" // Required if packer needs to be installed
           ]){
-            sh 'echo $pkr_var_scm_ref'
             withCredentials([
               string(
                   credentialsId: 'packer-aws-access-key-id',
@@ -223,19 +220,22 @@ timeout(time: 120, unit: 'MINUTES') {
       if (env.TAG_NAME != null){
         // Static variable definition as this stage is outside the matrix scope
         // Improvement: pass dynamically the list of images from the matrix (e.g. use full scripted pipeline) to support other Docker agent types (such as windows-2019 or windows-2022)
-        agent_type = 'ubuntu-22.04'
-        infra.withDockerPushCredentials {
-          sh 'docker manifest create \
-              jenkinsciinfra/jenkins-agent-${agent_type}:latest \
-              --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-              --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-          sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":latest'
+        withEnv([
+            "agent_type='ubuntu-22.04'"
+        ]){
+          infra.withDockerPushCredentials {
+            sh 'docker manifest create \
+                jenkinsciinfra/jenkins-agent-${agent_type}:latest \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":latest'
 
-          sh 'docker manifest create \
-              jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} \
-              --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-              --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-          sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":"${TAG_NAME}"'
+            sh 'docker manifest create \
+                jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":"${TAG_NAME}"'
+          }
         }
       }
     }
