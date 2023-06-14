@@ -40,7 +40,7 @@ def withPackerNode(String nodeLabel, Closure body) {
   } else {
     // No node allocation: keep the same default agent node : mainNode
     echo "Using Main node"
-    lock(label: 'mainnodepackerinit', quantity: 1) {
+    lock('mainnodepackerinit') {
       // packer build only once for the main node
       if (needPackerBuild) {
         echo "doing packer init on the main node (only once)"
@@ -64,7 +64,7 @@ timeout(time: 120, unit: 'MINUTES') {
   // main script block
   node(mainNodeLabel) {
 
-    stage('Checkout and Packer init') {
+    stage('Checkout') {
       // To set pkr_var_scm_ref globally
       scmvars = checkout scm
       gitCommit = scmvars.GIT_COMMIT
