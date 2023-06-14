@@ -42,12 +42,15 @@ def withPackerNode(String nodeLabel, Closure body) {
     echo "Using Main node"
     // packer build only once for the main node
     if (needPackerBuild) {
+      echo "doing packer init on the main node (only once)"
       needPackerBuild = false
       // Cleanup any remnant of packer plugins on this agent
       sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
       // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
       // This function must be called for each distinct agent but only one time (as plugins are OS and CPU specifics)
       sh 'packer init ./'
+    } else {
+      echo "skipping packer init as already done on the main node"
     }
     return body.call()
   }
