@@ -2,7 +2,7 @@
 //default node for pipeline and stages except for the amd/intel builds
 String mainNodeLabel="linux-arm64-docker"
 String gitCommit = ''
-Boolean needPackerBuild = true
+needPackerBuild = true
 
 if (env.BRANCH_IS_PRIMARY) {
     properties([
