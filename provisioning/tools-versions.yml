@@ -18,7 +18,7 @@ jdk19_version: 19.0.2+7
 jdk8_version: 8u372-b07
 jenkins_remoting_version: 3131.vf2b_b_798b_ce99
 jq_version: 1.6
-jxreleaseversion_version: 2.6.10
+jxreleaseversion_version: 2.6.11
 kubectl_version: 1.23.13
 launchable_version: 1.65.0
 maven_version: 3.9.2
