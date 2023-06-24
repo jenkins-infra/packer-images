@@ -1,8 +1,8 @@
 asdf_version: 0.12.0
-awscli_version: 2.12.1
+awscli_version: 2.12.3
 azurecli_version: 2.49.0
 chocolatey_version: 1.4.0
-compose_version: 2.18.1
+compose_version: 2.19.0
 cst_version: 1.15.0
 default_jdk: 11
 docker_version: 24.0.2
@@ -18,7 +18,7 @@ jdk19_version: 19.0.2+7
 jdk8_version: 8u372-b07
 jenkins_remoting_version: 3131.vf2b_b_798b_ce99
 jq_version: 1.6
-jxreleaseversion_version: 2.6.10
+jxreleaseversion_version: 2.6.11
 kubectl_version: 1.23.13
 launchable_version: 1.65.0
 maven_version: 3.9.2
@@ -28,9 +28,9 @@ openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws
 packer_version: 1.9.1
 python3_version: 3.11.3
 ruby_version: 2.6.10
-terraform_version: 1.5.0
+terraform_version: 1.5.1
 tfsec_version: 1.28.1
-updatecli_version: 0.53.0
+updatecli_version: 0.54.0
 vagrant_version: 2.3.7
 windows_pwsh_version: 7.3.4
 yq_version: 4.25.3
