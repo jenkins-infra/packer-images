@@ -26,11 +26,9 @@ if (env.CHANGE_ID) {
 // into the correct node type based on the provided arguments
 def withPackerNode(String nodeLabel, Closure body) {
   if (nodeLabel != '') {
-    echo "Launch node : $nodeLabel"
+    // if a node is specified, we spawn a new one
     node(nodeLabel) {
-      echo "Within node : $nodeLabel"
       checkout scm
-      sh 'env'
       // Cleanup any remnant of packer plugins on this agent
       sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
       // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
@@ -40,11 +38,9 @@ def withPackerNode(String nodeLabel, Closure body) {
     }
   } else {
     // No node allocation: keep the same default agent node : mainNode
-    echo "Using Main node"
     lock('mainnodepackerinit') {
       // packer build only once for the main node
       if (needPackerBuild) {
-        echo "doing packer init on the main node (only once)"
         needPackerBuild = false
         // Cleanup any remnant of packer plugins on this agent
         sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
@@ -143,12 +139,12 @@ timeout(time: 120, unit: 'MINUTES') {
     // packer builds
     def listbuilds = [
       [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'docker',      nodeLabel:'linux-amd64-docker'],
-      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'docker',      nodeLabel:'linux-arm64-docker'],
-      [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm',   nodeLabel:'linux-amd64-docker'],
-      [cpu_architecture:'amd64', agent_type:'windows-2019', compute_type:'azure-arm',   nodeLabel:'linux-arm64-docker'],
-      [cpu_architecture:'amd64', agent_type:'windows-2022', compute_type:'azure-arm',   nodeLabel:'linux-arm64-docker'],
+      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'docker',      nodeLabel:''],
+      [cpu_architecture:'amd64', agent_type:'ubuntu-22.04', compute_type:'azure-arm',   nodeLabel:''],
+      [cpu_architecture:'amd64', agent_type:'windows-2019', compute_type:'azure-arm',   nodeLabel:''],
+      [cpu_architecture:'amd64', agent_type:'windows-2022', compute_type:'azure-arm',   nodeLabel:''],
       [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'azure-arm',   nodeLabel:''],
-      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'amazon-ebs',  nodeLabel:'linux-arm64-docker'],
+      [cpu_architecture:'arm64', agent_type:'ubuntu-22.04', compute_type:'amazon-ebs',  nodeLabel:''],
     ]
     for(int i = 0; i < listbuilds.size(); i++) {
       String stagetitle="Build ${listbuilds[i].cpu_architecture} ${listbuilds[i].agent_type} ${listbuilds[i].compute_type} image on ${listbuilds[i].nodeLabel}"
@@ -210,7 +206,7 @@ timeout(time: 120, unit: 'MINUTES') {
               // Execute build only for this matrix cell's setup
               retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
                 sh 'echo PKR_VAR_image_type.PKR_VAR_agent_os_type equal "${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}"'
-                sh 'PACKER_LOG=1 packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
                 // adding manually a cpu architecture tag to the docker image
                 if (PKR_VAR_image_type == 'docker') {
                   sh 'docker tag "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest" "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"'
@@ -227,23 +223,21 @@ timeout(time: 120, unit: 'MINUTES') {
                   }
                 }
                 stage('Build Docker Manifest') {
-                  if (env.TAG_NAME != null){
-                    // tag the manifest with the 2 amend only when both are pushed
-                    lock('tagsmanifestonlyonceattheend') {
-                      if (oktotag == 2 ) {
-                        infra.withDockerPushCredentials {
-                          sh 'docker manifest create \
-                              jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:latest \
-                              --amend jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:arm64 \
-                              --amend jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:amd64'
-                          sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${AGENT_TYPE}":latest'
+                  // tag the manifest with the 2 amend only when both are pushed
+                  lock('tagsmanifestonlyonceattheend') {
+                    if (oktotag == 2 ) { // 2 docker images to tag arm64 + amd64
+                      infra.withDockerPushCredentials {
+                        sh 'docker manifest create \
+                            jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:latest \
+                            --amend jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:arm64 \
+                            --amend jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:amd64'
+                        sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${AGENT_TYPE}":latest'
 
-                          sh 'docker manifest create \
-                              jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:${TAG_NAME} \
-                              --amend jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:arm64 \
-                              --amend jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:amd64'
-                          sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${AGENT_TYPE}":"${TAG_NAME}"'
-                        }
+                        sh 'docker manifest create \
+                            jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:${TAG_NAME} \
+                            --amend jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:arm64 \
+                            --amend jenkinsciinfra/jenkins-agent-${AGENT_TYPE}:amd64'
+                        sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${AGENT_TYPE}":"${TAG_NAME}"'
                       }
                     }
                   }
