@@ -1,0 +1,310 @@
+// The node to be used depends on the build type: this function executes the pipeline code block provided as "body"
+// into the correct node type based on the provided arguments
+def withPackerNode(String packer_template, String compute_type, String cpu_architecture, Closure body) {
+  // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
+  if (cpu_architecture == 'amd64' && compute_type == 'docker') {
+    node('linux-amd64-docker') {
+      // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
+      checkout scm
+
+      // New agent means new packer project to initialize (plugins)
+      packerInitPlugins()
+
+      return body.call()
+    }
+  } else {
+    // No node allocation: keep the same default agent node (e.g. declarative top-level)
+    return body.call()
+  }
+}
+
+// Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
+// This function must be called for each distinct agent but only one time (as plugins are OS and CPU specifics)
+def packerInitPlugins() {
+  // Authenticating to the GitHub API with an API token (auto-generated IAT, valid for 1 hour) provided to the environment variable PACKER_GITHUB_API_TOKEN
+  // to avoid hitting the rate limit. Ref. https://www.packer.io/docs/commands/init.
+  withCredentials([usernamePassword(credentialsId: 'github-app-infra',usernameVariable: 'UNUSED',passwordVariable: 'PACKER_GITHUB_API_TOKEN')]) {
+    // Cleanup any remnant of packer plugins on this agent
+    sh 'rm -rf /home/jenkins/.config /home/jenkins/.packer*'
+    sh 'packer init ./'
+  }
+}
+
+if (env.BRANCH_IS_PRIMARY) {
+  properties([
+    buildDiscarder(logRotator(numToKeepStr: '10')),
+    // Daily build is enough: only the tagged build would generate downstream PRs on jenkins-infra
+    pipelineTriggers([cron('@daily')]),
+    // Do not build concurently on the principal branch (to avoid Azure ARM issues with shared resources)
+    disableConcurrentBuilds(),
+  ])
+}
+
+if (env.CHANGE_ID) {
+  properties([
+    // Do not build concurently on pull requests (to avoid Azure ARM issues with shared resources), and abort previous running build
+    disableConcurrentBuilds(abortPrevious: true)
+  ])
+}
+
+pipeline {
+  agent {
+    // Default agent for all the packer steps: needs Docker on amd64 Linux
+    // Only a few matrix cells requires another kind of agent other than this default
+    label "linux-arm64-docker"
+  }
+  options {
+    // Average build time is ~50 min but windows can takes 45min of updates on AWS
+    timeout(time: 120, unit: 'MINUTES')
+  }
+  environment {
+    // To allow using ASDF shims
+    PATH = "${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"
+  }
+  stages {
+    stage('Side Tasks') {
+      environment {
+        DRYRUN = "${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"
+      }
+      parallel {
+        stage('Packer Init') {
+          steps {
+            // Call the initializing function once for the default agent
+            script {
+              packerInitPlugins()
+            }
+          }
+        }
+        stage('GC on AWS us-east-2') {
+          environment {
+            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+            AWS_DEFAULT_REGION    = 'us-east-2'
+          }
+          steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              sh './cleanup/aws.sh'
+              sh './cleanup/aws_images.sh 1 dev'
+              sh './cleanup/aws_images.sh 7 staging'
+              sh './cleanup/aws_images.sh 60 prod'
+              sh './cleanup/aws_snapshots.sh'
+            }
+          }
+        }
+        stage('GC on Azure') {
+          environment {
+            PACKER_AZURE = credentials('packer-azure-serviceprincipal')
+          }
+          steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
+              sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
+              sh './cleanup/azure_gallery_images.sh 1 dev'
+              sh './cleanup/azure_gallery_images.sh 7 staging'
+              sh './cleanup/azure.sh 1 dev'
+              sh './cleanup/azure.sh 1 staging'
+              sh './cleanup/azure.sh 1 prod'
+            }
+          }
+        }
+        stage('Updatecli') {
+          steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              script {
+                // TODO: Implement https://github.com/jenkins-infra/pipeline-library/issues/518 to allow using the updatecli() library function
+                withCredentials([
+                  usernamePassword(
+                  credentialsId: 'github-app-updatecli-on-jenkins-infra',
+                  usernameVariable: 'USERNAME_VALUE', // Setting this variable is mandatory, even if of not used when the credentials is a githubApp one
+                  passwordVariable: 'UPDATECLI_GITHUB_TOKEN'
+                  )
+                ]) {
+                  sh 'updatecli version'
+                  sh 'updatecli diff --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+                  if (env.BRANCH_IS_PRIMARY) {
+                    sh 'updatecli apply --values ./updatecli/values.yaml --config ./updatecli/updatecli.d'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    stage('Packer Images') {
+      matrix {
+        axes {
+          axis {
+            name 'cpu_architecture'
+            values 'amd64', 'arm64'
+          }
+          axis {
+            name 'agent_type'
+            // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
+            values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
+          }
+          axis {
+            name 'compute_type'
+            // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
+            values 'amazon-ebs', 'azure-arm', 'docker'
+          }
+        }
+        excludes {
+          /**
+          Since https://github.com/jenkins-infra/helpdesk/issues/3421 and https://github.com/jenkins-infra/helpdesk/issues/3502, EC2 is only used for Linux + `arm64` VMs.
+          **/
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'amd64'
+            }
+            axis {
+              name 'compute_type'
+              values 'amazon-ebs'
+            }
+          }
+          // Only build Ubuntu images for arm64 CPU in AWS (notValues)
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'agent_type'
+              notValues 'ubuntu-22.04'
+            }
+            axis {
+              name 'compute_type'
+              values 'amazon-ebs'
+            }
+          }
+          // Only build Ubuntu images for arm64 CPU in Azure (notValues)
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'agent_type'
+              notValues 'ubuntu-22.04'
+            }
+            axis {
+              name 'compute_type'
+              values 'azure-arm'
+            }
+          }
+          // No build on Windows or Docker, not yet implemented
+          exclude {
+            axis {
+              name 'agent_type'
+              values 'windows-2019'
+            }
+            axis {
+              name 'compute_type'
+              values 'docker'
+            }
+          }
+          exclude {
+            axis {
+              name 'agent_type'
+              values 'windows-2022'
+            }
+            axis {
+              name 'compute_type'
+              values 'docker'
+            }
+          }
+        }
+        environment {
+          AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
+          AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
+          // Defines the following environment variables: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
+          // Ref. https://plugins.jenkins.io/azure-credentials/#plugin-content-declarative-pipeline
+          AZURE                         = credentials('packer-azure-serviceprincipal')
+          // // Split packer plugins/configuration for each matrix cell - ref. https://www.packer.io/docs/configure
+          // PACKER_PLUGIN_PATH            = "${env.WORKSPACE}/plugins"
+          // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
+          // Ref. https://www.packer.io/docs/templates/hcl_templates/variables#assigning-values-to-build-variables
+          PKR_VAR_build_type            = "${env.TAG_NAME ? 'prod' : (env.BRANCH_IS_PRIMARY ? 'staging' : 'dev') }"
+          PKR_VAR_image_version         = "${env.TAG_NAME ?: ((env.BRANCH_IS_PRIMARY ? 1 : 0) + '.' + (env.CHANGE_ID ?: 0) + '.' + env.BUILD_ID)}"
+          PKR_VAR_scm_ref               = "${env.GIT_COMMIT}"
+          PKR_VAR_agent_os_type         = "${env.agent_type.split('-')[0]}"
+          PKR_VAR_agent_os_version      = "${env.agent_type.split('-')[1]}"
+          PKR_VAR_architecture          = "${env.cpu_architecture}"
+          PKR_VAR_image_type            = "${env.compute_type}"
+          PATH                          = "${WORKSPACE}/.bin:${env.PATH}" // Required if packer needs to be installed
+        }
+        stages {
+          stage('Build Template') {
+            steps {
+              script {
+                // Groovy quirk: create a local copy of these variables in the current loop context, as it matters for the closure scope below
+                // Otherwise the environment variables will be mixed between all the parallel stages, creating weird combinations
+                // - https://stackoverflow.com/questions/22145763/iterate-and-print-content-of-groovy-closures
+                // - http://archive.comsystoreply.de/blog-post/parallel-builds-with-jenkins-pipeline
+                final String pkr_var_agent_os_type = agent_type.split('-')[0]
+                final String pkr_var_agent_os_version = agent_type.split('-')[1]
+                final String pkr_var_architecture = cpu_architecture
+                final String pkr_var_image_type = compute_type
+                final String pkr_var_tag_name = env.TAG_NAME
+
+                withPackerNode(pkr_var_agent_os_type + '-' + pkr_var_agent_os_version , pkr_var_image_type, pkr_var_architecture) {
+                  // Validate template (for all elements)
+                  sh 'PACKER_LOG=1 packer validate ./'
+
+                  // Execute build only for this matrix cell's setup
+                  retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
+                    sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
+                    // adding manually a cpu architecture tag to the docker image
+                    if (pkr_var_image_type == 'docker') {
+                      sh 'docker tag "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:latest" "jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}:${PKR_VAR_architecture}"'
+                    }
+                  }
+                  // if docker and building a tag, push to dockerhub from inside the node
+                  // else we would loose the docker image
+                  if (pkr_var_image_type == 'docker' && pkr_var_tag_name != null) {
+                    stage('Publish all tags for Docker image') {
+                      echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
+                      infra.withDockerPushCredentials {
+                        sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${agent_type}'
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    stage('Build Docker Manifest') {
+      when {
+        expression {
+          return env.TAG_NAME != null
+        }
+      }
+      environment {
+        // Static variable definition as this stage is outside the matrix scope
+        // Improvement: pass dynamically the list of images from the matrix (e.g. use full scripted pipeline) to support other Docker agent types (such as windows-2019 or windows-2022)
+        agent_type = 'ubuntu-22.04'
+      }
+      steps {
+        script {
+          infra.withDockerPushCredentials {
+            sh 'docker manifest create \
+                jenkinsciinfra/jenkins-agent-${agent_type}:latest \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":latest'
+
+            sh 'docker manifest create \
+                jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+                --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+            sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":"${TAG_NAME}"'
+          }
+        }
+      }
+    }
+  }
+}
