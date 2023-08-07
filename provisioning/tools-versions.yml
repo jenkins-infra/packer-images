@@ -3,7 +3,7 @@ awscli_version: 2.13.7
 azurecli_version: 2.51.0
 chocolatey_version: 1.4.0
 compose_version: 2.20.2
-cst_version: 1.15.0
+cst_version: 1.16.0
 default_jdk: 11
 docker_version: 24.0.5
 gh_version: 2.32.1
