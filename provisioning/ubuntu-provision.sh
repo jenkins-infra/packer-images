@@ -319,7 +319,7 @@ function install_jdk() {
   tar --extract --gunzip --file=/tmp/jdk19.tgz --directory=/opt/jdk-19 --strip-components=1
 
   # JDK21 https://github.com/adoptium/temurin21-binaries/releases/download/jdk21-2023-08-09-06-56-beta/OpenJDK21U-jdk_aarch64_linux_hotspot_2023-08-09-06-56.tar.gz
-  jdk21_short_version="${JDK21_VERSION/%$-beta}"
+  jdk21_short_version="${JDK21_VERSION//-beta/}"
   curl -sSL -o /tmp/jdk21.tgz \
     "https://github.com/adoptium/temurin21-binaries/releases/download/jdk21-${JDK21_VERSION}/OpenJDK21U-jdk_${cpu_arch_short}_linux_hotspot_${jdk21_short_version}.tar.gz"
   tar --extract --gunzip --file=/tmp/jdk21.tgz --directory=/opt/jdk-21 --strip-components=1
