@@ -19,6 +19,11 @@ command:
     stdout:
       - 19.0.2+7
     stderr: []
+  /opt/jdk-21/bin/java --version:
+    exit-status: 0
+    stdout:
+      - 21-beta 2023-09-19
+    stderr: []
 file:
   /home/jenkins:
     exists: true
