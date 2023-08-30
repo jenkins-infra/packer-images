@@ -12,7 +12,7 @@ git_linux_version: 2.42.0
 git_windows_version: 2.42.0
 goss_version: 0.3.20
 hadolint_version: 2.12.0
-jdk11_version: 11.0.20+8
+jdk11_version: 11.0.20.1+1
 jdk17_version: 17.0.8+7
 jdk19_version: 19.0.2+7
 jdk21_version: 2023-08-09-06-56-beta
