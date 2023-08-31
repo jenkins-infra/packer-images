@@ -1,0 +1,80 @@
+---
+name: Bump JDK21 version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+  temurin21-binaries:
+    kind: "github"
+    spec:
+      user: "updatecli-bot"
+      email: "updatecli@example.com"
+      owner: "adoptium"
+      repository: "temurin21-binaries"
+      token: '{{ requiredEnv .github.token }}'
+      branch: "main"
+
+sources:
+  lastReleaseVersion:
+    name: Get Latest updatecli test
+    kind: gittag
+    scmid: temurin21-binaries
+    spec:
+      versionfilter:
+        kind: regex
+        pattern: ".-ea-."
+    transformers:
+    - trimprefix: "jdk-"
+  # lastReleaseVersion:
+  #   kind: githubrelease
+  #   name: Get the latest Adoptium JDK21 version
+  #   spec:
+  #     owner: "adoptium"
+  #     repository: "temurin19-binaries"
+  #     token: "{{ requiredEnv .github.token }}"
+  #     username: "{{ .github.username }}"
+  #     versionfilter:
+  #       kind: regex
+  #       # jdk-21.0.4.1+1(https://github.com/adoptium/temurin21-binaries/releases/tag/jdk-21.0.4.1%2B1) is OK
+  #       pattern: "^jdk-21.(\\d*).(\\d*).(\\d*)(.(\\d*))+(\\d*)$"
+
+
+conditions:
+  checkIfReleaseIsAvailable:
+    kind: shell
+    spec:
+      command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
+
+targets:
+  updateJDK21Version:
+    name: Update the JDK21 version in the Packer default values
+    kind: yaml
+    spec:
+      file: "provisioning/tools-versions.yml"
+      key: "jdk21_version"
+    scmid: default
+  updateJDK21VersionInGoss:
+    name: Update the JDK21 version in the goss test
+    kind: yaml
+    spec:
+      file: "goss/goss.yaml"
+      key: command./opt/jdk-21/bin/java --version.stdout[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      title: Bump JDK21 version to {{ source "lastReleaseVersion" }}
+      labels:
+        - enhancement
+        - jdk21

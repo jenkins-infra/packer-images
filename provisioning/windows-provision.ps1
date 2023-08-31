@@ -124,7 +124,7 @@ $downloads = [ordered]@{
         }
     };
     'jdk21' = @{
-        'url' = 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk21-{0}/OpenJDK21U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK21_VERSION),$env:JDK21_VERSION.Replace('-beta', '');
+        'url' = 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-{0}/OpenJDK21U-jdk_x64_windows_hotspot_ea_21-0-{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK21_VERSION),$env:JDK21_VERSION.Split('[+-]')[1];
         'local' = "$baseDir\temurin21.zip";
         'expandTo' = $baseDir;
         'postExpand' = {
