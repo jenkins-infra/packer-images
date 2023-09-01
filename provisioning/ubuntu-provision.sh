@@ -324,7 +324,7 @@ function install_jdk() {
   jdk21_version_urlencoded=$(echo "$JDK21_VERSION" | jq "@uri" -jRr)
   jdk21_build_number="${JDK21_VERSION##*+}"
   curl -sSL -o /tmp/jdk21.tgz \
-    "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${jdk21_version_urlencoded}/OpenJDK21U-jdk_${cpu_arch_short}_hotspot_ea_21-0-${jdk21_build_number//-ea-beta/}.tar.gz"
+    "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${jdk21_version_urlencoded}/OpenJDK21U-jdk_${cpu_arch_short}_linux_hotspot_ea_21-0-${jdk21_build_number//-ea-beta/}.tar.gz"
   tar --extract --gunzip --file=/tmp/jdk21.tgz --directory=/opt/jdk-21 --strip-components=1
 
   # Define JDK installations
