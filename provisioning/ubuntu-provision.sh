@@ -690,7 +690,6 @@ function main() {
   install_common_requirements
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
   install_git_gitlfs
-  install_JA_requirements
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   install_asdf # Before all the others but after the jenkins home is created
   install_goss # needed by the pipeline
@@ -698,6 +697,7 @@ function main() {
   install_jdk # needed by the pipeline
   install_chromium
   install_datadog
+  install_JA_requirements
   install_qemu
   install_python
   install_docker_compose
