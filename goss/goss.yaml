@@ -22,7 +22,7 @@ command:
   /opt/jdk-21/bin/java --version:
     exit-status: 0
     stdout:
-      - 21-beta 2023-09-19
+      - 21-beta
     stderr: []
 file:
   /home/jenkins:

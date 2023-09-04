@@ -282,8 +282,8 @@ function install_git_gitlfs() {
 
 function install_jdk() {
   apt-get update --quiet
-  ## Prevent Java null pointer exception due to missing fontconfig
-  apt-get install --yes --no-install-recommends fontconfig
+  ## Prevent Java null pointer exception due to missing fontconfig / add jq that should already be installed but make this install_jdk function idempotent
+  apt-get install --yes --no-install-recommends fontconfig jq="${JQ_VERSION}*"
 
   ## OpenJDKs: Adoptium - https://adoptium.net/installation.html
   for jdkVersion in 8 11 17 19 21; do
@@ -320,10 +320,11 @@ function install_jdk() {
     "https://github.com/adoptium/temurin19-binaries/releases/download/jdk-${JDK19_VERSION}/OpenJDK19U-jdk_${cpu_arch_short}_linux_hotspot_${jdk19_short_version}.tar.gz"
   tar --extract --gunzip --file=/tmp/jdk19.tgz --directory=/opt/jdk-19 --strip-components=1
 
-  # JDK21 https://github.com/adoptium/temurin21-binaries/releases/download/jdk21-2023-08-09-06-56-beta/OpenJDK21U-jdk_aarch64_linux_hotspot_2023-08-09-06-56.tar.gz
-  jdk21_short_version="${JDK21_VERSION//-beta/}"
+  # JDK21 https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21%2B35-ea-beta/OpenJDK21U-jdk_x64_linux_hotspot_ea_21-0-35.tar.gz
+  jdk21_version_urlencoded=$(echo "$JDK21_VERSION" | jq "@uri" -jRr)
+  jdk21_build_number="${JDK21_VERSION##*+}"
   curl -sSL -o /tmp/jdk21.tgz \
-    "https://github.com/adoptium/temurin21-binaries/releases/download/jdk21-${JDK21_VERSION}/OpenJDK21U-jdk_${cpu_arch_short}_linux_hotspot_${jdk21_short_version}.tar.gz"
+    "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${jdk21_version_urlencoded}/OpenJDK21U-jdk_${cpu_arch_short}_linux_hotspot_ea_21-0-${jdk21_build_number//-ea-beta/}.tar.gz"
   tar --extract --gunzip --file=/tmp/jdk21.tgz --directory=/opt/jdk-21 --strip-components=1
 
   # Define JDK installations
