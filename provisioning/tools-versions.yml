@@ -5,7 +5,7 @@ chocolatey_version: 1.4.0
 compose_version: 2.20.2
 cst_version: 1.15.0
 default_jdk: 11
-docker_version: 24.0.5
+docker_version: 24.0.6
 gh_version: 2.32.1
 git_lfs_version: 3.4.0
 git_linux_version: 2.41.0
