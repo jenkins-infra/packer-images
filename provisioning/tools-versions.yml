@@ -29,7 +29,7 @@ openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws
 packer_version: 1.9.2
 python3_version: 3.11.5
 ruby_version: 2.6.10
-terraform_version: 1.5.6
+terraform_version: 1.5.7
 tfsec_version: 1.28.1
 updatecli_version: 0.58.0
 vagrant_version: 2.3.7
