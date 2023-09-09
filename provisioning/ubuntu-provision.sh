@@ -575,15 +575,17 @@ function install_nodejs() {
 
 function install_playwright_dependencies() {
   ## The command 'npx playwright install-deps --dry-run' prints the expectd command for installing dependencies.
-  # But this commad requires `sudo` access (which the ${username} user does not have.
+  # But this command requires `sudo` access (which the ${username} user does not have).
   # Also, the `root` user does not have access to the ASDF setup.
+  # The version of installed package will be kept temporarily for sanity check reporting before getting cleaned up.
   # Finally, we want to cleanup the playwright installation (which is in a temporary directory)
   temp_dir=/tmp/playwright
   su - "${username}" -c " \
     source ${asdf_install_dir}/asdf.sh \
     && mkdir -p ${temp_dir} \
     && cd ${temp_dir} \
-    && npm install playwright@latest"
+    && npm install playwright@latest \
+    && npx playwright --version > /tmp/installed_playwright_version"
   # Don't forget to change dir and to remove any `stderr` to avoid polluting the evakuated command
   playwright_deps_install_command="$(su - "${username}" -c "\
     source ${asdf_install_dir}/asdf.sh \
@@ -603,10 +605,10 @@ function install_launchable() {
   ln -s "${launchable_venv_dir}/bin/launchable" /usr/local/bin/launchable
 }
 
-## Ensure that the VM is cleaned up
+## Ensure that the VM is cleaned up of provision artifacts
 function cleanup() {
   export HISTSIZE=0
-  rm -rf /tmp/* /var/log/*
+  rm -rf /tmp/* /var/log/* ${HOME}/.npm
   sync
 }
 
@@ -679,10 +681,8 @@ function sanity_check() {
   && zip -v \
   && echo 'npm version:' \
   && npm --version \
-  && echo 'playwright install:' \
-  && npm install playwright-test \
   && echo 'playwright version:' \
-  && npm @playwright/test --version \
+  && cat /tmp/installed_playwright_version \
   && echo 'launchable version:' \
   && launchable --version
   "
@@ -729,8 +729,8 @@ function main() {
   install_nodejs
   install_playwright_dependencies
   install_launchable
-  cleanup
 }
 
 main
 sanity_check
+cleanup
