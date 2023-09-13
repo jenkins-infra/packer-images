@@ -573,27 +573,20 @@ function install_nodejs() {
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g npm"
 }
 
-function install_playwright_dependencies() {
+function install_playwright() {
+  ### Install playwright's dependencies before the module itself
   ## The command 'npx playwright install-deps --dry-run' prints the expectd command for installing dependencies.
   # But this command requires `sudo` access (which the ${username} user does not have).
   # Also, the `root` user does not have access to the ASDF setup.
-  # The version of installed package will be kept temporarily for sanity check reporting before getting cleaned up.
-  # Finally, we want to cleanup the playwright installation (which is in a temporary directory)
-  temp_dir=/tmp/playwright
-  su - "${username}" -c " \
-    source ${asdf_install_dir}/asdf.sh \
-    && mkdir -p ${temp_dir} \
-    && cd ${temp_dir} \
-    && npm install playwright@latest \
-    && npx playwright --version > /tmp/installed_playwright_version"
   # Don't forget to change dir and to remove any `stderr` to avoid polluting the evakuated command
   playwright_deps_install_command="$(su - "${username}" -c "\
     source ${asdf_install_dir}/asdf.sh \
-    && cd ${temp_dir} \
     && npx playwright install-deps --dry-run" \
   2>/dev/null)"
   eval "${playwright_deps_install_command}"
-  rm -rf "${temp_dir}"
+
+  # Install pinned playwright globally
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g playwright@${PLAYWRIGHT_VERSION}"
 }
 
 ## Install Launchable with python3 in its own virtual environment
@@ -682,7 +675,7 @@ function sanity_check() {
   && echo 'npm version:' \
   && npm --version \
   && echo 'playwright version:' \
-  && cat /tmp/installed_playwright_version \
+  && playwright --version \
   && echo 'launchable version:' \
   && launchable --version
   "
@@ -727,7 +720,7 @@ function main() {
   install_kubectl
   install_trivy
   install_nodejs
-  install_playwright_dependencies
+  install_playwright
   install_launchable
 }
 
