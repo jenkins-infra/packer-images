@@ -38,6 +38,12 @@ command:
     exit-status: 0
     stdout:
       - 18.18.2
+    stderr: []
+  playwright --version:
+    exit-status: 0
+    stdout:
+      - 1.37.1
+    stderr: []
 file:
   /home/jenkins:
     exists: true
