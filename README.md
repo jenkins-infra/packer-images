@@ -62,10 +62,10 @@ With the requirements verified locally, execute the following command:
 * Define the target to build:
 
 ```bash
-# Means: "Build the ubuntu-20.04 agent for Docker
+# Means: "Build the ubuntu-22.04 agent for Docker
 export PKR_VAR_image_type=docker
 export PKR_VAR_agent_os_type=ubuntu
-export PKR_VAR_agent_os_version=20.04
+export PKR_VAR_agent_os_version=22.04
 ```
 
 * Validate the template:
