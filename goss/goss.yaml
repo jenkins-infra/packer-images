@@ -7,17 +7,22 @@ command:
   /opt/jdk-11/bin/java --version:
     exit-status: 0
     stdout:
-      - 11.0.20+8
+      - 11.0.20.1+1
     stderr: []
   /opt/jdk-17/bin/java --version:
     exit-status: 0
     stdout:
-      - 17.0.8+7
+      - 17.0.8.1+1
     stderr: []
   /opt/jdk-19/bin/java --version:
     exit-status: 0
     stdout:
       - 19.0.2+7
+    stderr: []
+  /opt/jdk-21/bin/java --version:
+    exit-status: 0
+    stdout:
+      - 21-beta
     stderr: []
 file:
   /home/jenkins:
