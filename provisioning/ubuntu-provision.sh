@@ -282,11 +282,13 @@ function install_git_gitlfs() {
 
 function install_jdk() {
   apt-get update --quiet
-  ## Prevent Java null pointer exception due to missing fontconfig
-  apt-get install --yes --no-install-recommends fontconfig
+  ## Prevent Java null pointer exception due to missing fontconfig / add jq that should already be installed but make this install_jdk function idempotent
+  apt-get install --yes --no-install-recommends fontconfig jq="${JQ_VERSION}*"
 
   ## OpenJDKs: Adoptium - https://adoptium.net/installation.html
-  mkdir -p /opt/jdk-8 /opt/jdk-11 /opt/jdk-17 /opt/jdk-19
+  for jdkVersion in 8 11 17 19 21; do
+    mkdir -p "/opt/jdk-$jdkVersion"
+  done
 
   # JDK8
   jdk8_short_version="${JDK8_VERSION//-/}"
@@ -318,6 +320,13 @@ function install_jdk() {
     "https://github.com/adoptium/temurin19-binaries/releases/download/jdk-${JDK19_VERSION}/OpenJDK19U-jdk_${cpu_arch_short}_linux_hotspot_${jdk19_short_version}.tar.gz"
   tar --extract --gunzip --file=/tmp/jdk19.tgz --directory=/opt/jdk-19 --strip-components=1
 
+  # JDK21 https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21%2B35-ea-beta/OpenJDK21U-jdk_x64_linux_hotspot_ea_21-0-35.tar.gz
+  jdk21_version_urlencoded=$(echo "$JDK21_VERSION" | jq "@uri" -jRr)
+  jdk21_build_number="${JDK21_VERSION##*+}"
+  curl -sSL -o /tmp/jdk21.tgz \
+    "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${jdk21_version_urlencoded}/OpenJDK21U-jdk_${cpu_arch_short}_linux_hotspot_ea_21-0-${jdk21_build_number//-ea-beta/}.tar.gz"
+  tar --extract --gunzip --file=/tmp/jdk21.tgz --directory=/opt/jdk-21 --strip-components=1
+
   # Define JDK installations
   # The priority of a JDK is the last argument.
   # Starts by setting priority to the JDK major version: higher version is the expected default
@@ -325,6 +334,7 @@ function install_jdk() {
   update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 11
   update-alternatives --install /usr/bin/java java /opt/jdk-17/bin/java 17
   update-alternatives --install /usr/bin/java java /opt/jdk-19/bin/java 19
+  update-alternatives --install /usr/bin/java java /opt/jdk-21/bin/java 21
   # Then, use the DEFAULT_JDK env var to set the priority of the specified default JDK to 1000 to ensure its the one used by update-alternatives
   update-alternatives --install /usr/bin/java java "/opt/jdk-${DEFAULT_JDK}/bin/java" 1000
   echo "JAVA_HOME=/opt/jdk-${DEFAULT_JDK}" >> /etc/environment

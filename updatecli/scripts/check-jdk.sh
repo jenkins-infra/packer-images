@@ -8,9 +8,12 @@
 set -eu -o pipefail
 
 command -v curl >/dev/null 2>&1 || { echo "ERROR: curl command not found. Exiting."; exit 1; }
+command -v jq >/dev/null 2>&1 || { echo "ERROR: jq command not found. Exiting."; exit 1; }
 
 function get_jdk_download_url() {
   jdk_version="${1}"
+  jdk_version_urlencoded=$(echo "$jdk_version" | jq "@uri" -jRr)
+  jdk_build_number="${jdk_version##*+}"
   platform="${2}"
   case "${jdk_version}" in
     8*)
@@ -28,6 +31,10 @@ function get_jdk_download_url() {
     19*)
       ## JDK19 URLs have an underscore ('_') instead of a plus ('+') in their archive names
       echo "https://github.com/adoptium/temurin19-binaries/releases/download/jdk-${jdk_version}/OpenJDK19U-jdk_${platform}_hotspot_${jdk_version//+/_}";
+      return 0;;
+    21*)
+      ## JDK21 URLs have an underscore ('_') instead of a plus ('+') in their archive names
+      echo "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${jdk_version_urlencoded}/OpenJDK21U-jdk_${platform}_hotspot_ea_21-0-${jdk_build_number//-ea-beta/}";
       return 0;;
     *)
       echo "ERROR: unsupported JDK version (${jdk_version}).";
