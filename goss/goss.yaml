@@ -39,7 +39,8 @@ command:
     stdout:
       - 18.18.2
     stderr: []
-  /home/jenkins/.asdf/shims/playwright --version:
+  playwright --version:
+    exec: "home/jenkins/.asdf/shims/playwright --version"
     exit-status: 0
     stdout:
       - 1.37.1
