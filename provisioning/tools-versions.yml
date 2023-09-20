@@ -33,5 +33,5 @@ terraform_version: 1.5.7
 tfsec_version: 1.28.1
 updatecli_version: 0.61.0
 vagrant_version: 2.3.7
-windows_pwsh_version: 7.3.6
+windows_pwsh_version: 7.3.7
 yq_version: 4.25.3
