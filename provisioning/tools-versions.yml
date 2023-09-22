@@ -2,7 +2,7 @@ asdf_version: 0.13.1
 awscli_version: 2.13.20
 azurecli_version: 2.52.0
 chocolatey_version: 1.4.0
-compose_version: 2.21.0
+compose_version: 2.22.0
 cst_version: 1.16.0
 default_jdk: 11
 docker_version: 24.0.6
