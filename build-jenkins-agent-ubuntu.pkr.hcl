@@ -41,7 +41,7 @@ build {
   }
 
   provisioner "breakpoint" {
-    note    = "Enable this breakboint to pause before trying to run goss tests"
+    note    = "Enable this breakpoint to pause before trying to run goss tests"
     disable = true
   }
 
