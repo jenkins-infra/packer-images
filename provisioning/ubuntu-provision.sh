@@ -558,8 +558,15 @@ function install_trivy() {
     trivy_arch="ARM64"
   fi
 
-  curl --silent --location --show-error "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${trivy_arch}.tar.gz" --output /usr/local/bin/trivy
-  chmod a+rx /usr/local/bin/trivy
+  downloaded_archive=/tmp/trivy.tgz
+
+  curl --silent --location --show-error --output "${downloaded_archive}" \
+    "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${trivy_arch}.tar.gz"
+
+  # Only extract the binary
+  tar --extract --gunzip --file="${downloaded_archive}" --directory=/usr/local/bin trivy
+
+  rm -rf /tmp/trivy*
 }
 
 ## Install Nodejs with asdf
