@@ -545,7 +545,28 @@ function install_tfsec() {
   apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
 
   curl --silent --location --show-error "https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-linux-${ARCHITECTURE}" --output /usr/local/bin/tfsec
-  chmod +rx /usr/local/bin/tfsec
+  chmod a+rx /usr/local/bin/tfsec
+}
+
+function install_trivy() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
+
+  trivy_arch="64bit"
+  if test "${ARCHITECTURE}" == "arm64"
+  then
+    trivy_arch="ARM64"
+  fi
+
+  downloaded_archive=/tmp/trivy.tgz
+
+  curl --silent --location --show-error --output "${downloaded_archive}" \
+    "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${trivy_arch}.tar.gz"
+
+  # Only extract the binary
+  tar --extract --gunzip --file="${downloaded_archive}" --directory=/usr/local/bin trivy
+
+  rm -rf /tmp/trivy*
 }
 
 ## Install Nodejs with asdf
@@ -717,6 +738,7 @@ function main() {
   install_terraform
   install_kubectl
   install_tfsec
+  install_trivy
   install_nodejs
   install_playwright_dependencies
   install_launchable
