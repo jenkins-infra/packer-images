@@ -29,8 +29,11 @@ def universalShell(String command) {
       sh command
     }
   } else {
+    bat 'echo OK'
+    pwsh 'echo OK'
     String windowsIfiedCommand = command.replaceAll(/packer /, 'packer.exe ')
-    bat windowsIfiedCommand
+    echo "==${windowsIfiedCommand}=="
+    pwsh windowsIfiedCommand
   }
 }
 
