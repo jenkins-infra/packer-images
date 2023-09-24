@@ -39,7 +39,7 @@ build {
     winrm_insecure  = true
     winrm_timeout   = "20m"
     winrm_use_ssl   = true
-    winrm_username  = local.windows_winrm_user[var.image_type]
+    winrm_username  = local.windows_winrm_user
   }
 
   ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
@@ -59,10 +59,10 @@ build {
 
   # Installing Docker requires a restart: this first call to the installation script will prepare requirements
   provisioner "powershell" {
-    only         = ["azure-arm.windows"]
-    pause_before = "1m"
+    only              = ["azure-arm.windows"]
+    pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
-    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_user     = local.windows_winrm_user
     elevated_password = build.Password
     inline = [
       "Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1' -o install-docker-ce.ps1",
@@ -72,15 +72,15 @@ build {
 
   # Required for loading Windows Container Feature
   provisioner "windows-restart" {
-    only         = ["azure-arm.windows"]
+    only = ["azure-arm.windows"]
   }
 
   # Install Docker-CE with Container feature loaded
   provisioner "powershell" {
-    only         = ["azure-arm.windows"]
-    pause_before = "1m"
+    only              = ["azure-arm.windows"]
+    pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
-    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_user     = local.windows_winrm_user
     elevated_password = build.Password
     inline = [
       "Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1' -o install-docker-ce.ps1",
@@ -89,14 +89,14 @@ build {
   }
 
   provisioner "file" {
-    source       = "./provisioning/addSSHPubKey.ps1"
-    destination  = "C:/"
+    source      = "./provisioning/addSSHPubKey.ps1"
+    destination = "C:/"
   }
 
   provisioner "powershell" {
-    only             = ["azure-arm.windows"]
+    only              = ["azure-arm.windows"]
     environment_vars  = local.provisioning_env_vars
-    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_user     = local.windows_winrm_user
     elevated_password = build.Password
     script            = "./provisioning/windows-provision.ps1"
   }
@@ -116,13 +116,13 @@ build {
   provisioner "windows-restart" {
     only         = ["azure-arm.windows"]
     pause_before = "1m"
-    max_retries = 3
+    max_retries  = 3
   }
 
   # This provisioner must be the last for Azure builds, after reboots
   provisioner "powershell" {
     only              = ["azure-arm.windows"]
-    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_user     = local.windows_winrm_user
     elevated_password = build.Password
     inline = [
       "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit /mode:vm",

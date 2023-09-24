@@ -17,9 +17,9 @@ source "azure-arm" "base" {
 
   # Where to export the image
   shared_image_gallery_destination {
-    subscription        = var.azure_subscription_id
-    resource_group      = local.azure_destination_resource_group
-    gallery_name        = "${var.build_type}_packer_images"
+    subscription   = var.azure_subscription_id
+    resource_group = local.azure_destination_resource_group
+    gallery_name   = "${var.build_type}_packer_images"
     # Not unique name defined in https://github.com/jenkins-infra/azure/blob/bfe56cb4f843b0c8029413090c383f7ac38dde2a/locals.tf#L4-L41
     image_name          = "${local.image_name}"
     image_version       = var.image_version
