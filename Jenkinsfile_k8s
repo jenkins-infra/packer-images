@@ -129,17 +129,20 @@ pipeline {
         axes {
           axis {
             name 'cpu_architecture'
-            values 'amd64', 'arm64'
+            // values 'amd64', 'arm64'
+            values 'amd64'
           }
           axis {
             name 'agent_type'
             // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
-            values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
+            // values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
+            values 'windows-2019'
           }
           axis {
             name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'azure-arm', 'docker'
+            // values 'azure-arm', 'docker'
+            values 'docker'
           }
         }
         excludes {
