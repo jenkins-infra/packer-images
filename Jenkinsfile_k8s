@@ -29,8 +29,8 @@ def universalShell(String command) {
       sh command
     }
   } else {
-    windowsifiedCommand = command.replaceAll(/packer /, 'packer.exe ')
-    bat windowsifiedCommand
+    String windowsIfiedCommand = command.replaceAll(/packer /, 'packer.exe ')
+    powershell windowsIfiedCommand
   }
 }
 
