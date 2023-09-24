@@ -5,7 +5,7 @@ build {
     windows_container = true
 
     # https://hub.docker.com/_/microsoft-windows-servercore
-    image = "mcr.microsoft.com/windows/servercore:ltsc2019"
+    image = "mcr.microsoft.com/windows/servercore:ltsc${var.agent_os_version}"
 
     # To improve audit and garbage collecting, we provide "labels" to the image
     changes = [
@@ -45,21 +45,22 @@ build {
   ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
   # Note that restarts are only done when required by windows updates
   provisioner "windows-update" {
-    only         = ["azure-arm.windows", "azure-ebs.windows"]
+    only         = ["azure-arm.windows"]
     pause_before = "1m"
   }
   provisioner "windows-update" {
-    only         = ["azure-arm.windows", "azure-ebs.windows"]
+    only         = ["azure-arm.windows"]
     pause_before = "1m"
   }
   provisioner "windows-update" {
-    only         = ["azure-arm.windows", "azure-ebs.windows"]
+    only         = ["azure-arm.windows"]
     pause_before = "1m"
   }
 
   # Installing Docker requires a restart: this first call to the installation script will prepare requirements
   provisioner "powershell" {
-    pause_before      = "1m"
+    only         = ["azure-arm.windows"]
+    pause_before = "1m"
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
@@ -70,11 +71,14 @@ build {
   }
 
   # Required for loading Windows Container Feature
-  provisioner "windows-restart" {}
+  provisioner "windows-restart" {
+    only         = ["azure-arm.windows"]
+  }
 
   # Install Docker-CE with Container feature loaded
   provisioner "powershell" {
-    pause_before      = "1m"
+    only         = ["azure-arm.windows"]
+    pause_before = "1m"
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
@@ -85,13 +89,12 @@ build {
   }
 
   provisioner "file" {
-    pause_before = "1m"
     source       = "./provisioning/addSSHPubKey.ps1"
     destination  = "C:/"
   }
 
   provisioner "powershell" {
-    pause_before      = "1m"
+    only             = ["azure-arm.windows"]
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
@@ -111,9 +114,11 @@ build {
   # Recommended (and sometimes required) before running deprovisioning (sysprep or AWS scripts)
   # ref. https:#www.packer.io/docs/builders/azure/arm#windows
   provisioner "windows-restart" {
-    only        = ["azure-arm.windows", "azure-ebs.windows"]
+    only         = ["azure-arm.windows"]
+    pause_before = "1m"
     max_retries = 3
   }
+
   # This provisioner must be the last for Azure builds, after reboots
   provisioner "powershell" {
     only              = ["azure-arm.windows"]
@@ -124,6 +129,7 @@ build {
       "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
     ]
   }
+
   post-processor "docker-tag" {
     only       = ["docker.windows"]
     repository = "${var.docker_namespace}/${local.image_name}"

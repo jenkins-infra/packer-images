@@ -75,6 +75,14 @@ if ($env:CLOUD_TYPE = "docker") {
     Write-Output "== Virtual Machine: Setting up both OpenSSH client and server"
     Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
     Set-Service -Name sshd -StartupType 'Automatic'
+    Write-Output "== Virtual Machine: Set up OpenSSH keys"
+    ## Add a set of pre-defined SSH keys to allow faster agent startups
+    $temp_authorized_keys_file = 'C:\custom_auth_keys'
+    DownloadFile "$env:OPENSSH_AUTHORIZED_KEYS_URL" "$temp_authorized_keys_file"
+    foreach($line in Get-Content "$temp_authorized_keys_file") {
+        C:\addSSHPubKey.ps1 "$line"
+    }
+    Remove-Item -Force "$temp_authorized_keys_file"
     Write-Output "= Starting OpenSSH Server..."
     Start-Service sshd
     Write-Output "= Adding OpenSSH to the Firewall..."
@@ -430,41 +438,39 @@ if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
     Invoke-Command {& "choco.exe" install powershell --yes --no-progress --limit-output --fail-on-error-output;}
     AddToPathEnv "C:\Windows\System32\WindowsPowerShell\v1.0\"
 }
-Write-Output "= Windows Powershell & Powershell Core sanity checks:"
-Invoke-Command {& "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -command "(Get-Host).Version"}
-Invoke-Command {& "C:\Program Files\PowerShell\7\pwsh.exe" -command "(Get-Host).Version"}
 
-## Add a set of pre-defined SSH keys to allow faster agent startups
-$temp_authorized_keys_file = 'C:\custom_auth_keys'
-DownloadFile "$env:OPENSSH_AUTHORIZED_KEYS_URL" "$temp_authorized_keys_file"
-foreach($line in Get-Content "$temp_authorized_keys_file") {
-    C:\addSSHPubKey.ps1 "$line"
-}
-Remove-Item -Force "$temp_authorized_keys_file"
+# Only run sanity checks on Windows VMs
+if ($env:CLOUD_TYPE -ne "docker") {
+    Write-Output "= Windows Powershell & Powershell Core sanity checks:"
+    Invoke-Command {& "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -command "(Get-Host).Version"}
+    Invoke-Command {& "C:\Program Files\PowerShell\7\pwsh.exe" -command "(Get-Host).Version"}
 
-## Final information: print out status
-Write-Host "== OS Version"
-[System.Environment]::OSVersion.Version
+    # Final information: print out status
+    Write-Host "== OS Version"
+    [System.Environment]::OSVersion.Version
 
-Write-Host "== Disks"
-Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" |
-Select-Object -Property DeviceID, DriveType, VolumeName,
-@{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
-@{L="Capacity";E={"{0:N2}" -f ($_.Size/1GB)}} | Format-Table -Property DeviceID, VolumeName, FreeSpaceGB, Capacity
+    Write-Host "== Disks"
+    Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" |
+    Select-Object -Property DeviceID, DriveType, VolumeName,
+    @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
+    @{L="Capacity";E={"{0:N2}" -f ($_.Size/1GB)}} | Format-Table -Property DeviceID, VolumeName, FreeSpaceGB, Capacity
 
-Write-Host "== Patch(s) installed"
-Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
+    Write-Host "== Patch(s) installed"
+    Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
 
-Write-Host "== Sanity Check of installed tools"
-Write-Host "- Path environment"
-Write-Host (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-Write-Host '- Sanity check for docker'
-& docker -v ## Client only
-foreach($k in $downloads.Keys) {
-    $download = $downloads[$k]
-    if($download.ContainsKey('sanityCheck')) {
-        Write-Host "- Sanity check for $k"
-        Invoke-Command $download['sanityCheck']
+    Write-Host "== Sanity Check of installed tools"
+    Write-Host "- Path environment"
+    Write-Host (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+    Write-Host '- Sanity check for docker'
+    & docker -v ## Client only
+    foreach($k in $downloads.Keys) {
+        $download = $downloads[$k]
+        if($download.ContainsKey('sanityCheck')) {
+            Write-Host "- Sanity check for $k"
+            Invoke-Command $download['sanityCheck']
+        }
     }
+    Write-Host "== End of Sanity Check"
 }
-Write-Host "== End of Sanity Check"
+
+Write-Host "== End of provisioning"
