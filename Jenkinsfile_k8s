@@ -158,11 +158,11 @@ pipeline {
               values 'azure-arm'
             }
           }
-          // No build on Windows or Docker, not yet implemented
+          // No Windows 2022 build until https://github.com/jenkins-infra/kubernetes-management/pull/4418
           exclude {
             axis {
               name 'agent_type'
-              values 'windows-2019'
+              values 'windows-2022'
             }
             axis {
               name 'compute_type'
