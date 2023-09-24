@@ -1,0 +1,41 @@
+command:
+  default_java:
+    exec: java --version
+    exit-status: 0
+    stdout:
+      - "11.0.20.1+1"
+  jdk8:
+    exec: C:\tools\jdk-8\bin\java.exe -version
+    exit-status: 0
+    stderr:
+      - 1.8.0_382
+  jdk11:
+    exec: C:\tools\jdk-11\bin\java.exe --version
+    exit-status: 0
+    stdout:
+      - 11.0.20.1+1
+  jdk17:
+    exec: C:\tools\jdk-17\bin\java.exe --version
+    exit-status: 0
+    stdout:
+      - 17.0.8.1+1
+  jdk21:
+    exec: C:\tools\jdk-21\bin\java.exe --version
+    exit-status: 0
+    stdout:
+      - 21+35
+  trivy:
+    exec: trivy --version
+    exit-status: 0
+    stdout:
+      - 0.46.0
+  maven:
+    exec: mvn --version
+    exit-status: 0
+    stdout:
+      - 3.9.5
+  git:
+    exec: git --version
+    exit-status: 0
+    stdout:
+      - 0.46.0
