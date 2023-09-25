@@ -35,7 +35,6 @@ conditions:
     kind: shell
     spec:
       command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
-      
 targets:
   updateJDK17Version:
     name: Update the JDK17 version in the Packer default values
