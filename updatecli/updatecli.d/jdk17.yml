@@ -35,21 +35,20 @@ conditions:
     kind: shell
     spec:
       command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
-
 targets:
   updateJDK17Version:
     name: Update the JDK17 version in the Packer default values
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "jdk17_version"
+      key: "$.jdk17_version"
     scmid: default
   updateJDK17VersionInGoss:
     name: Update the JDK17 version in the goss test
     kind: yaml
     spec:
       file: "goss/goss.yaml"
-      key: command./opt/jdk-17/bin/java --version.stdout[0]
+      key: $.command.jdk17.stdout[0]
     scmid: default
 
 actions:

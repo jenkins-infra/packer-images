@@ -41,7 +41,7 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "jdk8_version"
+      key: "$.jdk8_version"
     scmid: default
   updateJDK8VersionInGoss:
     name: Update the JDK8 version in the goss test
@@ -53,7 +53,7 @@ targets:
       - addprefix: '1.8.0_'
     spec:
       file: "goss/goss.yaml"
-      key: command./opt/jdk-8/bin/java -version.stderr[0]
+      key: $.command.jdk8.stderr[0]
     scmid: default
 
 actions:
