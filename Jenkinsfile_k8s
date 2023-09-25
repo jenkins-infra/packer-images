@@ -166,17 +166,6 @@ pipeline {
               values 'azure-arm'
             }
           }
-          // No Windows 2022 build until https://github.com/jenkins-infra/kubernetes-management/pull/4418
-          exclude {
-            axis {
-              name 'agent_type'
-              values 'windows-2022'
-            }
-            axis {
-              name 'compute_type'
-              values 'docker'
-            }
-          }
         }
         environment {
           // Defines the following environment variables: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
