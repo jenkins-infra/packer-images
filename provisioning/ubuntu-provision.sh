@@ -539,14 +539,6 @@ function install_goss() {
   chmod +rx /usr/local/bin/goss
 }
 
-function install_tfsec() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
-
-  curl --silent --location --show-error "https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-linux-${ARCHITECTURE}" --output /usr/local/bin/tfsec
-  chmod a+rx /usr/local/bin/tfsec
-}
-
 function install_trivy() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
@@ -676,8 +668,6 @@ function sanity_check() {
   && ruby -v \
   && echo 'terraform version:' \
   && terraform -v \
-  && echo 'tfsec version:' \
-  && tfsec --version \
   && echo 'unzip version:' \
   && unzip -v \
   && echo 'updatecli version:' \
@@ -736,7 +726,6 @@ function main() {
   install_netlifydeploy
   install_terraform
   install_kubectl
-  install_tfsec
   install_trivy
   install_nodejs
   install_playwright_dependencies
