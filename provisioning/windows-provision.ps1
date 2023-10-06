@@ -123,6 +123,19 @@ $downloads = [ordered]@{
             & "$baseDir\jdk-19\bin\java.exe" -version;
         }
     };
+    'jdk21' = @{
+        'url' = 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-{0}/OpenJDK21U-jdk_x64_windows_hotspot_ea_21-0-{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK21_VERSION),$env:JDK21_VERSION.Split('[+-]')[1];
+        'local' = "$baseDir\temurin21.zip";
+        'expandTo' = $baseDir;
+        'postExpand' = {
+            & Move-Item -Path "$baseDir\jdk-21*" -Destination "$baseDir\jdk-21"
+        };
+        'cleanupLocal' = 'true';
+        # folder included here since it's not in the PATH
+        'sanityCheck'= {
+            & "$baseDir\jdk-21\bin\java.exe" -version;
+        }
+    };
     'jdk8' = @{
         'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '');
         'local' = "$baseDir\temurin8.zip";
@@ -286,14 +299,6 @@ $downloads = [ordered]@{
             & kubectl.exe version --client;
         }
     };
-    'tfsec' = @{
-        'url' = 'https://github.com/aquasecurity/tfsec/releases/download/v{0}/tfsec-windows-amd64.exe' -f $env:TFSEC_VERSION;
-
-        'local' = "$baseDir\tfsec.exe"
-        'sanityCheck'= {
-            & tfsec.exe --version;
-        }
-    };
     'chocolatey-and-packages' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
@@ -317,6 +322,7 @@ $downloads = [ordered]@{
             & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
             & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
+            & "choco.exe" install trivy --yes --no-progress --limit-output --fail-on-error-output --version "${env:TRIVY_VERSION}";
             # Installation of python3 for Launchable
             & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
             # Installation of Launchable globally (no other python tool)

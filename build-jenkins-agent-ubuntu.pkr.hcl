@@ -40,6 +40,11 @@ build {
     destination = "/tmp/goss.yaml"
   }
 
+  provisioner "breakpoint" {
+    note    = "Enable this breakpoint to pause before trying to run goss tests"
+    disable = true
+  }
+
   provisioner "shell" {
     inline = [
       "set -xeu",
