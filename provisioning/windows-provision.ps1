@@ -110,19 +110,6 @@ $downloads = [ordered]@{
             & "$baseDir\jdk-17\bin\java.exe" -version;
         }
     };
-    'jdk19' = @{
-        'url' = 'https://github.com/adoptium/temurin19-binaries/releases/download/jdk-{0}/OpenJDK19U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK19_VERSION),$env:JDK19_VERSION.Replace('+', '_');
-        'local' = "$baseDir\temurin19.zip";
-        'expandTo' = $baseDir;
-        'postExpand' = {
-            & Move-Item -Path "$baseDir\jdk-19*" -Destination "$baseDir\jdk-19"
-        };
-        'cleanupLocal' = 'true';
-        # folder included here since it's not in the PATH
-        'sanityCheck'= {
-            & "$baseDir\jdk-19\bin\java.exe" -version;
-        }
-    };
     'jdk21' = @{
         'url' = 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-{0}/OpenJDK21U-jdk_x64_windows_hotspot_ea_21-0-{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK21_VERSION),$env:JDK21_VERSION.Split('[+-]')[1];
         'local' = "$baseDir\temurin21.zip";
