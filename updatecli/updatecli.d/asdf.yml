@@ -34,7 +34,16 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "asdf_version"
+      key: "$.asdf_version"
+    scmid: default
+  updateASDFVersionInGoss:
+    name: Update the ASDF version in the goss test
+    kind: yaml
+    spec:
+      file: "goss/goss.yaml"
+      key: $.command.asdf.stdout[0]
+    transformers:
+      - addprefix: "v"
     scmid: default
 
 actions:

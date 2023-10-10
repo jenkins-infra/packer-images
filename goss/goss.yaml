@@ -24,6 +24,16 @@ command:
     exit-status: 0
     stdout:
       - 0.45.1
+  asdf:
+    exec: bash -c 'asdf version' # bash -c needed to load .bashrc
+    exit-status: 0
+    stdout:
+      - "v0.13.1"
+  npm:
+    exec: bash -c 'npm version' # bash -c needed to load .bashrc
+    exit-status: 0
+    stdout:
+      - "npm: '10.2.0'"
 file:
   /home/jenkins:
     exists: true

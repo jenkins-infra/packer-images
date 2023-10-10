@@ -605,8 +605,6 @@ function cleanup() {
 function sanity_check() {
   echo "== Sanity Check of installed tools, running as user ${username}"
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
-  && echo 'asdf version:' \
-  && asdf version \
   && echo 'aws version:' \
   && aws --version \
   && echo 'az version:' \
