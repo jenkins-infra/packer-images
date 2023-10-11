@@ -49,7 +49,7 @@ build {
     inline = [
       "set -xeu",
       "goss --version",
-      "goss --gossfile /tmp/goss.yaml validate --retry-timeout 5s",
+      "goss --loglevel DEBUG --gossfile /tmp/goss.yaml validate --retry-timeout 5s",
     ]
   }
 
