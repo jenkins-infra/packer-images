@@ -46,8 +46,10 @@ build {
   }
 
   provisioner "shell" {
+    execute_command  = "{{ .Vars }} sudo -E su - jenkins -c \"bash -eu '{{ .Path }}'\""
     inline = [
-      "set -xeu",
+      "source /home/jenkins/.asdf/asdf.sh",
+      "asdf version",
       "goss --version",
       "goss --loglevel DEBUG --gossfile /tmp/goss.yaml validate --retry-timeout 5s",
     ]
