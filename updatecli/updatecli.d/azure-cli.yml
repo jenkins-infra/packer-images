@@ -31,12 +31,19 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the azure-cli version in the provision-env.yml file"
+    name: "Update the `azure-cli`` version in the provision-env.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "azurecli_version"
+      key: "$.azurecli_version"
+    scmid: default
+  updateVersionInGoss:
+    name: Update the `azure-cli` version in the goss test
+    kind: yaml
+    spec:
+      file: "goss/goss.yaml"
+      key: $.command.azurecli.stdout[0]
     scmid: default
 
 actions:

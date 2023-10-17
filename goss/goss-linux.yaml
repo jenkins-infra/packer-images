@@ -1,0 +1,107 @@
+command:
+  jdk8:
+    exec: /opt/jdk-8/bin/java -version
+    exit-status: 0
+    stderr:
+      - 1.8.0_392
+  jdk11:
+    exec: /opt/jdk-11/bin/java --version
+    exit-status: 0
+    stdout:
+      - 11.0.21+9
+  jdk17:
+    exec: /opt/jdk-17/bin/java --version
+    exit-status: 0
+    stdout:
+      - 17.0.8.1+1
+  jdk21:
+    exec: /opt/jdk-21/bin/java --version
+    exit-status: 0
+    stdout:
+      - 21.0.1+12
+  trivy:
+    exec: trivy --version
+    exit-status: 0
+    stdout:
+      - 0.46.0
+  asdf:
+    exec: asdf version
+    exit-status: 0
+    stdout:
+      - v0.13.1
+  npm:  # not updatecli tracked
+    exec: npm version
+    exit-status: 0
+  nodejs_version:  # not updatecli tracked
+    exec: npm  version
+    exit-status: 0
+    stdout:
+      - 18.18.2
+  playwright_version:
+    exec: playwright --version
+    exit-status: 0
+    stdout:
+      - 1.39.0
+  awscli:
+    exec: aws --version
+    exit-status: 0
+    stdout:
+      - 2.13.25
+  azurecli:
+    exec: az --version
+    exit-status: 0
+    stdout:
+      - 2.53.0
+  bundle:  # not updatecli tracked
+    exec: bundle -v
+    exit-status: 0
+    stdout:
+      - 1.17.2
+  chromium-browser:  # not updatecli tracked
+    exec: chromium-browser --version
+    exit-status: 0
+    stdout:
+      - 112.0.5615.49
+  container-structure-test:
+    exec: container-structure-test version
+    exit-status: 0
+    stdout:
+      - v1.16.0
+  datadog-agent:  # not updatecli tracked
+    exec: datadog-agent version
+    exit-status: 0
+    stdout:
+      - 7.48.0
+  docker-ce:
+    exec: docker -v
+    exit-status: 0
+    stdout:
+      - 24.0.6
+  docker-buildx:  # depends on docker-ce
+    exec: docker buildx version
+    exit-status: 0
+    stdout:
+      - v0.11.2
+  docker-compose: # depends on docker-ce
+    exec: docker-compose -v
+    exit-status: 0
+    stdout:
+      - v2.22.0
+  github-cli:
+    exec: gh --version
+    exit-status: 0
+    stdout:
+      - 2.36.0
+  git:
+    exec: git --version
+    exit-status: 0
+    stdout:
+      - 2.42.0
+file:
+  /home/jenkins:
+    exists: true
+    mode: "0750"
+    owner: jenkins
+    group: jenkins
+    filetype: directory
+    contains: []

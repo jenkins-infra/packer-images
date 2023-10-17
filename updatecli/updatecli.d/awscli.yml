@@ -41,7 +41,14 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "awscli_version"
+      key: "$.awscli_version"
+    scmid: default
+  updateVersionInGoss:
+    name: Update the `aws` CLI  version in the goss test
+    kind: yaml
+    spec:
+      file: "goss/goss.yaml"
+      key: $.command.awscli.stdout[0]
     scmid: default
 
 actions:

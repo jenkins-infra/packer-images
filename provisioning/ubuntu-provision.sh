@@ -608,26 +608,6 @@ function cleanup() {
 function sanity_check() {
   echo "== Sanity Check of installed tools, running as user ${username}"
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
-  && echo 'aws version:' \
-  && aws --version \
-  && echo 'az version:' \
-  && az --version \
-  && echo 'bundle version:' \
-  && bundle -v \
-  && echo 'chromium-browser version:' \
-  && chromium-browser --version \
-  && echo 'container-structure-test version:' \
-  && container-structure-test version \
-  && echo 'datadog-agent version:' \
-  && datadog-agent version \
-  && echo 'docker version:' \
-  && docker -v \
-  && echo 'docker BuildX version:' \
-  && docker buildx version \
-  && echo 'docker-compose version:' \
-  && docker-compose -v \
-  && echo 'gh version:' \
-  && gh --version \
   && echo 'git version:' \
   && git --version \
   && echo 'git-lfs version:' \

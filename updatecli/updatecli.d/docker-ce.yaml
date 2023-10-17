@@ -29,13 +29,20 @@ conditions:
 
 targets:
   updateVersion:
-    name: "Update the docker-ce version in the provision-env.yml file"
+    name: "Update the `docker-ce` version in the provision-env.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "docker_version"
+      key: "$.docker_version"
     scmid: default
+  updateVersionInGoss:
+    name: Update the `docker-ce` version in the goss test
+    kind: yaml
+    spec:
+      file: "goss/goss.yaml"
+      key: $.command.docker-ce.stdout[0]
+    # scmid: default
 
 actions:
   default:
