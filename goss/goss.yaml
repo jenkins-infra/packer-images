@@ -24,6 +24,16 @@ command:
     exit-status: 0
     stdout:
       - 0.45.1
+  asdf:
+    exec: asdf version
+    exit-status: 0
+    stdout:
+      - "v0.13.1"
+  npm:
+    exec: npm version
+    exit-status: 0
+    stdout:
+      - "npm: '10.2.0'"
 file:
   /home/jenkins:
     exists: true
