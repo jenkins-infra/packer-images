@@ -28,7 +28,7 @@ command:
     exec: asdf version
     exit-status: 0
     stdout:
-      - "v0.13.1"
+      - v0.13.1
   npm:
     exec: npm version
     exit-status: 0
