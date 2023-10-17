@@ -23,12 +23,12 @@ command:
     exec: trivy --version
     exit-status: 0
     stdout:
-      - 0.45.1
+      - 0.46.0
   asdf:
     exec: asdf version
     exit-status: 0
     stdout:
-      - "v0.13.1"
+      - v0.13.1
   npm:
     exec: npm version
     exit-status: 0

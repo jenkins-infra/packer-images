@@ -12,25 +12,19 @@ scms:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       branch: "{{ .github.branch }}"
-  temurin21-binaries:
-    kind: "github"
-    spec:
-      user: "{{ .github.user }}"
-      email: "{{ .github.email }}"
-      owner: "adoptium"
-      repository: "temurin21-binaries"
-      token: '{{ requiredEnv .github.token }}'
-      branch: "main"
 
 sources:
   lastReleaseVersion:
-    kind: gittag
+    kind: githubrelease
     name: Get the latest Adoptium JDK21 version
-    scmid: temurin21-binaries
     spec:
+      owner: "adoptium"
+      repository: "temurin21-binaries"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
       versionfilter:
         kind: regex
-        pattern: ".*-ea-.*"
+        pattern: "^jdk-21.(\\d*).(\\d*).(\\d*)+(\\d*)$"
     transformers:
       - trimprefix: "jdk-"
 
