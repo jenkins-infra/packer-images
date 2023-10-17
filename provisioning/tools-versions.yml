@@ -14,7 +14,7 @@ goss_version: 0.4.2
 hadolint_version: 2.12.0
 jdk11_version: 11.0.20.1+1
 jdk17_version: 17.0.8.1+1
-jdk21_version: 21+35-ea-beta
+jdk21_version: 21+35
 jdk8_version: 8u382-b05
 jenkins_remoting_version: 3174.v2c9e67f8f9df
 jq_version: 1.6
