@@ -110,17 +110,17 @@ $downloads = [ordered]@{
             & "$baseDir\jdk-17\bin\java.exe" -version;
         }
     };
-    'jdk19' = @{
-        'url' = 'https://github.com/adoptium/temurin19-binaries/releases/download/jdk-{0}/OpenJDK19U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK19_VERSION),$env:JDK19_VERSION.Replace('+', '_');
-        'local' = "$baseDir\temurin19.zip";
+    'jdk21' = @{
+        'url' = 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-{0}/OpenJDK21U-jdk_x64_windows_hotspot_ea_21-0-{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK21_VERSION),$env:JDK21_VERSION.Split('[+-]')[1];
+        'local' = "$baseDir\temurin21.zip";
         'expandTo' = $baseDir;
         'postExpand' = {
-            & Move-Item -Path "$baseDir\jdk-19*" -Destination "$baseDir\jdk-19"
+            & Move-Item -Path "$baseDir\jdk-21*" -Destination "$baseDir\jdk-21"
         };
         'cleanupLocal' = 'true';
         # folder included here since it's not in the PATH
         'sanityCheck'= {
-            & "$baseDir\jdk-19\bin\java.exe" -version;
+            & "$baseDir\jdk-21\bin\java.exe" -version;
         }
     };
     'jdk8' = @{
@@ -286,14 +286,6 @@ $downloads = [ordered]@{
             & kubectl.exe version --client;
         }
     };
-    'tfsec' = @{
-        'url' = 'https://github.com/aquasecurity/tfsec/releases/download/v{0}/tfsec-windows-amd64.exe' -f $env:TFSEC_VERSION;
-
-        'local' = "$baseDir\tfsec.exe"
-        'sanityCheck'= {
-            & tfsec.exe --version;
-        }
-    };
     'chocolatey-and-packages' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";
@@ -304,7 +296,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python311\;C:\python311\Scripts\;";
+        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python312\;C:\python312\Scripts\;";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -317,11 +309,12 @@ $downloads = [ordered]@{
             & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
             & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
+            & "choco.exe" install trivy --yes --no-progress --limit-output --fail-on-error-output --version "${env:TRIVY_VERSION}";
             # Installation of python3 for Launchable
             & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
             # Installation of Launchable globally (no other python tool)
-            & "c:\python311\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
-            & "c:\python311\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+            & "c:\python312\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+            & "c:\python312\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
         };
         'sanityCheck'= {
             & choco.exe;
@@ -332,8 +325,8 @@ $downloads = [ordered]@{
             & "$baseDir\ruby26\bin\bundle" -v;
             & updatecli.exe version;
             & yq.exe --version;
-            & "c:\python311\python.exe" --version;
-            & "C:\python311\Scripts\launchable.exe" --version;
+            & "c:\python312\python.exe" --version;
+            & "C:\python312\Scripts\launchable.exe" --version;
         }
     };
 }

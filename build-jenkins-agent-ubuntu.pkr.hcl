@@ -3,11 +3,6 @@ build {
     name = "ubuntu"
   }
 
-  source "amazon-ebs.base" {
-    name         = "ubuntu"
-    ssh_username = "ubuntu"
-  }
-
   source "azure-arm.base" {
     name = "ubuntu"
     # List available offers and publishers with the command `az vm image list --output table`
@@ -45,9 +40,15 @@ build {
     destination = "/tmp/goss.yaml"
   }
 
+  provisioner "breakpoint" {
+    note    = "Enable this breakpoint to pause before trying to run goss tests"
+    disable = true
+  }
+
   provisioner "shell" {
+    execute_command  = "{{ .Vars }} sudo -E su - jenkins -c \"bash -eu '{{ .Path }}'\""
     inline = [
-      "set -xeu",
+      "source /home/jenkins/.asdf/asdf.sh", # Required as this is a non-interactive and non-login `bash`
       "goss --version",
       "goss --gossfile /tmp/goss.yaml validate --retry-timeout 5s",
     ]

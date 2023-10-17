@@ -40,15 +40,10 @@ Each build creates a set of artifacts (VM templates) for each cell of the build 
 Releases are created by adding a tag on the repository, which:
 
 * must follow [Semantic Versioning v2](https://semver.org/)
+  * It is a constraint as we use [Azure Shared Image Galleries](https://docs.microsoft.com/en-us/azure/virtual-machines/shared-image-galleries) which requires semver.
 * can be created either manually or automatically: there are no predefined planning
 * triggers a build on Jenkins that will generate artifacts tagged as `prod` (for production usage, with a lifespan of 3 month unless still used)
 * indirectly triggers Pull Requests on downstream repository (through their respective `updatecli` or `dependabot` configuration) if created successfully.
-
-Please note that the different artifacts have different versioning schemes, depending on the compute provider:
-
-* AWS AMIs generates objects with an ID and a name, and additionally, the build type (`dev`, `staging` or `prod`) and git tag are added as metadatas
-* Azure VM templates are using [Shared Image Galleries](https://docs.microsoft.com/en-us/azure/virtual-machines/shared-image-galleries) where the git tag
-  maps 1:1 to a new version of an image
 
 ## Invoking the build locally
 
@@ -59,7 +54,7 @@ In some cases, you might want to execute the build locally (opposed to opening a
 * A shell (sh, bash, ash, zsh) prompt
 * Packer (check template's version constraints to know which version to use)
 * Define the environment variables `PKR_VAR_*` to the target you want to build (hint: look at the Jenkinsfile or to the `variable` blocks in the packer template HCL files)
-* Configure *all* the clouds (defined by the possible values of the variable `PKR_VAR_image_type`) credentials (e.g. API key, or clouds own CLI access such as `az` or `aws` commands))
+* Configure *all* the clouds (defined by the possible values of the variable `PKR_VAR_image_type`) credentials (e.g. API key, or clouds own CLI access such as `az` command))
 * Ensure that you have a Docker Engine available
 
 With the requirements verified locally, execute the following command:
@@ -67,10 +62,10 @@ With the requirements verified locally, execute the following command:
 * Define the target to build:
 
 ```bash
-# Means: "Build the ubuntu-20.04 agent for Docker
+# Means: "Build the ubuntu-22.04 agent for Docker
 export PKR_VAR_image_type=docker
 export PKR_VAR_agent_os_type=ubuntu
-export PKR_VAR_agent_os_version=20.04
+export PKR_VAR_agent_os_version=22.04
 ```
 
 * Validate the template:

@@ -1,5 +1,5 @@
 ---
-name: Bump JDK19 version
+name: Bump JDK21 version
 
 scms:
   default:
@@ -16,17 +16,15 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest Adoptium JDK19 version
+    name: Get the latest Adoptium JDK21 version
     spec:
       owner: "adoptium"
-      repository: "temurin19-binaries"
+      repository: "temurin21-binaries"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
         kind: regex
-        # jdk-19.0.2+8(https://github.com/adoptium/temurin19-binaries/releases/tag/jdk-19.0.2%2B8) is OK
-        # jdk-19.0.4.1+1(https://github.com/adoptium/temurin19-binaries/releases/tag/jdk-19.0.4.1%2B1) is OK
-        pattern: "^jdk-19.(\\d*).(\\d*).(\\d*)(.(\\d*))+(\\d*)$"
+        pattern: "^jdk-21.(\\d*).(\\d*).(\\d*)+(\\d*)$"
     transformers:
       - trimprefix: "jdk-"
 
@@ -35,21 +33,16 @@ conditions:
     kind: shell
     spec:
       command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
+      environments:
+        - name: PATH
 
 targets:
-  updateJDK19Version:
-    name: Update the JDK19 version in the Packer default values
+  updateJDK21Version:
+    name: Update the JDK21 version in the Packer default values
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "jdk19_version"
-    scmid: default
-  updateJDK19VersionInGoss:
-    name: Update the JDK19 version in the goss test
-    kind: yaml
-    spec:
-      file: "goss/goss.yaml"
-      key: command./opt/jdk-19/bin/java --version.stdout[0]
+      key: "$.jdk21_version"
     scmid: default
 
 actions:
@@ -57,7 +50,7 @@ actions:
     kind: github/pullrequest
     scmid: default
     spec:
-      title: Bump JDK19 version to {{ source "lastReleaseVersion" }}
+      title: Bump JDK21 version to {{ source "lastReleaseVersion" }}
       labels:
         - enhancement
-        - jdk19
+        - jdk21

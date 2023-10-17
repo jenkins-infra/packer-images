@@ -42,14 +42,14 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "jdk11_version"
+      key: "$.jdk11_version"
     scmid: default
   updateJDK11VersionInGoss:
     name: Update the JDK11 version in the goss test
     kind: yaml
     spec:
       file: "goss/goss.yaml"
-      key: command./opt/jdk-11/bin/java --version.stdout[0]
+      key: $.command.jdk11.stdout[0]
     scmid: default
 
 actions:
