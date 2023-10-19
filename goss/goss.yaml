@@ -29,6 +29,10 @@ command:
     exit-status: 0
     stdout:
       - v0.13.1
+  # Only check for execution, do not check for version as it is always "latest available" which changes over time
+  npm:
+    exec: npm version
+    exit-status: 0
   nodejs:
     exec: node --version
     exit-status: 0
