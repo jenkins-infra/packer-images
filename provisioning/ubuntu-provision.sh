@@ -280,55 +280,63 @@ function install_git_gitlfs() {
   rm -rf /tmp/git-lfs*
 }
 
-function install_jdk() {
-  apt-get update --quiet
-  ## Prevent Java null pointer exception due to missing fontconfig / add jq that should already be installed but make this install_jdk function idempotent
-  apt-get install --yes --no-install-recommends fontconfig jq="${JQ_VERSION}*"
+# Reusable function to perform a Temurin JDK installations
+function download_temurin_jdk() {
+  JDK_VERSION="$1"
 
-  ## OpenJDKs: Adoptium - https://adoptium.net/installation.html
-  for jdkVersion in 8 11 17 21; do
-    mkdir -p "/opt/jdk-$jdkVersion"
-  done
+  local jdk_short_version major_jdk_version cpu_arch_short download_url
 
-  # JDK8
-  jdk8_short_version="${JDK8_VERSION//-/}"
   cpu_arch_short="$(uname -m)"
-  if test "${cpu_arch_short}" == "x86_64"
+  if test "${cpu_arch_short}" == 'x86_64'
   then
-    # Damn :'(
-    cpu_arch_short="x64"
+    # Custom Temurin Architecture ID...
+    cpu_arch_short='x64'
   fi
-  curl -sSL -o /tmp/jdk8.tgz \
-    "https://github.com/adoptium/temurin8-binaries/releases/download/jdk${JDK8_VERSION}/OpenJDK8U-jdk_${cpu_arch_short}_linux_hotspot_${jdk8_short_version}.tar.gz"
-  tar --extract --gunzip --file=/tmp/jdk8.tgz --directory=/opt/jdk-8 --strip-components=1
 
-  # JDK11
-  jdk11_short_version="${JDK11_VERSION//+/_}"
-  curl -sSL -o /tmp/jdk11.tgz \
-    "https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${JDK11_VERSION}/OpenJDK11U-jdk_${cpu_arch_short}_linux_hotspot_${jdk11_short_version}.tar.gz"
-  tar --extract --gunzip --file=/tmp/jdk11.tgz --directory=/opt/jdk-11 --strip-components=1
+  # JDK8 has different URL pattern
+  if test "${JDK_VERSION:0:2}" == '8u'
+  then
+    jdk_short_version="${JDK_VERSION//-/}"
+    major_jdk_version='8'
+    download_url="https://github.com/adoptium/temurin8-binaries/releases/download/jdk${JDK_VERSION}/OpenJDK8U-jdk_${cpu_arch_short}_linux_hotspot_${jdk_short_version}.tar.gz"
+  else
+    jdk_short_version="${JDK_VERSION//+/_}"
+    major_jdk_version="$(\
+      echo "${JDK_VERSION%+*}" `# Remove suffix after any eventual '+' character` \
+      | cut -d'.' -f1          `# Only keep the first number (there can be no '.' or multiple)` \
+    )"
+    download_url="https://github.com/adoptium/temurin${major_jdk_version}-binaries/releases/download/jdk-${JDK_VERSION}/OpenJDK${major_jdk_version}U-jdk_${cpu_arch_short}_linux_hotspot_${jdk_short_version}.tar.gz"
+  fi
 
-  # JDK17
-  jdk17_short_version="${JDK17_VERSION//+/_}"
-  curl -sSL -o /tmp/jdk17.tgz \
-    "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${JDK17_VERSION}/OpenJDK17U-jdk_${cpu_arch_short}_linux_hotspot_${jdk17_short_version}.tar.gz"
-  tar --extract --gunzip --file=/tmp/jdk17.tgz --directory=/opt/jdk-17 --strip-components=1
+  local temp_archive="/tmp/jdk${major_jdk_version}.tgz"
+  local installation_dir="/opt/jdk-$major_jdk_version"
 
-  # JDK21 https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21%2B35-ea-beta/OpenJDK21U-jdk_x64_linux_hotspot_ea_21-0-35.tar.gz
-  jdk21_version_urlencoded=$(echo "$JDK21_VERSION" | jq "@uri" -jRr)
-  jdk21_build_number="${JDK21_VERSION##*+}"
-  curl -sSL -o /tmp/jdk21.tgz \
-    "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${jdk21_version_urlencoded}/OpenJDK21U-jdk_${cpu_arch_short}_linux_hotspot_ea_21-0-${jdk21_build_number//-ea-beta/}.tar.gz"
-  tar --extract --gunzip --file=/tmp/jdk21.tgz --directory=/opt/jdk-21 --strip-components=1
+  curl --fail --silent --show-error --location --output "${temp_archive}" "${download_url}"
+
+  mkdir -p "${installation_dir}"
+  tar --extract --gunzip --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
 
   # Define JDK installations
   # The priority of a JDK is the last argument.
   # Starts by setting priority to the JDK major version: higher version is the expected default
-  update-alternatives --install /usr/bin/java java /opt/jdk-8/bin/java 8
-  update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 11
-  update-alternatives --install /usr/bin/java java /opt/jdk-17/bin/java 17
-  update-alternatives --install /usr/bin/java java /opt/jdk-21/bin/java 21
-  # Then, use the DEFAULT_JDK env var to set the priority of the specified default JDK to 1000 to ensure its the one used by update-alternatives
+  update-alternatives --install /usr/bin/java java "${installation_dir}"/bin/java "${major_jdk_version}"
+
+  rm -f "${temp_archive}"
+}
+
+function install_jdks() {
+  apt-get update --quiet
+  ## Prevent Java null pointer exception due to missing fontconfig / add jq that should already be installed but make this install_jdk function idempotent
+  apt-get install --yes --no-install-recommends fontconfig jq="${JQ_VERSION}*"
+
+  for jdk_version_to_install in "${JDK8_VERSION}" "${JDK11_VERSION}" "${JDK17_VERSION}" "${JDK21_VERSION}"
+  do
+    echo "=== Installing Temurin JDK version ${jdk_version_to_install}..."
+    download_temurin_jdk "${jdk_version_to_install}"
+    echo "=== Installation of Temurin JDK version ${jdk_version_to_install} done."
+  done
+
+  # Use the DEFAULT_JDK env var to set the priority of the specified default JDK to 1000 to ensure its the one used by update-alternatives
   update-alternatives --install /usr/bin/java java "/opt/jdk-${DEFAULT_JDK}/bin/java" 1000
   echo "JAVA_HOME=/opt/jdk-${DEFAULT_JDK}" >> /etc/environment
 }
@@ -695,7 +703,7 @@ function main() {
   install_asdf # Before all the others but after the jenkins home is created
   install_goss # needed by the pipeline
   install_docker # needed by the pipeline
-  install_jdk # needed by the pipeline
+  install_jdks # needed by the pipeline
   install_chromium
   install_datadog
   install_JA_requirements
