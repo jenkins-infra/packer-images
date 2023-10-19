@@ -38,13 +38,11 @@ command:
     exit-status: 0
     stdout:
       - 18.18.2
-    stderr: []
   playwright_version:
-    exec: "su - jenkins -c '/home/jenkins/.asdf/shims/playwright --version'" # Playwright is installed as asdf shims for `jenkins` user only 
+    exec: "su - jenkins -c '/home/jenkins/.asdf/shims/playwright --version'" # Playwright is installed as asdf shims for `jenkins` user only
     exit-status: 0
     stdout:
       - 1.37.1
-    stderr: []
 file:
   /home/jenkins:
     exists: true
