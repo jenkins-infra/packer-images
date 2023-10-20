@@ -37,7 +37,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 18.17.0
+      - 18.18.2
 file:
   /home/jenkins:
     exists: true

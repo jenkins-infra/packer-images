@@ -47,7 +47,15 @@ targets:
     kind: yaml
     spec:
       file: provisioning/tools-versions.yml
-      key: nodejs_version
+      key: $.nodejs_version
+    scmid: default
+  updateTestHarness:
+    name: Update the NodeJS version in the test harness
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: goss/goss.yaml
+      key: $.command.nodejs.stdout[0]
     scmid: default
 
 actions:
