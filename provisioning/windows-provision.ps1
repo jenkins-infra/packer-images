@@ -92,10 +92,6 @@ $downloads = [ordered]@{
             & Move-Item -Path "$baseDir\jdk-11*" -Destination "$baseDir\jdk-11"
         };
         'cleanupLocal' = 'true';
-        # folder included here since it's not in the PATH
-        'sanityCheck'= {
-            & "$baseDir\jdk-11\bin\java.exe" -version;
-        }
     };
     'jdk17' = @{
         'url' = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-{0}/OpenJDK17U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK17_VERSION),$env:JDK17_VERSION.Replace('+', '_');
@@ -105,10 +101,6 @@ $downloads = [ordered]@{
             & Move-Item -Path "$baseDir\jdk-17*" -Destination "$baseDir\jdk-17"
         };
         'cleanupLocal' = 'true';
-        # folder included here since it's not in the PATH
-        'sanityCheck'= {
-            & "$baseDir\jdk-17\bin\java.exe" -version;
-        }
     };
     'jdk21' = @{
         'url' = 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-{0}/OpenJDK21U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK21_VERSION),$env:JDK21_VERSION.Replace('+', '_');
@@ -118,10 +110,6 @@ $downloads = [ordered]@{
             & Move-Item -Path "$baseDir\jdk-21*" -Destination "$baseDir\jdk-21"
         };
         'cleanupLocal' = 'true';
-        # folder included here since it's not in the PATH
-        'sanityCheck'= {
-            & "$baseDir\jdk-21\bin\java.exe" -version;
-        }
     };
     'jdk8' = @{
         'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '');
@@ -131,10 +119,6 @@ $downloads = [ordered]@{
             & Move-Item -Path "$baseDir\jdk8*" -Destination "$baseDir\jdk-8"
         };
         'cleanupLocal' = 'true';
-        # folder included here since it's not in the PATH
-        'sanityCheck'= {
-            & "$baseDir\jdk-8\bin\java.exe" -version;
-        }
     }
     'maven' = @{
         'url' = 'https://archive.apache.org/dist/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
@@ -145,9 +129,6 @@ $downloads = [ordered]@{
             'MAVEN_HOME' = '{0}\apache-maven-{1}' -f $baseDir,$env:MAVEN_VERSION;
         };
         'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & "mvn.cmd" -v;
-        }
     };
     'git' = @{
         'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION;
@@ -160,9 +141,6 @@ $downloads = [ordered]@{
         # git cmd and gnu tools included with git as paths
         'path' = "$baseDir\git\cmd;$baseDir\git\usr\bin";
         'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & "git.exe" --version;
-        }
     };
     'gitlfs' = @{
         'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
@@ -284,6 +262,13 @@ $downloads = [ordered]@{
         'local' = "$baseDir\kubectl.exe"
         'sanityCheck'= {
             & kubectl.exe version --client;
+        }
+    };
+    'goss' = @{
+        'url' = 'https://github.com/goss-org/goss/releases/download/v{0}/goss-windows-amd64.exe'  -f $env:GOSS_VERSION;
+        'local' = "$baseDir\goss.exe"
+        'sanityCheck'= {
+            & goss.exe version;
         }
     };
     'chocolatey-and-packages' = @{
