@@ -17,9 +17,9 @@ source "azure-arm" "base" {
 
   # Where to export the image
   shared_image_gallery_destination {
-    subscription        = var.azure_subscription_id
-    resource_group      = local.azure_destination_resource_group
-    gallery_name        = "${var.build_type}_packer_images"
+    subscription   = var.azure_subscription_id
+    resource_group = local.azure_destination_resource_group
+    gallery_name   = "${var.build_type}_packer_images"
     # Not unique name defined in https://github.com/jenkins-infra/azure/blob/bfe56cb4f843b0c8029413090c383f7ac38dde2a/locals.tf#L4-L41
     image_name          = "${local.image_name}"
     image_version       = var.image_version
@@ -36,25 +36,8 @@ source "azure-arm" "base" {
   }
 }
 
-# This source defines all the common settings for any Azure image (whatever Operating System)
+# This source defines all the common settings for any Docker image (whatever Operating System)
 source "docker" "base" {
-  image = "${var.agent_os_type}:${var.agent_os_version}"
-
   # Persist image on local docker engine
   commit = true
-
-  # To improve audit and garbage collecting, we provide "labels" to the image
-  changes = [
-    "LABEL timestamp     = ${local.now_unix_timestamp}",
-    "LABEL version       = ${var.image_version}",
-    "LABEL scm_ref       = ${var.scm_ref}",
-    "LABEL build_type    = ${var.build_type}",
-    "ENV LANG=${var.locale}",
-    "ENV LANGUAGE=${element(split(".", var.locale), 0)}:${element(split("_", var.locale), 0)}",
-    "ENV LC_ALL=${var.locale}",
-    "ENV AGENT_WORKDIR=/home/jenkins/agent",
-    "WORKDIR /home/jenkins",
-    "ENTRYPOINT [\"/usr/local/bin/jenkins-agent\"]",
-    "USER jenkins",
-  ]
 }
