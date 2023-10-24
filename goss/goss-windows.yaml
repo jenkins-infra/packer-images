@@ -8,7 +8,7 @@ command:
     exec: C:\tools\jdk-8\bin\java.exe -version
     exit-status: 0
     stderr:
-      - 1.8.0_382
+      - 1.8.0_392
   jdk11:
     exec: C:\tools\jdk-11\bin\java.exe --version
     exit-status: 0
