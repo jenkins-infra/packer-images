@@ -30,7 +30,7 @@ python3_version: 3.12.0
 ruby_version: 2.6.10
 terraform_version: 1.6.2
 trivy_version: 0.46.0
-updatecli_version: 0.64.1
+updatecli_version: 0.65.1
 vagrant_version: 2.4.0
 windows_pwsh_version: 7.3.7
 yq_version: 4.25.3
