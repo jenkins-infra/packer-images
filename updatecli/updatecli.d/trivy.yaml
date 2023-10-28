@@ -33,6 +33,8 @@ conditions:
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
       command: curl https://community.chocolatey.org/packages/trivy/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
+      environments:
+        - name: PATH
 
 targets:
   updateVersion:
@@ -48,7 +50,9 @@ targets:
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
-      file: goss/goss.yaml
+      files:
+        - goss/goss.yaml
+        - goss/goss-windows.yaml
       key: $.command.trivy.stdout[0]
     scmid: default
 
