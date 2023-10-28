@@ -44,6 +44,15 @@ targets:
       file: "provisioning/tools-versions.yml"
       key: "$.jdk21_version"
     scmid: default
+  updateJDK21VersionInGoss:
+    name: Update the JDK21 version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss.yaml
+        - goss/goss-windows.yaml
+      key: $.command.jdk21.stdout[0]
+    scmid: default
 
 actions:
   default:

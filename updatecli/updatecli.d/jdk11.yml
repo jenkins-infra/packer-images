@@ -35,6 +35,8 @@ conditions:
     kind: shell
     spec:
       command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
+      environments:
+        - name: PATH
 
 targets:
   updateJDK11Version:
@@ -48,8 +50,20 @@ targets:
     name: Update the JDK11 version in the goss test
     kind: yaml
     spec:
-      file: "goss/goss.yaml"
+      files:
+        - goss/goss.yaml
+        - goss/goss-windows.yaml
       key: $.command.jdk11.stdout[0]
+    scmid: default
+  updateDefaultJDKVersionInGoss:
+    name: Update the default Java version in the goss tests
+    kind: yaml
+    spec:
+      files:
+        # TODO: add 'default_java' in linux tests harness
+        # - goss/goss.yaml
+        - goss/goss-windows.yaml
+      key: $.command.default_java.stdout[0]
     scmid: default
 
 actions:

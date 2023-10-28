@@ -34,6 +34,8 @@ conditions:
     kind: shell
     spec:
       command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
+      environments:
+        - name: PATH
 
 targets:
   updateJDK8Version:
@@ -52,7 +54,9 @@ targets:
           captureindex: 1
       - addprefix: '1.8.0_'
     spec:
-      file: "goss/goss.yaml"
+      files:
+        - goss/goss.yaml
+        - goss/goss-windows.yaml
       key: $.command.jdk8.stderr[0]
     scmid: default
 
