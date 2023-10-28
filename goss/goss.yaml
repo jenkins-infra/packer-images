@@ -18,7 +18,7 @@ command:
     exec: /opt/jdk-21/bin/java --version
     exit-status: 0
     stdout:
-      - 21+35
+      - 21.0.1+12
   trivy:
     exec: trivy --version
     exit-status: 0
