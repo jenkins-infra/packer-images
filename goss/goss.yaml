@@ -39,7 +39,7 @@ command:
     stdout:
       - 18.18.2
   playwright_version:
-    exec: "playwright --version'" # Playwright is installed as asdf shims for `jenkins` user only
+    exec: playwright --version
     exit-status: 0
     stdout:
       - 1.37.1
