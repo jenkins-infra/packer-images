@@ -42,7 +42,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.37.1
+      - 1.39.0
 file:
   /home/jenkins:
     exists: true
