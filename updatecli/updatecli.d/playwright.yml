@@ -32,15 +32,16 @@ targets:
     name: "Update the playwright version in the provision-env.yml file"
     kind: yaml
     spec:
-      file: "provisioning/tools-versions.yml"
-      key: "playwright_version"
+      file: provisioning/tools-versions.yml
+      key: $.playwright_version
     scmid: default
   updateVersionInGoss:
     name: "Update the playwright version in the goss test"
     kind: yaml
     spec:
-      file: "goss/goss.yaml"
-      key: command.playwright_version.stdout[0]
+      file: goss/goss.yaml
+      key: $.command.playwright_version.stdout[0]
+    scmid: default
 
 actions:
   default:
