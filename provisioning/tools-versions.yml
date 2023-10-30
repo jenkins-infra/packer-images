@@ -32,6 +32,6 @@ terraform_version: 1.6.2
 trivy_version: 0.46.0
 updatecli_version: 0.65.1
 vagrant_version: 2.4.0
-windows_pwsh_version: 7.3.7
+windows_pwsh_version: 7.3.9
 yq_version: 4.25.3
 playwright_version: 1.39.0
