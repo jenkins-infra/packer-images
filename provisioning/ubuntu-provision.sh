@@ -608,8 +608,6 @@ function cleanup() {
 function sanity_check() {
   echo "== Sanity Check of installed tools, running as user ${username}"
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
-  && echo 'git version:' \
-  && git --version \
   && echo 'git-lfs version:' \
   && git-lfs --version \
   && echo 'goss version:' \

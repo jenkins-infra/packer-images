@@ -42,7 +42,7 @@ targets:
     spec:
       file: "goss/goss.yaml"
       key: $.command.github-cli.stdout[0]
-    # scmid: default
+    scmid: default
 
 actions:
   default:
