@@ -29,7 +29,7 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the `container-structure-test`` version in the provision-env.yml file"
+    name: "Update the `container-structure-test` version in the provision-env.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
