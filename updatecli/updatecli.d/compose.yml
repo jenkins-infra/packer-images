@@ -29,18 +29,11 @@ sources:
 
 targets:
   updateDockerComposeVersion:
-    name: Update the `DockerCompose` version in the Packer default values
+    name: Update the DockerCompose version in the Packer default values
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
       key: "compose_version"
-    scmid: default
-  updateVersionInGoss:
-    name: Update the `DockerCompose` version in the goss test
-    kind: yaml
-    spec:
-      file: "goss/goss.yaml"
-      key: $.command.docker-compose.stdout[0]
     scmid: default
 
 actions:
