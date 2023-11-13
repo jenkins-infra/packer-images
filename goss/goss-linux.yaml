@@ -1,4 +1,61 @@
 command:
+  asdf:
+    exec: asdf version
+    exit-status: 0
+    stdout:
+      - v0.13.1
+  awscli:
+    exec: aws --version
+    exit-status: 0
+    stdout:
+      - 2.13.32
+  azurecli:
+    exec: az --version
+    exit-status: 0
+    stdout:
+      - 2.53.1
+  bundle:
+    exec: bundle -v
+    exit-status: 0
+  chromium-browser:
+    exec: chromium-browser --version
+    exit-status: 0
+  container-structure-test:
+    exec: container-structure-test version
+    exit-status: 0
+    stdout:
+      - v1.16.0
+  datadog-agent:
+    exec: datadog-agent version
+    exit-status: 0
+  default_java:
+    exec: java --version
+    exit-status: 0
+    stdout:
+      - 11.0.21+9
+  docker-ce:
+    exec: docker -v
+    exit-status: 0
+    stdout:
+      - 24.0.7
+  docker_buildx:
+    exec: docker buildx version
+    exit-status: 0
+  docker_compose:
+    exec: docker-compose -v
+    exit-status: 0
+    stdout:
+      - v2.23.0
+  gh_cli:
+    exec: gh --version
+    exit-status: 0
+    stdout:
+      - 2.38.0
+  git:
+    exec: git --version
+    exit-status: 0
+    stdout:
+      - 2.42.0
   jdk8:
     exec: /opt/jdk-8/bin/java -version
     exit-status: 0
@@ -24,16 +81,11 @@ command:
     exit-status: 0
     stdout:
       - 0.46.0
-  asdf:
-    exec: asdf version
-    exit-status: 0
-    stdout:
-      - v0.13.1
-  npm:  # not updatecli tracked
+  npm:
     exec: npm version
     exit-status: 0
-  nodejs_version:  # not updatecli tracked
-    exec: npm  version
+  nodejs:
+    exec: node --version
     exit-status: 0
     stdout:
       - 18.18.2
@@ -42,61 +94,7 @@ command:
     exit-status: 0
     stdout:
       - 1.39.0
-  awscli:
-    exec: aws --version
-    exit-status: 0
-    stdout:
-      - 2.13.32
-  azurecli:
-    exec: az --version
-    exit-status: 0
-    stdout:
-      - 2.53.1
-  bundle:  # not updatecli tracked
-    exec: bundle -v
-    exit-status: 0
-    stdout:
-      - 1.17.2
-  chromium-browser:  # not updatecli tracked
-    exec: chromium-browser --version
-    exit-status: 0
-    stdout:
-      - 112.0.5615.49
-  container-structure-test:
-    exec: container-structure-test version
-    exit-status: 0
-    stdout:
-      - v1.16.0
-  datadog-agent:  # not updatecli tracked
-    exec: datadog-agent version
-    exit-status: 0
-    stdout:
-      - 7.49.0
-  docker-ce:
-    exec: docker -v
-    exit-status: 0
-    stdout:
-      - 24.0.7
-  docker-buildx:  # depends on docker-ce
-    exec: docker buildx version
-    exit-status: 0
-    stdout:
-      - v0.11.2
-  docker-compose: # depends on docker-ce
-    exec: docker-compose -v
-    exit-status: 0
-    stdout:
-      - v2.23.0
-  github-cli:
-    exec: gh --version
-    exit-status: 0
-    stdout:
-      - 2.38.0
-  git:
-    exec: git --version
-    exit-status: 0
-    stdout:
-      - 2.42.0
+
 file:
   /home/jenkins:
     exists: true
