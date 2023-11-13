@@ -40,7 +40,7 @@ targets:
     kind: yaml
     spec:
       file: "goss/goss-linux.yaml"
-      key: $.command.docker-compose.stdout[0]
+      key: $.command.docker_compose.stdout[0]
     scmid: default
 
 actions:

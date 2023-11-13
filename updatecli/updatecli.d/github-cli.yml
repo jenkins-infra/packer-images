@@ -41,7 +41,7 @@ targets:
     kind: yaml
     spec:
       file: "goss/goss-linux.yaml"
-      key: $.command.github-cli.stdout[0]
+      key: $.command.gh_cli.stdout[0]
     scmid: default
 
 actions:
