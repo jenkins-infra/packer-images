@@ -40,7 +40,7 @@ targets:
     name: Update the ASDF version in the goss test
     kind: yaml
     spec:
-      file: "goss/goss.yaml"
+      file: "goss/goss-linux.yaml"
       key: $.command.asdf.stdout[0]
     transformers:
       - addprefix: "v"
