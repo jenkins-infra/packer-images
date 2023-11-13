@@ -405,9 +405,9 @@ function install_azurecli() {
 
 ## Ensure that azcopy is installed
 function install_azcopy() {
-  azcopysemver=$(echo "${AZCOPY_VERSION}" | cut -d'-' -f1)
+  azcopysemver="$(echo "${AZCOPY_VERSION}" | cut -d'-' -f1)"
   curl --silent --show-error --location --output /tmp/azcopy.tar.gz \
-    "https://azcopyvnext.azureedge.net/releases/release-${GH_VERSION}/azcopy_linux_${ARCHITECTURE}}_${azcopysemver}.tar.gz"
+    "https://azcopyvnext.azureedge.net/releases/release-${AZCOPY_VERSION}/azcopy_linux_${ARCHITECTURE}}_${azcopysemver}.tar.gz"
   tar --extract --gunzip --file=/tmp/azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy' --directory=/usr/local/bin/
   rm -rf /tmp/azcopy.tar.gz
 }
@@ -688,6 +688,7 @@ function main() {
   install_datadog
   install_JA_requirements
   install_qemu
+  install_azcopy
   install_python
   install_docker_compose
   install_maven
