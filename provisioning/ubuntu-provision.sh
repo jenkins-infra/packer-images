@@ -406,9 +406,10 @@ function install_azurecli() {
 ## Ensure that azcopy is installed
 function install_azcopy() {
   azcopysemver="$(echo "${AZCOPY_VERSION}" | cut -d'-' -f1)"
-  curl --silent --show-error --location --output /tmp/azcopy.tar.gz \
+  curl --fail --silent --show-error --location --output /tmp/azcopy.tar.gz \
     "https://azcopyvnext.azureedge.net/releases/release-${AZCOPY_VERSION}/azcopy_linux_${ARCHITECTURE}_${azcopysemver}.tar.gz"
-  tar --extract --gunzip --file=/tmp/azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy' --directory=/usr/local/bin/
+  tar --extract --gunzip --directory=/usr/local/bin/ --file=/tmp/azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy'
+  chmod a+x /usr/local/bin/azcopy
   rm -rf /tmp/azcopy.tar.gz
 }
 
