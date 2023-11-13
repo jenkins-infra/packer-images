@@ -407,7 +407,7 @@ function install_azurecli() {
 function install_azcopy() {
   azcopysemver="$(echo "${AZCOPY_VERSION}" | cut -d'-' -f1)"
   curl --silent --show-error --location --output /tmp/azcopy.tar.gz \
-    "https://azcopyvnext.azureedge.net/releases/release-${AZCOPY_VERSION}/azcopy_linux_${ARCHITECTURE}}_${azcopysemver}.tar.gz"
+    "https://azcopyvnext.azureedge.net/releases/release-${AZCOPY_VERSION}/azcopy_linux_${ARCHITECTURE}_${azcopysemver}.tar.gz"
   tar --extract --gunzip --file=/tmp/azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy' --directory=/usr/local/bin/
   rm -rf /tmp/azcopy.tar.gz
 }
