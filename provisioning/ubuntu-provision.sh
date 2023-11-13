@@ -403,6 +403,15 @@ function install_azurecli() {
   apt-get install --yes --no-install-recommends azure-cli="${AZURECLI_VERSION}*"
 }
 
+## Ensure that azcopy is installed
+function install_azcopy() {
+  azcopysemver=$(echo "${AZCOPY_VERSION}" | cut -d'-' -f1)
+  curl --silent --show-error --location --output /tmp/azcopy.tar.gz \
+    "https://azcopyvnext.azureedge.net/releases/release-${GH_VERSION}/azcopy_linux_${ARCHITECTURE}}_${azcopysemver}.tar.gz"
+  tar --extract --gunzip --file=/tmp/azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy' --directory=/usr/local/bin/
+  rm -rf /tmp/azcopy.tar.gz
+}
+
 ## Ensure that the GitHub command line (`gh`) is installed
 function install_gh() {
   curl --silent --show-error --location --output /tmp/gh.tar.gz \

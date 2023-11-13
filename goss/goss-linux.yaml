@@ -52,6 +52,11 @@ command:
     exit-status: 0
     stdout:
       - 2.53.1
+  azcopy:
+    exec: azcopy --version
+    exit-status: 0
+    stdout:
+      - 10.21.0
   bundle:  # not updatecli tracked
     exec: bundle -v
     exit-status: 0
