@@ -34,6 +34,10 @@ targets:
   updateVersionInGoss:
     name: Update the `azcopy` version in the goss test
     kind: yaml
+    transformers:
+      - findsubmatch:
+          pattern: '(.*)-(.*)'
+          captureindex: 1
     spec:
       file: goss/goss-linux.yaml
       key: $.command.azcopy.stdout[0]
