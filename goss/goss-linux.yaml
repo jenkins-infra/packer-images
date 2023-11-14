@@ -50,7 +50,7 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - v2.23.0
+      - 2.23.0
   gh_cli:
     exec: gh --version
     exit-status: 0
@@ -99,7 +99,6 @@ command:
     exit-status: 0
     stdout:
       - 1.39.0
-
 file:
   /home/jenkins:
     exists: true
