@@ -85,7 +85,7 @@ command:
     exec: trivy --version
     exit-status: 0
     stdout:
-      - 0.46.0
+      - 0.47.0
   npm:
     exec: npm version
     exit-status: 0
