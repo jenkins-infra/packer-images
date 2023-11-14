@@ -18,7 +18,7 @@ command:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.21.0
+      - 10.21.2-20231106
   bundle:
     exec: bundle -v
     exit-status: 0
@@ -99,7 +99,6 @@ command:
     exit-status: 0
     stdout:
       - 1.39.0
-
 file:
   /home/jenkins:
     exists: true
