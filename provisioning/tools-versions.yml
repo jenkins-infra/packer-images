@@ -1,13 +1,13 @@
 asdf_version: 0.13.1
-awscli_version: 2.13.32
-azcopy_version: 10.21.0-20230928
-azurecli_version: 2.53.1
+awscli_version: 2.13.35
+azcopy_version: 10.21.2-20231106
+azurecli_version: 2.54.0
 chocolatey_version: 1.4.0
 compose_version: 2.23.0
 cst_version: 1.16.0
 default_jdk: 11
 docker_version: 24.0.7
-gh_version: 2.38.0
+gh_version: 2.39.0
 git_lfs_version: 3.4.0
 git_linux_version: 2.42.0
 git_windows_version: 2.42.0
@@ -31,7 +31,7 @@ python3_version: 3.12.0
 ruby_version: 2.6.10
 terraform_version: 1.6.3
 trivy_version: 0.47.0
-updatecli_version: 0.65.1
+updatecli_version: 0.66.0
 vagrant_version: 2.4.0
 windows_pwsh_version: 7.3.9
 yq_version: 4.25.3
