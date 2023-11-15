@@ -1,3 +1,4 @@
+# if manually change, please update the goss file accordingly
 asdf_version: 0.13.1
 awscli_version: 2.13.35
 azcopy_version: 10.21.2-20231106
