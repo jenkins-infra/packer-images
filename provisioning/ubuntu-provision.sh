@@ -654,6 +654,9 @@ function main() {
   install_nodejs
   install_playwright
   install_launchable
+
+  echo "== Installed packages:"
+  dpkg -l
 }
 
 main
