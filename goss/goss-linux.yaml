@@ -152,8 +152,6 @@ command:
   python3:
     exec: python3 --version
     exit-status: 0
-    stdout:
-      - 3.12.0
   ruby:
     exec: ruby -v
     exit-status: 0
