@@ -45,13 +45,6 @@ targets:
       file: "provisioning/tools-versions.yml"
       key: "$.vagrant_version"
     scmid: default
-  updateVersionInGoss:
-    name: "Update the `vagrant` version in the goss test"
-    kind: yaml
-    spec:
-      file: goss/goss-linux.yaml
-      key: $.command.vagrant.stdout[0]
-    scmid: default
 
 actions:
   default:
