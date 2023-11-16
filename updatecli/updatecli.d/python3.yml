@@ -37,7 +37,15 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "python3_version"
+      key: "$.python3_version"
+    scmid: default
+  updatePackerVersionInGoss:
+    name: Update the `python3` CLI version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.python3.stdout[0]
     scmid: default
 
 actions:
