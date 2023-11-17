@@ -29,12 +29,20 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the launchable version in the provision-env.yml file"
+    name: "Update the `launchable` version in the provision-env.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "launchable_version"
+      key: "$.launchable_version"
+    scmid: default
+  updateLaunchableVersionInGoss:
+    name: Update the `launchable` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.launchable.stdout[0]
     scmid: default
 
 actions:

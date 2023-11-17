@@ -403,6 +403,16 @@ function install_azurecli() {
   apt-get install --yes --no-install-recommends azure-cli="${AZURECLI_VERSION}*"
 }
 
+## Ensure that azcopy is installed
+function install_azcopy() {
+  azcopysemver="$(echo "${AZCOPY_VERSION}" | cut -d'-' -f1)"
+  curl --fail --silent --show-error --location --output /tmp/azcopy.tar.gz \
+    "https://azcopyvnext.azureedge.net/releases/release-${AZCOPY_VERSION}/azcopy_linux_${ARCHITECTURE}_${azcopysemver}.tar.gz"
+  tar --extract --gunzip --directory=/usr/local/bin/ --file=/tmp/azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy'
+  chmod a+x /usr/local/bin/azcopy
+  rm -rf /tmp/azcopy.tar.gz
+}
+
 ## Ensure that the GitHub command line (`gh`) is installed
 function install_gh() {
   curl --silent --show-error --location --output /tmp/gh.tar.gz \
@@ -605,85 +615,6 @@ function cleanup() {
   sync
 }
 
-function sanity_check() {
-  echo "== Sanity Check of installed tools, running as user ${username}"
-  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh \
-  && echo 'aws version:' \
-  && aws --version \
-  && echo 'az version:' \
-  && az --version \
-  && echo 'bundle version:' \
-  && bundle -v \
-  && echo 'chromium-browser version:' \
-  && chromium-browser --version \
-  && echo 'container-structure-test version:' \
-  && container-structure-test version \
-  && echo 'datadog-agent version:' \
-  && datadog-agent version \
-  && echo 'docker version:' \
-  && docker -v \
-  && echo 'docker BuildX version:' \
-  && docker buildx version \
-  && echo 'docker-compose version:' \
-  && docker-compose -v \
-  && echo 'gh version:' \
-  && gh --version \
-  && echo 'git version:' \
-  && git --version \
-  && echo 'git-lfs version:' \
-  && git-lfs --version \
-  && echo 'goss version:' \
-  && goss --version \
-  && echo 'hadolint version:' \
-  && hadolint -v \
-  && echo 'java version:' \
-  && java -version \
-  && echo 'jq version:' \
-  && jq --version \
-  && echo 'jx-release-version version:' \
-  && jx-release-version -version \
-  && echo 'kubectl version:' \
-  && kubectl version --client \
-  && echo 'make version:' \
-  && make --version \
-  && echo 'maven version:' \
-  && mvn -v \
-  && echo 'netlify-deploy version:' \
-  && netlify-deploy --help \
-  && echo 'ssh-agent version:' \
-  && command -v ssh-agent \
-  && echo 'packer version:' \
-  && packer -v \
-  && echo 'parallel version:' \
-  && parallel --version \
-  && echo 'python3 version:' \
-  && python3 --version \
-  && echo 'ruby version:' \
-  && ruby -v \
-  && echo 'terraform version:' \
-  && terraform -v \
-  && echo 'unzip version:' \
-  && unzip -v \
-  && echo 'updatecli version:' \
-  && updatecli version \
-  && echo 'vagrant version:' \
-  && vagrant -v \
-  && echo 'yq version:' \
-  && yq --version \
-  && echo 'zip version:' \
-  && zip -v \
-  && echo 'npm version:' \
-  && npm --version \
-  && echo 'playwright version:' \
-  && playwright --version \
-  && echo 'launchable version:' \
-  && launchable --version
-  "
-  echo "== End of sanity check"
-  echo "== Installed packages:"
-  dpkg -l
-}
-
 function main() {
   check_commands
   copy_custom_scripts
@@ -701,6 +632,7 @@ function main() {
   install_datadog
   install_JA_requirements
   install_qemu
+  install_azcopy
   install_python
   install_docker_compose
   install_maven
@@ -722,8 +654,10 @@ function main() {
   install_nodejs
   install_playwright
   install_launchable
+
+  echo "== Installed packages:"
+  dpkg -l
 }
 
 main
-sanity_check
 cleanup
