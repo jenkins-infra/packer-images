@@ -37,7 +37,7 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "python3_version"
+      key: "$.python3_version"
     scmid: default
 
 actions:

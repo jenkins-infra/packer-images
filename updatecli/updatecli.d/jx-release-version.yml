@@ -29,12 +29,20 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the jx-release-version version in the provision-env.yml file"
+    name: "Update the `jx-release-version` version in the provision-env.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "jxreleaseversion_version"
+      key: "$.jxreleaseversion_version"
+    scmid: default
+  updateJxReleaseVersionInGoss:
+    name: Update the `jx-release-version` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.jx-release-version.stdout[0]
     scmid: default
 
 actions:

@@ -29,12 +29,20 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the hadolint version in the provision-env.yml file"
+    name: "Update the `hadolint` version in the provision-env.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "hadolint_version"
+      key: "$.hadolint_version"
+    scmid: default
+  updateHadolintVersionInGoss:
+    name: Update the `hadolint` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.hadolint.stdout[0]
     scmid: default
 
 actions:

@@ -9,7 +9,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.13.35
+      - 2.13.36
   azcopy:
     exec: azcopy --version
     exit-status: 0
@@ -51,7 +51,7 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.23.0
+      - 2.23.1
   gh_cli:
     exec: gh --version
     exit-status: 0
@@ -144,7 +144,7 @@ command:
   parallel:
     exec: parallel --version
     exit-status: 0
-  playwright_version:
+  playwright:
     exec: playwright --version
     exit-status: 0
     stdout:
@@ -152,8 +152,6 @@ command:
   python3:
     exec: python3 --version
     exit-status: 0
-    stdout:
-      - 3.10.12
   ruby:
     exec: ruby -v
     exit-status: 0

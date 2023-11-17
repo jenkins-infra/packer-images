@@ -40,7 +40,7 @@ targets:
     kind: yaml
     spec:
       file: goss/goss-linux.yaml
-      key: $.command.playwright_version.stdout[0]
+      key: $.command.playwright.stdout[0]
     scmid: default
 
 actions:
