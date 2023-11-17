@@ -29,12 +29,21 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the container-structure-test version in the provision-env.yml file"
+    name: "Update the `container-structure-test` version in the provision-env.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "cst_version"
+      key: "$.cst_version"
+    scmid: default
+  updateVersionInGoss:
+    name: Update the `container-structure-test` version in the goss test
+    kind: yaml
+    spec:
+      file: "goss/goss-linux.yaml"
+      key: $.command.container-structure-test.stdout[0]
+    transformers:
+      - addprefix: "v"
     scmid: default
 
 actions:

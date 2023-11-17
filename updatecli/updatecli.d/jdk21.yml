@@ -49,7 +49,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss.yaml
+        - goss/goss-linux.yaml
         - goss/goss-windows.yaml
       key: $.command.jdk21.stdout[0]
     scmid: default
