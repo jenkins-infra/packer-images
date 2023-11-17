@@ -54,7 +54,7 @@ targets:
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
-      file: goss/goss.yaml
+      file: goss/goss-linux.yaml
       key: $.command.nodejs.stdout[0]
     scmid: default
 

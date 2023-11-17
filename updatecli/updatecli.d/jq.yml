@@ -36,7 +36,15 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "jq_version"
+      key: "$.jq_version"
+    scmid: default
+  updateJQVersionInGoss:
+    name: Update the `jq` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.jq.stdout[0]
     scmid: default
 
 actions:

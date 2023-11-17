@@ -38,12 +38,12 @@ conditions:
 
 targets:
   updateVersion:
-    name: "Update the vagrant version in the provision-env.yml file"
+    name: "Update the `vagrant` version in the provision-env.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "vagrant_version"
+      key: "$.vagrant_version"
     scmid: default
 
 actions:

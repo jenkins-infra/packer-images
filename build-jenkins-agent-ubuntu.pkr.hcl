@@ -50,7 +50,7 @@ build {
     inline = [
       "source /home/jenkins/.asdf/asdf.sh", # Required as this is a non-interactive and non-login `bash`
       "goss --version",
-      "goss --gossfile /tmp/goss-linux.yaml validate --retry-timeout 5s",
+      "goss --gossfile /tmp/goss-linux.yaml --loglevel DEBUG validate",
     ]
   }
 
