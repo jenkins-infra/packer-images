@@ -34,7 +34,14 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "updatecli_version"
+      key: "$.updatecli_version"
+    scmid: default
+  updateVersionInGoss:
+    name: "Update the `updatecli` version in the goss test"
+    kind: yaml
+    spec:
+      file: goss/goss-linux.yaml
+      key: $.command.updatecli.stderr[0]
     scmid: default
 
 actions:

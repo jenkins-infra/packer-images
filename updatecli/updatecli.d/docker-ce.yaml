@@ -1,5 +1,5 @@
 ---
-name: Bump docker-ce version
+name: Bump Docker CE version
 
 scms:
   default:
@@ -19,6 +19,8 @@ sources:
     kind: shell
     spec:
       command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-docker-ce-latest-version.sh
+      environments:
+        - name: PATH
 
 conditions:
   checkIfWindowsReleaseIsAvailable:
@@ -29,18 +31,25 @@ conditions:
 
 targets:
   updateVersion:
-    name: "Update the docker-ce version in the provision-env.yml file"
+    name: Update the Docker CE version in the provision-env.yml file
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
-      file: "provisioning/tools-versions.yml"
-      key: "docker_version"
+      file: provisioning/tools-versions.yml
+      key: $.docker_version
+    scmid: default
+  updateVersionInGoss:
+    name: Update the Docker CE version in the Linux goss test harness
+    kind: yaml
+    spec:
+      file: goss/goss-linux.yaml
+      key: $.command.docker-ce.stdout[0]
     scmid: default
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump docker-ce version to {{ source "lastReleaseVersion" }}
+    title: Bump Docker CE version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:

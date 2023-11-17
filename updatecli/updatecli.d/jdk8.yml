@@ -55,7 +55,7 @@ targets:
       - addprefix: '1.8.0_'
     spec:
       files:
-        - goss/goss.yaml
+        - goss/goss-linux.yaml
         - goss/goss-windows.yaml
       key: $.command.jdk8.stderr[0]
     scmid: default

@@ -36,12 +36,19 @@ conditions:
 
 targets:
   updateVersion:
-    name: "Update the TERRAFORM version in the provisioning/tools-versions.yml file"
+    name: "Update the `TERRAFORM` version in the provisioning/tools-versions.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "terraform_version"
+      key: "$.terraform_version"
+    scmid: default
+  updateVersionInGoss:
+    name: "Update the `TERRAFORM` version in the goss test"
+    kind: yaml
+    spec:
+      file: goss/goss-linux.yaml
+      key: $.command.terraform.stdout[0]
     scmid: default
 
 actions:
