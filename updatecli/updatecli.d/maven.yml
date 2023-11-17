@@ -38,11 +38,19 @@ conditions:
 
 targets:
   updateMavenVersion:
-    name: Update the Maven version in the Packer default values
+    name: Update the `Maven` version in the Packer default values
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "maven_version"
+      key: "$.maven_version"
+    scmid: default
+  updateMavenVersionInGoss:
+    name: Update the `Maven` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.maven.stdout[0]
     scmid: default
 
 actions:
