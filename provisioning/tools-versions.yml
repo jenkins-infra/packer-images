@@ -1,6 +1,6 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.13.1
-awscli_version: 2.13.36
+awscli_version: 2.13.37
 azcopy_version: 10.21.2-20231106
 azurecli_version: 2.54.0
 chocolatey_version: 1.4.0
@@ -30,10 +30,10 @@ openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws
 packer_version: 1.9.4
 python3_version: 3.12.0
 ruby_version: 2.6.10
-terraform_version: 1.6.3
+terraform_version: 1.6.4
 trivy_version: 0.47.0
 updatecli_version: 0.66.1
 vagrant_version: 2.4.0
-windows_pwsh_version: 7.3.9
+windows_pwsh_version: 7.4.0
 yq_version: 4.25.3
-playwright_version: 1.39.0
+playwright_version: 1.40.0
