@@ -61,7 +61,7 @@ command:
     exec: git --version
     exit-status: 0
     stdout:
-      - 2.42.0
+      - 2.43.0
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
