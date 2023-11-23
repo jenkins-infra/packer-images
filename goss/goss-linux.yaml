@@ -177,7 +177,7 @@ command:
     exec: updatecli version
     exit-status: 0
     stderr:
-      - 0.66.1
+      - 0.67.0
   vagrant:
     exec: vagrant -v
     exit-status: 0
