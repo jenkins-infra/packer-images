@@ -4,7 +4,7 @@ awscli_version: 2.13.38
 azcopy_version: 10.21.2-20231106
 azurecli_version: 2.54.0
 chocolatey_version: 1.4.0
-compose_version: 2.23.1
+compose_version: 2.23.3
 cst_version: 1.16.1
 default_jdk: 11
 docker_version: 24.0.7
