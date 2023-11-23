@@ -1,14 +1,107 @@
 command:
+  Powershell:
+    exec: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "(Get-Host).Version"
+    exit-status: 0
+  az:
+    exec: C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\az.cmd version
+    exit-status: 0
+    stdout:
+      - 2.54.0
+  chocolatey:
+    exec: C:\ProgramData\Chocolatey\bin\choco.exe
+    exit-status: 0
+    stdout:
+      - 1.4.0
+  chocolatey-awscli:
+    exec: C:\Program Files\Amazon\AWSCLIV2\aws.exe --version
+    exit-status: 0
+    stdout:
+      - 2.13.38
+  chocolatey-bundle:
+    exec: C:\tools\ruby26\bin\bundle.exe -v
+    exit-status: 0
+  chocolatey-chromium:
+    exec: chromium.exe --version;
+    exit-status: 0
+  chocolatey-datadog-agent:
+    exec: datadog-agent.exe version;
+    exit-status: 0
+  chocolatey-launchable:
+    exec: C:\python312\Scripts\launchable.exe --version;
+    exit-status: 0
+    stdout:
+      - 1.66.0
+  chocolatey-make:
+    exec: make.exe -version
+    exit-status: 0
+  chocolatey-nodejs:
+    exec: node.exe --version
+    exit-status: 0
+    stdout:
+      - 18.18.2
+  chocolatey-packer:
+    exec: packer.exe --version
+    exit-status: 0
+    stdout:
+      - 1.9.4
+  chocolatey-python3:
+    exec: C:\python312\python.exe --version;
+    exit-status: 0
+    stdout:
+      - 3.12.0
+  chocolatey-ruby:
+    exec: C:\tools\ruby26\bin\ruby.exe -v
+    exit-status: 0
+    stdout:
+      - 2.6.10
+  chocolatey-vagrant:
+    exec: vagrant.exe --version;
+    exit-status: 0
+    stdout:
+      - 2.4.0
+  chocolatey-yq:
+    exec: yq --version
+    exit-status: 0
+    stdout:
+      - 4.25.3
+  cst:
+    exec: C:\tools\container-structure-test.exe version
+    exit-status: 0
+    stdout:
+      - 1.16.1
   default_java:
     exec: java --version
     exit-status: 0
     stdout:
       - 11.0.21+9
-  jdk8:
-    exec: C:\tools\jdk-8\bin\java.exe -version
+  docker:
+    exec: docker -v
     exit-status: 0
-    stderr:
-      - 1.8.0_392
+  dockercompose:
+    exec: C:\tools\docker-compose.exe -v
+    exit-status: 0
+    stdout:
+      - 2.23.1
+  gh:
+    exec: C:\tools\gh.exe version
+    exit-status: 0
+    stdout:
+      - 2.39.1
+  gitlfs:
+    exec: C:\tools\git-lfs.exe version
+    exit-status: 0
+    stdout:
+      - 3.4.0
+  goss:
+    exec: C:\tools\goss.exe version
+    exit-status: 0
+    stdout:
+      - 0.4.4
+  hadolint:
+    exec: C:\tools\hadolint.exe --version
+    exit-status: 0
+    stdout:
+      - 2.12.0
   jdk11:
     exec: C:\tools\jdk-11\bin\java.exe --version
     exit-status: 0
@@ -24,8 +117,44 @@ command:
     exit-status: 0
     stdout:
       - 21.0.1+12
+  jdk8:
+    exec: C:\tools\jdk-8\bin\java.exe -version
+    exit-status: 0
+    stderr:
+      - 1.8.0_392
+  jq:
+    exec: C:\tools\jq.exe --version
+    exit-status: 0
+    stdout:
+      - 1.6
+  jx-release-version:
+    exec: C:\tools\jx-release-version.exe -version
+    exit-status: 0
+    stdout:
+      - 2.7.0
+  kubectl:
+    exec: C:\tools\kubectl.exe version --client
+    exit-status: 0
+    stdout:
+      - 1.23.13
+  netlify-deploy:
+    exec: C:\tools\netlify-deploy.exe --help
+    exit-status: 0
+  pwsh:
+    exec: C:\Program Files\PowerShell\7\pwsh.exe -command "(Get-Host).Version"
+    exit-status: 0
+  terraform:
+    exec: C:\tools\terraform.exe -v
+    exit-status: 0
+    stdout:
+      - 1.6.4
   trivy:
     exec: trivy --version
     exit-status: 0
     stdout:
       - 0.47.0
+  updatecli:
+    exec: C:\tools\updatecli.exe version
+    exit-status: 0
+    stdout:
+      - 0.66.1
