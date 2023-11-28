@@ -79,7 +79,7 @@ build {
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
-      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml validate --retry-timeout 5s",
+      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate",
       "Remove-Item -Force C:/goss-windows.yaml",
     ]
   }

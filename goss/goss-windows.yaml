@@ -1,36 +1,30 @@
 command:
   Powershel:
-    exec: powershell.exe -command "(Get-Host).Version"
+    exec: powershell -command "(Get-Host).Version"
     exit-status: 0
   awscli:
-    exec: aws.exe --version
+    exec: aws --version
     exit-status: 0
     stdout:
       - 2.13.38
   az:
-    exec: az.cmd version
+    exec: az version
     exit-status: 0
     stdout:
       - 2.54.0
   bundle:
-    exec: bundle.exe -v
+    exec: bundle -v
     exit-status: 0
   chocolatey:
-    exec: choco.exe
+    exec: choco
     exit-status: 0
     stdout:
       - 1.4.0
-  chromium:
-    exec: chromium.exe --version;
-    exit-status: 0
   cst:
-    exec: container-structure-test.exe version
+    exec: container-structure-test version
     exit-status: 0
     stdout:
-      - 1.16.1
-  datadog-agent:
-    exec: datadog-agent.exe version;
-    exit-status: 0
+      - 1.16.0
   default_java:
     exec: java --version
     exit-status: 0
@@ -40,101 +34,101 @@ command:
     exec: docker -v
     exit-status: 0
   dockercompose:
-    exec: docker-compose.exe -v
+    exec: docker-compose -v
     exit-status: 0
     stdout:
       - 2.23.1
   gh:
-    exec: gh.exe version
+    exec: gh version
     exit-status: 0
     stdout:
       - 2.39.1
   gitlfs:
-    exec: git-lfs.exe version
+    exec: git-lfs version
     exit-status: 0
     stdout:
       - 3.4.0
   goss:
-    exec: goss.exe version
+    exec: goss -version
     exit-status: 0
     stdout:
       - 0.4.4
   hadolint:
-    exec: hadolint.exe --version
+    exec: hadolint --version
     exit-status: 0
     stdout:
       - 2.12.0
   jdk11:
-    exec: C:\tools\jdk-11\bin\java.exe --version
+    exec: C:\tools\jdk-11\bin\java --version
     exit-status: 0
     stdout:
       - 11.0.21+9
   jdk17:
-    exec: C:\tools\jdk-17\bin\java.exe --version
+    exec: C:\tools\jdk-17\bin\java --version
     exit-status: 0
     stdout:
       - 17.0.8.1+1
   jdk21:
-    exec: C:\tools\jdk-21\bin\java.exe --version
+    exec: C:\tools\jdk-21\bin\java --version
     exit-status: 0
     stdout:
       - 21.0.1+12
   jdk8:
-    exec: C:\tools\jdk-8\bin\java.exe -version
+    exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
     stderr:
       - 1.8.0_392
   jq:
-    exec: jq.exe --version
+    exec: jq --version
     exit-status: 0
     stdout:
       - 1.6
   jx-release-version:
-    exec: jx-release-version.exe -version
+    exec: jx-release-version -version
     exit-status: 0
     stdout:
       - 2.7.0
   kubectl:
-    exec: kubectl.exe version --client
+    exec: kubectl version --client
     exit-status: 0
     stdout:
       - 1.23.13
   launchable:
-    exec: launchable.exe --version;
+    exec: launchable --version
     exit-status: 0
     stdout:
       - 1.66.0
   make:
-    exec: make.exe -version
+    exec: make -version
     exit-status: 0
   netlify-deploy:
-    exec: netlify-deploy.exe --help
+    exec: netlify-deploy --help
     exit-status: 0
   nodejs:
-    exec: node.exe --version
+    exec: node --version
     exit-status: 0
     stdout:
       - 18.18.2
   packer:
-    exec: packer.exe --version
+    exec: packer --version
     exit-status: 0
     stdout:
       - 1.9.4
   pwsh:
-    exec: pwsh.exe -command "(Get-Host).Version"
+    exec: pwsh -command "(Get-Host).Version"
     exit-status: 0
   python3:
-    exec: python.exe --version;
+    exec: python --version
     exit-status: 0
     stdout:
       - 3.12.0
   ruby:
-    exec: ruby.exe -v
+    exec: ruby -v
     exit-status: 0
     stdout:
       - 2.6.10
   terraform:
-    exec: terraform.exe -v
+    exec: terraform -v
     exit-status: 0
     stdout:
       - 1.6.4
@@ -144,12 +138,12 @@ command:
     stdout:
       - 0.47.0
   updatecli:
-    exec: updatecli.exe version
+    exec: updatecli version
     exit-status: 0
     stdout:
       - 0.66.1
   vagrant:
-    exec: vagrant.exe --version;
+    exec: vagrant --version
     exit-status: 0
     stdout:
       - 2.4.0
@@ -158,3 +152,12 @@ command:
     exit-status: 0
     stdout:
       - 4.25.3
+file:
+  C:\Program Files\Chromium\Application\:
+    contains: [chrome]
+    exists: true
+    filetype: directory
+  C:\Program Files\Datadog\Datadog agent\bin\:
+    contains: [agent]
+    exists: true
+    filetype: directory
