@@ -1,74 +1,36 @@
 command:
-  Powershell:
-    exec: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "(Get-Host).Version"
+  Powershel:
+    exec: powershell.exe -command "(Get-Host).Version"
     exit-status: 0
-  az:
-    exec: C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\az.cmd version
-    exit-status: 0
-    stdout:
-      - 2.54.0
-  chocolatey:
-    exec: C:\ProgramData\Chocolatey\bin\choco.exe
-    exit-status: 0
-    stdout:
-      - 1.4.0
-  chocolatey-awscli:
-    exec: C:\Program Files\Amazon\AWSCLIV2\aws.exe --version
+  awscli:
+    exec: aws.exe --version
     exit-status: 0
     stdout:
       - 2.13.38
-  chocolatey-bundle:
-    exec: C:\tools\ruby26\bin\bundle.exe -v
+  az:
+    exec: az.cmd version
     exit-status: 0
-  chocolatey-chromium:
+    stdout:
+      - 2.54.0
+  bundle:
+    exec: bundle.exe -v
+    exit-status: 0
+  chocolatey:
+    exec: choco.exe
+    exit-status: 0
+    stdout:
+      - 1.4.0
+  chromium:
     exec: chromium.exe --version;
     exit-status: 0
-  chocolatey-datadog-agent:
-    exec: datadog-agent.exe version;
-    exit-status: 0
-  chocolatey-launchable:
-    exec: C:\python312\Scripts\launchable.exe --version;
-    exit-status: 0
-    stdout:
-      - 1.66.0
-  chocolatey-make:
-    exec: make.exe -version
-    exit-status: 0
-  chocolatey-nodejs:
-    exec: node.exe --version
-    exit-status: 0
-    stdout:
-      - 18.18.2
-  chocolatey-packer:
-    exec: packer.exe --version
-    exit-status: 0
-    stdout:
-      - 1.9.4
-  chocolatey-python3:
-    exec: C:\python312\python.exe --version;
-    exit-status: 0
-    stdout:
-      - 3.12.0
-  chocolatey-ruby:
-    exec: C:\tools\ruby26\bin\ruby.exe -v
-    exit-status: 0
-    stdout:
-      - 2.6.10
-  chocolatey-vagrant:
-    exec: vagrant.exe --version;
-    exit-status: 0
-    stdout:
-      - 2.4.0
-  chocolatey-yq:
-    exec: yq --version
-    exit-status: 0
-    stdout:
-      - 4.25.3
   cst:
-    exec: C:\tools\container-structure-test.exe version
+    exec: container-structure-test.exe version
     exit-status: 0
     stdout:
       - 1.16.1
+  datadog-agent:
+    exec: datadog-agent.exe version;
+    exit-status: 0
   default_java:
     exec: java --version
     exit-status: 0
@@ -78,27 +40,27 @@ command:
     exec: docker -v
     exit-status: 0
   dockercompose:
-    exec: C:\tools\docker-compose.exe -v
+    exec: docker-compose.exe -v
     exit-status: 0
     stdout:
       - 2.23.1
   gh:
-    exec: C:\tools\gh.exe version
+    exec: gh.exe version
     exit-status: 0
     stdout:
       - 2.39.1
   gitlfs:
-    exec: C:\tools\git-lfs.exe version
+    exec: git-lfs.exe version
     exit-status: 0
     stdout:
       - 3.4.0
   goss:
-    exec: C:\tools\goss.exe version
+    exec: goss.exe version
     exit-status: 0
     stdout:
       - 0.4.4
   hadolint:
-    exec: C:\tools\hadolint.exe --version
+    exec: hadolint.exe --version
     exit-status: 0
     stdout:
       - 2.12.0
@@ -123,28 +85,56 @@ command:
     stderr:
       - 1.8.0_392
   jq:
-    exec: C:\tools\jq.exe --version
+    exec: jq.exe --version
     exit-status: 0
     stdout:
       - 1.6
   jx-release-version:
-    exec: C:\tools\jx-release-version.exe -version
+    exec: jx-release-version.exe -version
     exit-status: 0
     stdout:
       - 2.7.0
   kubectl:
-    exec: C:\tools\kubectl.exe version --client
+    exec: kubectl.exe version --client
     exit-status: 0
     stdout:
       - 1.23.13
+  launchable:
+    exec: launchable.exe --version;
+    exit-status: 0
+    stdout:
+      - 1.66.0
+  make:
+    exec: make.exe -version
+    exit-status: 0
   netlify-deploy:
-    exec: C:\tools\netlify-deploy.exe --help
+    exec: netlify-deploy.exe --help
     exit-status: 0
+  nodejs:
+    exec: node.exe --version
+    exit-status: 0
+    stdout:
+      - 18.18.2
+  packer:
+    exec: packer.exe --version
+    exit-status: 0
+    stdout:
+      - 1.9.4
   pwsh:
-    exec: C:\Program Files\PowerShell\7\pwsh.exe -command "(Get-Host).Version"
+    exec: pwsh.exe -command "(Get-Host).Version"
     exit-status: 0
+  python3:
+    exec: python.exe --version;
+    exit-status: 0
+    stdout:
+      - 3.12.0
+  ruby:
+    exec: ruby.exe -v
+    exit-status: 0
+    stdout:
+      - 2.6.10
   terraform:
-    exec: C:\tools\terraform.exe -v
+    exec: terraform.exe -v
     exit-status: 0
     stdout:
       - 1.6.4
@@ -154,7 +144,17 @@ command:
     stdout:
       - 0.47.0
   updatecli:
-    exec: C:\tools\updatecli.exe version
+    exec: updatecli.exe version
     exit-status: 0
     stdout:
       - 0.66.1
+  vagrant:
+    exec: vagrant.exe --version;
+    exit-status: 0
+    stdout:
+      - 2.4.0
+  yq:
+    exec: yq --version
+    exit-status: 0
+    stdout:
+      - 4.25.3
