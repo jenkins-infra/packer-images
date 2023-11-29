@@ -36,4 +36,4 @@ updatecli_version: 0.67.1
 vagrant_version: 2.4.0
 windows_pwsh_version: 7.4.0
 yq_version: 4.25.3
-playwright_version: 1.40.0
+playwright_version: 1.40.1
