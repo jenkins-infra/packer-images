@@ -6,7 +6,7 @@ $ErrorActionPreference = 'Stop'
 # $VerbosePreference="Continue"
 # Set-PSDebug -Trace 1
 
-## Enable unprivileged actions for this script
+## Enable Unrestricted actions for this script
 # See https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.1
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
 
