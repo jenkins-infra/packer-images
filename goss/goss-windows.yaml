@@ -1,5 +1,5 @@
 command:
-  Powershel:
+  Powershell:
     exec: powershell -command "(Get-Host).Version"
     exit-status: 0
   awscli:
@@ -17,7 +17,7 @@ command:
     exit-status: 0
   chocolatey:
     exec: choco
-    exit-status: 0
+    exit-status: 1
     stdout:
       - 1.4.0
   cst:
@@ -37,7 +37,7 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.23.1
+      - 2.23.3
   gh:
     exec: gh version
     exit-status: 0
@@ -82,7 +82,7 @@ command:
     exec: jq --version
     exit-status: 0
     stdout:
-      - 1.6
+      - jq-1.6
   jx-release-version:
     exec: jx-release-version -version
     exit-status: 0
@@ -140,7 +140,7 @@ command:
   updatecli:
     exec: updatecli version
     exit-status: 0
-    stdout:
+    stderr:
       - 0.66.1
   vagrant:
     exec: vagrant --version
@@ -154,10 +154,10 @@ command:
       - 4.25.3
 file:
   C:\Program Files\Chromium\Application\:
-    contains: [chrome]
+    contains: []
     exists: true
     filetype: directory
   C:\Program Files\Datadog\Datadog agent\bin\:
-    contains: [agent]
+    contains: []
     exists: true
     filetype: directory
