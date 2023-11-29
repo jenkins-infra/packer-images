@@ -9,7 +9,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.13.38
+      - 2.14.2
   azcopy:
     exec: azcopy --version
     exit-status: 0
