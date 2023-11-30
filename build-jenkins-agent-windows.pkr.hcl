@@ -78,6 +78,7 @@ build {
   provisioner "powershell" {
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
+    execution_policy  = "unrestricted"
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
