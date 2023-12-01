@@ -80,7 +80,6 @@ build {
     elevated_password = build.Password
     execution_policy  = "unrestricted"
     inline = [
-      "$ErrorActionPreference = 'Stop'",
       "goss --version",
       "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate",
       "Remove-Item -Force C:/goss-windows.yaml",
