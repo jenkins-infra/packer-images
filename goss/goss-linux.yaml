@@ -124,7 +124,7 @@ command:
     exec: mvn -v
     exit-status: 0
     stdout:
-      - 3.9.5
+      - 3.9.6
   netlify-deploy:
     exec: netlify-deploy --help
     exit-status: 0
