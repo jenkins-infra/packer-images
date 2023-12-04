@@ -23,7 +23,7 @@ jq_version: 1.6
 jxreleaseversion_version: 2.7.0
 kubectl_version: 1.23.13
 launchable_version: 1.66.0
-maven_version: 3.9.5
+maven_version: 3.9.6
 netlifydeploy_version: 0.1.8
 nodejs_version: 18.18.2
 openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys
