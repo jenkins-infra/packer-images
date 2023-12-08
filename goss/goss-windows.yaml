@@ -1,6 +1,6 @@
 command:
   Powershell:
-    exec: powershell -command "(Get-Host).Version"
+    exec: powershell (Get-Host).Version
     exit-status: 0
   awscli:
     exec: aws --version
