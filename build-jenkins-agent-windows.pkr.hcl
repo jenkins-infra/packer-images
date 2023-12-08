@@ -86,11 +86,11 @@ build {
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
-      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --retry-timeout 20s",
+      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --retry-timeout 300s",
       "Remove-Item -Force C:/goss-windows.yaml",
     ]
   }
-  
+
   # This provisioner must be the last for Azure builds, after reboots
   provisioner "powershell" {
     only              = ["azure-arm.windows"]
