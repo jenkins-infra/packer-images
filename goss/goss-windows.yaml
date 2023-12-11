@@ -7,7 +7,7 @@ command:
     exit-status: 0
     stdout:
       - 2.15.0
-  az:
+  azurecli:
     exec: az version
     exit-status: 0
     stdout:
