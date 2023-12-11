@@ -62,7 +62,6 @@ build {
     script            = "./provisioning/windows-provision.ps1"
   }
 
-  provisioner "powershell" {
     inline = [
       "echo C:/ProgramData/chocolatey/logs/chocolatey.log",
       "type C:/ProgramData/chocolatey/logs/chocolatey.log"

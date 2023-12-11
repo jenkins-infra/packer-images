@@ -20,7 +20,7 @@ command:
     exit-status: 1
     stdout:
       - 1.4.0
-  cst:
+  container-structure-test:
     exec: container-structure-test version
     exit-status: 0
     stdout:
@@ -30,10 +30,10 @@ command:
     exit-status: 0
     stdout:
       - 11.0.21+9
-  docker:
+  docker-ce:
     exec: docker -v
     exit-status: 0
-  dockercompose:
+  docker_compose:
     exec: docker-compose -v
     exit-status: 0
     stdout:
@@ -43,7 +43,7 @@ command:
     exit-status: 0
     stdout:
       - 2.40.0
-  gitlfs:
+  git_lfs:
     exec: git-lfs version
     exit-status: 0
     stdout:
@@ -117,6 +117,8 @@ command:
   pwsh:
     exec: pwsh -command "(Get-Host).Version"
     exit-status: 0
+    stdout:
+      - 7.4.0
   python3:
     exec: python --version
     exit-status: 0
