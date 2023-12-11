@@ -62,6 +62,13 @@ build {
     script            = "./provisioning/windows-provision.ps1"
   }
 
+  provisioner "powershell" {
+    inline = [
+      "echo C:/ProgramData/chocolatey/logs/chocolatey.log",
+      "type C:/ProgramData/chocolatey/logs/chocolatey.log"
+    ]
+  }
+
   # Recommended (and sometimes required) before running deprovisioning (sysprep)
   # ref. https:#www.packer.io/docs/builders/azure/arm#windows
   provisioner "windows-restart" {
