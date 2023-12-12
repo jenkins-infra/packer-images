@@ -79,10 +79,6 @@ build {
   }
 
   provisioner "powershell" {
-    # same level of user execution as the provider
-    elevated_user     = local.windows_winrm_user[var.image_type]
-    elevated_password = build.Password
-    execution_policy  = "unrestricted"
     pause_before      = "2m" # long pause as 1m is not enough
     inline = [
       "$ErrorActionPreference = 'Stop'",
