@@ -62,12 +62,6 @@ build {
     script            = "./provisioning/windows-provision.ps1"
   }
 
-    inline = [
-      "echo C:/ProgramData/chocolatey/logs/chocolatey.log",
-      "type C:/ProgramData/chocolatey/logs/chocolatey.log"
-    ]
-  }
-
   # Recommended (and sometimes required) before running deprovisioning (sysprep)
   # ref. https:#www.packer.io/docs/builders/azure/arm#windows
   provisioner "windows-restart" {
@@ -85,10 +79,11 @@ build {
   }
 
   provisioner "powershell" {
-    # elevated_user     = local.windows_winrm_user[var.image_type]
-    # elevated_password = build.Password
-    # execution_policy  = "unrestricted"
-    pause_before      = "1m"
+    # same level of user execution as the provider
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+    execution_policy  = "unrestricted"
+    pause_before      = "2m" # long pause as 1m is not enough
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
