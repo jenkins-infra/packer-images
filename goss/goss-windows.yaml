@@ -18,8 +18,6 @@ command:
   chocolatey:
     exec: choco
     exit-status: 1
-    stdout:
-      - 1.4.0
   container-structure-test:
     exec: container-structure-test version
     exit-status: 0
@@ -143,7 +141,7 @@ command:
     exec: updatecli version
     exit-status: 0
     stderr:
-      - 0.68.0
+      - 0.69.0
   vagrant:
     exec: vagrant --version
     exit-status: 0
