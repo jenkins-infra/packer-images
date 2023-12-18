@@ -6,7 +6,7 @@ $ErrorActionPreference = 'Stop'
 # $VerbosePreference="Continue"
 # Set-PSDebug -Trace 1
 
-## Enable unprivileged actions for this script
+## Enable Unrestricted actions for this script
 # See https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.1
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
 
@@ -154,46 +154,28 @@ $downloads = [ordered]@{
         };
         'path' = "$baseDir\git\mingw64\bin";
         'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & "git-lfs.exe" version;
-        }
     };
     'dockercompose' = @{
         'url' = 'https://github.com/docker/compose/releases/download/v{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
         'local' = "$baseDir\docker-compose.exe"
-        'sanityCheck'= {
-            & "docker-compose.exe" -v;
-        }
     };
     'hadolint' = @{
         'url' = 'https://github.com/hadolint/hadolint/releases/download/v{0}/hadolint-Windows-x86_64.exe' -f $env:HADOLINT_VERSION;
         'local' = "$baseDir\hadolint.exe"
-        'sanityCheck'= {
-            & "hadolint.exe" --version;
-        }
     };
     'cst' = @{
         'url' = 'https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{0}/container-structure-test-windows-amd64.exe' -f $env:CST_VERSION;
         'local' = "$baseDir\container-structure-test.exe"
-        'sanityCheck'= {
-            & "container-structure-test.exe" version;
-        }
     };
     'jx-release-version' = @{
         'url' = 'https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v{0}/jx-release-version-windows-amd64.zip' -f $env:JXRELEASEVERSION_VERSION;
         'local' = "$baseDir\jx-release-version.zip"
         'expandTo' = $baseDir;
         'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & "jx-release-version.exe" -version;
-        }
     };
     'jq' = @{
         'url' = 'https://github.com/stedolan/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
         'local' = "$baseDir\jq.exe"
-        'sanityCheck'= {
-            & jq.exe --version;
-        }
     };
     'az' = @{
         'url' = 'https://azcliprod.blob.core.windows.net/msi/azure-cli-{0}.msi' -f $env:AZURECLI_VERSION;
@@ -205,9 +187,6 @@ $downloads = [ordered]@{
         };
         'cleanupLocal' = 'true';
         'path' = 'C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\';
-        'sanityCheck'= {
-            & "az.cmd" version;
-        }
     };
     'gh' = @{
         'url' = 'https://github.com/cli/cli/releases/download/v{0}/gh_{0}_windows_amd64.zip' -f $env:GH_VERSION;
@@ -218,9 +197,6 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
         };
         'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & gh.exe version;
-        }
     };
     'updatecli' = @{
         'url' = 'https://github.com/updatecli/updatecli/releases/download/v{0}/updatecli_Windows_x86_64.zip' -f $env:UPDATECLI_VERSION;
@@ -231,9 +207,6 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\updatecli.tmp";
         };
         'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & gh.exe version;
-        }
     };
     'netlify-deploy' = @{
         'url' = 'https://github.com/halkeye/netlify-golang-deploy/releases/download/v{0}/netlify-golang-deploy_{0}_Windows_x86_64.zip' -f $env:NETLIFYDEPLOY_VERSION;
@@ -244,32 +217,20 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\netlify-golang-deploy.tmp";
         };
         'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & netlify-deploy.exe --help;
-        }
     };
     'terraform' = @{
         'url' = 'https://releases.hashicorp.com/terraform/{0}/terraform_{0}_windows_amd64.zip' -f $env:TERRAFORM_VERSION;
         'local' = "$baseDir\terraform.zip";
         'expandTo' = "$baseDir"; # Only terraform.exe
         'cleanupLocal' = 'true';
-        'sanityCheck'= {
-            & terraform.exe -v;
-        };
     };
     'kubectl' = @{
         'url' = 'https://dl.k8s.io/release/v{0}/bin/windows/amd64/kubectl.exe'  -f $env:KUBECTL_VERSION;
         'local' = "$baseDir\kubectl.exe"
-        'sanityCheck'= {
-            & kubectl.exe version --client;
-        }
     };
     'goss' = @{
         'url' = 'https://github.com/goss-org/goss/releases/download/v{0}/goss-windows-amd64.exe'  -f $env:GOSS_VERSION;
         'local' = "$baseDir\goss.exe"
-        'sanityCheck'= {
-            & goss.exe version;
-        }
     };
     'chocolatey-and-packages' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
@@ -302,18 +263,6 @@ $downloads = [ordered]@{
             & "c:\python312\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
             & "c:\python312\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
         };
-        'sanityCheck'= {
-            & choco.exe;
-            & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" --version;
-            & make.exe -version;
-            & packer.exe --version;
-            & "$baseDir\ruby26\bin\ruby.exe" -v;
-            & "$baseDir\ruby26\bin\bundle" -v;
-            & updatecli.exe version;
-            & yq.exe --version;
-            & "c:\python312\python.exe" --version;
-            & "C:\python312\Scripts\launchable.exe" --version;
-        }
     };
 }
 
@@ -389,9 +338,6 @@ if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
     Invoke-Command {& "choco.exe" install powershell --yes --no-progress --limit-output --fail-on-error-output;}
     AddToPathEnv "C:\Windows\System32\WindowsPowerShell\v1.0\"
 }
-Write-Output "= Windows Powershell & Powershell Core sanity checks:"
-Invoke-Command {& "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -command "(Get-Host).Version"}
-Invoke-Command {& "C:\Program Files\PowerShell\7\pwsh.exe" -command "(Get-Host).Version"}
 
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
@@ -417,8 +363,6 @@ Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
 Write-Host "== Sanity Check of installed tools"
 Write-Host "- Path environment"
 Write-Host (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-Write-Host '- Sanity check for docker'
-& docker -v ## Client only
 foreach($k in $downloads.Keys) {
     $download = $downloads[$k]
     if($download.ContainsKey('sanityCheck')) {

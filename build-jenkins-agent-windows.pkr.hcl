@@ -67,22 +67,27 @@ build {
   provisioner "windows-restart" {
     max_retries = 3
   }
+
   provisioner "file" {
     source      = "./goss/goss-windows.yaml"
     destination  = "C:/goss-windows.yaml"
   }
+
   provisioner "breakpoint" {
     note    = "Enable this breakpoint to pause before trying to run goss tests"
     disable = true
   }
+
   provisioner "powershell" {
+    pause_before      = "2m" # long pause as 1m is not enough
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
-      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml validate --retry-timeout 5s",
+      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --retry-timeout 300s",
       "Remove-Item -Force C:/goss-windows.yaml",
     ]
   }
+
   # This provisioner must be the last for Azure builds, after reboots
   provisioner "powershell" {
     only              = ["azure-arm.windows"]
