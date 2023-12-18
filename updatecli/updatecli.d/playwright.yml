@@ -29,7 +29,7 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the playwright version in the provision-env.yml file"
+    name: "Update the playwright version in the tools-versions.yml file"
     kind: yaml
     spec:
       file: provisioning/tools-versions.yml
