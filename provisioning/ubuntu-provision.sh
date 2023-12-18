@@ -350,9 +350,9 @@ function install_docker_compose(){
 
 ## Ensure that DOCTL is installed
 function install_doctl(){
-  curl --fail --silent --location --show-error --output /usr/local/bin/doctl \
-    "https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-$(uname -m).tar.gz" | tar -xzv doctl
-  chmod a+x /usr/local/bin/doctl
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ doctl
 }
 
 
