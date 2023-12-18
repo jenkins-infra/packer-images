@@ -8,6 +8,7 @@ compose_version: 2.23.3
 cst_version: 1.16.0
 default_jdk: 11
 docker_version: 24.0.7
+doctl_version: 1.101.0
 gh_version: 2.40.0
 git_lfs_version: 3.4.0
 git_linux_version: 2.43.0
