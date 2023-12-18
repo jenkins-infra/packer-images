@@ -42,7 +42,9 @@ targets:
     name: Update the `azure-cli` version in the goss test
     kind: yaml
     spec:
-      file: "goss/goss-linux.yaml"
+      files:
+        - goss/goss-linux.yaml
+        - goss/goss-windows.yaml
       key: $.command.azurecli.stdout[0]
     scmid: default
 
