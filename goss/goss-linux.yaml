@@ -140,7 +140,7 @@ command:
     exec: packer -v
     exit-status: 0
     stdout:
-      - 1.9.4
+      - 1.10.0
   parallel:
     exec: parallel --version
     exit-status: 0
