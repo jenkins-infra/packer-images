@@ -55,7 +55,7 @@ command:
   git_lfs:
     exec: git-lfs --version
     stdout:
-      - 3.4.0
+      - 3.4.1
   goss:
     exec: goss --version
     stdout:

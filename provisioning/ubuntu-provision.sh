@@ -348,6 +348,14 @@ function install_docker_compose(){
   chmod a+x /usr/local/bin/docker-compose
 }
 
+## Ensure that DOCTL is installed
+function install_doctl(){
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ doctl
+}
+
+
 ## Ensure that maven is installed and configured (version from environment)
 function install_maven() {
   curl --fail --silent --location --show-error --output "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
@@ -633,6 +641,7 @@ function main() {
   install_JA_requirements
   install_qemu
   install_azcopy
+  install_doctl
   install_python
   install_docker_compose
   install_maven
