@@ -9,7 +9,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.13.38
+      - 2.15.2
   azcopy:
     exec: azcopy --version
     exit-status: 0
@@ -19,7 +19,7 @@ command:
     exec: az --version
     exit-status: 0
     stdout:
-      - 2.54.0
+      - 2.55.0
   bundle:
     exec: bundle -v
     exit-status: 0
@@ -51,12 +51,12 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.23.1
+      - 2.23.3
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.39.1
+      - 2.40.1
   git:
     exec: git --version
     exit-status: 0
@@ -124,7 +124,7 @@ command:
     exec: mvn -v
     exit-status: 0
     stdout:
-      - 3.9.5
+      - 3.9.6
   netlify-deploy:
     exec: netlify-deploy --help
     exit-status: 0
@@ -140,7 +140,7 @@ command:
     exec: packer -v
     exit-status: 0
     stdout:
-      - 1.9.4
+      - 1.10.0
   parallel:
     exec: parallel --version
     exit-status: 0
@@ -148,7 +148,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.40.0
+      - 1.40.1
   python3:
     exec: python3 --version
     exit-status: 0
@@ -164,7 +164,7 @@ command:
     exec: terraform -v
     exit-status: 0
     stdout:
-      - 1.6.4
+      - 1.6.6
   trivy:
     exec: trivy --version
     exit-status: 0
@@ -177,7 +177,7 @@ command:
     exec: updatecli version
     exit-status: 0
     stderr:
-      - 0.66.1
+      - 0.69.0
   vagrant:
     exec: vagrant -v
     exit-status: 0
