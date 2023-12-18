@@ -39,6 +39,14 @@ targets:
       file: "provisioning/tools-versions.yml"
       key: "$.python3_version"
     scmid: default
+  updatePackerVersionInGoss:
+    name: Update the `python3` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - "goss/goss-windows.yaml" #fixed only on windows
+      key: $.command.python3.stdout[0]
+    scmid: default
 
 actions:
   default:

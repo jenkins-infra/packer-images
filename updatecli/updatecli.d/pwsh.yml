@@ -42,12 +42,26 @@ conditions:
 
 targets:
   updateVersion:
-    name: "Update the pwsh version in the provisioning/tools-versions.yml file"
+    name: "Update the `Pwsh` version in the provisioning/tools-versions.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
       key: "windows_pwsh_version"
+    scmid: default
+  updatePwshVersionInGoss:
+    name: Update the `Pwsh` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - "goss/goss-windows.yaml"
+      key: $.command.pwsh.stdout[0]
+    transformers:
+      - replacer:
+          from: "."
+          to: ".*"
+      - addprefix: "/"
+      - addsuffix: "/"
     scmid: default
 
 actions:
