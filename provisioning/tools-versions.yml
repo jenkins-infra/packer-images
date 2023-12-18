@@ -36,5 +36,5 @@ trivy_version: 0.47.0
 updatecli_version: 0.69.0
 vagrant_version: 2.4.0
 windows_pwsh_version: 7.4.0
-yq_version: 4.25.3
+yq_version: 4.40.5
 playwright_version: 1.40.1
