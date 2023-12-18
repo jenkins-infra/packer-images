@@ -9,7 +9,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.15.0
+      - 2.15.2
   azcopy:
     exec: azcopy --version
     exit-status: 0
@@ -56,7 +56,7 @@ command:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.40.0
+      - 2.40.1
   git:
     exec: git --version
     exit-status: 0
@@ -140,7 +140,7 @@ command:
     exec: packer -v
     exit-status: 0
     stdout:
-      - 1.9.4
+      - 1.10.0
   parallel:
     exec: parallel --version
     exit-status: 0
@@ -164,7 +164,7 @@ command:
     exec: terraform -v
     exit-status: 0
     stdout:
-      - 1.6.5
+      - 1.6.6
   trivy:
     exec: trivy --version
     exit-status: 0
