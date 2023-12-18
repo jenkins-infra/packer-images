@@ -31,11 +31,7 @@ sources:
 
 targets:
   updateVersion:
-<<<<<<< HEAD
     name: "Update the jq version in the tools-versions.yml file"
-=======
-    name: "Update the jq version in the provision-env.yml file"
->>>>>>> 7bf1db6 (remove jq updatecli)
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
