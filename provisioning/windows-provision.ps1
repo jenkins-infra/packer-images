@@ -359,15 +359,3 @@ Select-Object -Property DeviceID, DriveType, VolumeName,
 
 Write-Host "== Patch(s) installed"
 Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
-
-Write-Host "== Sanity Check of installed tools"
-Write-Host "- Path environment"
-Write-Host (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-foreach($k in $downloads.Keys) {
-    $download = $downloads[$k]
-    if($download.ContainsKey('sanityCheck')) {
-        Write-Host "- Sanity check for $k"
-        Invoke-Command $download['sanityCheck']
-    }
-}
-Write-Host "== End of Sanity Check"
