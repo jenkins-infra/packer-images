@@ -119,7 +119,7 @@ command:
   yq:
     exec: yq --version
     stdout:
-      - 4.25.3
+      - 4.40.5
 file:
   C:\Program Files\Chromium\Application\:
     contains: []

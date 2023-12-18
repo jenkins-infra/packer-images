@@ -147,7 +147,7 @@ command:
   yq:
     exec: yq --version
     stdout:
-      - 4.25.3
+      - 4.40.5
   zip:
     exec: zip -v
 file:
