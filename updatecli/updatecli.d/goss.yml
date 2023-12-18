@@ -29,11 +29,20 @@ sources:
 
 targets:
   updateToolVersion:
-    name: Update the Goss tool version
+    name: Update the `Goss` tool version
     kind: yaml
     spec:
       file: provisioning/tools-versions.yml
       key: $.goss_version
+    scmid: default
+  updateVersionInGoss:
+    name: Update the `Goss` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+        - goss/goss-windows.yaml
+      key: $.command.goss.stdout[0]
     scmid: default
 
 actions:

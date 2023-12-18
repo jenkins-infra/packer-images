@@ -45,6 +45,14 @@ targets:
       file: "provisioning/tools-versions.yml"
       key: "$.vagrant_version"
     scmid: default
+  updateVersionInGoss:
+    name: "Update the `vagrant` version in the goss test"
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-windows.yaml # windows only as the linux arm64 vagrant version is not pinned
+      key: $.command.vagrant.stdout[0]
+    scmid: default
 
 actions:
   default:
