@@ -47,7 +47,9 @@ targets:
     name: Update the `aws` CLI  version in the goss test
     kind: yaml
     spec:
-      file: "goss/goss-linux.yaml"
+      files:
+        - goss/goss-linux.yaml
+        - goss/goss-windows.yaml
       key: $.command.awscli.stdout[0]
     scmid: default
 

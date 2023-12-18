@@ -1,5 +1,5 @@
 ---
-name: Bump JQ version
+name: Bump `yq` version
 
 scms:
   default:
@@ -16,43 +16,42 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest jq release version
+    name: Get the latest yq version
     spec:
-      owner: "stedolan"
-      repository: "jq"
+      owner: "mikefarah"
+      repository: "yq"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
-        kind: regex
-        ## Latest stable x.y.z version
-        pattern: 'jq-(\d*)\.(\d*)$'
+        kind: latest
     transformers:
-      - trimprefix: "jq-"
+      - trimprefix: v
 
 targets:
   updateVersion:
-    name: "Update the jq version in the tools-versions.yml file"
+    name: Update the `yq` version in the provision-env.yml file
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "$.jq_version"
+      key: "$.yq_version"
     scmid: default
-  updateJQVersionInGoss:
-    name: Update the `jq` version in the goss test
+  updateVersionInGoss:
+    name: "Update the `yq` version in the goss test"
     kind: yaml
     spec:
       files:
         - goss/goss-linux.yaml
-      key: $.command.jq.stdout[0]
+        - goss/goss-windows.yaml
+      key: $.command.yq.stdout[0]
     scmid: default
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump JQ version to {{ source "lastReleaseVersion" }}
     scmid: default
+    title: Bump the `yq` CLI version to {{ source "lastReleaseVersion" }}
     spec:
       labels:
         - enhancement
-        - jq
+        - yq

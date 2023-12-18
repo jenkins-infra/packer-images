@@ -42,6 +42,7 @@ targets:
     spec:
       files:
         - goss/goss-linux.yaml
+        - goss/goss-windows.yaml
       key: $.command.launchable.stdout[0]
     scmid: default
 
