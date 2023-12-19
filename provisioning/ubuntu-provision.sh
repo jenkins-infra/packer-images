@@ -460,6 +460,13 @@ function install_ruby() {
   install_asdf_package ruby "${RUBY_VERSION}"
 }
 
+## Install Xq
+function install_xq() {
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://github.com/sibprogrammer/xq/releases/download/v${XQ_VERSION}/xq_${XQ_VERSION}_linux_${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ xq
+}
+
 ## Install Yq with asdf
 function install_yq() {
   # Ensure that ASDF is installed
@@ -652,6 +659,7 @@ function main() {
   install_gh
   install_vagrant
   install_ruby
+  install_xq
   install_yq
   install_packer
   install_updatecli

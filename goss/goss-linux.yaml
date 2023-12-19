@@ -186,6 +186,11 @@ command:
   vagrant:
     exec: vagrant -v
     exit-status: 0
+  xq:
+    exec: xq --version
+    exit-status: 0
+    stdout:
+      - 1.2.3
   yq:
     exec: yq --version
     exit-status: 0
