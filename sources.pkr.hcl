@@ -4,6 +4,11 @@ source "azure-arm" "base" {
 
   vm_size = local.azure_vm_size[var.architecture]
 
+  # network defined in https://github.com/jenkins-infra/azure-net/blob/a396b20f676602703c0dbdf4cee977eae2669cd7/vnets.tf#L535
+  virtual_network_name = "infra-ci-jenkins-io-sponsorship-vnet"
+  virtual_network_subnet_name = "infra-ci-jenkins-io-sponsorship-vnet-packer-builds"
+  virtual_network_resource_group_name = "infra-ci-jenkins-io-sponsorship"
+
   # Resource group where to create the VM resources (required to scope permissions into this resource group)
   build_resource_group_name = "${var.build_type}-packer-builds"
 
