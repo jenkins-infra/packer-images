@@ -359,7 +359,7 @@ function install_doctl(){
 function install_helm(){
   install_dir=/usr/local/bin
   curl --fail --silent --location --show-error \
-    "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ helm
+    "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ linux-${ARCHITECTURE}/helm
 }
 
 ## Ensure that maven is installed and configured (version from environment)
