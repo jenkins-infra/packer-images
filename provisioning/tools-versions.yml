@@ -15,6 +15,7 @@ git_linux_version: 2.43.0
 git_windows_version: 2.43.0
 goss_version: 0.4.4
 hadolint_version: 2.12.0
+helm_version: 3.13.2
 jdk11_version: 11.0.21+9
 jdk17_version: 17.0.8.1+1
 jdk21_version: 21.0.1+12

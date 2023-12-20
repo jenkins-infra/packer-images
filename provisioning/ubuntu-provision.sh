@@ -355,6 +355,12 @@ function install_doctl(){
     "https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ doctl
 }
 
+## Ensure that HELM is installed
+function install_helm(){
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ helm
+}
 
 ## Ensure that maven is installed and configured (version from environment)
 function install_maven() {
@@ -671,6 +677,7 @@ function main() {
   install_nodejs
   install_playwright
   install_launchable
+  install_helm
 
   echo "== Installed packages:"
   dpkg -l
