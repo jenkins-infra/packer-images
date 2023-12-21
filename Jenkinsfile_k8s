@@ -174,7 +174,6 @@ pipeline {
           // Defines the following environment variables: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
           // Ref. https://plugins.jenkins.io/azure-credentials/#plugin-content-declarative-pipeline
           AZURE                         = credentials('packer-azure-serviceprincipal-sponsorship')
-          AZURE_GALLERY                 = credentials('packer-azure-serviceprincipal')
           // // Split packer plugins/configuration for each matrix cell - ref. https://www.packer.io/docs/configure
           // PACKER_PLUGIN_PATH            = "${env.WORKSPACE}/plugins"
           // Define Packer Input variables through environment variables prefixed with 'PKR_VAR_'
@@ -186,7 +185,6 @@ pipeline {
           PKR_VAR_agent_os_version      = "${env.agent_type.split('-')[1]}"
           PKR_VAR_architecture          = "${env.cpu_architecture}"
           PKR_VAR_image_type            = "${env.compute_type}"
-          PKR_VAR_azure_gallery_subscription_id = "${env.AZURE_GALLERY_SUBSCRIPTION_ID}"
           PATH                          = "${WORKSPACE}/.bin:${env.PATH}" // Required if packer needs to be installed
         }
         stages {
