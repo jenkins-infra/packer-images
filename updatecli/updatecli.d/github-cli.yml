@@ -29,7 +29,7 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the `GitHub CLI (gh)` version in the provision-env.yml file"
+    name: "Update the `GitHub CLI (gh)` version in the tools-versions.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
@@ -40,7 +40,9 @@ targets:
     name: Update the `GitHub CLI (gh)` version in the goss test
     kind: yaml
     spec:
-      file: "goss/goss-linux.yaml"
+      files:
+        - goss/goss-linux.yaml
+        - goss/goss-windows.yaml
       key: $.command.gh_cli.stdout[0]
     scmid: default
 

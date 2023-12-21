@@ -37,7 +37,7 @@ conditions:
 
 targets:
   updateVersion:
-    name: "Update the `packer` version in the provision-env.yml file"
+    name: "Update the `packer` version in the tools-versions.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
@@ -50,6 +50,7 @@ targets:
     spec:
       files:
         - goss/goss-linux.yaml
+        - goss/goss-windows.yaml
       key: $.command.packer.stdout[0]
     scmid: default
 

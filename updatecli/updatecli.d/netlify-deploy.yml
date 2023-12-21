@@ -29,7 +29,7 @@ sources:
 
 targets:
   updateVersion:
-    name: Update the `netlify-deploy` CLI version in the provision-env.yml file
+    name: Update the `netlify-deploy` CLI version in the tools-versions.yml file
     sourceid: lastReleaseVersion
     kind: yaml
     spec:

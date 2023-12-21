@@ -38,7 +38,7 @@ conditions:
 
 targets:
   updateVersion:
-    name: Update the `trivy` CLI version in the provision-env.yml file
+    name: Update the `trivy` CLI version in the tools-versions.yml file
     sourceid: lastReleaseVersion
     kind: yaml
     spec:

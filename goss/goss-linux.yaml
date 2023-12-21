@@ -9,7 +9,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.14.5
+      - 2.15.3
   azcopy:
     exec: azcopy --version
     exit-status: 0
@@ -52,11 +52,16 @@ command:
     exit-status: 0
     stdout:
       - 2.23.3
+  doctl:
+    exec: doctl version
+    exit-status: 0
+    stdout:
+      - 1.101.0
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.39.2
+      - 2.40.1
   git:
     exec: git --version
     exit-status: 0
@@ -66,7 +71,7 @@ command:
     exec: git-lfs --version
     exit-status: 0
     stdout:
-      - 3.4.0
+      - 3.4.1
   goss:
     exec: goss --version
     exit-status: 0
@@ -106,7 +111,7 @@ command:
     exec: jx-release-version -version
     exit-status: 0
     stdout:
-      - 2.7.0
+      - 2.7.3
   kubectl:
     exec: kubectl version --client
     exit-status: 0
@@ -140,7 +145,7 @@ command:
     exec: packer -v
     exit-status: 0
     stdout:
-      - 1.9.4
+      - 1.10.0
   parallel:
     exec: parallel --version
     exit-status: 0
@@ -164,7 +169,7 @@ command:
     exec: terraform -v
     exit-status: 0
     stdout:
-      - 1.6.5
+      - 1.6.6
   trivy:
     exec: trivy --version
     exit-status: 0
@@ -177,15 +182,20 @@ command:
     exec: updatecli version
     exit-status: 0
     stderr:
-      - 0.68.0
+      - 0.70.0
   vagrant:
     exec: vagrant -v
     exit-status: 0
+  xq:
+    exec: xq --version
+    exit-status: 0
+    stdout:
+      - 1.2.3
   yq:
     exec: yq --version
     exit-status: 0
     stdout:
-      - 4.25.3
+      - 4.40.5
   zip:
     exec: zip -v
     exit-status: 0

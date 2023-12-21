@@ -38,12 +38,20 @@ conditions:
 
 targets:
   updateVersion:
-    name: "Update the `vagrant` version in the provision-env.yml file"
+    name: "Update the `vagrant` version in the tools-versions.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
       key: "$.vagrant_version"
+    scmid: default
+  updateVersionInGoss:
+    name: "Update the `vagrant` version in the goss test"
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-windows.yaml # windows only as the linux arm64 vagrant version is not pinned
+      key: $.command.vagrant.stdout[0]
     scmid: default
 
 actions:

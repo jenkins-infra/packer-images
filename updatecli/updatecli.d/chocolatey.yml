@@ -29,12 +29,12 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the chocolatey version in the provision-env.yml file"
+    name: "Update the chocolatey version in the tools-versions.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
-      file: "provisioning/tools-versions.yml"
-      key: "chocolatey_version"
+      file: provisioning/tools-versions.yml
+      key: $.chocolatey_version
     scmid: default
 
 actions:

@@ -348,6 +348,14 @@ function install_docker_compose(){
   chmod a+x /usr/local/bin/docker-compose
 }
 
+## Ensure that DOCTL is installed
+function install_doctl(){
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ doctl
+}
+
+
 ## Ensure that maven is installed and configured (version from environment)
 function install_maven() {
   curl --fail --silent --location --show-error --output "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
@@ -450,6 +458,13 @@ function install_ruby() {
   # Install Ruby with ASDF and set it as default installation
   install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
   install_asdf_package ruby "${RUBY_VERSION}"
+}
+
+## Install Xq
+function install_xq() {
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://github.com/sibprogrammer/xq/releases/download/v${XQ_VERSION}/xq_${XQ_VERSION}_linux_${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ xq
 }
 
 ## Install Yq with asdf
@@ -633,6 +648,7 @@ function main() {
   install_JA_requirements
   install_qemu
   install_azcopy
+  install_doctl
   install_python
   install_docker_compose
   install_maven
@@ -643,6 +659,7 @@ function main() {
   install_gh
   install_vagrant
   install_ruby
+  install_xq
   install_yq
   install_packer
   install_updatecli

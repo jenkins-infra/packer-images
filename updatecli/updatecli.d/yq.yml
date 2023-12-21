@@ -1,5 +1,5 @@
 ---
-name: Bump jx-release-version version
+name: Bump `yq` version
 
 scms:
   default:
@@ -16,42 +16,42 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest jx-release-version release version
+    name: Get the latest yq version
     spec:
-      owner: "jenkins-x-plugins"
-      repository: "jx-release-version"
+      owner: "mikefarah"
+      repository: "yq"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
-        kind: semver
+        kind: latest
     transformers:
       - trimprefix: v
 
 targets:
   updateVersion:
-    name: "Update the `jx-release-version` version in the tools-versions.yml file"
+    name: Update the `yq` version in the provision-env.yml file
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "$.jxreleaseversion_version"
+      key: "$.yq_version"
     scmid: default
-  updateJxReleaseVersionInGoss:
-    name: Update the `jx-release-version` version in the goss test
+  updateVersionInGoss:
+    name: "Update the `yq` version in the goss test"
     kind: yaml
     spec:
       files:
         - goss/goss-linux.yaml
         - goss/goss-windows.yaml
-      key: $.command.jx-release-version.stdout[0]
+      key: $.command.yq.stdout[0]
     scmid: default
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump jx-release-version version to {{ source "lastReleaseVersion" }}
     scmid: default
+    title: Bump the `yq` CLI version to {{ source "lastReleaseVersion" }}
     spec:
       labels:
         - enhancement
-        - jx-release-version
+        - yq
