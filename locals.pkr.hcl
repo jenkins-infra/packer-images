@@ -10,18 +10,18 @@ locals {
     "arm64" = "${local.agent_os_version_safe}-lts-arm64"
   }
   windows_winrm_user = {
-    "azure-arm"  = "packer"
-    "docker"     = "packer"
+    "azure-arm" = "packer"
+    "docker"    = "packer"
   }
   azure_vm_size = {
-    "amd64" = "Standard_D4ads_v5"  # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
+    "amd64" = "Standard_D4ads_v5" # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
     "arm64" = "Standard_D4pds_v5" # 4 CPU / 16 GB
   }
   azure_destination_resource_group = "${var.build_type}-packer-images"
   azure_galleries = {
-    "prod_packer_images"    = ["East US", "East US 2"]
-    "staging_packer_images" = ["East US", "East US 2"] # Only the "main" branch, should map the production as much as possible
-    "dev_packer_images"     = ["East US"]              # Faster builds for branches, pull requests or local development
+    "prod_packer_images"    = ["East US 2"]
+    "staging_packer_images" = ["East US 2"]
+    "dev_packer_images"     = ["East US 2"]
   }
   windows_disk_size_gb = 150 # Must be greater than 127 Gb to allow Azure template to work with
   provisioning_env_vars = concat(

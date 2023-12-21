@@ -70,7 +70,7 @@ build {
 
   provisioner "file" {
     source      = "./goss/goss-windows.yaml"
-    destination  = "C:/goss-windows.yaml"
+    destination = "C:/goss-windows.yaml"
   }
 
   provisioner "breakpoint" {
@@ -79,7 +79,7 @@ build {
   }
 
   provisioner "powershell" {
-    pause_before      = "2m" # long pause as 1m is not enough
+    pause_before = "2m" # long pause as 1m is not enough
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
