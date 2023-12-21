@@ -363,11 +363,20 @@ function install_helm(){
     tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ "linux-${ARCHITECTURE}/helm"
 }
 
+## Ensure that HELMFILE is installed
 function install_helmfile(){
   install_dir=/usr/local/bin
   curl --fail --silent --location --show-error \
     "https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_${ARCHITECTURE}.tar.gz" | \
     tar --extract --gunzip --directory="${install_dir}"/  helmfile
+}
+
+## Ensure that SOPS is installed
+function install_sops(){
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error --output "${install_dir}"/sops \
+    "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${ARCHITECTURE}"
+  chmod +x "${install_dir}"/sops
 }
 
 ## Ensure that maven is installed and configured (version from environment)

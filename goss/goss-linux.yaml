@@ -172,6 +172,11 @@ command:
     exit-status: 0
     stdout:
       - 2.6.10
+  sops:
+    exec: sops --version
+    exit-status: 0
+    stdout:
+      - 3.8.1
   ssh_agent:
     exec: command -v ssh-agent
     exit-status: 0
