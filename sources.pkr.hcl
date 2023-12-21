@@ -16,7 +16,6 @@ source "azure-arm" "base" {
   client_id       = var.azure_client_id
   client_secret   = var.azure_client_secret
   subscription_id = var.azure_subscription_id
-  location        = "East US 2"
 
   # Where to export the image
   shared_image_gallery_destination {
