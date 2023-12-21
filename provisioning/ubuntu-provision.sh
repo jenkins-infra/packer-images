@@ -359,7 +359,15 @@ function install_doctl(){
 function install_helm(){
   install_dir=/usr/local/bin
   curl --fail --silent --location --show-error \
-    "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ "linux-${ARCHITECTURE}/helm"
+    "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCHITECTURE}.tar.gz" | \
+    tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ "linux-${ARCHITECTURE}/helm"
+}
+
+function install_helmfile(){
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_${ARCHITECTURE}.tar.gz" | \
+    tar --extract --gunzip --directory="${install_dir}"/  helmfile
 }
 
 ## Ensure that maven is installed and configured (version from environment)
@@ -678,6 +686,7 @@ function main() {
   install_playwright
   install_launchable
   install_helm
+  install_helmfile
 
   echo "== Installed packages:"
   dpkg -l

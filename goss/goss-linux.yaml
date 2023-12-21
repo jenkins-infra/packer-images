@@ -87,6 +87,11 @@ command:
     exit-status: 0
     stdout:
       - 3.13.2
+  helmfile:
+    exec: helmfile --version
+    exit-status: 0
+    stdout:
+      - 0.159.0
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
