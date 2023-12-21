@@ -92,6 +92,13 @@ command:
     exit-status: 0
     stdout:
       - 0.159.0
+  helmplugins:
+    exec: helm plugin list
+    exit-status: 0
+    stdout:
+      - /diff.*3.8.1/
+      - /helm-git.*0.15.1/
+      - /secrets.*4.5.1/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
