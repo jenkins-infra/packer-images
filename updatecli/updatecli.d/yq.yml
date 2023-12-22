@@ -27,6 +27,14 @@ sources:
     transformers:
       - trimprefix: v
 
+conditions:
+  checkForChocolateyPackage:
+    kind: http
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      url: https://community.chocolatey.org/packages/yq/{{ source "lastReleaseVersion" }}
+      # command: curl https://community.chocolatey.org/packages/awscli/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
+
 targets:
   updateVersion:
     name: Update the `yq` version in the provision-env.yml file
