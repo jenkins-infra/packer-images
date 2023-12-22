@@ -25,6 +25,10 @@ variable "azure_subscription_id" {
   type    = string
   default = env("AZURE_SUBSCRIPTION_ID")
 }
+variable "azure_gallery_subscription_id" {
+  type    = string
+  default = env("AZURE_SUBSCRIPTION_ID") # allow to specify distinct subscription
+}
 variable "image_version" {
   type    = string
   default = "0.0.1" # Default is a valid version to not fail azure validation
