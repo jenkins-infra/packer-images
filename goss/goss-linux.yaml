@@ -14,7 +14,7 @@ command:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.21.2
+      - 10.22.1
   azurecli:
     exec: az --version
     exit-status: 0
