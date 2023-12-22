@@ -700,6 +700,7 @@ function main() {
   install_launchable
   install_helm
   install_helmfile
+  install_sops
 
   echo "== Installed packages:"
   dpkg -l
