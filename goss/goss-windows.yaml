@@ -151,7 +151,7 @@ command:
     exec: yq --version
     exit-status: 0
     stdout:
-      - 4.40.5
+      - 4.25.3
 file:
   C:\Program Files\Chromium\Application\:
     contains: []
