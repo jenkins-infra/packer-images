@@ -22,7 +22,7 @@ jenkins_remoting_version: 3198.v03a_401881f3e
 jq_version: 1.6
 jxreleaseversion_version: 2.7.0
 kubectl_version: 1.23.13
-launchable_version: 1.77.0
+launchable_version: 1.78.0
 maven_version: 3.9.6
 netlifydeploy_version: 0.1.8
 nodejs_version: 18.18.2
