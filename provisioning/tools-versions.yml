@@ -15,6 +15,11 @@ git_linux_version: 2.43.0
 git_windows_version: 2.43.0
 goss_version: 0.4.4
 hadolint_version: 2.12.0
+helm_version: 3.13.2
+helm_diff_version: 3.8.1
+helmfile_version: 0.159.0
+helm_git_version: 0.15.1
+helm_secrets_version: 4.5.1
 jdk11_version: 11.0.21+9
 jdk17_version: 17.0.8.1+1
 jdk21_version: 21.0.1+12
@@ -31,6 +36,7 @@ openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws
 packer_version: 1.10.0
 python3_version: 3.12.1
 ruby_version: 2.6.10
+sops_version: 3.8.1
 terraform_version: 1.6.6
 trivy_version: 0.47.0
 updatecli_version: 0.70.0

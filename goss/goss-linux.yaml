@@ -82,6 +82,23 @@ command:
     exit-status: 0
     stdout:
       - 2.12.0
+  helm:
+    exec: helm version
+    exit-status: 0
+    stdout:
+      - 3.13.2
+  helmfile:
+    exec: helmfile --version
+    exit-status: 0
+    stdout:
+      - 0.159.0
+  helmplugins:
+    exec: helm plugin list
+    exit-status: 0
+    stdout:
+      - /diff.*3.8.1/
+      - /helm-git.*0.15.1/
+      - /secrets.*4.5.1/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
@@ -162,6 +179,11 @@ command:
     exit-status: 0
     stdout:
       - 2.6.10
+  sops:
+    exec: sops --version
+    exit-status: 0
+    stdout:
+      - 3.8.1
   ssh_agent:
     exec: command -v ssh-agent
     exit-status: 0

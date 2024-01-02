@@ -355,6 +355,33 @@ function install_doctl(){
     "https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ doctl
 }
 
+## Ensure that`helm` and its plugins are installed
+function install_helm(){
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCHITECTURE}.tar.gz" | \
+    tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ "linux-${ARCHITECTURE}/helm"
+
+  su - "${username}" -c "helm plugin install https://github.com/databus23/helm-diff --version v${HELM_DIFF_VERSION}"
+  su - "${username}" -c "helm plugin install https://github.com/jkroepke/helm-secrets --version v${HELM_SECRETS_VERSION}"
+  su - "${username}" -c "helm plugin install https://github.com/aslafy-z/helm-git.git --version v${HELM_GIT_VERSION}"
+}
+
+## Ensure that`helmfile` is installed
+function install_helmfile(){
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error \
+    "https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_${ARCHITECTURE}.tar.gz" | \
+    tar --extract --gunzip --directory="${install_dir}"/  helmfile
+}
+
+## Ensure that`sops` is installed
+function install_sops(){
+  install_dir=/usr/local/bin
+  curl --fail --silent --location --show-error --output "${install_dir}"/sops \
+    "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${ARCHITECTURE}"
+  chmod +x "${install_dir}"/sops
+}
 
 ## Ensure that maven is installed and configured (version from environment)
 function install_maven() {
@@ -671,6 +698,9 @@ function main() {
   install_nodejs
   install_playwright
   install_launchable
+  install_helm
+  install_helmfile
+  install_sops
 
   echo "== Installed packages:"
   dpkg -l
