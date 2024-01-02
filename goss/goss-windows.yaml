@@ -6,7 +6,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.15.5
+      - 2.15.6
   azurecli:
     exec: az version
     exit-status: 0
