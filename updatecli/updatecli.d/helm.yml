@@ -1,0 +1,56 @@
+---
+name: Bump helm version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest `helm` release version
+    spec:
+      owner: "helm"
+      repository: "helm"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: semver
+    transformers:
+      - trimprefix: v
+
+targets:
+  updateVersion:
+    name: "Update the `helm` version in the tools-versions.yml file"
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: "provisioning/tools-versions.yml"
+      key: "$.helm_version"
+    scmid: default
+  updatehelmVersionInGoss:
+    name: Update the `helm` version in the goss test
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.helm.stdout[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump helm version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - helm
