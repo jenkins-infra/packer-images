@@ -650,6 +650,13 @@ function install_launchable() {
   ln -s "${launchable_venv_dir}/bin/launchable" /usr/local/bin/launchable
 }
 
+## ensure yamllint is installed
+function install_yamllint() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends \
+    yamllint
+}
+
 ## Ensure that the VM is cleaned up of provision artifacts
 function cleanup() {
   export HISTSIZE=0
@@ -701,6 +708,7 @@ function main() {
   install_helm
   install_helmfile
   install_sops
+  install_yamllint
 
   echo "== Installed packages:"
   dpkg -l

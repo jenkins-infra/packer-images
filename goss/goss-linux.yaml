@@ -213,6 +213,9 @@ command:
     exit-status: 0
     stdout:
       - 1.2.3
+  yamllint:
+    exec: yamllint -v
+    exit-status: 0
   yq:
     exec: yq --version
     exit-status: 0
