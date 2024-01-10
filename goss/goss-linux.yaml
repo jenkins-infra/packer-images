@@ -61,7 +61,7 @@ command:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.40.1
+      - 2.41.0
   git:
     exec: git --version
     exit-status: 0
