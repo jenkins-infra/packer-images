@@ -200,7 +200,7 @@ function install_docker() {
 
 ## Ensure Golang is installed
 function install_golang(){
-  rm -rf /usr/local/go && tar -C /usr/local -xzf go"${GOLANG_VERSION}".linux-"${ARCHITECTURE}".tar.gz
+  tar -C /usr/local/bin/ -xzf go"${GOLANG_VERSION}".linux-"${ARCHITECTURE}".tar.gz
 }
 
 ## Ensure that the Jenkins Agent commons requirements are installed
