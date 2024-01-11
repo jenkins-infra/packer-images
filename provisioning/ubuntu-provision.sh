@@ -198,6 +198,11 @@ function install_docker() {
   usermod -aG docker "${username}"
 }
 
+## Ensure Golang is installed
+function install_golang(){
+  rm -rf /usr/local/go && tar -C /usr/local -xzf go"${GOLANG_VERSION}".linux-"${ARCHITECTURE}".tar.gz
+}
+
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
   apt-get update --quiet
@@ -691,6 +696,7 @@ function main() {
   install_jxreleaseversion
   install_azurecli
   install_gh
+  install_golang
   install_vagrant
   install_ruby
   install_xq
