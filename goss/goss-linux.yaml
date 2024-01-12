@@ -39,6 +39,31 @@ command:
     exit-status: 0
     stdout:
       - 2.43.0
+  git_lfs:
+    exec: git-lfs --version
+    exit-status: 0
+    stdout:
+      - 3.4.1
+  golang:
+    exec: go version
+    exit-status: 0
+    stdout:
+      - 1.21.6
+  golangci-lint:
+    exec: golangci-lint --version
+    exit-status: 0
+    stdout:
+      - 1.55.2
+  goss:
+    exec: goss --version
+    exit-status: 0
+    stdout:
+      - 0.4.4
+  hadolint:
+    exec: hadolint -v
+    exit-status: 0
+    stdout:
+      - 2.12.0
   helm:
     exec: helm version
     exit-status: 0

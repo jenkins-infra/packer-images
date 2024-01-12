@@ -209,6 +209,12 @@ function install_golang(){
   ln -s "${installation_dir}go/bin/go" /usr/local/bin/go
 }
 
+## Ensure GolangCIlint is installed
+function install_golangcilint(){
+  # binary will be in /usr/local/bin
+  curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b /usr/local/bin "v${GOLANGCILINT_VERSION}"
+}
+
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
   apt-get update --quiet
@@ -703,6 +709,7 @@ function main() {
   install_azurecli
   install_gh
   install_golang
+  install_golangcilint # must come after golang
   install_vagrant
   install_ruby
   install_xq
