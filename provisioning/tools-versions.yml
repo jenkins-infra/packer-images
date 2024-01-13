@@ -16,7 +16,7 @@ git_windows_version: 2.43.0
 goss_version: 0.4.4
 hadolint_version: 2.12.0
 helm_version: 3.13.3
-helm_diff_version: 3.8.1
+helm_diff_version: 3.9.0
 helmfile_version: 0.160.0
 helm_git_version: 0.15.1
 helm_secrets_version: 4.5.1
