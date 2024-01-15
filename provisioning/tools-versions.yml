@@ -5,7 +5,7 @@ azcopy_version: 10.22.2-20240110
 azurecli_version: 2.56.0
 chocolatey_version: 1.4.0
 compose_version: 2.23.3
-cst_version: 1.16.0
+cst_version: 1.16.1
 default_jdk: 11
 docker_version: 24.0.7
 doctl_version: 1.101.0
