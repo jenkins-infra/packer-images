@@ -52,7 +52,7 @@ command:
     exec: jq --version
     exit-status: 0
     stdout:
-      - jq-1.6
+      - 1.7.1
   jx-release-version:
     exec: jx-release-version -version
     exit-status: 0
