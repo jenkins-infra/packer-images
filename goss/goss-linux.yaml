@@ -30,7 +30,7 @@ command:
     exec: container-structure-test version
     exit-status: 0
     stdout:
-      - v1.16.0
+      - 1.16.0
   datadog-agent:
     exec: datadog-agent version
     exit-status: 0
