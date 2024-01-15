@@ -174,7 +174,7 @@ $downloads = [ordered]@{
         'cleanupLocal' = 'true';
     };
     'jq' = @{
-        'url' = 'https://github.com/stedolan/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
+        'url' = 'https://github.com/jqlang/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
         'local' = "$baseDir\jq.exe"
     };
     'az' = @{

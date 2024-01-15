@@ -18,16 +18,23 @@ sources:
     kind: githubrelease
     name: Get the latest jq release version
     spec:
-      owner: "stedolan"
+      owner: "jqlang"
       repository: "jq"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
         kind: regex
         ## Latest stable x.y.z version
-        pattern: 'jq-(\d*)\.(\d*)$'
+        pattern: 'jq-(\d*)\.(\d*)\.(\d*)$'
     transformers:
       - trimprefix: "jq-"
+
+conditions:
+  checkwindowsversion:
+    disablesourceinput: true
+    kind: shell
+    spec:
+      command: curl --connect-timeout 5 --verbose --silent --show-error --location --fail --head --output /dev/null "https://github.com/jqlang/jq/releases/download/jq-{{ source "lastReleaseVersion" }}/jq-win64.exe"
 
 targets:
   updateVersion:
@@ -43,8 +50,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
-        - goss/goss-windows.yaml
+        - goss/goss-common.yaml
       key: $.command.jq.stdout[0]
     scmid: default
 
