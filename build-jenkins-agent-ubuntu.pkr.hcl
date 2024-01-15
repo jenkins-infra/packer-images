@@ -40,6 +40,11 @@ build {
     destination = "/tmp/goss-linux.yaml"
   }
 
+  provisioner "file" {
+    source      = "./goss/goss-common.yaml"
+    destination = "/tmp/goss-common.yaml"
+  }
+
   provisioner "breakpoint" {
     note    = "Enable this breakpoint to pause before trying to run goss tests"
     disable = true
@@ -51,6 +56,7 @@ build {
       "source /home/jenkins/.asdf/asdf.sh", # Required as this is a non-interactive and non-login `bash`
       "goss --version",
       "goss --gossfile /tmp/goss-linux.yaml --loglevel DEBUG validate",
+      "goss --gossfile /tmp/goss-common.yaml --loglevel DEBUG validate",
     ]
   }
 

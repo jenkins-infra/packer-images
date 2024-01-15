@@ -73,6 +73,11 @@ build {
     destination = "C:/goss-windows.yaml"
   }
 
+    provisioner "file" {
+    source      = "./goss/goss-common.yaml"
+    destination = "C:/goss-common.yaml"
+  }
+
   provisioner "breakpoint" {
     note    = "Enable this breakpoint to pause before trying to run goss tests"
     disable = true
@@ -84,7 +89,9 @@ build {
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
       "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --retry-timeout 300s",
+      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --retry-timeout 300s",
       "Remove-Item -Force C:/goss-windows.yaml",
+      "Remove-Item -Force C:/goss-common.yaml",
     ]
   }
 
