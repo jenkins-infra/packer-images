@@ -40,8 +40,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
-        - goss/goss-windows.yaml
+        - goss/goss-common.yaml
       key: $.command.git_lfs.stdout[0]
     scmid: default
 

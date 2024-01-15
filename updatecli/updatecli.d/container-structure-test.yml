@@ -41,11 +41,8 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
-        - goss/goss-windows.yaml
+        - goss/goss-common.yaml
       key: $.command.container-structure-test.stdout[0]
-    transformers:
-      - addprefix: "v"
     scmid: default
 
 actions:
