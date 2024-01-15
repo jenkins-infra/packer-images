@@ -1,0 +1,114 @@
+---
+command:
+  awscli:
+    exec: aws --version
+    exit-status: 0
+    stdout:
+      - 2.15.9
+  azurecli:
+    exec: az --version
+    exit-status: 0
+    stdout:
+      - 2.56.0
+  bundle:
+    exec: bundle -v
+    exit-status: 0
+  container-structure-test:
+    exec: container-structure-test version
+    exit-status: 0
+    stdout:
+      - v1.16.0
+  default_java:
+    exec: java --version
+    exit-status: 0
+    stdout:
+      - 11.0.21+9
+  docker_compose:
+    exec: docker-compose -v
+    exit-status: 0
+    stdout:
+      - 2.23.3
+  gh_cli:
+    exec: gh --version
+    exit-status: 0
+    stdout:
+      - 2.41.0
+  git_lfs:
+    exec: git-lfs --version
+    exit-status: 0
+    stdout:
+      - 3.4.1
+  goss:
+    exec: goss --version
+    exit-status: 0
+    stdout:
+      - 0.4.4
+  hadolint:
+    exec: hadolint -v
+    exit-status: 0
+    stdout:
+      - 2.12.0
+  jq:
+    exec: jq --version
+    exit-status: 0
+    stdout:
+      - jq-1.6
+  jx-release-version:
+    exec: jx-release-version -version
+    exit-status: 0
+    stdout:
+      - 2.7.3
+  kubectl:
+    exec: kubectl version --client
+    exit-status: 0
+    stdout:
+      - 1.23.13
+  launchable:
+    exec: launchable --version
+    exit-status: 0
+    stdout:
+      - 1.66.0
+  make:
+    exec: make --version
+    exit-status: 0
+  netlify-deploy:
+    exec: netlify-deploy --help
+    exit-status: 0
+  nodejs:
+    exec: node --version
+    exit-status: 0
+    stdout:
+      - 18.18.2
+  npm:
+    exec: npm version
+    exit-status: 0
+  packer:
+    exec: packer -v
+    exit-status: 0
+    stdout:
+      - 1.10.0
+  ruby:
+    exec: ruby -v
+    exit-status: 0
+    stdout:
+      - 2.6.10
+  terraform:
+    exec: terraform -v
+    exit-status: 0
+    stdout:
+      - 1.6.6
+  trivy:
+    exec: trivy --version
+    exit-status: 0
+    stdout:
+      - 0.47.0
+  updatecli:
+    exec: updatecli version
+    exit-status: 0
+    stderr:
+      - 0.70.0
+  yq:
+    exec: yq --version
+    exit-status: 0
+    stdout:
+      - 4.25.3

@@ -5,40 +5,17 @@ command:
     exit-status: 0
     stdout:
       - v0.13.1
-  awscli:
-    exec: aws --version
-    exit-status: 0
-    stdout:
-      - 2.15.9
   azcopy:
     exec: azcopy --version
     exit-status: 0
     stdout:
       - 10.22.2
-  azurecli:
-    exec: az --version
-    exit-status: 0
-    stdout:
-      - 2.56.0
-  bundle:
-    exec: bundle -v
-    exit-status: 0
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
-  container-structure-test:
-    exec: container-structure-test version
-    exit-status: 0
-    stdout:
-      - v1.16.0
   datadog-agent:
     exec: datadog-agent version
     exit-status: 0
-  default_java:
-    exec: java --version
-    exit-status: 0
-    stdout:
-      - 11.0.21+9
   docker-ce:
     exec: docker -v
     exit-status: 0
@@ -47,41 +24,16 @@ command:
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
-  docker_compose:
-    exec: docker-compose -v
-    exit-status: 0
-    stdout:
-      - 2.23.3
   doctl:
     exec: doctl version
     exit-status: 0
     stdout:
       - 1.101.0
-  gh_cli:
-    exec: gh --version
-    exit-status: 0
-    stdout:
-      - 2.41.0
   git:
     exec: git --version
     exit-status: 0
     stdout:
       - 2.43.0
-  git_lfs:
-    exec: git-lfs --version
-    exit-status: 0
-    stdout:
-      - 3.4.1
-  goss:
-    exec: goss --version
-    exit-status: 0
-    stdout:
-      - 0.4.4
-  hadolint:
-    exec: hadolint -v
-    exit-status: 0
-    stdout:
-      - 2.12.0
   helm:
     exec: helm version
     exit-status: 0
@@ -119,50 +71,11 @@ command:
     exit-status: 0
     stderr:
       - 1.8.0_392
-  jq:
-    exec: jq --version
-    exit-status: 0
-    stdout:
-      - jq-1.6
-  jx-release-version:
-    exec: jx-release-version -version
-    exit-status: 0
-    stdout:
-      - 2.7.3
-  kubectl:
-    exec: kubectl version --client
-    exit-status: 0
-    stdout:
-      - 1.23.13
-  launchable:
-    exec: launchable --version
-    exit-status: 0
-    stdout:
-      - 1.66.0
-  make:
-    exec: make --version
-    exit-status: 0
   maven:
     exec: mvn -v
     exit-status: 0
     stdout:
       - 3.9.6
-  netlify-deploy:
-    exec: netlify-deploy --help
-    exit-status: 0
-  nodejs:
-    exec: node --version
-    exit-status: 0
-    stdout:
-      - 18.18.2
-  npm:
-    exec: npm version
-    exit-status: 0
-  packer:
-    exec: packer -v
-    exit-status: 0
-    stdout:
-      - 1.10.0
   parallel:
     exec: parallel --version
     exit-status: 0
@@ -174,11 +87,6 @@ command:
   python3:
     exec: python3 --version
     exit-status: 0
-  ruby:
-    exec: ruby -v
-    exit-status: 0
-    stdout:
-      - 2.6.10
   sops:
     exec: sops --version
     exit-status: 0
@@ -187,24 +95,9 @@ command:
   ssh_agent:
     exec: command -v ssh-agent
     exit-status: 0
-  terraform:
-    exec: terraform -v
-    exit-status: 0
-    stdout:
-      - 1.6.6
-  trivy:
-    exec: trivy --version
-    exit-status: 0
-    stdout:
-      - 0.47.0
   unzip:
     exec: unzip -v
     exit-status: 0
-  updatecli:
-    exec: updatecli version
-    exit-status: 0
-    stderr:
-      - 0.70.0
   vagrant:
     exec: vagrant -v
     exit-status: 0
@@ -216,11 +109,6 @@ command:
   yamllint:
     exec: yamllint -v
     exit-status: 0
-  yq:
-    exec: yq --version
-    exit-status: 0
-    stdout:
-      - 4.25.3
   zip:
     exec: zip -v
     exit-status: 0
