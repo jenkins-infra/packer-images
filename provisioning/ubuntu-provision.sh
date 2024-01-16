@@ -203,7 +203,7 @@ function install_golang(){
   ## will be installed in /usr/local/bin
   golang_download_url="https://go.dev/dl/go${GOLANG_VERSION}.linux-${ARCHITECTURE}.tar.gz"
   curl --fail --silent --show-error --location "${golang_download_url}" | \
-    tar --extract --gunzip --strip-components=1 --directory="/usr/local/" go/bin/go
+    tar --extract --gunzip --directory="/usr/local/"
 }
 
 ## Ensure GolangCIlint is installed
