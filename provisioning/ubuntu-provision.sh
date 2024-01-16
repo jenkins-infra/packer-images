@@ -201,7 +201,7 @@ function install_docker() {
 ## Ensure Golang is installed
 function install_golang(){
   ## will be installed in /usr/local/bin
-  local golang_download_url="https://go.dev/dl/go${GOLANG_VERSION}.linux-${ARCHITECTURE}.tar.gz"
+  golang_download_url="https://go.dev/dl/go${GOLANG_VERSION}.linux-${ARCHITECTURE}.tar.gz"
   curl --fail --silent --show-error --location "${golang_download_url}" | \
     tar --extract --gunzip --strip-components=1 --directory="/usr/local/" go/bin/go
 }
@@ -209,9 +209,9 @@ function install_golang(){
 ## Ensure GolangCIlint is installed
 function install_golangcilint(){
   ## will be installed in /usr/local/bin
-  local golangcilint_download_url="https://www.github.com/golangci/golangci-lint/releases/download/v${GOLANGCILINT_VERSION}/golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}.tar.gz"
+  golangcilint_download_url="https://www.github.com/golangci/golangci-lint/releases/download/v${GOLANGCILINT_VERSION}/golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}.tar.gz"
   curl --fail --silent --show-error --location "${golangcilint_download_url}" | \
-    tar --extract --gunzip --strip-components=1 --directory="/usr/local/bin/" "golangci-lint-${GOLANGCILINT_VERSION}-linux-arm64/golangci-lint"
+    tar --extract --gunzip --strip-components=1 --directory="/usr/local/bin/" "golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}/golangci-lint"
 }
 
 ## Ensure that the Jenkins Agent commons requirements are installed
