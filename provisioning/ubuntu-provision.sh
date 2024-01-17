@@ -204,6 +204,8 @@ function install_golang(){
   golang_download_url="https://go.dev/dl/go${GOLANG_VERSION}.linux-${ARCHITECTURE}.tar.gz"
   curl --fail --silent --show-error --location "${golang_download_url}" | \
     tar --extract --gunzip --directory="/usr/local/"
+  ## append to the system wide path variable
+  sed -e '/^PATH/s/"$/:\/usr\/local\/myprgoog\/bin"/g' -i /etc/environment
 }
 
 ## Ensure GolangCIlint is installed
