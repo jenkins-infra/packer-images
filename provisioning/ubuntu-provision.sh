@@ -205,7 +205,7 @@ function install_golang(){
   curl --fail --silent --show-error --location "${golang_download_url}" | \
     tar --extract --gunzip --directory="/usr/local/"
   ## append to the system wide path variable
-  sed -e '/^PATH/s/"$/:\/usr\/local\/myprgoog\/bin"/g' -i /etc/environment
+  sed -e '/^PATH/s/"$/:\/usr\/local\/go\/bin"/g' -i /etc/environment
 }
 
 ## Ensure GolangCIlint is installed
