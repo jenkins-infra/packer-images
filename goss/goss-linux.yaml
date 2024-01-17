@@ -39,6 +39,16 @@ command:
     exit-status: 0
     stdout:
       - 2.43.0
+  golang:
+    exec: go version
+    exit-status: 0
+    stdout:
+      - 1.21.6
+  golangci-lint:
+    exec: golangci-lint --version
+    exit-status: 0
+    stdout:
+      - 1.55.2
   helm:
     exec: helm version
     exit-status: 0
