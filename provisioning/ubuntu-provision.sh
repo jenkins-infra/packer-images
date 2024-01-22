@@ -198,6 +198,24 @@ function install_docker() {
   usermod -aG docker "${username}"
 }
 
+## Ensure Golang is installed
+function install_golang(){
+  ## will be installed in /usr/local/bin
+  golang_download_url="https://go.dev/dl/go${GOLANG_VERSION}.linux-${ARCHITECTURE}.tar.gz"
+  curl --fail --silent --show-error --location "${golang_download_url}" | \
+    tar --extract --gunzip --directory="/usr/local/"
+  ## append to the system wide path variable
+  sed -e '/^PATH/s/"$/:\/usr\/local\/go\/bin"/g' -i /etc/environment
+}
+
+## Ensure GolangCIlint is installed
+function install_golangcilint(){
+  ## will be installed in /usr/local/bin
+  golangcilint_download_url="https://www.github.com/golangci/golangci-lint/releases/download/v${GOLANGCILINT_VERSION}/golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}.tar.gz"
+  curl --fail --silent --show-error --location "${golangcilint_download_url}" | \
+    tar --extract --gunzip --strip-components=1 --directory="/usr/local/bin/" "golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}/golangci-lint"
+}
+
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
   apt-get update --quiet
@@ -691,6 +709,8 @@ function main() {
   install_jxreleaseversion
   install_azurecli
   install_gh
+  install_golang
+  install_golangcilint # must come after golang
   install_vagrant
   install_ruby
   install_xq

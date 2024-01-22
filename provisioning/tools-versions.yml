@@ -13,6 +13,8 @@ gh_version: 2.41.0
 git_lfs_version: 3.4.1
 git_linux_version: 2.43.0
 git_windows_version: 2.43.0
+golang_version: 1.21.6
+golangcilint_version: 1.55.2
 goss_version: 0.4.4
 hadolint_version: 2.12.0
 helm_version: 3.13.3
@@ -39,7 +41,7 @@ ruby_version: 2.6.10
 sops_version: 3.8.1
 terraform_version: 1.6.6
 trivy_version: 0.47.0
-updatecli_version: 0.70.0
+updatecli_version: 0.71.0
 vagrant_version: 2.4.0
 windows_pwsh_version: 7.4.0
 xq_version: 1.2.3
