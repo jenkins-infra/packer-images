@@ -24,7 +24,7 @@ helm_git_version: 0.15.1
 helm_secrets_version: 4.5.1
 jdk11_version: 11.0.22+7
 jdk17_version: 17.0.10+7
-jdk21_version: 21.0.1+12
+jdk21_version: 21.0.2+13
 jdk8_version: 8u402-b06
 jenkins_remoting_version: 3206.vb_15dcf73f6a_9
 jq_version: 1.6
