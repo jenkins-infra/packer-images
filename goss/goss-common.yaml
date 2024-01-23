@@ -22,17 +22,17 @@ command:
     exec: java --version
     exit-status: 0
     stdout:
-      - 11.0.21+9
+      - 11.0.22+7
   docker_compose:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.23.3
+      - 2.24.1
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.41.0
+      - 2.42.1
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
@@ -101,12 +101,12 @@ command:
     exec: trivy --version
     exit-status: 0
     stdout:
-      - 0.47.0
+      - 0.48.3
   updatecli:
     exec: updatecli version
     exit-status: 0
     stderr:
-      - 0.70.0
+      - 0.71.0
   yq:
     exec: yq --version
     exit-status: 0
