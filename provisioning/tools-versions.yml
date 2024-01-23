@@ -1,10 +1,10 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.14.0
-awscli_version: 2.15.12
+awscli_version: 2.15.13
 azcopy_version: 10.22.2-20240110
 azurecli_version: 2.56.0
 chocolatey_version: 1.4.0
-compose_version: 2.24.1
+compose_version: 2.24.2
 cst_version: 1.16.0
 default_jdk: 11
 docker_version: 25.0.0
@@ -25,7 +25,7 @@ helm_secrets_version: 4.5.1
 jdk11_version: 11.0.22+7
 jdk17_version: 17.0.10+7
 jdk21_version: 21.0.2+13
-jdk8_version: 8u392-b08
+jdk8_version: 8u402-b06
 jenkins_remoting_version: 3206.vb_15dcf73f6a_9
 jq_version: 1.6
 jxreleaseversion_version: 2.7.3
@@ -42,7 +42,7 @@ sops_version: 3.8.1
 terraform_version: 1.6.6
 trivy_version: 0.48.3
 updatecli_version: 0.71.0
-vagrant_version: 2.4.1
+vagrant_version: 2.4.0
 windows_pwsh_version: 7.4.1
 xq_version: 1.2.3
 yq_version: 4.25.3

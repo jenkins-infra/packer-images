@@ -27,7 +27,7 @@ command:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
     stderr:
-      - 1.8.0_392
+      - 1.8.0_402
   pwsh:
     exec: pwsh -command "(Get-Host).Version"
     exit-status: 0
@@ -42,7 +42,7 @@ command:
     exec: vagrant --version
     exit-status: 0
     stdout:
-      - 2.4.1
+      - 2.4.0
 file:
   C:\Program Files\Chromium\Application\:
     contains: []
