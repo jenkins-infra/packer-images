@@ -4,7 +4,7 @@ command:
     exec: asdf version
     exit-status: 0
     stdout:
-      - v0.13.1
+      - v0.14.0
   azcopy:
     exec: azcopy --version
     exit-status: 0
@@ -25,7 +25,7 @@ command:
     exec: docker -v
     exit-status: 0
     stdout:
-      - 24.0.7
+      - 25.0.0
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
@@ -53,7 +53,7 @@ command:
     exec: helm version
     exit-status: 0
     stdout:
-      - 3.13.3
+      - 3.14.0
   helmfile:
     exec: helmfile --version
     exit-status: 0
@@ -70,12 +70,12 @@ command:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
     stdout:
-      - 11.0.21+9
+      - 11.0.22+7
   jdk17:
     exec: /opt/jdk-17/bin/java --version
     exit-status: 0
     stdout:
-      - 17.0.8.1+1
+      - 17.0.10+7
   jdk21:
     exec: /opt/jdk-21/bin/java --version
     exit-status: 0
@@ -98,7 +98,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.40.1
+      - 1.41.1
   python3:
     exec: python3 --version
     exit-status: 0
