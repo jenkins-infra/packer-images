@@ -49,7 +49,7 @@ targets:
 actions:
   default:
     kind: github/pullrequest
-    title: Bump Golang version to {{ source "lastReleaseVersion" }}
+    title: Bump Golang version to {{ source "getGolangVersion" }}
     scmid: default
     spec:
       labels:
