@@ -22,7 +22,7 @@ command:
     exec: java --version
     exit-status: 0
     stdout:
-      - 11.0.21+9
+      - 11.0.22+7
   docker_compose:
     exec: docker-compose -v
     exit-status: 0
@@ -101,12 +101,12 @@ command:
     exec: trivy --version
     exit-status: 0
     stdout:
-      - 0.47.0
+      - 0.48.3
   updatecli:
     exec: updatecli version
     exit-status: 0
     stderr:
-      - 0.70.0
+      - 0.71.0
   yq:
     exec: yq --version
     exit-status: 0
