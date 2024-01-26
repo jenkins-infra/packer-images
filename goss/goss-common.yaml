@@ -80,7 +80,7 @@ command:
     stdout:
       - 18.18.2
   npm:
-    exec: npm version
+    exec: npm --version
     exit-status: 0
   packer:
     exec: packer -v
