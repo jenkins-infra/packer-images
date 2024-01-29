@@ -99,6 +99,7 @@ function install_common_requirements() {
     apt-transport-https \
     ca-certificates `# Adds certificate authority for proper use of TLS` \
     curl `# A nice HTTP client` \
+    dnsutils `# Provides dig(1)` \
     lsb-release `# Provides CLI for distribution detction` \
     gpg-agent `# Required for GPG management` \
     software-properties-common `# Provides a LOT of APT utilities`
