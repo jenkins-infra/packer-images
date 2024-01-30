@@ -78,10 +78,14 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 18.18.2
+      and:
+        - 18.18.2
+        - not: 'Please install a version by running one of the following'
   npm:
     exec: npm --version
     exit-status: 0
+    stdout:
+      - not: 'No preset version installed for command npm'
   packer:
     exec: packer -v
     exit-status: 0
