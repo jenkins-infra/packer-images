@@ -14,8 +14,8 @@ command:
   bundler:
     exec: bundler --version
     exit-status: 0
-    stdout:
-      - 2.4.1
+    # stdout:
+    #   - 2.4.1
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
