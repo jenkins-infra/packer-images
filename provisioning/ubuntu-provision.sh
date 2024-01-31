@@ -497,6 +497,7 @@ function install_vagrant() {
   fi
 }
 
+
 ## Install Ruby with asdf
 function install_ruby() {
   # Ensure that ASDF is installed
@@ -507,6 +508,14 @@ function install_ruby() {
   # Install Ruby with ASDF and set it as default installation
   install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
   install_asdf_package ruby "${RUBY_VERSION}"
+}
+
+## Install Bundler/Bundle (same) with ruby
+function install_Bundler() {
+  # Ensure that Ruby is installed
+  test -f "${asdf_install_dir}/shims/ruby"
+  # Install Bundler with Ruby
+  gem install bundler:"${BUNDLER_VERSION}"
 }
 
 ## Install Xq
@@ -733,6 +742,7 @@ function main() {
   install_helmfile
   install_sops
   install_yamllint
+  install_Bundler
 
   echo "== Installed packages:"
   dpkg -l

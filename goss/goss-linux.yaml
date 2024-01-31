@@ -10,6 +10,12 @@ command:
     exit-status: 0
     stdout:
       - 10.23.0
+      - 10.22.2
+  bundler:
+    exec: bundler --version
+    exit-status: 0
+    stdout:
+      - 2.4.1
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
