@@ -154,6 +154,9 @@ function install_asdf() {
   echo ". ${asdf_install_dir}/asdf.sh" >> "${profile_script}"
   chown -R "${username}:${groupname}" "${userhome}"
   rm -f "${archive}"
+
+  ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
+  sed -e "/^PATH/s/\"$/:\${asdf_install_dir}\/shims:\${asdf_install_dir}\/bin\"/g" -i /etc/environment
 }
 
 ## Install the ASDF Plugin passed as argument ($1 is the name and $2 the URL)
@@ -205,7 +208,7 @@ function install_golang(){
   golang_download_url="https://go.dev/dl/go${GOLANG_VERSION}.linux-${ARCHITECTURE}.tar.gz"
   curl --fail --silent --show-error --location "${golang_download_url}" | \
     tar --extract --gunzip --directory="/usr/local/"
-  ## append to the system wide path variable
+  ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
   sed -e '/^PATH/s/"$/:\/usr\/local\/go\/bin"/g' -i /etc/environment
 }
 

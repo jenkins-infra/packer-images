@@ -14,5 +14,5 @@ chmod 755 /usr/share/jenkins
 chmod 644 /usr/share/jenkins/agent.jar
 
 echo "= Retrieve jenkins-agent script"
-curl --create-dirs --fail --silent --show-error --location --output /usr/local/bin/jenkins-agent https://raw.githubusercontent.com/jenkinsci/docker-inbound-agent/master/jenkins-agent
+curl --create-dirs --fail --silent --show-error --location --output /usr/local/bin/jenkins-agent https://raw.githubusercontent.com/jenkinsci/docker-agent/master/jenkins-agent
 chmod a+x /usr/local/bin/jenkins-agent
