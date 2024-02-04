@@ -8,7 +8,7 @@ jobs:
   update_release_draft:
     runs-on: ubuntu-20.04
     steps:
-      - uses: release-drafter/release-drafter@09c613e259eb8d4e7c81c2cb00618eb5fc4575a7 # v5
+      - uses: release-drafter/release-drafter@3f0f87098bd6b5c5b9a36d49c41d998ea58f9348 # v5
         env:
           # This token is generated automatically by default in GitHub Actions: no need to create it manually
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
