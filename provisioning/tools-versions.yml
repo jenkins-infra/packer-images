@@ -40,7 +40,7 @@ python3_version: 3.12.1
 ruby_version: 2.6.10
 sops_version: 3.8.1
 terraform_version: 1.6.6
-trivy_version: 0.48.3
+trivy_version: 0.49.0
 updatecli_version: 0.72.0
 vagrant_version: 2.4.0
 windows_pwsh_version: 7.4.1
