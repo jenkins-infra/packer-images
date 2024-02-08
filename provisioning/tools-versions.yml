@@ -7,7 +7,7 @@ chocolatey_version: 1.4.0
 compose_version: 2.24.5
 cst_version: 1.16.0
 default_jdk: 11
-docker_version: 25.0.2
+docker_version: 25.0.3
 doctl_version: 1.101.0
 gh_version: 2.43.1
 git_lfs_version: 3.4.1
@@ -40,7 +40,7 @@ python3_version: 3.12.2
 ruby_version: 2.6.10
 sops_version: 3.8.1
 terraform_version: 1.6.6
-trivy_version: 0.49.0
+trivy_version: 0.49.1
 updatecli_version: 0.72.0
 vagrant_version: 2.4.0
 windows_pwsh_version: 7.4.1
