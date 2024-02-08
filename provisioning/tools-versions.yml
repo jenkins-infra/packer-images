@@ -39,7 +39,7 @@ packer_version: 1.10.0
 python3_version: 3.12.1
 ruby_version: 2.6.10
 sops_version: 3.8.1
-terraform_version: 1.7.2
+terraform_version: 1.7.3
 trivy_version: 0.47.0
 updatecli_version: 0.71.0
 vagrant_version: 2.4.0
