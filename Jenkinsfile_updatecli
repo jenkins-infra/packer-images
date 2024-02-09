@@ -1,4 +1,4 @@
-updatecli(action: 'diff')
+updatecli(action: 'diff', updatecliAgentLabel: 'linux-amd64-docker')
 if (env.BRANCH_IS_PRIMARY) {
-    updatecli(action: 'apply', cronTriggerExpression: '@daily')
+    updatecli(action: 'apply', updatecliAgentLabel: 'linux-amd64-docker', cronTriggerExpression: '@daily')
 }
