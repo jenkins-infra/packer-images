@@ -33,6 +33,7 @@ userid=1001
 userhome=/home/jenkins
 groupname=jenkins
 groupid=1001
+install_dir=/usr/local/bin
 asdf_install_dir="${userhome}/.asdf"
 launchable_venv_dir="/usr/local/launchable"
 
@@ -372,14 +373,12 @@ function install_docker_compose(){
 
 ## Ensure that DOCTL is installed
 function install_doctl(){
-  install_dir=/usr/local/bin
   curl --fail --silent --location --show-error \
     "https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ doctl
 }
 
 ## Ensure that`helm` and its plugins are installed
 function install_helm(){
-  install_dir=/usr/local/bin
   curl --fail --silent --location --show-error \
     "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCHITECTURE}.tar.gz" | \
     tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ "linux-${ARCHITECTURE}/helm"
@@ -391,7 +390,6 @@ function install_helm(){
 
 ## Ensure that`helmfile` is installed
 function install_helmfile(){
-  install_dir=/usr/local/bin
   curl --fail --silent --location --show-error \
     "https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_${ARCHITECTURE}.tar.gz" | \
     tar --extract --gunzip --directory="${install_dir}"/  helmfile
@@ -399,7 +397,6 @@ function install_helmfile(){
 
 ## Ensure that`sops` is installed
 function install_sops(){
-  install_dir=/usr/local/bin
   curl --fail --silent --location --show-error --output "${install_dir}"/sops \
     "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${ARCHITECTURE}"
   chmod +x "${install_dir}"/sops
@@ -511,19 +508,14 @@ function install_ruby() {
 
 ## Install Xq
 function install_xq() {
-  install_dir=/usr/local/bin
   curl --fail --silent --location --show-error \
     "https://github.com/sibprogrammer/xq/releases/download/v${XQ_VERSION}/xq_${XQ_VERSION}_linux_${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ xq
 }
 
 ## Install Yq with asdf
 function install_yq() {
-  # Ensure that ASDF is installed
-  test -f "${asdf_install_dir}/asdf.sh"
-
-  # Install Yq with ASDF and set it as default installation
-  install_asdf_plugin yq https://github.com/sudermanjr/asdf-yq.git
-  install_asdf_package yq "${YQ_VERSION}"
+  curl --fail --silent --location --show-error --output="${install_dir}/yq" \
+    "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCHITECTURE}"
 }
 
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
