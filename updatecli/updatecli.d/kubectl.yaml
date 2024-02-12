@@ -1,0 +1,56 @@
+---
+name: Bump `KUBECTL` version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest `KUBECTL` CLI version
+    transformers:
+      - trimprefix: "kubernetes-"
+    spec:
+      owner: "kubernetes"
+      repository: "kubectl"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: regex
+        pattern: "^kubernetes-1.26.(\\d*)$"
+
+targets:
+  updateVersion:
+    name: "Update the `KUBECTL` version in the tools-versions.yml file"
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: provisioning/tools-versions.yml
+      key: $.kubectl_version
+    scmid: default
+  updateVersionInGoss:
+    name: Update the `KUBECTL` version in the goss test
+    kind: yaml
+    spec:
+      file: goss/goss-common.yaml
+      key: $.command.kubectl.stdout[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump KUBECTL version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - KUBECTL
