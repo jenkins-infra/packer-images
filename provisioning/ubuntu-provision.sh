@@ -514,7 +514,7 @@ function install_xq() {
 
 ## Install Yq with asdf
 function install_yq() {
-  curl --fail --silent --location --show-error --output="${install_dir}/yq" \
+  curl --fail --silent --show-error --output="${install_dir}/yq" --location \
     "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCHITECTURE}"
 }
 
