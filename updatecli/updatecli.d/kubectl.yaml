@@ -1,5 +1,5 @@
 ---
-name: Bump `KUBECTL` version
+name: Bump `kubectl` version
 
 scms:
   default:
@@ -16,7 +16,7 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get the latest `KUBECTL` CLI version
+    name: Get latest `kubectl` CLI version
     transformers:
       - trimprefix: "kubernetes-"
     spec:
@@ -30,7 +30,7 @@ sources:
 
 targets:
   updateVersion:
-    name: "Update the `KUBECTL` version in the tools-versions.yml file"
+    name: "Update `kubectl` version in the tools-versions.yml file"
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
@@ -38,7 +38,7 @@ targets:
       key: $.kubectl_version
     scmid: default
   updateVersionInGoss:
-    name: Update the `KUBECTL` version in the goss test
+    name: Update `kubectl` version in the goss test
     kind: yaml
     spec:
       file: goss/goss-common.yaml
@@ -48,9 +48,9 @@ targets:
 actions:
   default:
     kind: github/pullrequest
-    title: Bump KUBECTL version to {{ source "lastReleaseVersion" }}
+    title: Bump `kubectl` version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:
-        - enhancement
-        - KUBECTL
+        - dependencies
+        - kubectl
