@@ -514,8 +514,9 @@ function install_xq() {
 
 ## Install Yq with asdf
 function install_yq() {
-  curl --fail --silent --show-error --output="${install_dir}/yq" --location \
+  curl --fail --silent --show-error --output "${install_dir}/yq" --location \
     "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCHITECTURE}"
+  chmod a+x "${install_dir}/yq"
 }
 
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
