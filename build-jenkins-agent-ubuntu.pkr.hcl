@@ -54,6 +54,7 @@ build {
     execute_command = "{{ .Vars }} sudo -E su - jenkins -c \"bash -eux '{{ .Path }}'\""
     inline = [
       "source /home/jenkins/.asdf/asdf.sh && asdf list", # Required as this is a non-interactive and non-login `bash`
+      "echo $PATH && cat /etc/environment",
       "goss --version",
       "goss --gossfile /tmp/goss-linux.yaml --loglevel DEBUG validate",
       "goss --gossfile /tmp/goss-common.yaml --loglevel DEBUG validate",
