@@ -724,8 +724,8 @@ function main() {
   install_gh
   install_golang
   install_golangcilint # must come after golang
-  install_vagrant
   install_ruby
+  install_vagrant
   install_xq
   install_yq
   install_packer
