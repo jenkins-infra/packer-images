@@ -156,7 +156,7 @@ function install_asdf() {
   rm -f "${archive}"
 
   ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
-  sed -e "/^PATH/s/\"$/:\${asdf_install_dir}\/shims:\${asdf_install_dir}\/bin\"/g" -i /etc/environment
+  sed --regexp-extended "s|^PATH=(.*)\"$|PATH=\1:${asdf_install_dir}/shims:${asdf_install_dir}/bin\"|" -i /etc/environment
 }
 
 ## Install the ASDF Plugin passed as argument ($1 is the name and $2 the URL)
