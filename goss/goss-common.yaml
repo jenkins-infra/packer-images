@@ -92,12 +92,6 @@ command:
     exit-status: 0
     stdout:
       - 1.10.0
-  ruby:
-    exec: ruby -v
-    exit-status: 0
-    # https://github.com/jenkins-infra/packer-images/pull/1043#pullrequestreview-1878135249
-    # stdout:
-    #   - 2.6.10
   terraform:
     exec: terraform -v
     exit-status: 0
