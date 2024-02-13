@@ -41,6 +41,8 @@ command:
   ruby:
     exec: ruby -v
     exit-status: 0
+    stdout:
+      - 2.6.10
   vagrant:
     exec: vagrant --version
     exit-status: 0
