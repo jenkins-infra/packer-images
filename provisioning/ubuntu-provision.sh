@@ -157,7 +157,7 @@ function install_asdf() {
 
   ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
   ## https://backreference.org/2010/02/20/using-different-delimiters-in-sed/index.html
-  sed --in-place --regexp-extended "s|^PATH=(.*)\"|PATH=\1:${asdf_install_dir}/shims:${asdf_install_dir}/bin\"|g" /etc/environment
+  sed --in-place --regexp-extended "s|^PATH=(.*)\"$|PATH=\1:${asdf_install_dir}/shims:${asdf_install_dir}/bin\"|" /etc/environment
 }
 
 ## Install the ASDF Plugin passed as argument ($1 is the name and $2 the URL)
