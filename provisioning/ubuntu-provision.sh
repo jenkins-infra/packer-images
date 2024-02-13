@@ -157,7 +157,8 @@ function install_asdf() {
   rm -f "${archive}"
 
   ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
-  sed -e "/^PATH/s/\"$/:\${asdf_install_dir}\/shims:\${asdf_install_dir}\/bin\"/g" -i /etc/environment
+  ## https://backreference.org/2010/02/20/using-different-delimiters-in-sed/index.html
+  sed --in-place --regexp-extended "s|^PATH=(.*)\"$|PATH=\1:${asdf_install_dir}/shims:${asdf_install_dir}/bin\"|" /etc/environment
 }
 
 ## Install the ASDF Plugin passed as argument ($1 is the name and $2 the URL)
@@ -708,8 +709,8 @@ function main() {
   install_gh
   install_golang
   install_golangcilint # must come after golang
-  install_vagrant
   install_ruby
+  install_vagrant
   install_xq
   install_yq
   install_packer
