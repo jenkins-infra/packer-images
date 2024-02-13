@@ -102,6 +102,12 @@ command:
   python3:
     exec: python3 --version
     exit-status: 0
+  # https://github.com/jenkins-infra/packer-images/pull/1043#pullrequestreview-1878135249
+  ruby:
+    exec: asdf list ruby
+    exit-status: 0
+    stdout:
+      - 2.6.10
   sops:
     exec: sops --version
     exit-status: 0
