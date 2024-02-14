@@ -4,7 +4,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.15.17
+      - 2.15.19
   azurecli:
     exec: az --version
     exit-status: 0
@@ -62,7 +62,7 @@ command:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.23.13
+      - 1.26.13
   launchable:
     exec: launchable --version
     exit-status: 0
@@ -92,11 +92,6 @@ command:
     exit-status: 0
     stdout:
       - 1.10.0
-  ruby:
-    exec: ruby -v
-    exit-status: 0
-    stdout:
-      - 2.6.10
   terraform:
     exec: terraform -v
     exit-status: 0
