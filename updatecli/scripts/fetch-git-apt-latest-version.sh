@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script uses apt to find the latest version of git available
+# This script uses apt to find the latest version of git available and check if it match parameter
 set -eux -o pipefail
 
 for cli in apt-get apt-cache grep cut xargs
@@ -33,6 +33,8 @@ last=$(apt-cache policy git `# 1. Retrieve information about git from apt` \
   | cut -d'-' -f1 | cut -d':' -f2 `# 5. Remove the ubuntu package prefix and suffix and last line fails if empty` \
   | { read -r x ; if [ "$x" == '(none)' ]; then exit 1; else echo "${x}"; fi })
 
+
+# comparing parameter with last version available
 if [[ "$last" == "${1}" ]]
 then
   exit 0 # ok
