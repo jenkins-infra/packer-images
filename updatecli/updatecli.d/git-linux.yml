@@ -27,6 +27,14 @@ sources:
     transformers:
       - trimprefix: v
 
+conditions:
+  checkIfAptPackageExists:
+    kind: shell
+    spec:
+      command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-git-apt-latest-version.sh
+      environments:
+        - name: PATH
+
 targets:
   updateGitVersion:
     name: Bump Git version on Linux in the Packer default values
