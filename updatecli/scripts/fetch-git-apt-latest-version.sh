@@ -26,9 +26,16 @@ done
 #     1:2.43.2-0ppa1~ubuntu22.04.1 500
 # We want to get the Candidate version (which is the latest available)
 # And we want it in a readable format
-apt-cache policy git `# 1. Retrieve information about git from apt` \
+last=$(apt-cache policy git `# 1. Retrieve information about git from apt` \
   | grep 'Candidate' `# 2. Keep only the line about the Candidate version (latest available)` \
   | cut -f2,3 -d':' `# 3. Cut it so we only keep the version and remove title (version contains a :, hence keeping fields 2 and 3)` \
   | xargs `# 4. Trimming the result (removing spaces before and after)` \
   | cut -d'-' -f1 | cut -d':' -f2 `# 5. Remove the ubuntu package prefix and suffix and last line fails if empty` \
-  | { read -r x ; if [ "$x" == '(none)' ]; then exit 1; else echo "${x}"; fi }
+  | { read -r x ; if [ "$x" == '(none)' ]; then exit 1; else echo "${x}"; fi })
+
+if [[ "$last" == "${1}" ]]
+then
+  exit 0 # ok
+else
+  exit 1 # ko
+fi
