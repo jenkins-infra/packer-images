@@ -16,16 +16,17 @@ done
   apt-get update -q
 } 1>&2 # Only write logs to stderr to avoid polluting updatecli's source (retrieved from the stdout)
 
-# Retrieve from apt-cache the latest version of docker-ce available
+# Retrieve from apt-cache the latest version of git available
 # Note: apt-cache policy will return a result like:
-# :# apt-cache policy docker-ce
-# docker-ce:
-#   Installed: (none)
-#   Candidate: (none)
-#   Version table:
+# :# apt-cache policy git
+# git:
+#  Installed: 1:2.43.0-0ppa1~ubuntu22.04.1
+#  Candidate: 1:2.43.2-0ppa1~ubuntu22.04.1
+#  Version table:
+#     1:2.43.2-0ppa1~ubuntu22.04.1 500
 # We want to get the Candidate version (which is the latest available)
 # And we want it in a readable format
-apt-cache policy git `# 1. Retrieve information about docker-ce from apt` \
+apt-cache policy git `# 1. Retrieve information about git from apt` \
   | grep 'Candidate' `# 2. Keep only the line about the Candidate version (latest available)` \
   | cut -f2,3 -d':' `# 3. Cut it so we only keep the version and remove title (version contains a :, hence keeping fields 2 and 3)` \
   | xargs `# 4. Trimming the result (removing spaces before and after)` \
