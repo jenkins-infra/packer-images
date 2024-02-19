@@ -2,11 +2,7 @@
 # This script uses apt to find the latest version of git available and check if it match parameter
 set -eux -o pipefail
 
-
-tocheck="${1:-undefined}"
-
-
-for cli in apt-get apt-cache grep cut xargs
+for cli in add-apt-repository apt-get apt-cache grep cut xargs
 do
   if ! command -v $cli >/dev/null 2>&1
   then
@@ -17,6 +13,7 @@ done
 
 {
   # Updating the list of latest updates available for installed packages on the system
+  add-apt-repository -y ppa:git-core/ppa
   apt-get update -q
 } 1>&2 # Only write logs to stderr to avoid polluting updatecli's source (retrieved from the stdout)
 
@@ -39,11 +36,11 @@ last=$(apt-cache policy git `# 1. Retrieve information about git from apt` \
 
 
 # comparing parameter with last version available
-if [[ "${last}" == "${tocheck}" ]]
+if [[ "${last}" == "${1}" ]]
 then
-  echo " ${last} match the selected version in parameter ${tocheck}"
+  echo " ${last} match the selected version in parameter ${1}"
   exit 0 # ok
 else
-  echo " ${last} DOES NOT match the selected version in parameter ${tocheck}"
+  echo " ${last} DOES NOT match the selected version in parameter ${1}"
   exit 1 # ko
 fi

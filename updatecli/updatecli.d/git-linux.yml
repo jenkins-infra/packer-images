@@ -30,9 +30,8 @@ sources:
 conditions:
   checkIfAptPackageExists:
     kind: shell
-    sourceid: lastReleaseVersion
     spec:
-      command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-git-apt-latest-version.sh {{ source `lastReleaseVersion` }}
+      command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-git-apt-latest-version.sh
       environments:
         - name: PATH
 
