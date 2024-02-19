@@ -31,7 +31,7 @@ conditions:
   checkIfAptPackageExists:
     kind: shell
     spec:
-      command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-git-jammy-latest-version.sh
+      command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-git-apt-latest-version.sh
       environments:
         - name: PATH
 
