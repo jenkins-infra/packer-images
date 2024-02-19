@@ -13,6 +13,8 @@ done
 
 {
   # Updating the list of latest updates available for installed packages on the system
+  apt-get update -q
+  apt-get install --yes --no-install-recommends software-properties-common
   add-apt-repository -y ppa:git-core/ppa
   apt-get update -q
 } 1>&2 # Only write logs to stderr to avoid polluting updatecli's source (retrieved from the stdout)
