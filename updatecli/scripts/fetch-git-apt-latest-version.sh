@@ -2,7 +2,7 @@
 # This script uses apt to find the latest version of git available and check if it match parameter
 set -eux -o pipefail
 
-for cli in add-apt-repository apt-get apt-cache grep cut xargs
+for cli in apt-get apt-cache grep cut xargs
 do
   if ! command -v $cli >/dev/null 2>&1
   then
