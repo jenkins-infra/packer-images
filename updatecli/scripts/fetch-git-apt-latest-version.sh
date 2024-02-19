@@ -35,9 +35,11 @@ last=$(apt-cache policy git `# 1. Retrieve information about git from apt` \
 
 
 # comparing parameter with last version available
-if [[ "$last" == "${1}" ]]
+if [[ "${last}" == "${1}" ]]
 then
+  echo " ${last} match the selected version in parameter ${1}"
   exit 0 # ok
 else
+  echo " ${last} DOES NOT match the selected version in parameter ${1}"
   exit 1 # ko
 fi
