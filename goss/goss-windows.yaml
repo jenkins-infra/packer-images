@@ -12,32 +12,37 @@ command:
     exec: C:\tools\jdk-11\bin\java --version
     exit-status: 0
     stdout:
-      - 11.0.21+9
+      - 11.0.22+7
   jdk17:
     exec: C:\tools\jdk-17\bin\java --version
     exit-status: 0
     stdout:
-      - 17.0.8.1+1
+      - 17.0.10+7
   jdk21:
     exec: C:\tools\jdk-21\bin\java --version
     exit-status: 0
     stdout:
-      - 21.0.1+12
+      - 21.0.2+13
   jdk8:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
     stderr:
-      - 1.8.0_392
+      - 1.8.0_402
   pwsh:
     exec: pwsh -command "(Get-Host).Version"
     exit-status: 0
     stdout:
-      - /7.*4.*0/
+      - /7.*4.*1/
   python3:
     exec: python --version
     exit-status: 0
     stdout:
-      - 3.12.1
+      - 3.12.2
+  ruby:
+    exec: ruby -v
+    exit-status: 0
+    stdout:
+      - 2.6.10
   vagrant:
     exec: vagrant --version
     exit-status: 0

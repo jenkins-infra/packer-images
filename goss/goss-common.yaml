@@ -4,12 +4,12 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.15.9
+      - 2.15.21
   azurecli:
     exec: az --version
     exit-status: 0
     stdout:
-      - 2.56.0
+      - 2.57.0
   bundle:
     exec: bundle -v
     exit-status: 0
@@ -22,17 +22,17 @@ command:
     exec: java --version
     exit-status: 0
     stdout:
-      - 11.0.21+9
+      - 11.0.22+7
   docker_compose:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.23.3
+      - 2.24.6
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.41.0
+      - 2.44.1
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
@@ -62,7 +62,7 @@ command:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.23.13
+      - 1.27.11
   launchable:
     exec: launchable --version
     exit-status: 0
@@ -78,20 +78,18 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 18.18.2
+      - '18.18.2'
+      - '!Please install a version by running one of the following'
   npm:
-    exec: npm version
+    exec: npm --version
     exit-status: 0
+    stdout:
+      - '!No preset version installed for command npm'
   packer:
     exec: packer -v
     exit-status: 0
     stdout:
       - 1.10.0
-  ruby:
-    exec: ruby -v
-    exit-status: 0
-    stdout:
-      - 2.6.10
   terraform:
     exec: terraform -v
     exit-status: 0
@@ -101,12 +99,12 @@ command:
     exec: trivy --version
     exit-status: 0
     stdout:
-      - 0.47.0
+      - 0.49.1
   updatecli:
     exec: updatecli version
     exit-status: 0
     stderr:
-      - 0.71.0
+      - 0.73.0
   yq:
     exec: yq --version
     exit-status: 0
