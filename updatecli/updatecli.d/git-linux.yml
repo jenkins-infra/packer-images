@@ -30,6 +30,7 @@ sources:
 conditions:
   checkIfAptPackageExists:
     kind: shell
+    sourceID: lastReleaseVersion
     spec:
       command: bash ./updatecli/scripts/run-in-docker.sh ./updatecli/scripts/fetch-git-apt-latest-version.sh
       environments:
