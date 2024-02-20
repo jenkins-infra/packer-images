@@ -497,6 +497,7 @@ function install_vagrant() {
 
 ## Install Ruby with asdf
 function install_ruby() {
+  versionToInstall="${1:-$RUBY_VERSION}"
   # Ensure that ASDF is installed
   test -f "${asdf_install_dir}/asdf.sh"
   # Ensure that require dependencies are present to install Ruby
@@ -504,7 +505,7 @@ function install_ruby() {
   apt-get install --yes --no-install-recommends autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev
   # Install Ruby with ASDF and set it as default installation
   install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
-  install_asdf_package ruby "${RUBY_VERSION}"
+  install_asdf_package ruby "${versionToInstall}"
 }
 
 ## Install Xq
@@ -709,7 +710,8 @@ function main() {
   install_gh
   install_golang
   install_golangcilint # must come after golang
-  install_ruby
+  install_ruby ${RUBY_PUPPET_VERSION}
+  install_ruby ${RUBY_VERSION}
   install_vagrant
   install_xq
   install_yq
