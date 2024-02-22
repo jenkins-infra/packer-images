@@ -65,7 +65,7 @@ targets:
 actions:
   default:
     kind: github/pullrequest
-    title: Bump Ruby version to {{ source "rubyDockerImageLatestVersion" }}
+    title: Bump `ruby` version to {{ source "rubyDockerImageLatestVersion" }}
     scmid: default
     spec:
       labels:
