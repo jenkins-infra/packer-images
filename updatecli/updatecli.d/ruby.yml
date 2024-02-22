@@ -32,6 +32,7 @@ conditions:
     kind: shell
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
+      # The final ".1" is added to ruby version by Chocolatey
       command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/ruby/{{ source "rubyDockerImageLatestVersion" }}.1
 
 targets:
