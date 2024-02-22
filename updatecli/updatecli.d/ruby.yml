@@ -1,0 +1,88 @@
+---
+name: Bump Ruby version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  # use dockerimage last version while no solution for https://github.com/updatecli/updatecli/issues/1951
+  # rubyLastestRelease:
+  #   kind: githubRelease
+  #   name: "Get the latest Ruby version"
+  #   spec:
+  #     owner: "ruby"
+  #     repository: "ruby"
+  #     token: "{{ requiredEnv .github.token }}"
+  #     versionFilter:
+  #       kind: latest
+  #   transformers:
+  #     - trimprefix: "v"
+  #     - replacers:
+  #       - from: "_"
+  #         to: "."
+  rubyDockerImageLatestVersion:
+    kind: dockerimage
+    name: "Get the latest Ruby version"
+    spec:
+      image: "ruby"
+      tagFilter: >-
+        \d\.\d\.\d$
+      versionfilter:
+        kind: regex
+        pattern: >-
+          \d\.\d\.\d$
+
+conditions:
+  checkForChocolateyPackage:
+    kind: shell
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      # command: curl --trace - https://community.chocolatey.org/packages/ruby/{{ source "rubyDockerImageLatestVersion" }}.1
+      command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/ruby/{{ source "rubyDockerImageLatestVersion" }}.1
+
+targets:
+  updateVersion:
+    name: Update the Ruby version in provisioning environment
+    sourceid: rubyDockerImageLatestVersion
+    kind: yaml
+    spec:
+      file: provisioning/tools-versions.yml
+      key: $.ruby_version
+    scmid: default
+  updateGossLinux:
+    name: Update the Ruby version in the goss test file for linux
+    sourceid: rubyDockerImageLatestVersion
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.ruby.stdout[1]
+    scmid: default
+  updateGossWindows:
+    name: Update the Ruby version in the goss test file for windows
+    sourceid: rubyDockerImageLatestVersion
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-windows.yaml
+      key: $.command.ruby.stdout[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump Ruby version to {{ source "rubyDockerImageLatestVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - ruby
