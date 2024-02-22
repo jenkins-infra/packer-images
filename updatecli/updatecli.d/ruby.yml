@@ -46,7 +46,6 @@ conditions:
     kind: shell
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
-      # command: curl --trace - https://community.chocolatey.org/packages/ruby/{{ source "rubyDockerImageLatestVersion" }}.1
       command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/ruby/{{ source "rubyDockerImageLatestVersion" }}.1
 
 targets:
