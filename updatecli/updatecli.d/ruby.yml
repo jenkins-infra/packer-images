@@ -14,21 +14,7 @@ scms:
       branch: "{{ .github.branch }}"
 
 sources:
-  # use dockerimage last version while no solution for https://github.com/updatecli/updatecli/issues/1951
-  # rubyLastestRelease:
-  #   kind: githubRelease
-  #   name: "Get the latest Ruby version"
-  #   spec:
-  #     owner: "ruby"
-  #     repository: "ruby"
-  #     token: "{{ requiredEnv .github.token }}"
-  #     versionFilter:
-  #       kind: latest
-  #   transformers:
-  #     - trimprefix: "v"
-  #     - replacers:
-  #       - from: "_"
-  #         to: "."
+  # Use kind: dockerimage instead of kind: githubRelease until https://github.com/updatecli/updatecli/issues/1951 is fixed
   rubyDockerImageLatestVersion:
     kind: dockerimage
     name: "Get the latest Ruby version"
