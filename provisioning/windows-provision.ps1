@@ -242,7 +242,7 @@ $downloads = [ordered]@{
             & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
         };
         'cleanupLocal' = 'true';
-        'path' = "$baseDir\ruby26\bin\;C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python312\;C:\python312\Scripts\;";
+        'path' = "C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;c:\python312\;C:\python312\Scripts\;";
         'postInstall' = {
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;

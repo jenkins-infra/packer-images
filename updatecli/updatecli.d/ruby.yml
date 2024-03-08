@@ -1,0 +1,74 @@
+---
+name: Bump Ruby version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  # Use kind: dockerimage instead of kind: githubRelease until https://github.com/updatecli/updatecli/issues/1951 is fixed
+  rubyDockerImageLatestVersion:
+    kind: dockerimage
+    name: "Get the latest Ruby version"
+    spec:
+      image: "ruby"
+      tagFilter: >-
+        \d\.\d\.\d$
+      versionfilter:
+        kind: regex
+        pattern: >-
+          \d\.\d\.\d$
+
+conditions:
+  checkForChocolateyPackage:
+    kind: shell
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      # The final ".1" is added to ruby version by Chocolatey
+      command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/ruby/{{ source "rubyDockerImageLatestVersion" }}.1
+
+targets:
+  updateVersion:
+    name: Update the Ruby version in provisioning environment
+    sourceid: rubyDockerImageLatestVersion
+    kind: yaml
+    spec:
+      file: provisioning/tools-versions.yml
+      key: $.ruby_version
+    scmid: default
+  updateGossLinux:
+    name: Update the Ruby version in the goss test file for linux
+    sourceid: rubyDockerImageLatestVersion
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-linux.yaml
+      key: $.command.ruby.stdout[1]
+    scmid: default
+  updateGossWindows:
+    name: Update the Ruby version in the goss test file for windows
+    sourceid: rubyDockerImageLatestVersion
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-windows.yaml
+      key: $.command.ruby.stdout[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump `ruby` version to {{ source "rubyDockerImageLatestVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - ruby

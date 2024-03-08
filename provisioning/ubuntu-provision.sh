@@ -67,8 +67,8 @@ function install_package_version() {
 
 ## Copy custom scripts
 function copy_custom_scripts() {
-  cp /tmp/add_auth_key_to_user.sh /usr/local/bin/add_auth_key_to_user.sh
-  chmod a+x /usr/local/bin/add_auth_key_to_user.sh
+  cp /tmp/{add_auth_key_to_user.sh,get-fileshare-signed-url.sh} /usr/local/bin/
+  chmod a+x /usr/local/bin/add_auth_key_to_user.sh /usr/local/bin/get-fileshare-signed-url.sh
 }
 
 ## Set the locale
@@ -158,7 +158,7 @@ function install_asdf() {
 
   ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
   ## https://backreference.org/2010/02/20/using-different-delimiters-in-sed/index.html
-  sed --in-place --regexp-extended "s|^PATH=(.*)\"$|PATH=\1:${asdf_install_dir}/shims:${asdf_install_dir}/bin\"|" /etc/environment
+  sed --in-place --regexp-extended "s|^PATH=\"(.*)\"$|PATH=\"${asdf_install_dir}/shims:${asdf_install_dir}/bin:\1\"|" /etc/environment
 }
 
 ## Install the ASDF Plugin passed as argument ($1 is the name and $2 the URL)
@@ -497,6 +497,7 @@ function install_vagrant() {
 
 ## Install Ruby with asdf
 function install_ruby() {
+  versionToInstall="${1:-$RUBY_VERSION}"
   # Ensure that ASDF is installed
   test -f "${asdf_install_dir}/asdf.sh"
   # Ensure that require dependencies are present to install Ruby
@@ -504,7 +505,7 @@ function install_ruby() {
   apt-get install --yes --no-install-recommends autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev
   # Install Ruby with ASDF and set it as default installation
   install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
-  install_asdf_package ruby "${RUBY_VERSION}"
+  install_asdf_package ruby "${versionToInstall}"
 }
 
 ## Install Xq
@@ -709,7 +710,8 @@ function main() {
   install_gh
   install_golang
   install_golangcilint # must come after golang
-  install_ruby
+  install_ruby ${RUBY_PUPPET_VERSION}
+  install_ruby ${RUBY_VERSION}
   install_vagrant
   install_xq
   install_yq
