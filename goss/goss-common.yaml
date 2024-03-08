@@ -78,7 +78,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - '18.18.2'
+      - 20.11.1
       - '!Please install a version by running one of the following'
   npm:
     exec: npm --version
