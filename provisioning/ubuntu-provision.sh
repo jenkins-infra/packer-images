@@ -67,8 +67,8 @@ function install_package_version() {
 
 ## Copy custom scripts
 function copy_custom_scripts() {
-  cp /tmp/add_auth_key_to_user.sh /usr/local/bin/add_auth_key_to_user.sh
-  chmod a+x /usr/local/bin/add_auth_key_to_user.sh
+  cp /tmp/{add_auth_key_to_user.sh,get-fileshare-signed-url.sh} /usr/local/bin/
+  chmod a+x /usr/local/bin/add_auth_key_to_user.sh /usr/local/bin/get-fileshare-signed-url.sh
 }
 
 ## Set the locale
