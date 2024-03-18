@@ -177,6 +177,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/jqlang/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
         'local' = "$baseDir\jq.exe"
     };
+    'yq' = @{
+        'url' = 'https://github.com/mikefarah/yq/releases/download/v{0}/yq_windows_amd64.exe'  -f $env:YQ_VERSION;
+        'local' = "$baseDir\yq.exe"
+    };
     'az' = @{
         'url' = 'https://azcliprod.blob.core.windows.net/msi/azure-cli-{0}.msi' -f $env:AZURECLI_VERSION;
         'local' = "$baseDir\AzureCLI.msi";
@@ -249,7 +253,6 @@ $downloads = [ordered]@{
             & "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version "${env:VAGRANT_VERSION}";
             # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
             & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
-            & "choco.exe" install yq --yes --no-progress --limit-output --fail-on-error-output --version "${env:YQ_VERSION}";
             & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
             & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
