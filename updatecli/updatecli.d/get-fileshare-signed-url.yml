@@ -26,7 +26,7 @@ targets:
     kind: file
     spec:
       file: provisioning/get-fileshare-signed-url.sh
-    # scmid: default
+    scmid: default
 
 actions:
   default:
