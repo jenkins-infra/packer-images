@@ -4,7 +4,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.15.26
+      - 2.15.30
   azurecli:
     exec: az --version
     exit-status: 0
@@ -27,7 +27,7 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.24.7
+      - 2.25.0
   gh_cli:
     exec: gh --version
     exit-status: 0
@@ -62,7 +62,7 @@ command:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.27.11
+      - 1.27.12
   launchable:
     exec: launchable --version
     exit-status: 0
@@ -78,7 +78,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - '18.18.2'
+      - 20.11.1
       - '!Please install a version by running one of the following'
   npm:
     exec: npm --version
