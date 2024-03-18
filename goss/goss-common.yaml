@@ -17,7 +17,7 @@ command:
     exec: container-structure-test version
     exit-status: 0
     stdout:
-      - 1.16.0
+      - 1.17.0
   default_java:
     exec: java --version
     exit-status: 0
