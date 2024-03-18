@@ -13,11 +13,6 @@ command:
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
-  container-structure-test:
-    exec: container-structure-test version
-    exit-status: 0
-    stdout:
-      - 1.16.0
   datadog-agent:
     exec: datadog-agent version
     exit-status: 0
