@@ -13,11 +13,6 @@ command:
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
-  container-structure-test:
-    exec: container-structure-test version
-    exit-status: 0
-    stdout:
-      - 1.16.0
   datadog-agent:
     exec: datadog-agent version
     exit-status: 0
@@ -65,7 +60,7 @@ command:
     stdout:
       - /diff.*3.9.5/
       - /helm-git.*0.15.1/
-      - /secrets.*4.5.1/
+      - /secrets.*4.6.0/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
