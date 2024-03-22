@@ -27,7 +27,7 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.25.0
+      - 2.26.0
   gh_cli:
     exec: gh --version
     exit-status: 0
