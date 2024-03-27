@@ -9,7 +9,7 @@ command:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.23.0
+      - 10.24.0
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
