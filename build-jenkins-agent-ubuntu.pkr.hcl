@@ -25,6 +25,11 @@ build {
   }
 
   provisioner "file" {
+    source      = "./provisioning/get-fileshare-signed-url.sh"
+    destination = "/tmp/get-fileshare-signed-url.sh"
+  }
+
+  provisioner "file" {
     source      = "./gpg-keys"
     destination = "/tmp/gpg-keys"
   }

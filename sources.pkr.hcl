@@ -55,7 +55,7 @@ source "docker" "base" {
     "ENV LANGUAGE=${element(split(".", var.locale), 0)}:${element(split("_", var.locale), 0)}",
     "ENV LC_ALL=${var.locale}",
     "ENV AGENT_WORKDIR=/home/jenkins/agent",
-    "ENV PATH=$${PATH}:/usr/local/go/bin:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin",
+    "ENV PATH=/usr/local/go/bin:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin:$${PATH}",
     "WORKDIR /home/jenkins",
     "ENTRYPOINT [\"/usr/local/bin/jenkins-agent\"]",
     "USER jenkins",
