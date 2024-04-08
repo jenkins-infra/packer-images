@@ -1,5 +1,5 @@
 ---
-name: Bump NodeJS version
+name: Bump NodeJS version on linux
 
 scms:
   default:
@@ -34,35 +34,30 @@ conditions:
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
       command: curl --fail --silent --show-error --location --head https://nodejs.org/dist/v{{ source "lastReleaseVersion" }}/node-v{{ source "lastReleaseVersion" }}.tar.gz
-  checkForChocolateyPackage:
-    kind: shell
-    disablesourceinput: true # Do not pass source as argument to the command line
-    spec:
-      command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/nodejs.install/{{ source "lastReleaseVersion" }}
 
 targets:
   updateVersion:
-    name: Update the NodeJS version in provisioning environment
+    name: Update the NodeJS version in provisioning environment for linux
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: provisioning/tools-versions.yml
-      key: $.nodejs_version
+      key: $.nodejs_linux_version
     scmid: default
-  updateTestHarness:
+  updateLinuxGossTest:
     name: Update the NodeJS version in the test harness
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       files:
-        - goss/goss-common.yaml
+        - goss/goss-linux.yaml
       key: $.command.nodejs.stdout[0]
     scmid: default
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump NodeJS version to {{ source "lastReleaseVersion" }}
+    title: Bump linux NodeJS version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:

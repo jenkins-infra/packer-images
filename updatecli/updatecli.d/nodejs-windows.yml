@@ -1,0 +1,70 @@
+---
+name: Bump NodeJS version on windows
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest NodeJS version
+    spec:
+      owner: nodejs
+      repository: node
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: regex
+        pattern: v20.(\d*).(\d*)
+    transformers:
+      - trimprefix: v
+
+conditions:
+  checkForPackage:
+    kind: shell
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      command: curl --fail --silent --show-error --location --head https://nodejs.org/dist/v{{ source "lastReleaseVersion" }}/node-v{{ source "lastReleaseVersion" }}.tar.gz
+  checkForChocolateyPackage:
+    kind: shell
+    disablesourceinput: true # Do not pass source as argument to the command line
+    spec:
+      command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/nodejs.install/{{ source "lastReleaseVersion" }}
+
+targets:
+  updateVersion:
+    name: Update the NodeJS version in provisioning environment for windows
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: provisioning/tools-versions.yml
+      key: $.nodejs_windows_version
+    scmid: default
+  updateWindowsGossTest:
+    name: Update the NodeJS version in the test harness
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      files:
+        - goss/goss-windows.yaml
+      key: $.command.nodejs.stdout[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump windows NodeJS version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - nodejs

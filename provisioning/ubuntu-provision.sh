@@ -636,7 +636,7 @@ function install_nodejs() {
   test -f "${asdf_install_dir}/asdf.sh"
   # Install NodeJS with ASDF and set it as default installation
   install_asdf_plugin nodejs https://github.com/asdf-vm/asdf-nodejs.git
-  install_asdf_package nodejs "${NODEJS_VERSION}"
+  install_asdf_package nodejs "${nodejs_windows_version}"
 
   # Bump NPM to its latest available version
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g npm"
