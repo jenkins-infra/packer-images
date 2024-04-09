@@ -634,7 +634,7 @@ function install_trivy() {
 function install_nodejs() {
   # Ensure that ASDF is installed
   test -f "${asdf_install_dir}/asdf.sh"
-  # Install NodeJS with ASDF and set it as default installation
+  # Install Node.js with ASDF and set it as default installation
   install_asdf_plugin nodejs https://github.com/asdf-vm/asdf-nodejs.git
   install_asdf_package nodejs "${NODEJS_LINUX_VERSION}"
 
