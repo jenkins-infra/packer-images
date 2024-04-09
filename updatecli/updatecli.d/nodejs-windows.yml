@@ -49,7 +49,7 @@ targets:
       file: provisioning/tools-versions.yml
       key: $.nodejs_windows_version
     scmid: default
-  updateWindowsGossTest:
+  updateTestHarness:
     name: Update Node.js version in the test harness
     sourceid: lastReleaseVersion
     kind: yaml
