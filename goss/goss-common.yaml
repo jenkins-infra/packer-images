@@ -4,7 +4,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.15.35
+      - 2.15.36
   azurecli:
     exec: az --version
     exit-status: 0
@@ -74,12 +74,6 @@ command:
   netlify-deploy:
     exec: netlify-deploy --help
     exit-status: 0
-  nodejs:
-    exec: node --version
-    exit-status: 0
-    stdout:
-      - 20.11.1
-      - '!Please install a version by running one of the following'
   npm:
     exec: npm --version
     exit-status: 0
