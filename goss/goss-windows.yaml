@@ -43,7 +43,7 @@ command:
     exec: python --version
     exit-status: 0
     stdout:
-      - 3.12.2
+      - 3.12.3
   ruby:
     exec: ruby -v
     exit-status: 0
