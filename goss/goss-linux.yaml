@@ -86,6 +86,12 @@ command:
     exit-status: 0
     stdout:
       - 3.9.6
+  nodejs:
+    exec: node --version
+    exit-status: 0
+    stdout:
+      - 20.11.1
+      - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version
     exit-status: 0

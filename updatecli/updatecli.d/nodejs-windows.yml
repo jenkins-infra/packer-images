@@ -1,5 +1,5 @@
 ---
-name: Bump NodeJS version
+name: Bump Node.js version on Windows
 
 scms:
   default:
@@ -42,27 +42,27 @@ conditions:
 
 targets:
   updateVersion:
-    name: Update the NodeJS version in provisioning environment
+    name: Update Node.js version in provisioning environment for Windows
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       file: provisioning/tools-versions.yml
-      key: $.nodejs_version
+      key: $.nodejs_windows_version
     scmid: default
   updateTestHarness:
-    name: Update the NodeJS version in the test harness
+    name: Update Node.js version in the test harness
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
       files:
-        - goss/goss-common.yaml
+        - goss/goss-windows.yaml
       key: $.command.nodejs.stdout[0]
     scmid: default
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump NodeJS version to {{ source "lastReleaseVersion" }}
+    title: Bump Node.js version on Windows to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:
