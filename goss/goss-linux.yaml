@@ -48,7 +48,7 @@ command:
     exec: helm version
     exit-status: 0
     stdout:
-      - 3.14.3
+      - 3.14.4
   helmfile:
     exec: helmfile --version
     exit-status: 0
@@ -59,7 +59,7 @@ command:
     exit-status: 0
     stdout:
       - /diff.*3.9.5/
-      - /helm-git.*0.15.1/
+      - /helm-git.*0.16.0/
       - /secrets.*4.6.0/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
