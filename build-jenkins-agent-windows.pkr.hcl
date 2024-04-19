@@ -54,6 +54,12 @@ build {
     destination  = "C:/"
   }
 
+  provisioner "file" {
+    pause_before = "1m"
+    source       = "./provisioning/vs2019.vsconfig"
+    destination  = "C:/"
+  }
+
   provisioner "powershell" {
     pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars

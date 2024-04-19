@@ -267,6 +267,13 @@ $downloads = [ordered]@{
             & "c:\python312\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
         };
     };
+    'vsstudio2019' = @{
+        'url' = 'https://aka.ms/vs/16/release/vs_community.exe';
+        'local' = "$baseDir\vs2019\";
+        'postInstall' = {
+            start /wait "$baseDir\vs2019\vs_community.exe" --quiet --norestart --wait --config c:\vs2019.vsconfig
+        };
+    };
 }
 
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed
