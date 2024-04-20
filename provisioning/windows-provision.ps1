@@ -267,6 +267,15 @@ $downloads = [ordered]@{
             & "c:\python312\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
         };
     };
+    'vs-build-tools' = @{
+        'url' = 'https://aka.ms/vs/{0}/release/vs_buildtools.exe' -f $env:VS_BUILDTOOLS_VERSION;
+        'local' = "$baseDir\vs_buildtools.exe";
+        'postExpand' = {
+            & $baseDir\vs_buildtools.exe --installPath "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community" `
+                --quiet --wait --norestart --nocache --config C:\visualstudio.vsconfig
+        };
+        'cleanupLocal' = 'true';
+    };
 }
 
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed

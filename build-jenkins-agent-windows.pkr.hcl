@@ -54,6 +54,12 @@ build {
     destination  = "C:/"
   }
 
+  provisioner "file" {
+    pause_before = "1m"
+    source       = "./provisioning/visualstudio.vsconfig"
+    destination  = "C:/"
+  }
+
   provisioner "powershell" {
     pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
@@ -92,6 +98,7 @@ build {
       "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --retry-timeout 300s",
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
+      "Remove-Item -Force C:/visualstudio.vsconfig",
     ]
   }
 
