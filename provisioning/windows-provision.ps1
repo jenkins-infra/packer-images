@@ -271,8 +271,9 @@ $downloads = [ordered]@{
         'url' = 'https://aka.ms/vs/{0}/release/vs_buildtools.exe' -f $env:VS_BUILDTOOLS_VERSION;
         'local' = "$baseDir\vs_buildtools.exe";
         'postExpand' = {
-            & $baseDir\vs_buildtools.exe --installPath "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community" `
-                --quiet --wait --norestart --nocache --config C:\visualstudio.vsconfig
+            $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "$baseDir\vs_buildtools.exe" `
+                -ArgumentList "--installPath `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community`" --quiet --wait --norestart --nocache --config C:\visualstudio.vsconfig"
+            $p.WaitForExit()
         };
         'cleanupLocal' = 'true';
     };
