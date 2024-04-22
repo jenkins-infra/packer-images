@@ -4,7 +4,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.15.38
+      - 2.15.40
   azurecli:
     exec: az --version
     exit-status: 0
@@ -22,7 +22,7 @@ command:
     exec: java --version
     exit-status: 0
     stdout:
-      - 11.0.22+7
+      - 11.0.23+9
   docker_compose:
     exec: docker-compose -v
     exit-status: 0
@@ -32,7 +32,7 @@ command:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.47.0
+      - 2.48.0
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
@@ -62,7 +62,7 @@ command:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.27.12
+      - 1.27.13
   launchable:
     exec: launchable --version
     exit-status: 0

@@ -20,7 +20,7 @@ command:
     exec: docker -v
     exit-status: 0
     stdout:
-      - 26.0.1
+      - 26.0.2
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
@@ -65,22 +65,22 @@ command:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
     stdout:
-      - 11.0.22+7
+      - 11.0.23+9
   jdk17:
     exec: /opt/jdk-17/bin/java --version
     exit-status: 0
     stdout:
-      - 17.0.10+7
+      - 17.0.11+9
   jdk21:
     exec: /opt/jdk-21/bin/java --version
     exit-status: 0
     stdout:
-      - 21.0.2+13
+      - 21.0.3+9
   jdk8:
     exec: /opt/jdk-8/bin/java -version
     exit-status: 0
     stderr:
-      - 1.8.0_402
+      - 1.8.0_412
   maven:
     exec: mvn -v
     exit-status: 0
