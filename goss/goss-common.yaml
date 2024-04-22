@@ -22,7 +22,7 @@ command:
     exec: java --version
     exit-status: 0
     stdout:
-      - 11.0.22+7
+      - 11.0.23+9
   docker_compose:
     exec: docker-compose -v
     exit-status: 0
