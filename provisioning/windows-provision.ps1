@@ -267,7 +267,11 @@ $downloads = [ordered]@{
             & "c:\python312\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
         };
     };
-    'vs-build-tools' = @{
+}
+
+if("2019" -eq $env:AGENT_OS_VERSION) {
+    # We only do this for 2019 until installing on 2022 can be debugged
+    $downloads['vs-build-tools'] = @{
         'url' = 'https://aka.ms/vs/{0}/release/vs_buildtools.exe' -f $env:VS_BUILDTOOLS_VERSION;
         'local' = "$baseDir\vs_buildtools.exe";
         'postExpand' = {
