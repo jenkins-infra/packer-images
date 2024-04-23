@@ -59,6 +59,7 @@ command:
     exit-status: 0
     stdout:
       - /16\.\d+\.\d+\.\d+/
+    skip: {{ not(eq .Env.AGENT_OS_VERSION "2019") }}
 file:
   C:\Program Files\Chromium\Application\:
     contains: []
