@@ -55,11 +55,12 @@ command:
     stdout:
       - 2.4.1
   visualstudio:
-    exec: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe" -nologo -version
+    exec: C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe -nologo -version
     exit-status: 0
     stdout:
       - /16\.\d+\.\d+\.\d+/
-    skip: {{ not(eq .Env.AGENT_OS_VERSION "2019") }}
+    skip: |
+      {{ not (eq .Env.AGENT_OS_VERSION "2019") }}
 file:
   C:\Program Files\Chromium\Application\:
     contains: []
