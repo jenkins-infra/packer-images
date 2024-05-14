@@ -18,7 +18,7 @@ golangcilint_version: 1.55.2
 goss_version: 0.4.6
 hadolint_version: 2.12.0
 helm_version: 3.14.4
-helm_diff_version: 3.9.5
+helm_diff_version: 3.9.6
 helmfile_version: 0.164.0
 helm_git_version: 0.16.0
 helm_secrets_version: 4.6.0
