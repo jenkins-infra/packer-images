@@ -91,6 +91,7 @@ build {
 
   provisioner "powershell" {
     pause_before = "2m" # long pause as 1m is not enough
+    environment_vars  = local.provisioning_env_vars
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
