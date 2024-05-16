@@ -38,7 +38,7 @@ command:
     exec: go version
     exit-status: 0
     stdout:
-      - 1.22.2
+      - 1.22.3
   golangci-lint:
     exec: golangci-lint --version
     exit-status: 0
@@ -58,7 +58,7 @@ command:
     exec: helm plugin list
     exit-status: 0
     stdout:
-      - /diff.*3.9.5/
+      - /diff.*3.9.6/
       - /helm-git.*0.16.0/
       - /secrets.*4.6.0/
   jdk11:
@@ -90,7 +90,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 20.12.2
+      - 20.13.1
       - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version
@@ -99,7 +99,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.43.1
+      - 1.44.0
   python3:
     exec: python3 --version
     exit-status: 0
@@ -109,7 +109,7 @@ command:
     exit-status: 0
     stdout:
       - 2.6.10
-      - 3.3.0
+      - 3.3.1
   sops:
     exec: sops --version
     exit-status: 0

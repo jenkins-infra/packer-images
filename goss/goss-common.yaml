@@ -4,7 +4,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.15.48
+      - 2.15.50
   azurecli:
     exec: az --version
     exit-status: 0
@@ -16,8 +16,9 @@ command:
   container-structure-test:
     exec: container-structure-test version
     exit-status: 0
-    stdout:
-      - 1.17.0
+    ## Commented out until https://github.com/GoogleContainerTools/container-structure-test/issues/445 is resolved
+    # stdout:
+    #   - 1.18.1
   default_java:
     exec: java --version
     exit-status: 0
@@ -32,7 +33,7 @@ command:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.49.1
+      - 2.49.2
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
