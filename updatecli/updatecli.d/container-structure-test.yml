@@ -36,14 +36,15 @@ targets:
       file: "provisioning/tools-versions.yml"
       key: "$.cst_version"
     scmid: default
-  updateVersionInGoss:
-    name: Update the `container-structure-test` version in the goss test
-    kind: yaml
-    spec:
-      files:
-        - goss/goss-common.yaml
-      key: $.command.container-structure-test.stdout[0]
-    scmid: default
+  ## Commented out until https://github.com/GoogleContainerTools/container-structure-test/issues/445 is resolved
+  # updateVersionInGoss:
+  #   name: Update the `container-structure-test` version in the goss test
+  #   kind: yaml
+  #   spec:
+  #     files:
+  #       - goss/goss-common.yaml
+  #     key: $.command.container-structure-test.stdout[0]
+  #   scmid: default
 
 actions:
   default:
