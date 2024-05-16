@@ -11,7 +11,7 @@ docker_version: 26.1.2
 doctl_version: 1.101.0
 gh_version: 2.49.2
 git_lfs_version: 3.5.1
-git_linux_version: 2.43.2
+git_linux_version: 2.45.1
 git_windows_version: 2.45.1
 golang_version: 1.22.3
 golangcilint_version: 1.55.2
