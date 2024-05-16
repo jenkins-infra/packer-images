@@ -58,6 +58,7 @@ targets:
     sourceid: rubyDockerImageLatestVersion
     kind: yaml
     spec:
+      engine: "yamlpath"
       files:
         - goss/goss-windows.yaml
       key: $.command.ruby.stdout[0]

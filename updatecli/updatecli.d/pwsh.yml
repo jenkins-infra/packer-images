@@ -47,12 +47,13 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "windows_pwsh_version"
+      key: $.windows_pwsh_version
     scmid: default
   updatePwshVersionInGoss:
     name: Update the `Pwsh` version in the goss test
     kind: yaml
     spec:
+      engine: "yamlpath"
       files:
         - "goss/goss-windows.yaml"
       key: $.command.pwsh.stdout[0]
