@@ -300,9 +300,11 @@ function compile_git_install_gitlfs() {
   curl --fail --silent --location --show-error --output "/tmp/${git_lfs_archive}" "${git_lfs_release_url}"
   mkdir -p /tmp/git-lfs
   tar --extract --directory=/tmp/git-lfs --gzip --verbose --file="/tmp/${git_lfs_archive}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name, since git-lfs 3.2.0.
-  bash -x /tmp/git-lfs/install.sh # Execute in debug mode in case something goes wrong
-  rm -rf /tmp/git-lfs*
-  rm -rf /tmp/git-"${GIT_LINUX_VERSION}"
+  bash -x /tmp/git-lfs/install.sh
+
+  cd /tmp # do not stay in a remove folder
+  rm -rf /tmp/git-lfs* # cleanup
+  rm -rf /tmp/git-"${GIT_LINUX_VERSION}" # cleanup
 }
 
 # Reusable function to perform a Temurin JDK installations
