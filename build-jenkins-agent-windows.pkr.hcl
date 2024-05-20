@@ -94,9 +94,9 @@ build {
     environment_vars  = local.provisioning_env_vars
     inline = [
       "dir C:/",
-      "dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\" ",
-      "dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\\" ",
-      "dir \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\\" ",
+      "dir 'C:\\Program Files (x86)\\Microsoft Visual Studio\\' ",
+      "dir 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\' ",
+      "dir 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\' ",
     ]
   }
 
