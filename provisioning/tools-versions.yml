@@ -36,7 +36,7 @@ netlifydeploy_version: 0.1.8
 nodejs_linux_version: 20.13.1
 nodejs_windows_version: 20.13.1
 openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys
-packer_version: 1.10.2
+packer_version: 1.10.3
 python3_version: 3.12.3
 ruby_puppet_version: 2.6.10
 ruby_version: 3.3.1
