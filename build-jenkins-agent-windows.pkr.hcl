@@ -89,6 +89,7 @@ build {
     disable = true
   }
 
+  # goss windows
   provisioner "powershell" {
     pause_before = "2m" # long pause as 1m is not enough
     environment_vars  = local.provisioning_env_vars
@@ -96,7 +97,21 @@ build {
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
       "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --retry-timeout 300s",
+    ]
+  }
+
+  # goss common
+  provisioner "powershell" {
+    environment_vars  = local.provisioning_env_vars
+    inline = [
       "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --retry-timeout 300s",
+    ]
+  }
+
+  # cleanup
+  provisioner "powershell" {
+    environment_vars  = local.provisioning_env_vars
+    inline = [
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
       "Remove-Item -Force C:/visualstudio.vsconfig",
