@@ -15,7 +15,7 @@ git_linux_version: 2.45.1
 git_windows_version: 2.45.1
 golang_version: 1.22.3
 golangcilint_version: 1.55.2
-goss_version: 0.4.6
+goss_version: 0.4.7
 hadolint_version: 2.12.0
 helm_version: 3.15.0
 helm_diff_version: 3.9.6
