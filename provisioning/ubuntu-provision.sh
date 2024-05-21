@@ -690,11 +690,11 @@ function remove_unusefull_packages() {
   do
     if command -v $cli >/dev/null 2>&1
     then
-      echo "removing ${cli} (dpkg --purge ${cli})"
+      echo "removing ${cli} (dpkg -P ${cli})"
       dpkg -l | grep "${cli}"
       dpkg -P "${cli}"  ## --purge fail so using the short -P
       dpkg -l | grep "${cli}"
-      echo "removed ${cli} (dpkg --purge ${cli})"
+      echo "removed ${cli} (dpkg -P ${cli})"
     else
       echo "cannot remove ${cli} as not installed"
       dpkg -l | grep "${cli}"
@@ -735,8 +735,8 @@ function main() {
   install_gh
   install_golang
   install_golangcilint # must come after golang
-  install_ruby ${RUBY_PUPPET_VERSION}
-  install_ruby ${RUBY_VERSION}
+  install_ruby "${RUBY_PUPPET_VERSION}"
+  install_ruby "${RUBY_VERSION}"
   install_vagrant
   install_xq
   install_yq
