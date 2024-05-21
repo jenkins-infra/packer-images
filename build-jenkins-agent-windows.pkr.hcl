@@ -94,7 +94,7 @@ build {
     environment_vars  = local.provisioning_env_vars
     inline = [
       "dir 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\' ",
-      "'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe' \/nologo \/version"
+      "'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe' /nologo /version"
     ]
   }
 
