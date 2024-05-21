@@ -2,7 +2,7 @@
 # This script provision the Linux Ubuntu 20 images for Jenkins agents
 # Architecture supported: amd64, arm64
 
-set -ux -o pipefail
+set -eux -o pipefail
 
 ## Check for environment variables or fail miserably (due to set -u enabled)
 echo "== Provisiong jenkins-infra agent for ubuntu 20"
