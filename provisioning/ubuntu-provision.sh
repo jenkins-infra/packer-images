@@ -690,8 +690,9 @@ function remove_unusefull_packages() {
   do
     if command -v $cli >/dev/null 2>&1
     then
-      echo "removing ${cli} required but not found. Exiting."
+      echo "removing ${cli} (dpkg --purge ${cli})"
       dpkg -–purge ${cli}
+      echo "removed ${cli} (dpkg --purge ${cli})"
     else
       echo "cannot remove ${cli} as not installed"
     fi
