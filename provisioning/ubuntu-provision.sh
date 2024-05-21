@@ -685,6 +685,9 @@ function cleanup() {
 }
 
 function main() {
+  echo "============================================================================== BEGIN Installed packages:"
+  dpkg -l
+  echo "============================================================================== BEGIN Installed packages"
   check_commands
   copy_custom_scripts
   set_locale # Define the locale
@@ -733,8 +736,9 @@ function main() {
   install_sops
   install_yamllint
 
-  echo "== Installed packages:"
+  echo "============================================================================== END Installed packages:"
   dpkg -l
+  echo "============================================================================== END Installed packages"
 }
 
 main
