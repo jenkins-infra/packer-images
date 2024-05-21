@@ -684,10 +684,25 @@ function cleanup() {
   sync
 }
 
+## Remove package installed by default
+function remove_unusefull_packages() {
+  for cli in git git-man
+  do
+    if command -v $cli >/dev/null 2>&1
+    then
+      echo "removing ${cli} required but not found. Exiting."
+      dpkg –purge ${cli}
+    else
+      echo "cannot remove ${cli} as not installed"
+    fi
+  done
+}
+
 function main() {
   echo "============================================================================== BEGIN Installed packages:"
   dpkg -l
   echo "============================================================================== BEGIN Installed packages"
+  remove_unusefull_packages # Remove installed by default package useless or obsolete NEED to be at the start
   check_commands
   copy_custom_scripts
   set_locale # Define the locale
