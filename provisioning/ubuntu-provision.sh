@@ -694,10 +694,11 @@ function remove_unusefull_packages() {
       dpkg -l | grep "${cli}"
       dpkg -P "${cli}"  ## --purge fail so using the short -P
       dpkg -l | grep "${cli}"
-      echo "removed ${cli} (dpkg -P ${cli})"
+      echo "removed ${cli} (dpkg -P ${cli}) errorcode $?"
     else
       echo "cannot remove ${cli} as not installed"
       dpkg -l | grep "${cli}"
+      echo "errorcode $?"
     fi
   done
 }
