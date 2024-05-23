@@ -89,7 +89,6 @@ build {
     disable = true
   }
 
-  # goss windows
   provisioner "powershell" {
     pause_before = "2m" # long pause as 1m is not enough
     environment_vars  = local.provisioning_env_vars
@@ -100,7 +99,6 @@ build {
     ]
   }
 
-  # goss common
   provisioner "powershell" {
     environment_vars  = local.provisioning_env_vars
     inline = [
@@ -108,7 +106,6 @@ build {
     ]
   }
 
-  # cleanup
   provisioner "powershell" {
     environment_vars  = local.provisioning_env_vars
     inline = [
