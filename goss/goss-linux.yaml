@@ -143,6 +143,3 @@ file:
     group: jenkins
     mode: '0750'
     owner: jenkins
-package:
-  git: # the git package shouldn't be installed, as it is compiled
-    installed: false
