@@ -20,7 +20,7 @@ sources:
     name: "Get the latest Ruby version"
     spec:
       image: "ruby"
-      tagFilter: >-
+      tagfilter: >-
         \d\.\d\.\d$
       versionfilter:
         kind: regex
@@ -58,6 +58,7 @@ targets:
     sourceid: rubyDockerImageLatestVersion
     kind: yaml
     spec:
+      engine: "yamlpath"
       files:
         - goss/goss-windows.yaml
       key: $.command.ruby.stdout[0]

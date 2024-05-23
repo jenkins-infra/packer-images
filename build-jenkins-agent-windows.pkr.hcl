@@ -95,8 +95,20 @@ build {
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
-      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --retry-timeout 300s",
-      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --retry-timeout 300s",
+      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --retry-timeout 60s",
+    ]
+  }
+
+  provisioner "powershell" {
+    environment_vars  = local.provisioning_env_vars
+    inline = [
+      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --retry-timeout 60s",
+    ]
+  }
+
+  provisioner "powershell" {
+    environment_vars  = local.provisioning_env_vars
+    inline = [
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
       "Remove-Item -Force C:/visualstudio.vsconfig",
