@@ -445,7 +445,6 @@ function install_jxreleaseversion() {
 
 ## Ensure that azure-cli is installed
 function install_azurecli() {
-  local az_repo
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     gpg \
@@ -680,7 +679,7 @@ function install_yamllint() {
 ## Ensure that the VM is cleaned up of provision artifacts
 function cleanup() {
   export HISTSIZE=0
-  rm -rf /tmp/* /var/log/* ${HOME}/.npm
+  rm -rf /tmp/* /var/log/* "${HOME}"/.npm
   sync
 }
 
@@ -691,13 +690,10 @@ function remove_unusefull_packages() {
     if command -v $cli >/dev/null 2>&1
     then
       echo "removing ${cli} (dpkg -P ${cli})"
-      dpkg -l | grep "${cli}" 2>/dev/null
       dpkg -P "${cli}"  ## --purge fail so using the short -P
-      dpkg -l | grep "${cli}" 2>/dev/null
       echo "removed ${cli} (dpkg -P ${cli})"
     else
       echo "cannot remove ${cli} as not installed"
-      dpkg -l | grep "${cli}" 2>/dev/null
     fi
   done
 }
