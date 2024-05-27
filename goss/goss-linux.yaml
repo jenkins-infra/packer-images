@@ -48,7 +48,7 @@ command:
     exec: helm version
     exit-status: 0
     stdout:
-      - 3.15.0
+      - 3.15.1
   helmfile:
     exec: helmfile --version
     exit-status: 0
@@ -58,7 +58,7 @@ command:
     exec: helm plugin list
     exit-status: 0
     stdout:
-      - /diff.*3.9.6/
+      - /diff.*3.9.7/
       - /helm-git.*0.16.0/
       - /secrets.*4.6.0/
   jdk11:
@@ -99,7 +99,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.44.0
+      - 1.44.1
   python3:
     exec: python3 --version
     exit-status: 0
