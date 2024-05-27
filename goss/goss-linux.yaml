@@ -58,7 +58,7 @@ command:
     exec: helm plugin list
     exit-status: 0
     stdout:
-      - /diff.*3.9.6/
+      - /diff.*3.9.7/
       - /helm-git.*0.16.0/
       - /secrets.*4.6.0/
   jdk11:
