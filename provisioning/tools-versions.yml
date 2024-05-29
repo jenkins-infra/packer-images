@@ -19,7 +19,7 @@ goss_version: 0.4.7
 hadolint_version: 2.12.0
 helm_version: 3.15.1
 helm_diff_version: 3.9.7
-helmfile_version: 0.164.0
+helmfile_version: 0.165.0
 helm_git_version: 0.16.0
 helm_secrets_version: 4.6.0
 jdk11_version: 11.0.23+9
