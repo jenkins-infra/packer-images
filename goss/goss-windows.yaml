@@ -48,7 +48,7 @@ command:
     exec: ruby -v
     exit-status: 0
     stdout:
-      - 3.3.1
+      - 3.3.2
   vagrant:
     exec: vagrant --version
     exit-status: 0
@@ -59,7 +59,7 @@ command:
     exit-status: 0
     stdout:
       - /16\.\d+\.\d+\.\d+/
-    skip: {{ not (eq .Env.AGENT_OS_VERSION "2019") }}
+    skip: {? {not (eq .Env.AGENT_OS_VERSION "2019"): ''} : ''}
 file:
   C:\Program Files\Chromium\Application\:
     contains: []
