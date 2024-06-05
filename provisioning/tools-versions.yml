@@ -13,7 +13,7 @@ gh_version: 2.50.0
 git_lfs_version: 3.5.1
 git_linux_version: 2.45.2
 git_windows_version: 2.45.2
-golang_version: 1.22.3
+golang_version: 1.22.4
 golangcilint_version: 1.55.2
 goss_version: 0.4.7
 hadolint_version: 2.12.0
