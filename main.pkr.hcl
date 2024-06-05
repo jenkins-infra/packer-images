@@ -10,7 +10,7 @@ packer {
       source  = "github.com/hashicorp/azure"
     }
     docker = {
-      version = "1.0.9"
+      version = "1.0.10"
       source  = "github.com/hashicorp/docker"
     }
   }
