@@ -236,6 +236,10 @@ $downloads = [ordered]@{
         'url' = 'https://github.com/goss-org/goss/releases/download/v{0}/goss-windows-amd64.exe'  -f $env:GOSS_VERSION;
         'local' = "$baseDir\goss.exe"
     };
+    'docker-buildx' = @{
+        'url' = 'https://github.com/docker/buildx/releases/download/v{0}/buildx-v{0}.windows-amd64.exe' -f $env:DOCKER_BUILDX_VERSION;
+        'local' = "C:\ProgramData\docker\cli-plugins\docker-buildx.exe"
+    };
     'chocolatey-and-packages' = @{
         'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
         'local' = "$baseDir\chocolatey.zip";

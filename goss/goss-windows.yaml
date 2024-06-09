@@ -8,6 +8,9 @@ command:
   docker-ce:
     exec: docker -v
     exit-status: 0
+  docker-buildx:
+    exec: docker buildx version
+    exit-status: 0
   jdk11:
     exec: C:\tools\jdk-11\bin\java --version
     exit-status: 0
