@@ -57,13 +57,13 @@ command:
     exit-status: 0
     stdout:
       - 2.4.1
-  visualstudio-ltsc2019:
+  visualstudio-on-ltsc2019:
     exec: ("C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe" "/nologo" "/version")
     exit-status: 0
     stdout:
       - /16\.\d+\.\d+\.\d+/
     skip: {{ not (eq .Env.AGENT_OS_VERSION "2019") }}
-  visualstudio-ltsc2022:
+  visualstudio-on-ltsc2022:
     exec: ("C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe" "/nologo" "/version")
     exit-status: 0
     stdout:

@@ -277,9 +277,9 @@ $downloads = [ordered]@{
     };
 }
 
-$vsBuildToolsVersion = $env:VS_BUILDTOOLS_LTSC2022_VERSION
+$vsBuildToolsVersion = $env:VS_BUILDTOOLS_ON_LTSC2022_VERSION
 if("2019" -eq $env:AGENT_OS_VERSION) {
-    $vsBuildToolsVersion = $env:VS_BUILDTOOLS_LTSC2019_VERSION
+    $vsBuildToolsVersion = $env:VS_BUILDTOOLS_ON_LTSC2019_VERSION
 }
 $downloads['vs-build-tools'] = @{
     'url' = 'https://aka.ms/vs/{0}/release/vs_buildtools.exe' -f $vsBuildToolsVersion;

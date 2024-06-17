@@ -50,5 +50,5 @@ windows_pwsh_version: 7.4.2
 xq_version: 1.2.3
 yq_version: 4.42.1
 playwright_version: 1.44.1
-vs_buildtools_ltsc2019_version: 16
-vs_buildtools_ltsc2022_version: 17
+vs_buildtools_on_ltsc2019_version: 16
+vs_buildtools_on_ltsc2022_version: 17
