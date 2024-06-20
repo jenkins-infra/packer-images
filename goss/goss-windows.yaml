@@ -51,7 +51,7 @@ command:
     exec: ruby -v
     exit-status: 0
     stdout:
-      - 3.3.2
+      - 3.3.3
   vagrant:
     exec: vagrant --version
     exit-status: 0
