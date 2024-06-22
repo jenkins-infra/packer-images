@@ -22,12 +22,10 @@ sources:
       repository: "azure-cli"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
-      versionfilter:
-        kind: regex
-        ## Latest stable x.y.z version
-        pattern: 'azure-cli-(\d*)\.(\d*)\.(\d*)$'
+      typefilter:
+        latest: true
     transformers:
-      - trimprefix: "azure-cli-"
+      - trimprefix: 'azure-cli-'
 
 targets:
   updateVersion:
