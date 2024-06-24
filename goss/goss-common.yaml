@@ -33,7 +33,7 @@ command:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.51.0
+      - 2.52.0
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
