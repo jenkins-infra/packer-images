@@ -59,7 +59,7 @@ command:
     exit-status: 0
     stdout:
       - /diff.*3.9.9/
-      - /helm-git.*0.17.0/
+      - /helm-git.*1.3.0/
       - /secrets.*4.6.0/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
