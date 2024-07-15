@@ -33,14 +33,14 @@ targets:
     spec:
       file: provisioning/tools-versions.yml
       key: $.doctl_version
-    # scmid: default
+    scmid: default
   updateVersionInGoss:
     name: Update the `DOCTL` version in the goss test
     kind: yaml
     spec:
       file: goss/goss-linux.yaml
       key: $.command.doctl.stdout[0]
-    # scmid: default
+    scmid: default
 
 actions:
   default:
