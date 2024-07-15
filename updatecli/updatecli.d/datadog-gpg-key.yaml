@@ -1,0 +1,38 @@
+---
+name: Bump `DATADOG GPG KEY`
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastGPGkey:
+    kind: file
+    name: Get the latest `DATADOG GPG KEY`
+    spec:
+      file: https://keys.datadoghq.com/DATADOG_APT_KEY_CURRENT.public
+targets:
+  updateGPGdatadog:
+    name: "Update the `DATADOG GPG KEY` in the local gpg file"
+    sourceid: lastGPGkey
+    kind: file
+    spec:
+      file: gpg-keys/datadog.gpg
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump `DATADOG GPG KEY`
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - datadog
