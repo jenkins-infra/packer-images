@@ -2,7 +2,7 @@ packer {
   required_version = ">= 1.7.2, < 2"
   required_plugins {
     windows-update = {
-      version = "0.16.3"
+      version = "0.16.7"
       source  = "github.com/rgl/windows-update"
     }
     azure = {
