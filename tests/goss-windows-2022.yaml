@@ -1,0 +1,6 @@
+---
+# Test Harness specific for Windows 2022 hosts
+command:
+  Powershell:
+    exec: powershell (Get-Host).Version
+    exit-status: 0

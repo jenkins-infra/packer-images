@@ -75,6 +75,16 @@ build {
   }
 
   provisioner "file" {
+    source      = "./tests/goss-windows-2019.yaml"
+    destination = "C:/goss-windows-2019.yaml"
+  }
+
+  provisioner "file" {
+    source      = "./tests/goss-windows-2022.yaml"
+    destination = "C:/goss-windows-2022.yaml"
+  }
+
+  provisioner "file" {
     source      = "./tests/goss-windows.yaml"
     destination = "C:/goss-windows.yaml"
   }
@@ -95,13 +105,8 @@ build {
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
+      "goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --retry-timeout 60s",
       "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --retry-timeout 60s",
-    ]
-  }
-
-  provisioner "powershell" {
-    environment_vars  = local.provisioning_env_vars
-    inline = [
       "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --retry-timeout 60s",
     ]
   }

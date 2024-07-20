@@ -1,4 +1,5 @@
 ---
+# Test Harness specific for all hosts
 command:
   awscli:
     exec: aws --version
