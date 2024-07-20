@@ -39,7 +39,7 @@ targets:
           pattern: '(.*)-(.*)'
           captureindex: 1
     spec:
-      file: goss/goss-linux.yaml
+      file: tests/goss-linux.yaml
       key: $.command.azcopy.stdout[0]
     scmid: default
 

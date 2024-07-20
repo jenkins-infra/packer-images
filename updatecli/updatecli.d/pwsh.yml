@@ -55,7 +55,7 @@ targets:
     spec:
       engine: "yamlpath"
       files:
-        - "goss/goss-windows.yaml"
+        - "tests/goss-windows.yaml"
       key: $.command.pwsh.stdout[0]
     transformers:
       - replacer:

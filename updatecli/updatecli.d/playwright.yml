@@ -39,7 +39,7 @@ targets:
     name: "Update the playwright version in the goss test"
     kind: yaml
     spec:
-      file: goss/goss-linux.yaml
+      file: tests/goss-linux.yaml
       key: $.command.playwright.stdout[0]
     scmid: default
 

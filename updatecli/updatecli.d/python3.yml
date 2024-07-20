@@ -45,7 +45,7 @@ targets:
     spec:
       engine: "yamlpath"
       files:
-        - "goss/goss-windows.yaml" #fixed only on windows
+        - "tests/goss-windows.yaml" #fixed only on windows
       key: $.command.python3.stdout[0]
     scmid: default
 

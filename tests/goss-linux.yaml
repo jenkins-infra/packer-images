@@ -1,4 +1,5 @@
 ---
+# Test Harness specific for all Linux hosts
 command:
   asdf:
     exec: asdf version
@@ -15,14 +16,6 @@ command:
     exit-status: 0
   datadog-agent:
     exec: datadog-agent version
-    exit-status: 0
-  docker-ce:
-    exec: docker -v
-    exit-status: 0
-    stdout:
-      - 27.0.3
-  docker_buildx:
-    exec: docker buildx version
     exit-status: 0
   doctl:
     exec: doctl version

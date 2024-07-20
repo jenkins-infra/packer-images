@@ -50,7 +50,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
+        - tests/goss-linux.yaml
       key: $.command.ruby.stdout[1]
     scmid: default
   updateGossWindows:
@@ -60,7 +60,7 @@ targets:
     spec:
       engine: "yamlpath"
       files:
-        - goss/goss-windows.yaml
+        - tests/goss-windows.yaml
       key: $.command.ruby.stdout[0]
     scmid: default
 

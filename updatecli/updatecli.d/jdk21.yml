@@ -50,8 +50,8 @@ targets:
     spec:
       engine: "yamlpath"
       files:
-        - goss/goss-linux.yaml
-        - goss/goss-windows.yaml
+        - tests/goss-linux.yaml
+        - tests/goss-windows.yaml
       key: $.command.jdk21.stdout[0]
     scmid: default
 

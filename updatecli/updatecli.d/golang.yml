@@ -42,7 +42,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
+        - tests/goss-linux.yaml
       key: $.command.golang.stdout[0]
     scmid: default
 

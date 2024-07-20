@@ -41,12 +41,12 @@ build {
   }
 
   provisioner "file" {
-    source      = "./goss/goss-linux.yaml"
+    source      = "./tests/goss-linux.yaml"
     destination = "/tmp/goss-linux.yaml"
   }
 
   provisioner "file" {
-    source      = "./goss/goss-common.yaml"
+    source      = "./tests/goss-common.yaml"
     destination = "/tmp/goss-common.yaml"
   }
 

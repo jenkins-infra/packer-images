@@ -1,0 +1,11 @@
+---
+# Test Harness specific for Windows 2019 hosts
+command:
+  Powershell:
+    exec: powershell (Get-Host).Version
+    exit-status: 0
+  visualstudio:
+    exec: ("C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe" "/nologo" "/version")
+    exit-status: 0
+    stdout:
+      - /16\.\d+\.\d+\.\d+/
