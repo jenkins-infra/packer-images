@@ -17,9 +17,8 @@ command:
   container-structure-test:
     exec: container-structure-test version
     exit-status: 0
-    ## Commented out until https://github.com/GoogleContainerTools/container-structure-test/issues/445 is resolved
-    # stdout:
-    #   - 1.18.1
+    stdout:
+      - 1.19.0
   docker-ce:
     exec: docker -v
     exit-status: 0
