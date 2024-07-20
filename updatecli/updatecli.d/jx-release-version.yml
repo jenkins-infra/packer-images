@@ -41,7 +41,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-common.yaml
+        - tests/goss-common.yaml
       key: $.command.jx-release-version.stdout[0]
     scmid: default
 

@@ -56,7 +56,7 @@ targets:
     spec:
       engine: "yamlpath"
       files:
-        - goss/goss-windows.yaml
+        - tests/goss-windows.yaml
       key: $.command.nodejs.stdout[0]
     scmid: default
 

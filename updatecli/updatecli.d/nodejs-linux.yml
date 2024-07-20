@@ -50,7 +50,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
+        - tests/goss-linux.yaml
       key: $.command.nodejs.stdout[0]
     scmid: default
 

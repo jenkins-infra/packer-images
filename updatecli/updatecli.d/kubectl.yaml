@@ -41,7 +41,7 @@ targets:
     name: Update `kubectl` version in the goss test
     kind: yaml
     spec:
-      file: goss/goss-common.yaml
+      file: tests/goss-common.yaml
       key: $.command.kubectl.stdout[0]
     scmid: default
 

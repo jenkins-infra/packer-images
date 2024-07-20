@@ -41,7 +41,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
+        - tests/goss-linux.yaml
       key: $.command.helmplugins.stdout[1]
     transformers:
       - addprefix: "/helm-git.*"

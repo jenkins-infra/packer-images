@@ -48,7 +48,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-common.yaml
+        - tests/goss-common.yaml
       key: $.command.awscli.stdout[0]
     scmid: default
 

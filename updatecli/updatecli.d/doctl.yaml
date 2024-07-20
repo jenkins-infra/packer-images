@@ -38,7 +38,7 @@ targets:
     name: Update the `DOCTL` version in the goss test
     kind: yaml
     spec:
-      file: goss/goss-linux.yaml
+      file: tests/goss-linux.yaml
       key: $.command.doctl.stdout[0]
     scmid: default
 

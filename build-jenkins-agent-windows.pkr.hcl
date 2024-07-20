@@ -75,12 +75,12 @@ build {
   }
 
   provisioner "file" {
-    source      = "./goss/goss-windows.yaml"
+    source      = "./tests/goss-windows.yaml"
     destination = "C:/goss-windows.yaml"
   }
 
     provisioner "file" {
-    source      = "./goss/goss-common.yaml"
+    source      = "./tests/goss-common.yaml"
     destination = "C:/goss-common.yaml"
   }
 

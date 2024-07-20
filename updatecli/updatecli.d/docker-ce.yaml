@@ -43,9 +43,9 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
+        - tests/goss-linux.yaml
         # TODO check if version is needed on windows
-        # - goss/goss-windows.yaml
+        # - tests/goss-windows.yaml
       key: $.command.docker-ce.stdout[0]
     scmid: default
 

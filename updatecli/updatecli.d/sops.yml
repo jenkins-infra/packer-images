@@ -41,7 +41,7 @@ targets:
     kind: yaml
     spec:
       files:
-        - goss/goss-linux.yaml
+        - tests/goss-linux.yaml
       key: $.command.sops.stdout[0]
     scmid: default
 

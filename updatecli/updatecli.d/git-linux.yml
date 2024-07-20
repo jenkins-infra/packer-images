@@ -47,7 +47,7 @@ targets:
     name: Bump Git version on Linux in the goss test
     kind: yaml
     spec:
-      file: goss/goss-linux.yaml
+      file: tests/goss-linux.yaml
       key: $.command.git.stdout[0]
     scmid: default
 
