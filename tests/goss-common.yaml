@@ -20,6 +20,14 @@ command:
     ## Commented out until https://github.com/GoogleContainerTools/container-structure-test/issues/445 is resolved
     # stdout:
     #   - 1.18.1
+  docker-ce:
+    exec: docker -v
+    exit-status: 0
+    stdout:
+      - 27.0.3
+  docker_buildx:
+    exec: docker buildx version
+    exit-status: 0
   default_java:
     exec: java --version
     exit-status: 0
