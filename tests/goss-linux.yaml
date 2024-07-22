@@ -83,7 +83,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 20.15.0
+      - 20.15.1
       - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version
@@ -102,7 +102,7 @@ command:
     exit-status: 0
     stdout:
       - 2.6.10
-      - 3.3.3
+      - 3.3.4
   sops:
     exec: sops --version
     exit-status: 0
