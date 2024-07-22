@@ -51,7 +51,7 @@ command:
     exec: goss --version
     exit-status: 0
     stdout:
-      - 0.4.7
+      - 0.4.8
   hadolint:
     exec: hadolint -v
     exit-status: 0
