@@ -102,7 +102,7 @@ command:
     exit-status: 0
     stdout:
       - 2.6.10
-      - 3.3.3
+      - 3.3.4
   sops:
     exec: sops --version
     exit-status: 0

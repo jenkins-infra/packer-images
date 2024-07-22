@@ -40,7 +40,7 @@ openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws
 packer_version: 1.11.0
 python3_version: 3.12.4
 ruby_puppet_version: 2.6.10
-ruby_version: 3.3.3
+ruby_version: 3.3.4
 sops_version: 3.9.0
 terraform_version: 1.9.2
 trivy_version: 0.53.0
