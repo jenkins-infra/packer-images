@@ -58,7 +58,7 @@ command:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
     stdout:
-      - 11.0.23+9
+      - 11.0.24+8
   jdk17:
     exec: /opt/jdk-17/bin/java --version
     exit-status: 0
