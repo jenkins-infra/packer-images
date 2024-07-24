@@ -40,7 +40,7 @@ command:
     exec: pwsh -command "(Get-Host).Version"
     exit-status: 0
     stdout:
-      - /7.*4.*3/
+      - /7.*4.*4/
   python3:
     exec: python --version
     exit-status: 0
