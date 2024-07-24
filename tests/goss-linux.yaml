@@ -73,7 +73,7 @@ command:
     exec: /opt/jdk-8/bin/java -version
     exit-status: 0
     stderr:
-      - 1.8.0_412
+      - 1.8.0_422
   maven:
     exec: mvn -v
     exit-status: 0
