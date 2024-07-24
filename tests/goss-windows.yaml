@@ -29,7 +29,7 @@ command:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
     stderr:
-      - 1.8.0_412
+      - 1.8.0_422
   nodejs:
     exec: node --version
     exit-status: 0
