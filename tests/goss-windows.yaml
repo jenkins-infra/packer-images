@@ -19,7 +19,7 @@ command:
     exec: C:\tools\jdk-17\bin\java --version
     exit-status: 0
     stdout:
-      - 17.0.11+9
+      - 17.0.12+7
   jdk21:
     exec: C:\tools\jdk-21\bin\java --version
     exit-status: 0
