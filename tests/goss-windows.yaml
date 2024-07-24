@@ -24,7 +24,7 @@ command:
     exec: C:\tools\jdk-21\bin\java --version
     exit-status: 0
     stdout:
-      - 21.0.3+9
+      - 21.0.4+7
   jdk8:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
