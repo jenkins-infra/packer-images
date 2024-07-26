@@ -9,7 +9,7 @@ cst_version: 1.19.1
 default_jdk: 11
 docker_version: 27.1.1
 docker_buildx_version: 0.14.1
-doctl_version: 1.109.1
+doctl_version: 1.110.0
 gh_version: 2.53.0
 git_lfs_version: 3.5.1
 git_linux_version: 2.45.2
