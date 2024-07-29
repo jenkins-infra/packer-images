@@ -13,7 +13,7 @@ doctl_version: 1.110.0
 gh_version: 2.53.0
 git_lfs_version: 3.5.1
 git_linux_version: 2.45.2
-git_windows_version: 2.45.2
+git_windows_version: 2.46.0
 golang_version: 1.22.5
 golangcilint_version: 1.55.2
 goss_version: 0.4.8
