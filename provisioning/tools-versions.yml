@@ -43,7 +43,7 @@ ruby_puppet_version: 2.6.10
 ruby_version: 3.3.4
 sops_version: 3.9.0
 terraform_version: 1.9.3
-trivy_version: 0.53.0
+trivy_version: 0.54.1
 updatecli_version: 0.81.2
 vagrant_version: 2.4.1
 windows_pwsh_version: 7.4.4
