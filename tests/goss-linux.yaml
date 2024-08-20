@@ -78,7 +78,7 @@ command:
     exec: mvn -v
     exit-status: 0
     stdout:
-      - 3.9.8
+      - 3.9.9
   nodejs:
     exec: node --version
     exit-status: 0
