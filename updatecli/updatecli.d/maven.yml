@@ -15,19 +15,16 @@ scms:
 
 sources:
   mavenVersion:
-    kind: githubrelease
-    name: Get the latest Maven version
+    # Using a file with a transformer until https://github.com/updatecli/updatecli/issues/2275 is done
+    kind: file
+    name: Get the latest Maven version use on the principal branch of the Jenkins ATH
     spec:
-      owner: "apache"
-      repository: "maven"
-      token: "{{ requiredEnv .github.token }}"
-      username: "{{ .github.username }}"
-      versionfilter:
-        kind: regex
-        # Only full releases (semver with "maven-" prefix")
-        pattern: "^maven-(\\d*).(\\d*).(\\d*)$"
+      file: https://raw.githubusercontent.com/jenkinsci/acceptance-test-harness/master/src/main/resources/ath-container/Dockerfile
+      matchpattern: 'ARG MAVEN_VERSION=.*'
     transformers:
-      - trimprefix: "maven-"
+      - findsubmatch:
+          pattern: 'ARG MAVEN_VERSION=(.*)'
+          captureindex: 1
 
 conditions:
   checkIfReleaseIsAvailable:
