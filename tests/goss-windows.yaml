@@ -34,7 +34,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 20.16.0
+      - 20.17.0
       - '!Please install a version by running one of the following'
   pwsh:
     exec: pwsh -command "(Get-Host).Version"
