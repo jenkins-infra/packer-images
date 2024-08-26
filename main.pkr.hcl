@@ -6,7 +6,7 @@ packer {
       source  = "github.com/rgl/windows-update"
     }
     azure = {
-      version = "2.1.7"
+      version = "2.1.8"
       source  = "github.com/hashicorp/azure"
     }
     docker = {
