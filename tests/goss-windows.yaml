@@ -13,6 +13,8 @@ command:
   default_java:
     exec: java --version
     exit-status: 0
+    stdout:
+      - 11.0.24+8
   jdk11:
     exec: C:\tools\jdk-11\bin\java --version
     exit-status: 0
