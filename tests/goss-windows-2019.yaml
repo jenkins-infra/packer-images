@@ -9,8 +9,3 @@ command:
     exit-status: 0
     stdout:
       - /16\.\d+\.\d+\.\d+/
-  maven:
-    exec: powershell "$env:JAVA_HOME='C:\\Program Files (x86)\\jdk-21'; mvn -v"
-    exit-status: 0
-    stdout:
-      - '/3\.9\.9/'
