@@ -27,11 +27,6 @@ command:
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
-  default_java:
-    exec: java --version
-    exit-status: 0
-    stdout:
-      - 11.0.24+8
   docker_compose:
     exec: docker-compose -v
     exit-status: 0

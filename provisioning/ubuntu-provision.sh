@@ -340,11 +340,6 @@ function download_temurin_jdk() {
   mkdir -p "${installation_dir}"
   tar --extract --gunzip --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
 
-  # Define JDK installations
-  # The priority of a JDK is the last argument.
-  # Starts by setting priority to the JDK major version: higher version is the expected default
-  update-alternatives --install /usr/bin/java java "${installation_dir}"/bin/java "${major_jdk_version}"
-
   rm -f "${temp_archive}"
 }
 
@@ -359,10 +354,6 @@ function install_jdks() {
     download_temurin_jdk "${jdk_version_to_install}"
     echo "=== Installation of Temurin JDK version ${jdk_version_to_install} done."
   done
-
-  # Use the DEFAULT_JDK env var to set the priority of the specified default JDK to 1000 to ensure its the one used by update-alternatives
-  update-alternatives --install /usr/bin/java java "/opt/jdk-${DEFAULT_JDK}/bin/java" 1000
-  echo "JAVA_HOME=/opt/jdk-${DEFAULT_JDK}" >> /etc/environment
 }
 
 ## Ensure that docker-compose is installed (version from environment)

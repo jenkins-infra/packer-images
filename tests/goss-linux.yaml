@@ -17,6 +17,10 @@ command:
   datadog-agent:
     exec: datadog-agent version
     exit-status: 0
+  default_java:
+    exec: java --version
+    exit-status:
+      not: 0
   doctl:
     exec: doctl version
     exit-status: 0
@@ -75,7 +79,7 @@ command:
     stderr:
       - 1.8.0_422
   maven:
-    exec: mvn -v
+    exec: JAVA_HOME=/opt/jdk-21 mvn -v
     exit-status: 0
     stdout:
       - 3.9.9
