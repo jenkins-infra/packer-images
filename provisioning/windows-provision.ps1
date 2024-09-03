@@ -294,15 +294,6 @@ if("2019" -eq $env:AGENT_OS_VERSION) {
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed
 AddToPathEnv $baseDir
 
-## Sets the default JDK
-$defaultJavaHome = '{0}\jdk-{1}' -f $baseDir,$env:DEFAULT_JDK
-$defaultJavaBinPath = '{0}\bin' -f $defaultJavaHome
-AddToPathEnv $defaultJavaBinPath
-# env JAVA_HOME
-New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name 'JAVA_HOME' -Value $defaultJavaHome | Out-Null
-## Maven requires the JAVA_HOME environment variable to be set. We use this value here: it is ephemeral.
-$env:JAVA_HOME = $defaultJavaHome
-
 ## Proceed to install tools
 # TODO: foreach in parallel for downloads
 foreach($k in $downloads.Keys) {
