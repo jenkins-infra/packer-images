@@ -56,14 +56,6 @@ targets:
         - tests/goss-windows.yaml
       key: $.command.jdk11.stdout[0]
     scmid: default
-  updateDefaultJDKVersionInGoss:
-    name: Update the default Java version in the goss tests
-    kind: yaml
-    spec:
-      files:
-        - tests/goss-common.yaml
-      key: $.command.default_java.stdout[0]
-    scmid: default
 
 actions:
   default:

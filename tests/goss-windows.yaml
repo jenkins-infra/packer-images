@@ -10,11 +10,6 @@ command:
   docker-buildx:
     exec: docker buildx version
     exit-status: 0
-  default_java:
-    exec: java --version
-    exit-status: 0
-    stdout:
-      - 11.0.24+8
   jdk11:
     exec: C:\tools\jdk-11\bin\java --version
     exit-status: 0
@@ -35,6 +30,11 @@ command:
     exit-status: 0
     stderr:
       - 1.8.0_422
+  maven:
+    exec: pwsh -command "$env:JAVA_HOME='C:\\Program Files (x86)\\jdk-21'; mvn -v"
+    exit-status: 0
+    stdout:
+      - 3.9.9
   nodejs:
     exec: node --version
     exit-status: 0
