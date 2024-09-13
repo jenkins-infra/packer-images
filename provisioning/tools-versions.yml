@@ -29,7 +29,7 @@ jdk8_version: 8u422-b05
 jenkins_remoting_version: 3261.v9c670a_4748a_9
 jq_version: 1.6
 jxreleaseversion_version: 2.7.6
-kubectl_version: 1.29.8
+kubectl_version: 1.29.9
 launchable_version: 1.66.0
 maven_version: 3.9.9
 netlifydeploy_version: 0.1.8
