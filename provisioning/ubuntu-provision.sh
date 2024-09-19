@@ -675,19 +675,17 @@ function cleanup() {
 ## Install rngd to increase VM entropy
 function install_rngd() {
   apt-get update --quiet
-  apt-get install --yes --no-install-recommends rng-tools-debian
-  systemctl daemon-reload
-  systemctl enable rng-tools-debian
-  systemctl start rng-tools-debian
+  apt-get install --yes --no-install-recommends rng-tools5
+  systemctl enable rng-tools5 || true
+  systemctl rng-tools5 || true
 }
 
 ## Install havegd to increase VM entropy
 function install_haveged() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends haveged
-  systemctl daemon-reload
-  systemctl enable haveged
-  systemctl start haveged
+  systemctl enable haveged || true
+  systemctl start haveged || true
 }
 
 function main() {
