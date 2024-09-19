@@ -672,6 +672,22 @@ function cleanup() {
   sync
 }
 
+## Install rngd to increase VM entropy
+function install_rngd() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends rng-tools5
+  systemctl enable rng-tools5 || true # Uses logical operator '|| true' to prevent script from failing due to non-zero exit status in the case of docker containers
+  systemctl start rngd || true
+}
+
+## Install havegd to increase VM entropy
+function install_haveged() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends haveged
+  systemctl enable haveged || true # Uses logical operator '|| true' to prevent script from failing due to non-zero exit status in the case of docker containers
+  systemctl start haveged || true
+}
+
 function main() {
   check_commands
   copy_custom_scripts
@@ -720,6 +736,8 @@ function main() {
   install_helmfile
   install_sops
   install_yamllint
+  install_rngd
+  install_haveged
 
   echo "== Installed packages:"
   dpkg -l

@@ -37,6 +37,9 @@ command:
     exit-status: 0
     stdout:
       - 1.55.2
+  haveged:
+    exec: haveged --version
+    exit-status: 0
   helm:
     exec: helm version
     exit-status: 0
@@ -103,6 +106,9 @@ command:
     stdout:
       - 2.6.10
       - 3.3.5
+  rngd:
+    exec: rngd --version
+    exit-status: 0
   sops:
     exec: sops --version
     exit-status: 0
