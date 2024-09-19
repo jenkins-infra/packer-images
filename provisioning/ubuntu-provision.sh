@@ -677,7 +677,7 @@ function install_rngd() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends rng-tools5
   systemctl enable rng-tools5 || true # Uses logical operator '|| true' to prevent script from failing due to non-zero exit status in the case of docker containers
-  systemctl rng-tools5 || true
+  systemctl start rngd || true
 }
 
 ## Install havegd to increase VM entropy
