@@ -672,6 +672,24 @@ function cleanup() {
   sync
 }
 
+## Install rngd to increase VM entropy
+function install_rngd() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends rng-tools-debian
+  systemctl daemon-reload
+  systemctl enable rng-tools-debian
+  systemctl start rng-tools-debian
+}
+
+## Install havegd to increase VM entropy
+function install_haveged() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends haveged
+  systemctl daemon-reload
+  systemctl enable haveged
+  systemctl start haveged
+}
+
 function main() {
   check_commands
   copy_custom_scripts
@@ -720,6 +738,8 @@ function main() {
   install_helmfile
   install_sops
   install_yamllint
+  install_rngd
+  install_haveged
 
   echo "== Installed packages:"
   dpkg -l
