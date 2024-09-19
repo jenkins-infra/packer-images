@@ -676,7 +676,7 @@ function cleanup() {
 function install_rngd() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends rng-tools5
-  systemctl enable rng-tools5 || true
+  systemctl enable rng-tools5 || true # Uses logical operator '|| true' to prevent script from failing due to non-zero exit status in the case of docker containers
   systemctl rng-tools5 || true
 }
 
@@ -684,7 +684,7 @@ function install_rngd() {
 function install_haveged() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends haveged
-  systemctl enable haveged || true
+  systemctl enable haveged || true # Uses logical operator '|| true' to prevent script from failing due to non-zero exit status in the case of docker containers
   systemctl start haveged || true
 }
 
