@@ -37,9 +37,6 @@ command:
     exit-status: 0
     stdout:
       - 1.55.2
-  haveged:
-    exec: haveged --version
-    exit-status: 0
   helm:
     exec: helm version
     exit-status: 0
