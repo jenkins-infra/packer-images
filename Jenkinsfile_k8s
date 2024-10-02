@@ -74,6 +74,22 @@ pipeline {
             }
           }
         }
+        stage('GC on AWS us-east-2') {
+          environment {
+            AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
+            AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
+            AWS_DEFAULT_REGION    = 'us-east-2'
+          }
+          steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              sh './cleanup/aws.sh'
+              sh './cleanup/aws_images.sh 1 dev'
+              sh './cleanup/aws_images.sh 7 staging'
+              sh './cleanup/aws_images.sh 60 prod'
+              sh './cleanup/aws_snapshots.sh'
+            }
+          }
+        }
         stage('GC on Azure') {
           environment {
             PACKER_AZURE = credentials('packer-azure-serviceprincipal-sponsorship')
@@ -107,10 +123,38 @@ pipeline {
           axis {
             name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'azure-arm', 'docker'
+            values 'amazon-ebs', 'azure-arm', 'docker'
           }
         }
         excludes {
+          /**
+          Since https://github.com/jenkins-infra/helpdesk/issues/3421 and https://github.com/jenkins-infra/helpdesk/issues/3502, EC2 is only used for Linux + `arm64` VMs.
+          **/
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'amd64'
+            }
+            axis {
+              name 'compute_type'
+              values 'amazon-ebs'
+            }
+          }
+          // Only build Ubuntu images for arm64 CPU in AWS (notValues)
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'agent_type'
+              notValues 'ubuntu-22.04'
+            }
+            axis {
+              name 'compute_type'
+              values 'amazon-ebs'
+            }
+          }
           // Only build Ubuntu images for arm64 CPU in Azure (notValues)
           exclude {
             axis {
@@ -149,6 +193,8 @@ pipeline {
           }
         }
         environment {
+          AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
+          AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
           // Defines the following environment variables: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
           // Ref. https://plugins.jenkins.io/azure-credentials/#plugin-content-declarative-pipeline
           AZURE                         = credentials('packer-azure-serviceprincipal-sponsorship')
