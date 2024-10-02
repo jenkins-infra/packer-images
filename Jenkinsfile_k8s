@@ -127,19 +127,6 @@ pipeline {
           }
         }
         excludes {
-          /**
-          Since https://github.com/jenkins-infra/helpdesk/issues/3421 and https://github.com/jenkins-infra/helpdesk/issues/3502, EC2 is only used for Linux + `arm64` VMs.
-          **/
-          exclude {
-            axis {
-              name 'cpu_architecture'
-              values 'amd64'
-            }
-            axis {
-              name 'compute_type'
-              values 'amazon-ebs'
-            }
-          }
           // Only build Ubuntu images for arm64 CPU in AWS (notValues)
           exclude {
             axis {

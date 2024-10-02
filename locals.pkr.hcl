@@ -5,6 +5,12 @@ locals {
   image_name            = format("jenkins-agent-%s-%s-%s", var.agent_os_type, var.agent_os_version, var.architecture)
   unique_image_name     = format("%s-%s", local.image_name, local.now_unix_timestamp)
   # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
+  aws_spot_instance_types = {
+    # 4 vCPU x86 / 16 GB / $0.1504 - https://aws.amazon.com/fr/ec2/instance-types/t3/#Product_Details
+    "amd64" = ["t3.xlarge", "t3a.xlarge", "t2.xlarge", "m6a.xlarge"]
+    # 4 vCPU ARM64 (Gravitnb)/ 16 GB / $0.1344 - https://aws.amazon.com/fr/ec2/instance-types/t4/#Product_Details
+    "arm64" = ["t4g.xlarge", "m7g.xlarge"]
+  }
   az_instance_image_sku = {
     "amd64" = "${local.agent_os_version_safe}-lts-gen2"
     "arm64" = "${local.agent_os_version_safe}-lts-arm64"
@@ -12,6 +18,7 @@ locals {
   windows_winrm_user = {
     "azure-arm" = "packer"
     "docker"    = "packer"
+    "amazon-ebs" = "Administrator" # In AWS EC2, WinRM super admin must be the "Administrator" account
   }
 
   # List available images `az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2022-datacenter-core-g2 --all --output table`

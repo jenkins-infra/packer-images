@@ -1,0 +1,50 @@
+---
+name: Bump packer amazon plugin version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest packer's amazon plugin version
+    spec:
+      owner: "hashicorp"
+      repository: "packer-plugin-amazon"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      versionfilter:
+        kind: semver
+    transformers:
+      - trimprefix: v
+
+targets:
+  updateVersion:
+    name: "Update the amazon plugin version in main.pkr.hcl"
+    sourceid: lastReleaseVersion
+    kind: file
+    spec:
+      file: main.pkr.hcl
+      matchpattern: 'amazon = \{((\r\n|\r|\n)(\s+))version = ".*"'
+      replacepattern: >-
+        amazon = {${1}version = "{{ source "lastReleaseVersion" }}"
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump packer amazon plugin version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - dependencies
+        - packer-amazon-plugin
