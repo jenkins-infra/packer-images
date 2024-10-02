@@ -13,6 +13,10 @@ variable "architecture" {
   description = "CPU architecture ID of the build with the following possible values: [amd64 (default), arm64]"
   default     = "amd64"
 }
+variable "aws_region" {
+  type    = string
+  default = "us-east-2"
+}
 variable "azure_client_id" {
   type    = string
   default = env("AZURE_CLIENT_ID")
@@ -35,7 +39,7 @@ variable "image_version" {
 }
 variable "image_type" {
   type        = string
-  description = "Which kind of Packer builder to use (e.g. cloud platform): [azure-arm (default), docker]"
+  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs (default), azure-arm, docker]"
   default     = "azure-arm"
 }
 variable "build_type" {
