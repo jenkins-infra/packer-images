@@ -2,8 +2,8 @@ packer {
   required_version = ">= 1.7.2, < 2"
   required_plugins {
     amazon = {
-      version = "1.2.2"
-      source  = "github.com/hashicorp/amazon"
+      version = "1.3.3"
+      source  = "github.com/hashicorp/packer-plugin-amazon"
     }
     windows-update = {
       version = "0.16.8"
