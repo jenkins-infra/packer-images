@@ -6,7 +6,7 @@ data "amazon-ami" "ubuntu-22_04" {
     virtualization-type = "hvm"
   }
   most_recent = true
-  owners      = ["099720109477"]
+  owners      = ["326712726440"]
   region      = var.aws_region
 }
 
