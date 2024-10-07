@@ -17,6 +17,15 @@ variable "aws_region" {
   type    = string
   default = "us-east-2"
 }
+variable "aws_access_key_id" {
+  type    = string
+  default = env("AWS_ACCESS_KEY_ID")
+}
+variable "aws_secret_access_key" {
+  type    = string
+  default = env("AWS_ACCESS_KEY_ID")
+}
+
 variable "azure_client_id" {
   type    = string
   default = env("AZURE_CLIENT_ID")
