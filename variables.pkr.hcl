@@ -48,7 +48,7 @@ variable "image_version" {
 }
 variable "image_type" {
   type        = string
-  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs (default), azure-arm, docker]"
+  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs, azure-arm (default), docker]"
   default     = "azure-arm"
 }
 variable "build_type" {
