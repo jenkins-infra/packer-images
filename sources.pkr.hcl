@@ -7,7 +7,7 @@ source "amazon-ebs" "base" {
   secret_key      = var.aws_secret_access_key
 
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
-  instance_type = local.aws_spot_instance_types[var.architecture]
+  instance_type = [local.aws_spot_instance_types[var.architecture][0]]
 
   # Define custom rootfs for build to avoid later filesystem extension during agent startups
   launch_block_device_mappings {
