@@ -1,7 +1,13 @@
 # This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
+  # profile       = "terraform-developer"
+
+  # AWS API connection
+  access_key      = var.aws_access_key_id
+  secret_key      = var.aws_secret_access_key
+
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
-  instance_type = local.aws_instance_type[var.architecture]
+  instance_type = local.aws_spot_instance_types[var.architecture]
 
   # Define custom rootfs for build to avoid later filesystem extension during agent startups
   launch_block_device_mappings {
