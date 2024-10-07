@@ -23,7 +23,7 @@ variable "aws_access_key_id" {
 }
 variable "aws_secret_access_key" {
   type    = string
-  default = env("AWS_ACCESS_KEY_ID")
+  default = env("AWS_SECRET_ACCESS_KEY")
 }
 
 variable "azure_client_id" {
