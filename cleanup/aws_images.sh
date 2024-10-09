@@ -56,7 +56,7 @@ echo "======"
 
 # Exclude AMI defined in production for Puppet VMs (non puppet managed controllers should have the same, if not then it's sad)
 # production_amis="$(curl --silent --show-error --location https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml | grep ami- | cut -d'"' -f2)"
-production_amis="$(curl --silent --show-error --location https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml | grep ami- | cut -d '"' -f2)"
+production_amis="$(curl --silent --show-error --location https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml | grep ami- | cut -d '"' -f2)" || true
 ami_ids=()
 for ami_id in ${found_ami_ids}
 do
