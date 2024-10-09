@@ -55,8 +55,7 @@ echo "${found_ami_ids}"
 echo "======"
 
 # Exclude AMI defined in production for Puppet VMs (non puppet managed controllers should have the same, if not then it's sad)
-# production_amis="$(curl --silent --show-error --location https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml | grep ami- | cut -d'"' -f2)"
-production_amis="$(curl --silent --show-error --location https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml | grep ami- | cut -d '"' -f2)" || true
+production_amis="$(curl --silent --show-error --location https://raw.githubusercontent.com/jenkins-infra/jenkins-infra/production/hieradata/common.yaml | grep ami- | cut -d '"' -f2)" || true # force error_code to true to handle no usage of aws ami images in production
 ami_ids=()
 for ami_id in ${found_ami_ids}
 do
@@ -67,7 +66,7 @@ do
   fi
 done
 
-if [ -n "${ami_ids[*]}" ]
+if [ -n "${!ami_ids[*]}" ] # ! to avoid error with empty ami list
 then
   echo "== Deleting the following AMIs:"
   echo "${ami_ids[*]}"
