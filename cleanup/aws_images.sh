@@ -27,7 +27,7 @@ run_aws_ec2_command() {
 }
 
 ## Check for presence of required CLIs
-for cli in aws jq date xargs
+for cli in aws jq date xargs curl cut grep
 do
   command -v "${cli}" >/dev/null || { echo "[ERROR] no '${cli}' command found."; exit 1; }
 done
