@@ -7,8 +7,6 @@ build {
     image_publisher = "MicrosoftWindowsServer"
     # List available SKUs with the command `az vm image list-skus --offer WindowsServer --location eastus --publisher MicrosoftWindowsServer --output table`
     image_sku       = "${var.agent_os_version}-datacenter-core-g2"
-    # List available images `az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2019-datacenter-core-g2 --all --output table`
-    # List available images `az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2022-datacenter-core-g2 --all --output table`
     image_version   = local.windows_image_version[var.agent_os_version]
     os_type         = "Windows"
     os_disk_size_gb = local.windows_disk_size_gb
