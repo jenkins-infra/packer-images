@@ -22,6 +22,15 @@ sources:
         - name: PATH
       command: az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2019-datacenter-core-g2 --all --query "[?offer=='WindowsServer'].version" -o tsv | sort -u | tail -n 1
 
+conditions:
+  checkifazcommandwork:
+    kind: shell
+    disablesourceinput: true
+    spec:
+      environments:
+        - name: PATH
+      command: az account show --output none
+
 targets:
   updateVersion:
     name: Update azure `windows 2019` image version in locals
