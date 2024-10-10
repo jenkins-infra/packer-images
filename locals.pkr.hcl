@@ -15,9 +15,10 @@ locals {
   }
 
   # List available images `az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2022-datacenter-core-g2 --all --output table`
-  windows_image_version= {
-    "2019" = "17763.6293.240905"
-    "2022" = "20348.2762.241006"
+  windows_image_version = {
+    "2019"  = "17763.6293.240905"
+    "2022"  = "20348.2762.241006"
+    "22.04" = "latest" #just to avoid error on run for linux, but not used
   }
 
   azure_vm_size = {

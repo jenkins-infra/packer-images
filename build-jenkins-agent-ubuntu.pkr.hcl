@@ -56,8 +56,8 @@ build {
   }
 
   provisioner "shell" {
-    execute_command = "{{ .Vars }} sudo -E su - jenkins -c \"bash -eu '{{ .Path }}'\""
-    environment_vars  = local.provisioning_env_vars
+    execute_command  = "{{ .Vars }} sudo -E su - jenkins -c \"bash -eu '{{ .Path }}'\""
+    environment_vars = local.provisioning_env_vars
     inline = [
       "source /home/jenkins/.asdf/asdf.sh", # Required as this is a non-interactive and non-login `bash`
       "goss --version",

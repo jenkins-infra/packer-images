@@ -90,7 +90,7 @@ build {
     destination = "C:/goss-windows.yaml"
   }
 
-    provisioner "file" {
+  provisioner "file" {
     source      = "./tests/goss-common.yaml"
     destination = "C:/goss-common.yaml"
   }
@@ -101,8 +101,8 @@ build {
   }
 
   provisioner "powershell" {
-    pause_before = "2m" # long pause as 1m is not enough
-    environment_vars  = local.provisioning_env_vars
+    pause_before     = "2m" # long pause as 1m is not enough
+    environment_vars = local.provisioning_env_vars
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
@@ -113,7 +113,7 @@ build {
   }
 
   provisioner "powershell" {
-    environment_vars  = local.provisioning_env_vars
+    environment_vars = local.provisioning_env_vars
     inline = [
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
