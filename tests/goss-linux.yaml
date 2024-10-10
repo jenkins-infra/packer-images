@@ -110,7 +110,7 @@ command:
     exec: sops --version
     exit-status: 0
     stdout:
-      - 3.9.0
+      - 3.9.1
   ssh_agent:
     exec: command -v ssh-agent
     exit-status: 0
