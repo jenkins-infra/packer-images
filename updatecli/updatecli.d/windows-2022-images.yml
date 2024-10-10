@@ -1,0 +1,42 @@
+---
+name: Bump azure `windows 2022` image version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: shell
+    name: Get the latest `windows 2022` image version
+    spec:
+      command: az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2022-datacenter-core-g2 --all --query "[?offer=='WindowsServer'].version" -o tsv | sort -u | tail -n 1
+
+targets:
+  updateVersion:
+    name: Update azure `windows 2022` image version in locals
+    sourceid: lastReleaseVersion
+    kind: file # not terraform/file as per updatecli/updatecli#1859 need to use matchpattern and replacepattern for now
+    scmid: default
+    spec:
+      file: "locals.pkr.hcl"
+      matchpattern: (windows_image_version.*(\r\n|\r|\n).*(\r\n|\r|\n).*\"2022\".*=.*\")(.*)(\".*)
+      replacepattern: ${1}{{ source "lastReleaseVersion" }}"
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      title: Bump azure `windows 2022` image version
+      description: "Follow up azure images for windows 2022"
+      labels:
+        - enhancement
