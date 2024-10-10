@@ -74,22 +74,22 @@ pipeline {
             }
           }
         }
-        stage('GC on Azure') {
-          environment {
-            PACKER_AZURE = credentials('packer-azure-serviceprincipal-sponsorship')
-          }
-          steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
-              sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
-              sh './cleanup/azure_gallery_images.sh 1 dev'
-              sh './cleanup/azure_gallery_images.sh 7 staging'
-              sh './cleanup/azure.sh 1 dev'
-              sh './cleanup/azure.sh 1 staging'
-              sh './cleanup/azure.sh 1 prod'
-            }
-          }
-        }
+        // stage('GC on Azure') {
+        //   environment {
+        //     PACKER_AZURE = credentials('packer-azure-serviceprincipal-sponsorship')
+        //   }
+        //   steps {
+        //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        //       sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
+        //       sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
+        //       sh './cleanup/azure_gallery_images.sh 1 dev'
+        //       sh './cleanup/azure_gallery_images.sh 7 staging'
+        //       sh './cleanup/azure.sh 1 dev'
+        //       sh './cleanup/azure.sh 1 staging'
+        //       sh './cleanup/azure.sh 1 prod'
+        //     }
+        //   }
+        // }
       }
     }
     stage('Packer Images') {
@@ -97,17 +97,18 @@ pipeline {
         axes {
           axis {
             name 'cpu_architecture'
-            values 'amd64', 'arm64'
+            values 'amd64'//, 'arm64'
           }
           axis {
             name 'agent_type'
             // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
-            values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
+            //values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
+            values 'windows-2019'
           }
           axis {
             name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'azure-arm', 'docker'
+            values 'azure-arm', //'docker'
           }
         }
         excludes {
