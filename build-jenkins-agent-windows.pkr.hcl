@@ -7,6 +7,7 @@ build {
     image_publisher = "MicrosoftWindowsServer"
     # List available SKUs with the command `az vm image list-skus --offer WindowsServer --location eastus --publisher MicrosoftWindowsServer --output table`
     image_sku       = "${var.agent_os_version}-datacenter-core-g2"
+    image_version   = local.windows_image_version[var.agent_os_version]
     os_type         = "Windows"
     os_disk_size_gb = local.windows_disk_size_gb
     winrm_insecure  = true
@@ -89,7 +90,7 @@ build {
     destination = "C:/goss-windows.yaml"
   }
 
-    provisioner "file" {
+  provisioner "file" {
     source      = "./tests/goss-common.yaml"
     destination = "C:/goss-common.yaml"
   }
@@ -100,8 +101,8 @@ build {
   }
 
   provisioner "powershell" {
-    pause_before = "2m" # long pause as 1m is not enough
-    environment_vars  = local.provisioning_env_vars
+    pause_before     = "2m" # long pause as 1m is not enough
+    environment_vars = local.provisioning_env_vars
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
@@ -112,7 +113,7 @@ build {
   }
 
   provisioner "powershell" {
-    environment_vars  = local.provisioning_env_vars
+    environment_vars = local.provisioning_env_vars
     inline = [
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
