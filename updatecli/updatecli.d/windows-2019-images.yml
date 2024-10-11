@@ -20,7 +20,7 @@ sources:
     spec:
       environments:
         - name: PATH
-      command: az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2019-datacenter-core-g2 --all --query "[?offer=='WindowsServer'].version" -o tsv | sort -u | tail -n 1
+      command: az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID" && az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2019-datacenter-core-g2 --all --query "[?offer=='WindowsServer'].version" -o tsv | sort -u | tail -n 1
 
 conditions:
   checkifazcommandwork:
@@ -29,7 +29,7 @@ conditions:
     spec:
       environments:
         - name: PATH
-      command: az account show --output none
+      command: az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID" && az account show --output none
 
 targets:
   updateVersion:
