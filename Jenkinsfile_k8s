@@ -118,67 +118,67 @@ pipeline {
           axis {
             name 'agent_type'
             // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
-            values 'ubuntu-22.04'//, 'windows-2019', 'windows-2022'
+            values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
           }
           axis {
             name 'compute_type'
             // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
-            values 'amazon-ebs'//, 'azure-arm', 'docker'
+            values 'amazon-ebs', 'azure-arm', 'docker'
           }
         }
-        // excludes {
-        //   // Only build Ubuntu images for arm64 CPU in AWS (notValues)
-        //   exclude {
-        //     axis {
-        //       name 'cpu_architecture'
-        //       values 'arm64'
-        //     }
-        //     axis {
-        //       name 'agent_type'
-        //       notValues 'ubuntu-22.04'
-        //     }
-        //     axis {
-        //       name 'compute_type'
-        //       values 'amazon-ebs'
-        //     }
-        //   }
-        //   // Only build Ubuntu images for arm64 CPU in Azure (notValues)
-        //   exclude {
-        //     axis {
-        //       name 'cpu_architecture'
-        //       values 'arm64'
-        //     }
-        //     axis {
-        //       name 'agent_type'
-        //       notValues 'ubuntu-22.04'
-        //     }
-        //     axis {
-        //       name 'compute_type'
-        //       values 'azure-arm'
-        //     }
-        //   }
-        //   // No build on Windows or Docker, not yet implemented
-        //   exclude {
-        //     axis {
-        //       name 'agent_type'
-        //       values 'windows-2019'
-        //     }
-        //     axis {
-        //       name 'compute_type'
-        //       values 'docker'
-        //     }
-        //   }
-        //   exclude {
-        //     axis {
-        //       name 'agent_type'
-        //       values 'windows-2022'
-        //     }
-        //     axis {
-        //       name 'compute_type'
-        //       values 'docker'
-        //     }
-        //   }
-        // }
+        excludes {
+          // Only build Ubuntu images for arm64 CPU in AWS (notValues)
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'agent_type'
+              notValues 'ubuntu-22.04'
+            }
+            axis {
+              name 'compute_type'
+              values 'amazon-ebs'
+            }
+          }
+          // Only build Ubuntu images for arm64 CPU in Azure (notValues)
+          exclude {
+            axis {
+              name 'cpu_architecture'
+              values 'arm64'
+            }
+            axis {
+              name 'agent_type'
+              notValues 'ubuntu-22.04'
+            }
+            axis {
+              name 'compute_type'
+              values 'azure-arm'
+            }
+          }
+          // No build on Windows or Docker, not yet implemented
+          exclude {
+            axis {
+              name 'agent_type'
+              values 'windows-2019'
+            }
+            axis {
+              name 'compute_type'
+              values 'docker'
+            }
+          }
+          exclude {
+            axis {
+              name 'agent_type'
+              values 'windows-2022'
+            }
+            axis {
+              name 'compute_type'
+              values 'docker'
+            }
+          }
+        }
         environment {
           AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
           AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
