@@ -30,8 +30,14 @@ source "amazon-ebs" "base" {
   ]
 
   # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
-  source_ami = try(data.amazon-ami["${var.agent_os_type}-${local.agent_os_version_safe}"].id, null) //linux-ami test condition since packer validate will fail without windows source
-  # source_ami = data.amazon-ami["${var.agent_os_type}-${local.agent_os_version_safe}"].id
+  source_ami {
+    filters = {
+    name                = format("ubuntu/images/hvm-ssd/ubuntu-*-22.04-%s-server-*", var.architecture)
+    root-device-type    = "ebs"
+    virtualization-type = "hvm"
+  }
+  }
+  source_ami = data.amazon-ami["${var.agent_os_type}-${local.agent_os_version_safe}"].id
   # To improve audit and garbage collecting, we provide tags
   tags = {
     imageplatform = var.architecture
