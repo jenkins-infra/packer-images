@@ -38,7 +38,6 @@ source "amazon-ebs" "base" {
   }
     most_recent = true
     owners      = ["amazon"]
-    region      = var.aws_region
   }
   # source_ami = data.amazon-ami["${var.agent_os_type}-${local.agent_os_version_safe}"].id
   # To improve audit and garbage collecting, we provide tags
