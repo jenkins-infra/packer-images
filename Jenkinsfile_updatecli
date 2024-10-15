@@ -1,4 +1,4 @@
-withCredentials([azureServicePrincipal('packer-azure-serviceprincipal-sponsorship')]) {
+withCredentials([azureServicePrincipal('updatecli-azure-serviceprincipal')]) {
     if (env.BRANCH_IS_PRIMARY) {
         updatecli(action: 'apply', updatecliAgentLabel: 'linux-amd64-docker', cronTriggerExpression: '@daily')
     } else {
