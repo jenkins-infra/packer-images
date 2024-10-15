@@ -19,9 +19,6 @@ sources:
     name: Get the latest `windows 2019` image version
     spec:
       environments:
-        - name: PATH
-      # Reuse environment variables from parent shell
-      environments:
         - name: PATH # If `az` is in a non-usual installation path
         - name: AZURE_CLIENT_ID
         - name: AZURE_CLIENT_SECRET
