@@ -1,4 +1,14 @@
 build {
+  source "amazon-ebs.base" {
+    name           = "windows"
+    communicator   = "winrm"
+    user_data_file = "./provisioning/setupWinRM.ps1"
+    winrm_insecure = true
+    winrm_timeout  = "20m"
+    winrm_use_ssl  = true
+    winrm_username = local.windows_winrm_user[var.image_type]
+  }
+
   source "azure-arm.base" {
     name         = "windows"
     communicator = "winrm"
@@ -132,3 +142,14 @@ build {
     ]
   }
 }
+# This provisioner must be the last for AWS EBS builds, after reboots
+  provisioner "powershell" {
+    only              = ["amazon-ebs.windows"]
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+
+    inline = [
+      "& 'C:/Program Files/Amazon/EC2Launch/ec2launch' reset --block",
+      "& 'C:/Program Files/Amazon/EC2Launch/ec2launch' sysprep --block",
+    ]
+  }

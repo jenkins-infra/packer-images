@@ -15,7 +15,7 @@ locals {
     "amd64" = "t3.xlarge"
     "arm64" = "t4g.xlarge"
   }
-  
+
   # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
   az_instance_image_sku = {
     "amd64" = "${local.agent_os_version_safe}-lts-gen2"
@@ -24,6 +24,7 @@ locals {
   windows_winrm_user = {
     "azure-arm" = "packer"
     "docker"    = "packer"
+    "amazon-ebs" = "Administrator" # In AWS EC2, WinRM super admin must be the "Administrator" account
   }
 
   # List available images `az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2022-datacenter-core-g2 --all --output table`
