@@ -13,6 +13,18 @@ variable "architecture" {
   description = "CPU architecture ID of the build with the following possible values: [amd64 (default), arm64]"
   default     = "amd64"
 }
+variable "aws_region" {
+  type    = string
+  default = "us-east-2"
+}
+variable "aws_access_key_id" {
+  type    = string
+  default = env("AWS_ACCESS_KEY_ID")
+}
+variable "aws_secret_access_key" {
+  type    = string
+  default = env("AWS_SECRET_ACCESS_KEY")
+}
 variable "azure_client_id" {
   type    = string
   default = env("AZURE_CLIENT_ID")
@@ -35,7 +47,7 @@ variable "image_version" {
 }
 variable "image_type" {
   type        = string
-  description = "Which kind of Packer builder to use (e.g. cloud platform): [azure-arm (default), docker]"
+  description = "Which kind of Packer builder to use (e.g. cloud platform): [amazon-ebs, azure-arm (default), docker]"
   default     = "azure-arm"
 }
 variable "build_type" {
