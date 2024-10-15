@@ -24,6 +24,7 @@ locals {
   windows_winrm_user = {
     "azure-arm" = "packer"
     "docker"    = "packer"
+    "amazon-ebs" = "Administrator"
   }
 
   # List available images `az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2022-datacenter-core-g2 --all --output table`

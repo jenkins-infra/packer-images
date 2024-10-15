@@ -12,4 +12,3 @@ data "amazon-ami" "ubuntu-22_04" {
   owners      = ["amazon"]
   region      = var.aws_region
 }
-
