@@ -20,6 +20,12 @@ sources:
     spec:
       environments:
         - name: PATH
+      # Reuse environment variables from parent shell
+      environments:
+        - name: PATH # If `az` is in a non-usual installation path
+        - name: AZURE_CLIENT_ID
+        - name: AZURE_CLIENT_SECRET
+        - name: AZURE_TENANT_ID
       command: az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID && az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2019-datacenter-core-g2 --all --query "[?offer=='WindowsServer'].version" -o tsv | sort -u | tail -n 1
 
 targets:
