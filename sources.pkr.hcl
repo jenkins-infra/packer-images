@@ -2,10 +2,6 @@
 source "amazon-ebs" "base" {
   # profile       = "terraform-developer"
 
-  # AWS API connection
-  access_key      = var.aws_access_key_id
-  secret_key      = var.aws_secret_access_key
-
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
   # spot_instance_types = local.aws_spot_instance_types[var.architecture] // if spot instances is used
   # spot_price          = "auto"
@@ -21,12 +17,10 @@ source "amazon-ebs" "base" {
     volume_type           = "gp2"
   }
 
-  # Where to build the VM
-  region = var.aws_region
 
   # Where to export the AMI
   ami_regions = [
-    var.aws_region
+    var.aws_destination_region
   ]
 
   # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
