@@ -13,17 +13,9 @@ variable "architecture" {
   description = "CPU architecture ID of the build with the following possible values: [amd64 (default), arm64]"
   default     = "amd64"
 }
-variable "aws_region" {
+variable "aws_destination_region" {
   type    = string
-  default = "us-east-2"
-}
-variable "aws_access_key_id" {
-  type    = string
-  default = env("AWS_ACCESS_KEY_ID")
-}
-variable "aws_secret_access_key" {
-  type    = string
-  default = env("AWS_SECRET_ACCESS_KEY")
+  default = env("AWS_DEFAULT_REGION")
 }
 variable "azure_client_id" {
   type    = string
