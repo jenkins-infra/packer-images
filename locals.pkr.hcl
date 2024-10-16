@@ -4,17 +4,14 @@ locals {
   agent_os_version_safe = replace(var.agent_os_version, ".", "_")
   image_name            = format("jenkins-agent-%s-%s-%s", var.agent_os_type, var.agent_os_version, var.architecture)
   unique_image_name     = format("%s-%s", local.image_name, local.now_unix_timestamp)
-  
-  # aws_spot_instance_types = { // for spot instances
-  #   # 4 vCPU x86 / 16 GB / $0.1670 - https://aws.amazon.com/en/ec2/instance-types/t3/#Product_Details
-  #   "amd64" = ["t3.xlarge", "t3a.xlarge", "t2.xlarge", "m6a.xlarge"]
-  #   # 4 vCPU ARM64 (Gravitnb)/ 16 GB / $0.1344 - https://aws.amazon.com/en/ec2/instance-types/t4/#Product_Details
-  #   "arm64" = ["t4g.xlarge", "m7g.xlarge"]
-  # }
+
+
   aws_instance_types = {
     "amd64" = "t3.xlarge"
     "arm64" = "t4g.xlarge"
   }
+  # TODO: track AMI versions with `updatecli`
+  # Uses aws ec2 describe-images to fetch the ami id as per the architecture
   aws_ubuntu_amis = {
     "amd64" = "ami-00eb69d236edcfaf8"
     "arm64" = "ami-039e419d24a37cb82"

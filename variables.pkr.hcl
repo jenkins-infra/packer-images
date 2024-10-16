@@ -15,7 +15,7 @@ variable "architecture" {
 }
 variable "aws_destination_region" {
   type    = string
-  default = env("AWS_DEFAULT_REGION")
+  default = env("AWS_DEFAULT_REGION")   # Defaults to the only region we use
 }
 variable "azure_client_id" {
   type    = string
