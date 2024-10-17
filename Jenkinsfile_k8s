@@ -175,7 +175,7 @@ pipeline {
           }
         }
         environment {
-          // Defines the following environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+          // Defines the following environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION
           AWS_ACCESS_KEY_ID             = credentials('packer-aws-access-key-id')
           AWS_SECRET_ACCESS_KEY         = credentials('packer-aws-secret-access-key')
           AWS_DEFAULT_REGION            = 'us-east-2'
