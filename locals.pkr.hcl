@@ -4,6 +4,18 @@ locals {
   agent_os_version_safe = replace(var.agent_os_version, ".", "_")
   image_name            = format("jenkins-agent-%s-%s-%s", var.agent_os_type, var.agent_os_version, var.architecture)
   unique_image_name     = format("%s-%s", local.image_name, local.now_unix_timestamp)
+
+
+  aws_instance_types = {
+    "amd64" = "t3.xlarge"
+    "arm64" = "t4g.xlarge"
+  }
+  # TODO: track AMI versions with `updatecli`
+  # Uses aws ec2 describe-images to fetch the ami id as per the architecture
+  aws_ubuntu_amis = {
+    "amd64" = "ami-00eb69d236edcfaf8"
+    "arm64" = "ami-039e419d24a37cb82"
+  }
   # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
   az_instance_image_sku = {
     "amd64" = "${local.agent_os_version_safe}-lts-gen2"
@@ -12,6 +24,7 @@ locals {
   windows_winrm_user = {
     "azure-arm" = "packer"
     "docker"    = "packer"
+    "amazon-ebs" = "Administrator"
   }
 
   # List available images `az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2022-datacenter-core-g2 --all --output table`

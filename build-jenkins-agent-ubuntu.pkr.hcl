@@ -3,6 +3,13 @@ build {
     name = "ubuntu"
   }
 
+  source "amazon-ebs.base" {
+    name         = "ubuntu"
+    ssh_username = "ubuntu"
+    # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
+    source_ami = local.aws_ubuntu_amis[var.architecture]
+  }
+
   source "azure-arm.base" {
     name = "ubuntu"
     # List available offers and publishers with the command `az vm image list --output table`
