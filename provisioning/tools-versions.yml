@@ -41,7 +41,7 @@ python3_version: 3.12.6
 ruby_puppet_version: 2.6.10
 ruby_version: 3.3.5
 sops_version: 3.9.1
-terraform_version: 1.9.7
+terraform_version: 1.9.8
 trivy_version: 0.56.2
 updatecli_version: 0.85.0
 vagrant_version: 2.4.1
