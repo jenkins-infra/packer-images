@@ -26,7 +26,7 @@ jdk11_version: 11.0.24+8
 jdk17_version: 17.0.12+7
 jdk21_version: 21.0.4+7
 jdk8_version: 8u422-b05
-jenkins_remoting_version: 3270.v9e0d174083ed
+jenkins_remoting_version: 3272.ve1ea_5d6a_c99f
 jq_version: 1.6
 jxreleaseversion_version: 2.7.6
 kubectl_version: 1.29.9
