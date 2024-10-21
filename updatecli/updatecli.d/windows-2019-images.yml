@@ -20,18 +20,17 @@ sources:
     spec:
       environments:
         - name: PATH
-      command: az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID && az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2019-datacenter-core-g2 --all --query "[?offer=='WindowsServer'].version" -o tsv | sort -u | tail -n 1
+      command: az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null && az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2019-datacenter-core-g2 --all --query "[?offer=='WindowsServer'].version" -o tsv | sort -u | tail -n 1
 
 targets:
   updateVersion:
     name: Update azure `windows 2019` image version in locals
     sourceid: lastReleaseVersion
-    kind: file # not terraform/file as per updatecli/updatecli#1859 need to use matchpattern and replacepattern for now
+    kind: yaml
     scmid: default
     spec:
-      file: "locals.pkr.hcl"
-      matchpattern: (windows_image_version.*(\r\n|\r|\n).*\"2019\".*=.*\")(.*)(\".*)
-      replacepattern: ${1}{{ source "lastReleaseVersion" }}"
+      file: "packer-versions.yaml"
+      key: "$.windows_image_version.2019"
 
 actions:
   default:
