@@ -27,12 +27,7 @@ locals {
     "amazon-ebs" = "Administrator"
   }
 
-  # List available images `az vm image list --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2022-datacenter-core-g2 --all --output table`
-  windows_image_version = {
-    "2019"  = "17763.6293.240905"
-    "2022"  = "20348.2762.241006"
-    "22.04" = "latest" #just to avoid error on run for linux, but not used
-  }
+  images_versions = yamldecode(file("./images-versions.yaml"))
 
   azure_vm_size = {
     "amd64" = "Standard_D4ads_v5" # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
