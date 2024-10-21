@@ -32,8 +32,11 @@ targets:
     kind: yaml
     scmid: default
     spec:
-      file: "packer-versions.yaml"
-      key: "$.windows_image_version.2022"
+      file: ./images-versions.yaml
+      key: $.windows_image_version.2022
+    transformers:
+      - addprefix: '"'
+      - addsuffix: '"'
 
 actions:
   default:
