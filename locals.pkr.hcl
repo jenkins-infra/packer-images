@@ -27,7 +27,7 @@ locals {
     "amazon-ebs" = "Administrator"
   }
 
-  images_versions = yamldecode(file("${path.module}/images-versions.yaml"))
+  images_versions = yamldecode(file("./images-versions.yaml"))
 
   azure_vm_size = {
     "amd64" = "Standard_D4ads_v5" # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
