@@ -33,7 +33,7 @@ targets:
     scmid: default
     spec:
       file: ./images-versions.yaml
-      key: $.windows_image_version.2022
+      key: $.azure.windows.2022.amd64
     transformers:
       - addprefix: '"'
       - addsuffix: '"'

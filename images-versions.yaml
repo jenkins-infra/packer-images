@@ -1,6 +1,17 @@
 # images-versions.yaml
 ---
-windows_image_version:
-  2019: "17763.6293.240905"
-  2022: "20348.2762.241006"
-  "22.04": "latest" #just to avoid error on run for linux, but not used
+azure:
+  windows:
+    "2019":
+      amd64: "17763.6293.240905"
+    "2022":
+      amd64: "20348.2762.241006"
+  ubuntu:
+    "22.04":
+      amd64: "latest"
+      arm64: "latest"
+aws:
+  ubuntu:
+    "22.04":
+      amd64: ami-00eb69d236edcfaf8
+      arm64: ami-039e419d24a37cb82
