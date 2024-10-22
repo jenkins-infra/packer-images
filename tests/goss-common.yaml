@@ -18,7 +18,7 @@ command:
     exec: container-structure-test version
     exit-status: 0
     stdout:
-      - 1.19.1
+      - 1.19.2
   docker-ce:
     exec: docker -v
     exit-status: 0
