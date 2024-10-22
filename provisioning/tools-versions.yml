@@ -19,14 +19,14 @@ goss_version: 0.4.9
 hadolint_version: 2.12.0
 helm_version: 3.16.2
 helm_diff_version: 3.9.11
-helmfile_version: 0.169.0
+helmfile_version: 0.169.1
 helm_git_version: 1.3.0
 helm_secrets_version: 4.6.2
 jdk11_version: 11.0.25+9
 jdk17_version: 17.0.13+11
-jdk21_version: 21.0.4+7
+jdk21_version: 21.0.5+11
 jdk8_version: 8u422-b05
-jenkins_remoting_version: 3272.ve1ea_5d6a_c99f
+jenkins_remoting_version: 3273.v4cfe589b_fd83
 jq_version: 1.6
 jxreleaseversion_version: 2.7.6
 kubectl_version: 1.29.9

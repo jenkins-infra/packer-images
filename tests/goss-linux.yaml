@@ -46,7 +46,7 @@ command:
     exec: helmfile --version
     exit-status: 0
     stdout:
-      - 0.169.0
+      - 0.169.1
   helmplugins:
     exec: helm plugin list
     exit-status: 0
@@ -68,7 +68,7 @@ command:
     exec: /opt/jdk-21/bin/java --version
     exit-status: 0
     stdout:
-      - 21.0.4+7
+      - 21.0.5+11
   jdk8:
     exec: /opt/jdk-8/bin/java -version
     exit-status: 0
