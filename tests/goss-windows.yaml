@@ -29,7 +29,7 @@ command:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
     stderr:
-      - 1.8.0_422
+      - 1.8.0_432
   maven:
     exec: pwsh -command "$env:JAVA_HOME='C:\\Program Files (x86)\\jdk-21'; mvn -v"
     exit-status: 0
