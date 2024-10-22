@@ -19,12 +19,12 @@ command:
     exec: C:\tools\jdk-17\bin\java --version
     exit-status: 0
     stdout:
-      - 17.0.12+7
+      - 17.0.13+11
   jdk21:
     exec: C:\tools\jdk-21\bin\java --version
     exit-status: 0
     stdout:
-      - 21.0.4+7
+      - 21.0.5+11
   jdk8:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
