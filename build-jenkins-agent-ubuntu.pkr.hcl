@@ -8,6 +8,7 @@ build {
     ssh_username = "ubuntu"
     # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
     source_ami = local.aws_ubuntu_amis[var.architecture]
+    source_ami = try(local.images_versions["aws"]["ubuntu"][var.agent_os_version][var.architecture], "N/A")
   }
 
   source "azure-arm.base" {
