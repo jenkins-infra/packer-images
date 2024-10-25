@@ -1,0 +1,55 @@
+---
+name: Bump aws `ubuntu 22.04 ARM64` image version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: shell
+    name: Get the latest `ubuntu 22.04 ARM64` AMI ID
+    spec:
+      command: >
+        aws ec2 describe-images \
+          --owners 099720109477 \
+          --filters \
+            "Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-*-22.04-*-server-*" \
+            "Name=root-device-type,Values=ebs" \
+            "Name=virtualization-type,Values=hvm" \
+            "Name=architecture,Values=arm64" \
+          --query 'sort_by(Images, &CreationDate)[-1].ImageId' \
+          --region us-east-2 \
+          --output text
+      environments:
+        - name: PATH
+        - name: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+
+targets:
+  updateVersion:
+    name: Update aws `ubuntu 22.04 ARM64` AMI ID in locals
+    sourceid: lastReleaseVersion
+    kind: yaml
+    scmid: default
+    spec:
+      file: ./images-versions.yaml
+      key: $.aws.ubuntu.'22.04'.arm64
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      title: Bump aws `ubuntu 22.04 ARM64` AMI ID
+      description: "Update AWS AMI ID for Ubuntu 22.04 ARM64"
+      labels:
+        - enhancement
