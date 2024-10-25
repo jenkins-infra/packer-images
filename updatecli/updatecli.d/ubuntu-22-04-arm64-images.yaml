@@ -1,5 +1,5 @@
 ---
-name: Bump aws `ubuntu 22.04 ARM64` image version
+name: Bump aws `ubuntu 22.04 ARM64` AMI ID
 
 scms:
   default:
