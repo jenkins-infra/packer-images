@@ -1,4 +1,4 @@
-withCredentials([azureServicePrincipal('updatecli-azure-serviceprincipal')]) {
+withCredentials([azureServicePrincipal('updatecli-azure-serviceprincipal'), aws(accessKeyVariable: 'updaecli-aws-access-key-id', secretKeyVariable: 'updatecli-aws-secret-access-key')]) {
     if (env.BRANCH_IS_PRIMARY) {
         updatecli(action: 'apply', updatecliAgentLabel: 'linux-amd64-docker', cronTriggerExpression: '@daily')
     } else {
