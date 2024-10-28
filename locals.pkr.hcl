@@ -11,11 +11,6 @@ locals {
     "arm64" = "t4g.xlarge"
   }
   # TODO: track AMI versions with `updatecli`
-  # Uses aws ec2 describe-images to fetch the ami id as per the architecture
-  aws_ubuntu_amis = {
-    "amd64" = "ami-00eb69d236edcfaf8"
-    "arm64" = "ami-039e419d24a37cb82"
-  }
   # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
   az_instance_image_sku = {
     "amd64" = "${local.agent_os_version_safe}-lts-gen2"
