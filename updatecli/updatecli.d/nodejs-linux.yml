@@ -24,7 +24,7 @@ sources:
       username: "{{ .github.username }}"
       versionfilter:
         kind: regex
-        pattern: v20.(\d*).(\d*)
+        pattern: v22.(\d*).(\d*)
     transformers:
       - trimprefix: v
 
