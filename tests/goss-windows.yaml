@@ -60,7 +60,7 @@ command:
     exec: vagrant --version
     exit-status: 0
     stdout:
-      - 2.4.1
+      - 2.4.2
 file:
   C:\Program Files\Chromium\Application\:
     contains: []
