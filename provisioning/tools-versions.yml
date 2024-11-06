@@ -43,7 +43,7 @@ ruby_version: 3.3.5
 sops_version: 3.9.1
 terraform_version: 1.9.8
 trivy_version: 0.56.2
-updatecli_version: 0.86.0
+updatecli_version: 0.86.1
 vagrant_version: 2.4.2
 windows_pwsh_version: 7.4.6
 xq_version: 1.2.3
