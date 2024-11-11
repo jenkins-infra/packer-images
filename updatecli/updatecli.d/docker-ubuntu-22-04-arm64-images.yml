@@ -26,6 +26,7 @@ targets:
     name: Update docker `ubuntu 22_04 arm64` image version in locals
     sourceid: lastDockerDigest
     kind: yaml
+    scmid: default
     spec:
       file: ./images-versions.yaml
       key: $.docker.ubuntu.'22.04'.arm64
