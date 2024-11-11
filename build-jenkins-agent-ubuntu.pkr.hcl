@@ -17,6 +17,7 @@ build {
     image_publisher = "canonical"
     # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
     image_sku = local.az_instance_image_sku[var.architecture]
+    image_version = try(local.images_versions["azure"]["ubuntu"][var.agent_os_version][var.architecture], "N/A")
     os_type   = "Linux"
   }
 
