@@ -18,7 +18,7 @@ sources:
     kind: shell
     name: Get the latest `ubuntu 22.04` amd64 image version from Azure
     spec:
-      command: az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null && az vm image list --location eastus --publisher Canonical --offer UbuntuServer --sku 22.04-LTS --all --query "[?sku=='22.04-LTS'].version" -o tsv | sort -u | tail -n 1
+      command: az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null && az vm image list --location eastus --publisher Canonical --offer UbuntuServer --sku 22.04-LTS-AMD64 --all --query "[?sku=='22.04-LTS-AMD64'].version" -o tsv | sort -u | tail -n 1
       environments:
         - name: PATH
         - name: AZURE_CLIENT_ID
