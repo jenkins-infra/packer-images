@@ -33,7 +33,7 @@ targets:
     scmid: default
     spec:
       file: ./images-versions.yaml
-      key: $.azure.ubuntu."22.04".amd64
+      key: $.azure.ubuntu.'22.04'.amd64
     transformers:
       - addprefix: '"'
       - addsuffix: '"'
