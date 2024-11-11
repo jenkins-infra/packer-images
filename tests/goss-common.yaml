@@ -10,7 +10,7 @@ command:
     exec: az --version
     exit-status: 0
     stdout:
-      - 2.65.0
+      - 2.66.0
   bundle:
     exec: bundle -v
     exit-status: 0
