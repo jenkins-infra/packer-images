@@ -1,0 +1,43 @@
+---
+name: Bump docker `ubuntu 22_04 arm64` image version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastDockerDigest:
+    kind: dockerdigest
+    spec:
+      image: "ubuntu"
+      tag: "22.04"
+      architecture: "arm64"
+
+targets:
+  updateDigest:
+    name: Update docker `ubuntu 22_04 arm64` image version in locals
+    sourceid: lastDockerDigest
+    kind: yaml
+    spec:
+      file: ./images-versions.yaml
+      key: $.docker.ubuntu.'22.04'.arm64
+    transformers:
+      - trimprefix: '22.04@'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      title: Bump docker `ubuntu 22_04 arm64` image version
+      description: "Follow up docker images for ubuntu 22_04 arm64"
+      labels:
+        - enhancement
