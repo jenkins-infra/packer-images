@@ -28,9 +28,23 @@ sources:
           \d\.\d\.\d$
 
 conditions:
+  checkForAsdf:
+    kind: shell
+    disablesourceinput: true
+    dependson:
+      - "source#rubyDockerImageLatestVersion"
+    spec:
+      environments:
+        - name: PATH
+        - name: HOME
+      # Assuming ASDF is installed with the ruby package
+      command: bash -x -c "asdf list-all ruby | grep '^{{ source "rubyDockerImageLatestVersion" }}$' || { echo 'Ruby version {{ source "rubyDockerImageLatestVersion" }} not available yet on ASDF.' && exit 1; }"
+
   checkForChocolateyPackage:
     kind: shell
     disablesourceinput: true # Do not pass source as argument to the command line
+    dependson:
+      - "source#rubyDockerImageLatestVersion"
     spec:
       # The final ".1" is added to ruby version by Chocolatey
       command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/ruby/{{ source "rubyDockerImageLatestVersion" }}.1
