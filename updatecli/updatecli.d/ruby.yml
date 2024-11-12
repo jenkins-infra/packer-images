@@ -38,7 +38,7 @@ conditions:
         - name: PATH
         - name: HOME
       # Assuming ASDF is installed with the ruby package
-      command: bash -x -c "asdf list-all ruby | grep '^{{ source "rubyDockerImageLatestVersion" }}$' || { echo 'Ruby version {{ source "rubyDockerImageLatestVersion" }} not available yet on ASDF.' && exit 1; }"
+      command: bash -x -c "asdf plugin-update ruby && asdf list-all ruby | grep '^{{ source "rubyDockerImageLatestVersion" }}$' || { echo 'Ruby version {{ source "rubyDockerImageLatestVersion" }} not available yet on ASDF.' && exit 1; }"
 
   checkForChocolateyPackage:
     kind: shell
