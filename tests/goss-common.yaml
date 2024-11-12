@@ -5,12 +5,12 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.19.3
+      - 2.19.5
   azurecli:
     exec: az --version
     exit-status: 0
     stdout:
-      - 2.65.0
+      - 2.66.0
   bundle:
     exec: bundle -v
     exit-status: 0
@@ -101,7 +101,7 @@ command:
     exec: trivy --version
     exit-status: 0
     stdout:
-      - 0.56.2
+      - 0.57.0
   updatecli:
     exec: updatecli version
     exit-status: 0

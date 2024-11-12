@@ -39,7 +39,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 20.18.0
+      - 22.11.0
       - '!Please install a version by running one of the following'
   pwsh:
     exec: pwsh -command "(Get-Host).Version"
@@ -55,7 +55,7 @@ command:
     exec: ruby -v
     exit-status: 0
     stdout:
-      - 3.3.6
+      - 3.3.5
   vagrant:
     exec: vagrant --version
     exit-status: 0

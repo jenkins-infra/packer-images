@@ -1,8 +1,8 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.14.1
-awscli_version: 2.19.3
+awscli_version: 2.19.5
 azcopy_version: 10.26.0-20240731
-azurecli_version: 2.65.0
+azurecli_version: 2.66.0
 chocolatey_version: 1.4.0
 compose_version: 2.30.3
 cst_version: 1.19.3
@@ -34,15 +34,15 @@ launchable_version: 1.66.0
 maven_version: 3.9.9
 netlifydeploy_version: 0.1.8
 nodejs_linux_version: 22.11.0
-nodejs_windows_version: 20.18.0
+nodejs_windows_version: 22.11.0
 openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys
 packer_version: 1.11.2
 python3_version: 3.12.6
 ruby_puppet_version: 2.6.10
-ruby_version: 3.3.6
+ruby_version: 3.3.5
 sops_version: 3.9.1
 terraform_version: 1.9.8
-trivy_version: 0.56.2
+trivy_version: 0.57.0
 updatecli_version: 0.86.1
 vagrant_version: 2.4.2
 windows_pwsh_version: 7.4.6
