@@ -44,7 +44,7 @@ sops_version: 3.9.1
 terraform_version: 1.9.8
 trivy_version: 0.57.0
 updatecli_version: 0.86.1
-vagrant_version: 2.4.2
+vagrant_version: 2.4.3
 windows_pwsh_version: 7.4.6
 xq_version: 1.2.3
 yq_version: 4.42.1
