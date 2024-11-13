@@ -1,11 +1,10 @@
-# images-versions.yaml
 ---
 azure:
   windows:
     "2019":
       amd64: "17763.6293.240905"
     "2022":
-      amd64: "20348.2762.241006"
+      amd64: "20348.2849.241102"
   ubuntu:
     "22.04":
       amd64: "latest"
