@@ -15,3 +15,8 @@ aws:
     "22.04":
       amd64: ami-00eb69d236edcfaf8
       arm64: ami-039e419d24a37cb82
+docker:
+  ubuntu:
+    "22.04":
+      amd64: sha256:3d1556a8a18cf5307b121e0a98e93f1ddf1f3f8e092f1fddfd941254785b95d7
+      arm64: sha256:7c75ab2b0567edbb9d4834a2c51e462ebd709740d1f2c40bcd23c56e974fe2a8

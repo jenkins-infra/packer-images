@@ -74,7 +74,7 @@ source "azure-arm" "base" {
 
 # This source defines all the common settings for any Azure image (whatever Operating System)
 source "docker" "base" {
-  image = "${var.agent_os_type}:${var.agent_os_version}"
+  image = try("${var.agent_os_type}@${local.images_versions["docker"]["ubuntu"][var.agent_os_version][var.architecture]}", "N/A")
 
   # Persist image on local docker engine
   commit = true
