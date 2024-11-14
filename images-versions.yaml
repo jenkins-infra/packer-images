@@ -13,7 +13,7 @@ aws:
   ubuntu:
     "22.04":
       amd64: ami-0f2c72ffadd336b5c
-      arm64: ami-039e419d24a37cb82
+      arm64: ami-0700ac71a4832f3b3
 docker:
   ubuntu:
     "22.04":
