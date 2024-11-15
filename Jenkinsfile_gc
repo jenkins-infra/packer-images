@@ -26,7 +26,7 @@ pipeline {
                         AWS_DEFAULT_REGION    = 'us-east-2'
                     }
                     steps {
-                        sh './cleanup/aws.sh'
+                        sh 'bash ./cleanup/aws.sh'
                         sh './cleanup/aws_images.sh 1 dev'
                         sh './cleanup/aws_images.sh 7 staging'
                         sh './cleanup/aws_images.sh 60 prod'
