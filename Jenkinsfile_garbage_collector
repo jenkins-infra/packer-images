@@ -1,6 +1,6 @@
 pipeline {
     agent {
-    label "linux-arm64-docker"
+        label "linux-arm64-docker"
     }
     stages {
         stage('Garbage Collection') {
@@ -10,7 +10,6 @@ pipeline {
                         PACKER_AZURE = credentials('packer-azure-serviceprincipal-sponsorship')
                     }
                     steps {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                             sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
                             sh 'az account set -s "$PACKER_AZURE_SUBSCRIPTION_ID"'
                             sh './cleanup/azure_gallery_images.sh 1 dev'
@@ -19,7 +18,6 @@ pipeline {
                             sh './cleanup/azure.sh 1 staging'
                             sh './cleanup/azure.sh 1 prod'
                         }
-                    }
                 }
             }
         }
