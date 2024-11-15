@@ -65,7 +65,7 @@ command:
     exec: jx-release-version -version
     exit-status: 0
     stdout:
-      - 2.7.6
+      - 2.7.7
   kubectl:
     exec: kubectl version --client
     exit-status: 0
