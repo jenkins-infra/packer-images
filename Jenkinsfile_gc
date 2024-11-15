@@ -4,9 +4,6 @@ pipeline {
     }
     stages {
         stage('Garbage Collection') {
-            when {
-                branch 'main' // Ensures this stage runs only on the 'main' branch.
-            }
             parallel {
                 stage('GC on Azure') {
                     environment {
