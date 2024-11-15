@@ -1,24 +1,10 @@
 pipeline {
-    agent any
+    agent {
+    label "linux-arm64-docker"
+    }
     stages {
         stage('Garbage Collection') {
             parallel {
-                stage('GC on AWS us-east-2') {
-                    environment {
-                        AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
-                        AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
-                        AWS_DEFAULT_REGION    = 'us-east-2'
-                    }
-                    steps {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            sh './cleanup/aws.sh'
-                            sh './cleanup/aws_images.sh 1 dev'
-                            sh './cleanup/aws_images.sh 7 staging'
-                            sh './cleanup/aws_images.sh 60 prod'
-                            sh './cleanup/aws_snapshots.sh'
-                        }
-                    }
-                }
                 stage('GC on Azure') {
                     environment {
                         PACKER_AZURE = credentials('packer-azure-serviceprincipal-sponsorship')
