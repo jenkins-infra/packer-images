@@ -7,9 +7,6 @@ pipeline {
     }
     stages {
         stage('Garbage Collection') {
-            when {
-                branch 'main'
-            }
             parallel {
                 stage('GC on Azure') {
                     environment {
@@ -27,7 +24,7 @@ pipeline {
                 }
                 stage('GC on AWS us-east-2') {
                     environment {
-                        DRYRUN                = 'false'
+                        DRYRUN                = "${env.BRANCH_NAME == 'main' ? 'false' : 'true'}"
                         AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
                         AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
                         AWS_DEFAULT_REGION    = 'us-east-2'
