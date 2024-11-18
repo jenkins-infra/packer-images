@@ -3,7 +3,7 @@ pipeline {
         label "linux-arm64-docker"
     }
     triggers {
-        cron('@daily') // Runs the pipeline once every hour.
+        cron('@hourly')
     }
     stages {
         stage('Garbage Collection') {
