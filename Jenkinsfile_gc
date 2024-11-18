@@ -2,11 +2,11 @@ pipeline {
     agent {
         label "linux-arm64-docker"
     }
+    triggers {
+        cron('H * * * *') // Runs the pipeline once every hour.
+    }
     stages {
         stage('Garbage Collection') {
-            triggers {
-                cron('H 0 * * *') // Runs the pipeline daily at midnight.
-            }
             parallel {
                 stage('GC on Azure') {
                     environment {
@@ -34,9 +34,9 @@ pipeline {
                         sh './cleanup/aws_images.sh 7 staging'
                         sh './cleanup/aws_images.sh 60 prod'
                         sh './cleanup/aws_snapshots.sh'
+                        }
                     }
                 }
             }
         }
     }
-}
