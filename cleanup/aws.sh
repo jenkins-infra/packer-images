@@ -54,7 +54,10 @@ fi
 
 ## Remove security groups older than 24 hours
 for secgroup_id in $(aws ec2 describe-security-groups --filters 'Name=group-name,Values=*packer*' \
-  | jq -r '.SecurityGroups[].GroupId')
+  | jq -r '.SecurityGroups[].GroupId') || {
+      echo "[ERROR] Failed to describe network interfaces for security group: ${secgroup_id}";
+      exit 1; # Ensure build step fails
+  }
 do
   # Each security group which name matches the pattern '*packer*' is deleted if it is orphaned (not use by any network interface)
   if [ "0" = "$(aws ec2 describe-network-interfaces --filters "Name=group-id,Values=${secgroup_id}" | jq -r '.NetworkInterfaces | length')" ]
