@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu -o pipefail
+set -eux -o pipefail
 
 run_aws_ec2_deletion_command() {
   # Check the DRYRUN environment variable
