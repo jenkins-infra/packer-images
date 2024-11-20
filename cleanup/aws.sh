@@ -54,16 +54,23 @@ fi
 
 ## Remove security groups older than 24 hours
 for secgroup_id in $(aws ec2 describe-security-groups --filters 'Name=group-name,Values=*packer*' \
-  | jq -r '.SecurityGroups[].GroupId')
-do
-  # Each security group which name matches the pattern '*packer*' is deleted if it is orphaned (not use by any network interface)
-  if [ "0" = "$(aws ec2 describe-network-interfaces --filters "Name=group-id,Values=${secgroup_id}" | jq -r '.NetworkInterfaces | length')" ] {
-    echo "[ERROR] Failed to describe network interfaces for security group: ${secgroup_id}";
-    exit 1;
+  | jq -r '.SecurityGroups[].GroupId'); do
+  # Check if the security group is orphaned
+  network_interfaces=$(aws ec2 describe-network-interfaces --filters "Name=group-id,Values=${secgroup_id}" \
+    | jq -r '.NetworkInterfaces | length') || {
+      echo "[ERROR] Failed to describe network interfaces for security group: ${secgroup_id}";
+      exit 1; # Ensure build step fails
   }
-  then
+
+  if [ "${network_interfaces}" -eq 0 ]; then
+    echo "== Deleting orphaned security group: ${secgroup_id}"
     #shellcheck disable=SC2086
-    run_aws_ec2_deletion_command delete-security-group --group-id ${secgroup_id}
+    run_aws_ec2_deletion_command delete-security-group --group-id "${secgroup_id}" || {
+      echo "[ERROR] Failed to delete security group: ${secgroup_id}";
+      exit 1; # Ensure build step fails
+    }
+  else
+    echo "== Security group ${secgroup_id} is still in use. Skipping."
   fi
 done
 
