@@ -53,15 +53,28 @@ else
 fi
 
 security_groups=$(aws ec2 describe-security-groups --filters 'Name=group-name,Values=*packer*' \
-    | jq -r '.SecurityGroups[].GroupId')
+    | jq -r '.SecurityGroups[].GroupId') || {
+      echo "[ERROR] Failed to describe security groups.";
+      exit 1; # Exit if the command fails
+  }
 
-for secgroup_id in ${security_groups}
-do
-  # Each security group which name matches the pattern '*packer*' is deleted if it is orphaned (not use by any network interface)
-  if [ "0" = "$(aws ec2 describe-network-interfaces --filters "Name=group-id,Values=${secgroup_id}" | jq -r '.NetworkInterfaces | length')" ]
-  then
-    #shellcheck disable=SC2086
-    run_aws_ec2_deletion_command delete-security-group --group-id ${secgroup_id}
+for secgroup_id in ${security_groups}; do
+  # Check the number of network interfaces for the current security group
+  network_interfaces=$(aws ec2 describe-network-interfaces --filters "Name=group-id,Values=${secgroup_id}" \
+      | jq -r '.NetworkInterfaces | length') || {
+        echo "[ERROR] Failed to describe network interfaces for security group: ${secgroup_id}";
+        exit 1; # Exit if the command fails
+    }
+
+  if [ "${network_interfaces}" -eq 0 ]; then
+    echo "== Deleting orphaned security group: ${secgroup_id}"
+    # Attempt to delete the orphaned security group
+    run_aws_ec2_deletion_command delete-security-group --group-id "${secgroup_id}" || {
+        echo "[ERROR] Failed to delete security group: ${secgroup_id}";
+        exit 1; # Exit if deletion fails
+    }
+  else
+    echo "== Security group ${secgroup_id} is still in use. Skipping."
   fi
 done
 
