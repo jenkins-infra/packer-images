@@ -1,0 +1,50 @@
+---
+name: Bump Azure Ubuntu `22.04` arm64 image version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: shell
+    name: Get the latest `ubuntu 22.04` arm64 image version from Azure
+    spec:
+      command: az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null && az vm image list --location eastus --publisher Canonical --offer 0001-com-ubuntu-server-jammy --sku 22_04-lts-arm64 --all --query "[?offer=='0001-com-ubuntu-server-jammy'].version" -o tsv | sort -u | tail -n 1
+      environments:
+        - name: PATH
+        - name: AZURE_CLIENT_ID
+        - name: AZURE_CLIENT_SECRET
+        - name: AZURE_TENANT_ID
+
+targets:
+  updateVersion:
+    name: Update azure `ubuntu 22.04` arm64 image version in locals
+    sourceid: lastReleaseVersion
+    kind: yaml
+    scmid: default
+    spec:
+      file: ./images-versions.yaml
+      key: $.azure.ubuntu.'22.04'.arm64
+    transformers:
+      - addprefix: '"'
+      - addsuffix: '"'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      title: Bump azure `ubuntu 22.04` arm64 image version
+      description: "Update the latest Azure Ubuntu 22.04 arm64 image version in the images-versions.yaml file."
+      labels:
+        - enhancement
+        - ubuntu
