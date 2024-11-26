@@ -43,7 +43,7 @@ actions:
     kind: github/pullrequest
     scmid: default
     spec:
-      title: Bump azure `ubuntu 22.04` amd64 image version
+      title: Bump Azure Ubuntu `22.04` amd64 image version
       description: "Update the latest Azure Ubuntu 22.04 amd64 image version in the images-versions.yaml file."
       labels:
         - enhancement
