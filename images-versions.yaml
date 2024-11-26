@@ -8,7 +8,7 @@ azure:
   ubuntu:
     "22.04":
       amd64: "22.04.202410020"
-      arm64: "latest"
+      arm64: "22.04.202410020"
 aws:
   ubuntu:
     "22.04":
