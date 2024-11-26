@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu -o pipefail
+set -eux -o pipefail
 
 run_aws_ec2_command() {
   # Check the DRYRUN environment variable
@@ -47,10 +47,26 @@ snapshot_ids="$(aws ec2 describe-snapshots \
   --region=us-east-2 \
   | jq -r '.[][]')"
 
-if [ -n "${snapshot_ids}" ]
-then
-  export -f run_aws_ec2_command
-  echo "${snapshot_ids}" | parallel --halt-on-error never --no-run-if-empty run_aws_ec2_command delete-snapshot --snapshot-id {} :::
+if [ -n "${snapshot_ids}" ]; then
+  echo "== Found the following snapshots for potential deletion:"
+  echo "${snapshot_ids}"
+  echo "======"
+
+  for snapshot_id in ${snapshot_ids}; do
+    echo "== Checking if snapshot ${snapshot_id} is in use..."
+    # Check if the snapshot is in use by querying associated AMIs
+    if aws ec2 describe-images --filters "Name=block-device-mapping.snapshot-id,Values=${snapshot_id}" --query 'Images[*].ImageId' --output text | grep -q .; then
+      echo "[INFO] Snapshot ${snapshot_id} is in use by an AMI. Skipping."
+    else
+      # Only attempt to delete if the snapshot is not in use
+      echo "== Snapshot ${snapshot_id} is not in use. Proceeding with deletion."
+      if run_aws_ec2_command delete-snapshot --snapshot-id "${snapshot_id}"; then
+        echo "== Snapshot ${snapshot_id} successfully deleted."
+      else
+        echo "[ERROR] Failed to delete snapshot ${snapshot_id}."
+      fi
+    fi
+  done
 else
   echo "== No dangling snapshots found to delete."
 fi
