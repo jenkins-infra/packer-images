@@ -23,6 +23,7 @@ source "amazon-ebs" "base" {
 
   # To improve audit and garbage collecting, we provide tags
   tags = {
+    Name          = "${local.image_name}-Packer-${var.architecture}"
     imageplatform = var.architecture
     imagetype     = local.image_name
     timestamp     = local.now_unix_timestamp
