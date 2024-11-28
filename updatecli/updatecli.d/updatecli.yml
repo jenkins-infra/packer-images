@@ -42,7 +42,7 @@ targets:
     spec:
       files:
         - tests/goss-common.yaml
-      key: $.command.updatecli.stderr[0]
+      key: $.command.updatecli.stdout[0]
     scmid: default
 
 actions:
