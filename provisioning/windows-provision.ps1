@@ -259,8 +259,6 @@ $downloads = [ordered]@{
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version "${env:VAGRANT_VERSION}";
-            # install .NET 3.5 for MSI build
-            & "choco.exe" install dotnet3.5 --yes --no-progress --limit-output --fail-on-error-output
             # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
             & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
             & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
@@ -341,6 +339,9 @@ foreach($k in $downloads.Keys) {
         Invoke-Command $download['postInstall']
     }
 }
+
+# Install .NET 3.5 for MSI build
+Install-WindowsFeature Net-Framework-Core
 
 # Special case for Powershell, we need to make sure powershell.exe and pwsh.exe are both available
 # On Windows Server, Windows Powershell 5.1 is installed by default (powershell.exe)
