@@ -8,7 +8,8 @@ fi
 timeshift_day="${1}"
 build_type="${2:-dev}"
 
-set -eu -o pipefail
+#set -eu -o pipefail
+set -eu -o xtrace
 
 run_az_command() {
   # Check the DRYRUN environment variable
@@ -49,7 +50,7 @@ az account show >/dev/null || \
 resource_group_name="${build_type}-packer-builds"
 
 ## Remove resources in the "Resource Group" older than the threshold
-found_resource_ids="$(az resource list --resource-group="${resource_group_name}" | jq -r ".[] | select(.timeCreated < (\"${creation_date_threshold}\")) | .id")"
+found_resource_ids="$(az resource list --resource-group="${resource_group_name}" | jq -r ".[] | select(.createdTime < (\"${creation_date_threshold}\")) | .id")"
 
 if [ -n "${found_resource_ids}" ]
 then

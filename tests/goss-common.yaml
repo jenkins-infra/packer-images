@@ -5,7 +5,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.22.12
+      - 2.22.14
   azurecli:
     exec: az --version
     exit-status: 0
@@ -23,7 +23,7 @@ command:
     exec: docker -v
     exit-status: 0
     stdout:
-      - 27.3.1
+      - 27.4.0
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
@@ -70,7 +70,7 @@ command:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.29.11
+      - 1.29.12
   launchable:
     exec: launchable --version
     exit-status: 0

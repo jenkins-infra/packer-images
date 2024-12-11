@@ -1,12 +1,12 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.14.1
-awscli_version: 2.22.12
+awscli_version: 2.22.14
 azcopy_version: 10.27.1-20241113
 azurecli_version: 2.67.0
 chocolatey_version: 1.4.0
 compose_version: 2.31.0
 cst_version: 1.19.3
-docker_version: 27.3.1
+docker_version: 27.4.0
 docker_buildx_version: 0.14.1
 doctl_version: 1.119.1
 gh_version: 2.63.2
@@ -29,7 +29,7 @@ jdk8_version: 8u432-b06
 jenkins_remoting_version: 3283.v92c105e0f819
 jq_version: 1.6
 jxreleaseversion_version: 2.7.8
-kubectl_version: 1.29.11
+kubectl_version: 1.29.12
 launchable_version: 1.66.0
 maven_version: 3.9.9
 netlifydeploy_version: 0.1.8
@@ -48,5 +48,5 @@ vagrant_version: 2.4.3
 windows_pwsh_version: 7.4.6
 xq_version: 1.2.3
 yq_version: 4.42.1
-playwright_version: 1.49.0
+playwright_version: 1.49.1
 vs_buildtools_version: 16
