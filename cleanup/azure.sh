@@ -8,8 +8,7 @@ fi
 timeshift_day="${1}"
 build_type="${2:-dev}"
 
-#set -eu -o pipefail
-set -eu -o xtrace
+set -eu -o pipefail
 
 run_az_command() {
   # Check the DRYRUN environment variable
