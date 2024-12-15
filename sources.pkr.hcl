@@ -11,7 +11,7 @@ source "amazon-ebs" "base" {
     delete_on_termination = true
     device_name           = "/dev/sda1"
     volume_size           = local.windows_disk_size_gb # TODO: check if we can rename this local to cover both windows and Ubuntu
-    volume_type           = "gp2" # TODO: check if we can use `gp3` (blocker was ec2 plugin, not packer)
+    volume_type           = "gp3"
   }
 
 
