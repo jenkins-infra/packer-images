@@ -61,6 +61,11 @@ command:
     exit-status: 0
     stdout:
       - 2.4.3
+  dotnet35:
+    exec: pwsh -command "Test-Path -Path 'HKLM:\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5'"
+    exit-status: 0
+    stdout:
+      - True
 file:
   C:\Program Files\Chromium\Application\:
     contains: []
