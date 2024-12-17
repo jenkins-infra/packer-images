@@ -5,7 +5,7 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.22.17
+      - 2.22.18
   azurecli:
     exec: az --version
     exit-status: 0
@@ -35,7 +35,7 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.32.0
+      - 2.32.1
   gh_cli:
     exec: gh --version
     exit-status: 0
