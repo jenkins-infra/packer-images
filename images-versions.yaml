@@ -12,7 +12,7 @@ azure:
 aws:
   ubuntu:
     "22.04":
-      amd64: ami-071f364ff5debee65
+      amd64: ami-09ab820c5a11a5cf7
       arm64: ami-011c271ddbf145636
 docker:
   ubuntu:
