@@ -9,7 +9,7 @@ build {
     image_sku       = "${var.agent_os_version}-datacenter-core-g2"
     image_version   = try(local.images_versions["azure"]["windows"][var.agent_os_version][var.architecture], "N/A")
     os_type         = "Windows"
-    os_disk_size_gb = local.windows_disk_size_gb
+    os_disk_size_gb = local.disk_size_gb
     winrm_insecure  = true
     winrm_timeout   = "20m"
     winrm_use_ssl   = true
