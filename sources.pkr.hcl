@@ -3,6 +3,10 @@ source "amazon-ebs" "base" {
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
   instance_type = local.aws_instance_types[var.architecture]
 
+  # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
+  # Note: tracked by updatecli
+  source_ami = try(local.images_versions["aws"][var.agent_os_type][var.agent_os_version][var.architecture], "N/A")
+
   # Define custom rootfs for build to avoid later filesystem extension during agent startups
   launch_block_device_mappings {
     delete_on_termination = true
@@ -16,7 +20,6 @@ source "amazon-ebs" "base" {
   ami_regions = [
     var.aws_destination_region
   ]
-
 
   # To improve audit and garbage collecting, we provide tags
   tags = {
