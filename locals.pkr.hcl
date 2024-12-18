@@ -34,7 +34,7 @@ locals {
     "staging_packer_images" = ["East US 2"]
     "dev_packer_images"     = ["East US 2"]
   }
-  windows_disk_size_gb = 150 # Must be greater than 127 Gb to allow Azure template to work with
+  disk_size_gb = 150 # Must be greater than 127 Gb to allow Azure template for Windows
   provisioning_env_vars = concat(
     [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"],
     [
