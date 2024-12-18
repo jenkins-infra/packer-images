@@ -15,6 +15,7 @@ source "amazon-ebs" "base" {
     volume_type           = "gp3"
   }
 
+  imds_support = "v2.0" # https://aws.amazon.com/blogs/security/get-the-full-benefits-of-imdsv2-and-disable-imdsv1-across-your-aws-infrastructure/
 
   # Where to export the AMI
   ami_regions = [
