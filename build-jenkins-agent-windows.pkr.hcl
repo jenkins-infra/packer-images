@@ -60,19 +60,18 @@ build {
   }
 
   provisioner "file" {
+    # Previous provisioner might restart
     pause_before = "1m"
     source       = "./provisioning/addSSHPubKey.ps1"
     destination  = "C:/"
   }
 
   provisioner "file" {
-    pause_before = "1m"
     source       = "./provisioning/visualstudio.vsconfig"
     destination  = "C:/"
   }
 
   provisioner "powershell" {
-    pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
@@ -83,6 +82,8 @@ build {
   # ref. https:#www.packer.io/docs/builders/azure/arm#windows
   provisioner "windows-restart" {
     max_retries = 3
+    # Previous provisioner might restart
+    pause_before = "1m"
   }
 
   provisioner "file" {
@@ -111,20 +112,13 @@ build {
   }
 
   provisioner "powershell" {
-    pause_before     = "2m" # long pause as 1m is not enough
     environment_vars = local.provisioning_env_vars
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
-      "goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate",
-      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate",
-      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate",
-    ]
-  }
-
-  provisioner "powershell" {
-    environment_vars = local.provisioning_env_vars
-    inline = [
+      "goss --use-alpha=1 --max-concurrent=10 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate",
+      "goss --use-alpha=1 --max-concurrent=10 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate",
+      "goss --use-alpha=1 --max-concurrent=10 --gossfile C:/goss-common.yaml --loglevel DEBUG validate",
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
       "Remove-Item -Force C:/visualstudio.vsconfig",
