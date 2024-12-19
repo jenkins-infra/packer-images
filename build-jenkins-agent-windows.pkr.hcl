@@ -107,7 +107,7 @@ build {
 
   provisioner "breakpoint" {
     note    = "Enable this breakpoint to pause before trying to run goss tests"
-    disable = true
+    disable = false
   }
 
   provisioner "powershell" {
