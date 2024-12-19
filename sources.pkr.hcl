@@ -1,25 +1,26 @@
 # This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
-
-
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
   instance_type = local.aws_instance_types[var.architecture]
 
+  # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
+  # Note: tracked by updatecli
+  source_ami = try(local.images_versions["aws"][var.agent_os_type][var.agent_os_version][var.architecture], "N/A")
 
   # Define custom rootfs for build to avoid later filesystem extension during agent startups
   launch_block_device_mappings {
     delete_on_termination = true
     device_name           = "/dev/sda1"
-    volume_size           = local.windows_disk_size_gb # TODO: check if we can rename this local to cover both windows and Ubuntu
+    volume_size           = local.disk_size_gb # TODO: check if we can rename this local to cover both windows and Ubuntu
     volume_type           = "gp3"
   }
 
+  imds_support = "v2.0" # https://aws.amazon.com/blogs/security/get-the-full-benefits-of-imdsv2-and-disable-imdsv1-across-your-aws-infrastructure/
 
   # Where to export the AMI
   ami_regions = [
     var.aws_destination_region
   ]
-
 
   # To improve audit and garbage collecting, we provide tags
   tags = {

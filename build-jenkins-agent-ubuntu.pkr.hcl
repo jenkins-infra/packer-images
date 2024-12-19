@@ -6,8 +6,6 @@ build {
   source "amazon-ebs.base" {
     name         = "ubuntu"
     ssh_username = "ubuntu"
-    # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
-    source_ami = try(local.images_versions["aws"]["ubuntu"][var.agent_os_version][var.architecture], "N/A")
   }
 
   source "azure-arm.base" {
@@ -17,7 +15,7 @@ build {
     image_publisher = "canonical"
     # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
     image_sku = local.az_instance_image_sku[var.architecture]
-    image_version = try(local.images_versions["azure"]["ubuntu"][var.agent_os_version][var.architecture], "N/A")
+    image_version = try(local.images_versions["azure"][var.agent_os_type][var.agent_os_version][var.architecture], "N/A")
     os_type   = "Linux"
   }
 
