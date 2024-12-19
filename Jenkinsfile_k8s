@@ -95,7 +95,7 @@ pipeline {
           }
         }
         excludes {
-          // Only build Ubuntu images for arm64 CPU in AWS (notValues)
+          // Only build arm64 VMs when OS is Ubuntu (notValues) as Windows Server amr64 does not exist anywhere
           exclude {
             axis {
               name 'cpu_architecture'
@@ -104,36 +104,6 @@ pipeline {
             axis {
               name 'agent_type'
               notValues 'ubuntu-22.04'
-            }
-            axis {
-              name 'compute_type'
-              values 'amazon-ebs'
-            }
-          }
-          // Exclude 'amazon-ebs' Windows builds while testing for Linux AMI
-          exclude {
-            axis {
-              name 'agent_type'
-              values 'windows-2019', 'windows-2022'
-            }
-            axis {
-              name 'compute_type'
-              values 'amazon-ebs'
-            }
-          }
-          // Only build Ubuntu images for arm64 CPU in Azure (notValues)
-          exclude {
-            axis {
-              name 'cpu_architecture'
-              values 'arm64'
-            }
-            axis {
-              name 'agent_type'
-              notValues 'ubuntu-22.04'
-            }
-            axis {
-              name 'compute_type'
-              values 'azure-arm'
             }
           }
           // No build on Windows or Docker, not yet implemented
