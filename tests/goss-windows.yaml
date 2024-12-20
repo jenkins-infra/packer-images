@@ -31,7 +31,7 @@ command:
     stderr:
       - 1.8.0_432
   maven:
-    exec: pwsh -command "$env:JAVA_HOME='C:\\Program Files (x86)\\jdk-21'; mvn -v"
+    exec: pwsh -command "$env:JAVA_HOME='C:\tools\jdk-21'; mvn -v"
     exit-status: 0
     stdout:
       - 3.9.9
