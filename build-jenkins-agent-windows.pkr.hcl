@@ -1,4 +1,14 @@
 build {
+  source "amazon-ebs.base" {
+    name           = "windows"
+    communicator   = "winrm"
+    user_data_file = "./provisioning/setupWinRM.ps1"
+    winrm_insecure = true
+    winrm_timeout  = "20m"
+    winrm_use_ssl  = true
+    winrm_username = local.windows_winrm_user[var.image_type]
+  }
+
   source "azure-arm.base" {
     name         = "windows"
     communicator = "winrm"
@@ -9,7 +19,7 @@ build {
     image_sku       = "${var.agent_os_version}-datacenter-core-g2"
     image_version   = try(local.images_versions["azure"]["windows"][var.agent_os_version][var.architecture], "N/A")
     os_type         = "Windows"
-    os_disk_size_gb = local.windows_disk_size_gb
+    os_disk_size_gb = local.disk_size_gb
     winrm_insecure  = true
     winrm_timeout   = "20m"
     winrm_use_ssl   = true
@@ -50,19 +60,18 @@ build {
   }
 
   provisioner "file" {
+    # Previous provisioner might restart
     pause_before = "1m"
     source       = "./provisioning/addSSHPubKey.ps1"
     destination  = "C:/"
   }
 
   provisioner "file" {
-    pause_before = "1m"
     source       = "./provisioning/visualstudio.vsconfig"
     destination  = "C:/"
   }
 
   provisioner "powershell" {
-    pause_before      = "1m"
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
@@ -73,6 +82,8 @@ build {
   # ref. https:#www.packer.io/docs/builders/azure/arm#windows
   provisioner "windows-restart" {
     max_retries = 3
+    # Previous provisioner might restart
+    pause_before = "1m"
   }
 
   provisioner "file" {
@@ -101,20 +112,13 @@ build {
   }
 
   provisioner "powershell" {
-    pause_before     = "2m" # long pause as 1m is not enough
     environment_vars = local.provisioning_env_vars
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
-      "goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate",
-      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate",
-      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate",
-    ]
-  }
-
-  provisioner "powershell" {
-    environment_vars = local.provisioning_env_vars
-    inline = [
+      "goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=4",
+      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=4",
+      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --max-concurrent=4",
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
       "Remove-Item -Force C:/visualstudio.vsconfig",
@@ -129,6 +133,18 @@ build {
     inline = [
       "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit /mode:vm",
       "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
+    ]
+  }
+
+  # This provisioner must be the last for AWS EBS builds, after reboots
+  provisioner "powershell" {
+    only              = ["amazon-ebs.windows"]
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+
+    inline = [
+      "& 'C:/Program Files/Amazon/EC2Launch/ec2launch' reset --block",
+      "& 'C:/Program Files/Amazon/EC2Launch/ec2launch' sysprep --block",
     ]
   }
 }

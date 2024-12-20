@@ -5,7 +5,6 @@ locals {
   image_name            = format("jenkins-agent-%s-%s-%s", var.agent_os_type, var.agent_os_version, var.architecture)
   unique_image_name     = format("%s-%s", local.image_name, local.now_unix_timestamp)
 
-
   aws_instance_types = {
     "amd64" = "t3.xlarge"
     "arm64" = "t4g.xlarge"
@@ -19,7 +18,7 @@ locals {
   windows_winrm_user = {
     "azure-arm" = "packer"
     "docker"    = "packer"
-    "amazon-ebs" = "Administrator"
+    "amazon-ebs" = "Administrator" # In AWS EC2, WinRM super admin must be the "Administrator" account
   }
 
   images_versions = yamldecode(file("./images-versions.yaml"))
@@ -34,7 +33,7 @@ locals {
     "staging_packer_images" = ["East US 2"]
     "dev_packer_images"     = ["East US 2"]
   }
-  windows_disk_size_gb = 150 # Must be greater than 127 Gb to allow Azure template to work with
+  disk_size_gb = 150 # Must be greater than 127 Gb to allow Azure template for Windows
   provisioning_env_vars = concat(
     [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"],
     [

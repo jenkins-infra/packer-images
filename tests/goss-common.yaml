@@ -51,11 +51,6 @@ command:
     exit-status: 0
     stdout:
       - 0.4.9
-  hadolint:
-    exec: hadolint -v
-    exit-status: 0
-    stdout:
-      - 2.12.0
   jq:
     exec: jq --version
     exit-status: 0

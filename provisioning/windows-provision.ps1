@@ -165,7 +165,11 @@ $downloads = [ordered]@{
     };
     'hadolint' = @{
         'url' = 'https://github.com/hadolint/hadolint/releases/download/v{0}/hadolint-Windows-x86_64.exe' -f $env:HADOLINT_VERSION;
-        'local' = "$baseDir\hadolint.exe"
+        'local' = "$baseDir\hadolint.exe";
+        'postExpand' = {
+            ## First call to hadolint is slow (initialize some local resources). Lets pre-heat it to avoid timeouts during tests later
+            & "$baseDir\hadolint.exe" -v;
+        };
     };
     'cst' = @{
         'url' = 'https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{0}/container-structure-test-windows-amd64.exe' -f $env:CST_VERSION;
