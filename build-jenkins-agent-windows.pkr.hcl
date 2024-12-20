@@ -116,9 +116,9 @@ build {
     inline = [
       "$ErrorActionPreference = 'Stop'",
       "goss --version",
-      "goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=1",
-      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=1",
-      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --max-concurrent=1",
+      "goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=4",
+      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=4",
+      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --max-concurrent=4",
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
       "Remove-Item -Force C:/visualstudio.vsconfig",
