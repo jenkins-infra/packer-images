@@ -263,6 +263,11 @@ $downloads = [ordered]@{
             # Installation of make for Windows
             & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
             & "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version "${env:VAGRANT_VERSION}";
+            # install .NET 3.5 for MSI build
+            & "choco.exe" install dotnet3.5 --yes --no-progress --limit-output --fail-on-error-output
+            if(Test-Path "C:\Windows\Logs\DISM\dism.log") {
+                Get-Content "C:\Windows\Logs\DISM\dism.log"
+            }
             # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
             & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
             & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
