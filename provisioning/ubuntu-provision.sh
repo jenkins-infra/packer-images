@@ -212,6 +212,9 @@ function install_golang(){
     tar --extract --gunzip --directory="/usr/local/"
   ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
   sed -e '/^PATH/s/"$/:\/usr\/local\/go\/bin"/g' -i /etc/environment
+  ## Default GOPATH need to be created
+  mkdir -p "${userhome}/go"
+  chown jenkins:jenkins "${userhome}/go"
 }
 
 ## Ensure GolangCIlint is installed
