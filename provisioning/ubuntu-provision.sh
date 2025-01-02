@@ -281,17 +281,17 @@ Pin-Priority: 1001
   apt-get install --yes chromium-browser
 }
 
-## Install git and git-lfs
-function install_git_gitlfs() {
-  if [ -n "${GIT_LINUX_VERSION}" ]
-  then
-    ## a specific git version is required: search it on the official git PPA repositories
-    add-apt-repository -y ppa:git-core/ppa
-    install_package_version git "${GIT_LINUX_VERSION}"
-  else
-    ## No git version: install the latest git available in the default repos
-    apt-get install --yes --no-install-recommends git
-  fi
+## Compil git
+function compile_git_install_gitlfs() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends dh-autoreconf libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev install-info make
+
+  git_download_url="https://github.com/git/git/archive/refs/tags/v${GIT_LINUX_VERSION}.tar.gz"
+  curl --fail --silent --show-error --location "${git_download_url}" | \
+    tar --extract --gunzip --directory="/tmp/"
+  cd /tmp/git-"${GIT_LINUX_VERSION}"
+  make prefix=/usr/local all
+  make prefix=/usr/local install
 
   ## Install git-lfs (after git)
   git_lfs_archive="git-lfs-linux-${ARCHITECTURE}-v${GIT_LFS_VERSION}.tar.gz"
@@ -300,8 +300,11 @@ function install_git_gitlfs() {
   curl --fail --silent --location --show-error --output "/tmp/${git_lfs_archive}" "${git_lfs_release_url}"
   mkdir -p /tmp/git-lfs
   tar --extract --directory=/tmp/git-lfs --gzip --verbose --file="/tmp/${git_lfs_archive}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name, since git-lfs 3.2.0.
-  bash -x /tmp/git-lfs/install.sh # Execute in debug mode in case something goes wrong
-  rm -rf /tmp/git-lfs*
+  bash -x /tmp/git-lfs/install.sh
+
+  cd /tmp # do not stay in a remove folder
+  rm -rf /tmp/git-lfs* # cleanup
+  rm -rf /tmp/git-"${GIT_LINUX_VERSION}" # cleanup
 }
 
 # Reusable function to perform a Temurin JDK installations
@@ -433,7 +436,6 @@ function install_jxreleaseversion() {
 
 ## Ensure that azure-cli is installed
 function install_azurecli() {
-  local az_repo
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     gpg \
@@ -668,7 +670,7 @@ function install_yamllint() {
 ## Ensure that the VM is cleaned up of provision artifacts
 function cleanup() {
   export HISTSIZE=0
-  rm -rf /tmp/* /var/log/* ${HOME}/.npm
+  rm -rf /tmp/* /var/log/* "${HOME}"/.npm
   sync
 }
 
@@ -687,7 +689,7 @@ function main() {
   clean_apt
   install_common_requirements
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
-  install_git_gitlfs
+  compile_git_install_gitlfs # ensure we use the lastest version with arm64 and amd/intel
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   install_asdf # Before all the others but after the jenkins home is created
   install_goss # needed by the pipeline
@@ -709,8 +711,8 @@ function main() {
   install_gh
   install_golang
   install_golangcilint # must come after golang
-  install_ruby ${RUBY_PUPPET_VERSION}
-  install_ruby ${RUBY_VERSION}
+  install_ruby "${RUBY_PUPPET_VERSION}"
+  install_ruby "${RUBY_VERSION}"
   install_vagrant
   install_xq
   install_yq
@@ -730,8 +732,9 @@ function main() {
   install_yamllint
   install_rngd
 
-  echo "== Installed packages:"
+  echo "============================================================================== END Installed packages:"
   dpkg -l
+  echo "============================================================================== END Installed packages"
 }
 
 main
