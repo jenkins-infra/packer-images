@@ -40,7 +40,7 @@ packer_version: 1.11.2
 python3_version: 3.12.6
 ruby_puppet_version: 2.6.10
 ruby_version: 3.3.6
-sops_version: 3.9.2
+sops_version: 3.9.3
 terraform_version: 1.10.3
 trivy_version: 0.58.1
 updatecli_version: 0.91.0
