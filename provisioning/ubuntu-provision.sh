@@ -212,6 +212,9 @@ function install_golang(){
     tar --extract --gunzip --directory="/usr/local/"
   ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
   sed -e '/^PATH/s/"$/:\/usr\/local\/go\/bin"/g' -i /etc/environment
+  ## Default GOPATH need to be created
+  mkdir -p "${userhome}/go"
+  chown jenkins:jenkins "${userhome}/go"
 }
 
 ## Ensure GolangCIlint is installed
@@ -225,6 +228,8 @@ function install_golangcilint(){
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
   apt-get update --quiet
+  # JQ_VERSION is an env var provided outside of the script
+  # shellcheck disable=SC2153
   apt-get install --yes --no-install-recommends \
     make \
     unzip \
@@ -348,6 +353,8 @@ function install_jdks() {
   ## Prevent Java null pointer exception due to missing fontconfig / add jq that should already be installed but make this install_jdk function idempotent
   apt-get install --yes --no-install-recommends fontconfig jq="${JQ_VERSION}*"
 
+  # JDK*_VERSION are env. vars provided outside of the script
+  # shellcheck disable=SC2153
   for jdk_version_to_install in "${JDK8_VERSION}" "${JDK11_VERSION}" "${JDK17_VERSION}" "${JDK21_VERSION}"
   do
     echo "=== Installing Temurin JDK version ${jdk_version_to_install}..."
@@ -433,7 +440,6 @@ function install_jxreleaseversion() {
 
 ## Ensure that azure-cli is installed
 function install_azurecli() {
-  local az_repo
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
     gpg \
@@ -668,7 +674,7 @@ function install_yamllint() {
 ## Ensure that the VM is cleaned up of provision artifacts
 function cleanup() {
   export HISTSIZE=0
-  rm -rf /tmp/* /var/log/* ${HOME}/.npm
+  rm -rf /tmp/* /var/log/* "${HOME}/.npm"
   sync
 }
 
@@ -709,8 +715,8 @@ function main() {
   install_gh
   install_golang
   install_golangcilint # must come after golang
-  install_ruby ${RUBY_PUPPET_VERSION}
-  install_ruby ${RUBY_VERSION}
+  install_ruby "${RUBY_PUPPET_VERSION}"
+  install_ruby "${RUBY_VERSION}"
   install_vagrant
   install_xq
   install_yq
