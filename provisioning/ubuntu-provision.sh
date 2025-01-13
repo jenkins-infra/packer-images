@@ -457,12 +457,12 @@ function install_azurecli() {
 
 ## Ensure that azcopy is installed
 function install_azcopy() {
-  azcopysemver="$(echo "${AZCOPY_VERSION}" | cut -d'-' -f1)"
-  curl --fail --silent --show-error --location --output /tmp/azcopy.tar.gz \
-    "https://azcopyvnext.azureedge.net/releases/release-${AZCOPY_VERSION}/azcopy_linux_${ARCHITECTURE}_${azcopysemver}.tar.gz"
-  tar --extract --gunzip --directory=/usr/local/bin/ --file=/tmp/azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy'
-  chmod a+x /usr/local/bin/azcopy
-  rm -rf /tmp/azcopy.tar.gz
+  ## TODO track with updatecli from ../build-jenkins-agent-ubuntu.pkr.hcl
+  curl -sSL -O https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+  dpkg -i packages-microsoft-prod.deb
+  rm packages-microsoft-prod.deb
+  apt-get update
+  apt-get install azcopy
 }
 
 ## Ensure that the GitHub command line (`gh`) is installed
