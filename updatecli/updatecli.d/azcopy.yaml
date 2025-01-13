@@ -1,0 +1,53 @@
+---
+name: Bump `azcopy` version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: githubrelease
+    name: Get the latest `azcopy` version
+    spec:
+      owner: Azure
+      repository: azure-storage-azcopy
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+    transformers:
+      - trimprefix: 'v'
+
+targets:
+  updateVersion:
+    name: "Update the `azcopy` version in the tools-versions.yml file"
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: provisioning/tools-versions.yml
+      key: $.azcopy_version
+    scmid: default
+  updateVersionInGoss:
+    name: Update the `azcopy` version in the goss test
+    kind: yaml
+    spec:
+      file: tests/goss-linux.yaml
+      key: $.command.azcopy.stdout[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump azcopy version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - enhancement
+        - azcopy
