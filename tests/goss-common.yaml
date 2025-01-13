@@ -34,8 +34,9 @@ command:
   docker_compose:
     exec: docker-compose -v
     exit-status: 0
-    stdout:
-      - 2.32.3
+    ## Commented until https://github.com/docker/compose/issues/12459 is fixed
+    # stdout:
+    #  - 2.32.3
   gh_cli:
     exec: gh --version
     exit-status: 0
