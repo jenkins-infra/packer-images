@@ -24,7 +24,7 @@ command:
     exec: git --version
     exit-status: 0
     stdout:
-      - 2.47.1
+      - 2.48.0
   golang:
     exec: go version
     exit-status: 0
