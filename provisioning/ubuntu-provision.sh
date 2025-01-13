@@ -457,12 +457,13 @@ function install_azurecli() {
 
 ## Ensure that azcopy is installed
 function install_azcopy() {
-  ## TODO track with updatecli from ../build-jenkins-agent-ubuntu.pkr.hcl
-  curl -sSL -O https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
-  dpkg -i packages-microsoft-prod.deb
-  rm packages-microsoft-prod.deb
-  apt-get update
-  apt-get install azcopy
+  rep_config_pkg="$(mktemp)"
+  # Download and install the repository configuration package.
+  curl --silent --show-error --location --output "${rep_config_pkg}" https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+  dpkg --install "${rep_config_pkg}"
+  rm -f "${rep_config_pkg}"
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends azcopy="${AZCOPY_VERSION}"
 }
 
 ## Ensure that the GitHub command line (`gh`) is installed
