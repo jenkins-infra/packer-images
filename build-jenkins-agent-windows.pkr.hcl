@@ -67,8 +67,8 @@ build {
   }
 
   provisioner "file" {
-    source       = "./provisioning/visualstudio.vsconfig"
-    destination  = "C:/"
+    source      = "./provisioning/visualstudio.vsconfig"
+    destination = "C:/"
   }
 
   provisioner "powershell" {

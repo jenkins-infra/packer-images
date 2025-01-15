@@ -16,8 +16,8 @@ locals {
     "arm64" = "${local.agent_os_version_safe}-lts-arm64"
   }
   windows_winrm_user = {
-    "azure-arm" = "packer"
-    "docker"    = "packer"
+    "azure-arm"  = "packer"
+    "docker"     = "packer"
     "amazon-ebs" = "Administrator" # In AWS EC2, WinRM super admin must be the "Administrator" account
   }
 
