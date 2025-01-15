@@ -18,10 +18,10 @@ source "amazon-ebs" "base" {
   # Enforce IMDS v2 as per https://aws.amazon.com/blogs/security/get-the-full-benefits-of-imdsv2-and-disable-imdsv1-across-your-aws-infrastructure/
   imds_support = "v2.0"
   metadata_options {
-    http_endpoint = "enabled"
-    http_tokens = "required"
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
     http_put_response_hop_limit = 1 # Do not allow access to IMDS through NAT-ed containers
-    instance_metadata_tags = "disabled"
+    instance_metadata_tags      = "disabled"
   }
 
   # Where to export the AMI

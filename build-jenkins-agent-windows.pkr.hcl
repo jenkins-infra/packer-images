@@ -7,6 +7,10 @@ build {
     winrm_timeout  = "20m"
     winrm_use_ssl  = true
     winrm_username = local.windows_winrm_user[var.image_type]
+
+    fast_launch {
+      enable_fast_launch = true
+    }
   }
 
   source "azure-arm.base" {
@@ -67,8 +71,8 @@ build {
   }
 
   provisioner "file" {
-    source       = "./provisioning/visualstudio.vsconfig"
-    destination  = "C:/"
+    source      = "./provisioning/visualstudio.vsconfig"
+    destination = "C:/"
   }
 
   provisioner "powershell" {
