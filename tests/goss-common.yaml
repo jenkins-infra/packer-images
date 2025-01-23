@@ -98,7 +98,7 @@ command:
     exec: terraform -v
     exit-status: 0
     stdout:
-      - 1.10.4
+      - 1.10.5
   trivy:
     exec: trivy --version
     exit-status: 0
