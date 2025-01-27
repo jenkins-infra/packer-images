@@ -6,6 +6,11 @@ command:
     exit-status: 0
     stdout:
       - v0.15.0
+  awscli-pinned:
+    exec: /usr/local/aws-cli-2.22.35/aws --version
+    exit-status: 0
+    stdout:
+      - 2.22.35
   azcopy:
     exec: azcopy --version
     exit-status: 0
