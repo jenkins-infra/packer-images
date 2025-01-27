@@ -46,7 +46,7 @@ command:
     exec: helmfile --version
     exit-status: 0
     stdout:
-      - 0.170.0
+      - 0.170.1
   helmplugins:
     exec: helm plugin list
     exit-status: 0
@@ -92,7 +92,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.49.1
+      - 1.50.0
   python3:
     exec: python3 --version
     exit-status: 0
@@ -110,7 +110,7 @@ command:
     exec: sops --version
     exit-status: 0
     stdout:
-      - 3.9.3
+      - 3.9.4
   ssh_agent:
     exec: command -v ssh-agent
     exit-status: 0

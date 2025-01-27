@@ -1,6 +1,6 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.15.0
-awscli_version: 2.23.3
+awscli_version: 2.23.6
 azcopy_version: 10.27.1
 azurecli_version: 2.68.0
 chocolatey_version: 1.4.0
@@ -19,7 +19,7 @@ goss_version: 0.4.9
 hadolint_version: 2.12.0
 helm_version: 3.17.0
 helm_diff_version: 3.9.14
-helmfile_version: 0.170.0
+helmfile_version: 0.170.1
 helm_git_version: 1.3.0
 helm_secrets_version: 4.6.2
 jdk11_version: 11.0.25+9
@@ -34,13 +34,13 @@ launchable_version: 1.66.0
 maven_version: 3.9.9
 netlifydeploy_version: 0.1.8
 nodejs_linux_version: 22.13.1
-nodejs_windows_version: 22.13.0
+nodejs_windows_version: 22.13.1
 openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys
 packer_version: 1.11.2
 python3_version: 3.13.1
 ruby_puppet_version: 2.6.10
 ruby_version: 3.4.1
-sops_version: 3.9.3
+sops_version: 3.9.4
 terraform_version: 1.10.5
 trivy_version: 0.58.2
 updatecli_version: 0.92.0
@@ -48,5 +48,5 @@ vagrant_version: 2.4.3
 windows_pwsh_version: 7.4.6
 xq_version: 1.2.3
 yq_version: 4.42.1
-playwright_version: 1.49.1
+playwright_version: 1.50.0
 vs_buildtools_version: 16
