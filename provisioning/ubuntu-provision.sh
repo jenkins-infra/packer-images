@@ -563,6 +563,22 @@ function install_awscli() {
   bash /tmp/aws/install
   rm -rf /tmp/aws*
 }
+# https://github.com/jenkins-infra/packer-images/pull/1676 usage by directly calling /usr/local/aws-cli-${AWSCLI_PINNED_VERSION}/aws
+function install_pinned_awscli() {
+  local archive_path download_url install_dir bin_dir
+  archive_path=/tmp/awscli.zip
+  download_url="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_PINNED_VERSION}.zip"
+  install_dir="/usr/local/aws-cli-${AWSCLI_PINNED_VERSION}/"
+  bin_dir="${install_dir}"
+  if test "${ARCHITECTURE}" == "arm64"
+  then
+    download_url="https://awscli.amazonaws.com/awscli-exe-linux-aarch64-${AWSCLI_PINNED_VERSION}.zip"
+  fi
+  curl --silent --location --show-error "${download_url}" --output "${archive_path}"
+  unzip "${archive_path}" -d /tmp
+  bash /tmp/aws/install --install-dir "${install_dir}" --bin-dir "${bin_dir}"
+  rm -rf /tmp/aws*
+}
 
 function install_netlifydeploy() {
   local archive_path download_url
@@ -724,6 +740,7 @@ function main() {
   install_packer
   install_updatecli
   install_awscli
+  install_pinned_awscli
   install_netlifydeploy
   install_terraform
   install_kubectl
