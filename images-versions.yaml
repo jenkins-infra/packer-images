@@ -16,7 +16,7 @@ aws:
       arm64: ami-0ea2a0c0dd4236d25
   windows:
     "2019":
-      amd64: ami-08b54f8d132ebd12d
+      amd64: ami-0b2e357a8fb7fd019
     "2022":
       amd64: ami-091cb95e3a8474173
 docker:
