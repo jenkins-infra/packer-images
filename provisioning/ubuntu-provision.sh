@@ -550,25 +550,25 @@ function install_updatecli() {
 }
 
 # https://docs.aws.amazon.com/cli/latest/userguide/getting-started-version.html
+# if called with a parameter, the specified version will be installed in the folder: /usr/local/aws-cli-${VERSION}/
+# but not included in the path
+# if called without parameters, the install will be done on the version ${AWSCLI_VERSION} and accessible in the PATH
 function install_awscli() {
   local archive_path download_url
   archive_path=/tmp/awscli.zip
-  # check if a version argument is provided
   if [ -n "$1" ]; then
     local VERSION="$1"
   else
-    # else use the AWSCLI_VERSION tracked with updatecli
     local VERSION="${AWSCLI_VERSION}"
   fi
-  download_url="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${VERSION}.zip"
-  if test "${ARCHITECTURE}" == "arm64"
-  then
-    download_url="https://awscli.amazonaws.com/awscli-exe-linux-aarch64-${VERSION}.zip"
-  fi
+  download_url="https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m)-${VERSION}.zip"
   curl --silent --location --show-error "${download_url}" --output "${archive_path}"
   unzip "${archive_path}" -d /tmp
   if [ -n "$1" ]; then
     local install_dir
+
+    # we define install-dir and bin-dir to be able to install multiple versions of AWS and have only the default one in the PATH
+    # we use the same value for install-dir and bin-dir to make sure that the pinned version is within the dedicated folder
     install_dir="/usr/local/aws-cli-${VERSION}/"
     bash /tmp/aws/install --install-dir "${install_dir}" --bin-dir "${install_dir}"
   else
