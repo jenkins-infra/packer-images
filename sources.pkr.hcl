@@ -1,6 +1,6 @@
 # This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
-  skip_create_ami = var.build_type == "prod" ? false : true # skip ami creation if not on prod
+  skip_create_ami = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
   instance_type = local.aws_instance_types[var.architecture]
 
@@ -45,7 +45,7 @@ source "amazon-ebs" "base" {
 # This source defines all the common settings for any Azure image (whatever Operating System)
 source "azure-arm" "base" {
   managed_image_resource_group_name = local.azure_destination_resource_group
-  skip_create_image = var.build_type == "prod" ? false : true # skip image creation if not on prod
+  skip_create_image = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
   vm_size = local.azure_vm_size[var.architecture]
 
   # network defined in https://github.com/jenkins-infra/azure-net/blob/a396b20f676602703c0dbdf4cee977eae2669cd7/vnets.tf#L535
