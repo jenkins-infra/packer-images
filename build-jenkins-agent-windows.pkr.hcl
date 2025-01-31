@@ -147,8 +147,8 @@ build {
     elevated_password = build.Password
 
     inline = [
-      "& 'C:/Program Files/Amazon/EC2Launch/ec2launch' reset --block",
-      "& 'C:/Program Files/Amazon/EC2Launch/ec2launch' sysprep --block",
+      "& \"$env:ProgramFiles/amazon/ec2launch/ec2launch.exe\" reset --block",
+      "& \"$env:ProgramFiles/amazon/ec2launch/ec2launch.exe\" sysprep --block",
     ]
   }
 }
