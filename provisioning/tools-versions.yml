@@ -1,6 +1,6 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.15.0
-awscli_version: 2.23.6
+awscli_version: 2.23.13
 awscli_pinned_version: 2.22.35
 azcopy_version: 10.28.0
 azurecli_version: 2.68.0
