@@ -26,7 +26,7 @@ sources:
       username: "{{ .github.username }}"
       versionfilter:
         kind: regex
-        pattern: "^kubernetes-1.29.(\\d*)$"
+        pattern: "^kubernetes-1.30.(\\d*)$"
 
 targets:
   updateVersion:
