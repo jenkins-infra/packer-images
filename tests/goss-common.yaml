@@ -10,7 +10,7 @@ command:
     exec: az --version
     exit-status: 0
     stdout:
-      - 2.68.0
+      - 2.69.0
   bundle:
     exec: bundle -v
     exit-status: 0
@@ -41,7 +41,7 @@ command:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.66.1
+      - 2.67.0
   git_lfs:
     exec: git-lfs --version
     exit-status: 0

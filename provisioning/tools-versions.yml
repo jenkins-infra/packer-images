@@ -2,14 +2,14 @@
 asdf_version: 0.15.0
 awscli_version: 2.23.15
 azcopy_version: 10.28.0
-azurecli_version: 2.68.0
+azurecli_version: 2.69.0
 chocolatey_version: 1.4.0
 compose_version: 2.32.4
 cst_version: 1.19.3
 docker_version: 27.5.1
 docker_buildx_version: 0.14.1
 doctl_version: 1.121.0
-gh_version: 2.66.1
+gh_version: 2.67.0
 git_lfs_version: 3.6.1
 git_linux_version: 2.48.1
 git_windows_version: 2.47.1
@@ -33,7 +33,7 @@ kubectl_version: 1.29.13
 launchable_version: 1.66.0
 maven_version: 3.9.9
 netlifydeploy_version: 0.1.8
-nodejs_linux_version: 22.13.1
+nodejs_linux_version: 22.14.0
 nodejs_windows_version: 22.14.0
 openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys
 packer_version: 1.12.0
