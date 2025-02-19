@@ -4,21 +4,21 @@ azure:
     "2019":
       amd64: "17763.6293.240905"
     "2022":
-      amd64: "20348.3091.250112"
+      amd64: "20348.3207.250210"
   ubuntu:
     "22.04":
       amd64: "22.04.202501081"
-      arm64: "22.04.202501080"
+      arm64: "22.04.202501081"
 aws:
   ubuntu:
     "22.04":
-      amd64: ami-0884d2865dbe9de4b
-      arm64: ami-0ea2a0c0dd4236d25
+      amd64: ami-0f6bd2f212e409001
+      arm64: ami-0f466cc346da99424
   windows:
     "2019":
       amd64: ami-08b54f8d132ebd12d
     "2022":
-      amd64: ami-01e3d0e535b887a71
+      amd64: ami-0556430377b9269f6
 docker:
   ubuntu:
     "22.04":
