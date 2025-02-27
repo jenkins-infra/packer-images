@@ -91,8 +91,10 @@ pipeline {
         }
         stage('Which files') {
           steps {
-            filelist = getChangedFilesList()
-            echo "============= the list ${filelist}"
+            mystep {
+              filelist = getChangedFilesList()
+              echo "============= the list ${filelist}"
+            }
           }
         }
       }
