@@ -1,6 +1,7 @@
 # This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
-  skip_create_ami = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
+  # skip_create_ami = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
+  skip_create_ami = false
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
   instance_type = local.aws_instance_types[var.architecture]
 
