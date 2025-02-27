@@ -9,7 +9,7 @@ build {
     winrm_username = local.windows_winrm_user[var.image_type]
 
     fast_launch {
-      enable_fast_launch = true
+      enable_fast_launch = false
     }
   }
 
