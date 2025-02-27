@@ -92,6 +92,11 @@ pipeline {
           }
         }
         stage('Which files') {
+          when {
+            allOf {
+                expression{env.BRANCH_NAME != 'master'}
+            }
+          }
           steps {
             script {
               filelist = getChangedFilesList()
