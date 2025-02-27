@@ -30,6 +30,21 @@ def packerInitPlugins() {
   }
 }
 
+// returns a list of changed files
+@NonCPS
+List<String> getChangedFilesList() {
+    changedFiles = []
+    for (changeLogSet in currentBuild.changeSets) {
+        for (entry in changeLogSet.getItems()) { // for each commit in the detected changes
+            for (file in entry.getAffectedFiles()) {
+                changedFiles.add(file.getPath()) // add changed file to list
+            }
+        }
+    }
+    return changedFiles
+}
+
+
 if (env.BRANCH_IS_PRIMARY) {
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
@@ -71,6 +86,13 @@ pipeline {
             // Call the initializing function once for the default agent
             script {
               packerInitPlugins()
+            }
+          }
+        }
+        stage('Which files') {
+          steps {
+            script {
+              getChangedFilesList()
             }
           }
         }
