@@ -147,9 +147,9 @@ build {
     elevated_password = build.Password
 
     inline = [
-      "Import-Module C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Module\\Ec2Launch.psm1"
-      "Import-LocalizedData -BaseDirectory C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Module\\ -FileName 'Ec2Launch.psd1' -BindingVariable moduleManifest"
-      "$moduleManifest.Get_Item('ModuleVersion')"
+      "Import-Module C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Module\\Ec2Launch.psm1",
+      "Import-LocalizedData -BaseDirectory C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Module\\ -FileName 'Ec2Launch.psd1' -BindingVariable moduleManifest",
+      "$moduleManifest.Get_Item('ModuleVersion')",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" reset --block",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" sysprep --block",
     ]
