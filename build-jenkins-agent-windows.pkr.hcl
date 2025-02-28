@@ -156,7 +156,14 @@ build {
     elevated_password = build.Password
 
     inline = [
+      "echo =============================================================================================================================================="
       "dir \"$env:ProgramFiles\\amazon\" ",
+      "dir \"C:\\ProgramData\\Amazon\" ",
+      "dir \"C:\\ProgramData\\Amazon\\EC2-Windows\" ",
+      "dir \"C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\" ",
+      "dir \"C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\" ",
+      "Get-ChildItem -Recurse -Filter 'ec2launch'"
+      "echo =============================================================================================================================================="
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" reset --block",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" sysprep --block",
     ]
