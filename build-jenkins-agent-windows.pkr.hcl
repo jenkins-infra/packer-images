@@ -140,6 +140,15 @@ build {
     ]
   }
 
+  # Install EC2Launch
+  provisioner "powershell" {
+    only              = ["amazon-ebs.windows"]
+    environment_vars  = local.provisioning_env_vars
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+    script            = "./provisioning/EC2Launch-install.ps1"
+  }
+
   # This provisioner must be the last for AWS EBS builds, after reboots
   provisioner "powershell" {
     only              = ["amazon-ebs.windows"]
@@ -147,10 +156,6 @@ build {
     elevated_password = build.Password
 
     inline = [
-      "Import-Module C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Module\\Ec2Launch.psm1",
-      "Import-LocalizedData -BaseDirectory C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Module\\ -FileName 'Ec2Launch.psd1' -BindingVariable moduleManifest",
-      "echo version_EC2Launch: ",
-      "$moduleManifest.Get_Item('ModuleVersion')",
       "dir \"$env:ProgramFiles\\amazon\" ",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" reset --block",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" sysprep --block",
