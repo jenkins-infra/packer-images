@@ -75,12 +75,12 @@ build {
     destination = "C:/"
   }
 
-  provisioner "powershell" {
-    environment_vars  = local.provisioning_env_vars
-    elevated_user     = local.windows_winrm_user[var.image_type]
-    elevated_password = build.Password
-    script            = "./provisioning/windows-provision.ps1"
-  }
+  # provisioner "powershell" {
+  #   environment_vars  = local.provisioning_env_vars
+  #   elevated_user     = local.windows_winrm_user[var.image_type]
+  #   elevated_password = build.Password
+  #   script            = "./provisioning/windows-provision.ps1"
+  # }
 
   # Recommended (and sometimes required) before running deprovisioning (sysprep)
   # ref. https:#www.packer.io/docs/builders/azure/arm#windows
@@ -90,44 +90,44 @@ build {
     pause_before = "1m"
   }
 
-  provisioner "file" {
-    source      = "./tests/goss-windows-2019.yaml"
-    destination = "C:/goss-windows-2019.yaml"
-  }
+  # provisioner "file" {
+  #   source      = "./tests/goss-windows-2019.yaml"
+  #   destination = "C:/goss-windows-2019.yaml"
+  # }
 
-  provisioner "file" {
-    source      = "./tests/goss-windows-2022.yaml"
-    destination = "C:/goss-windows-2022.yaml"
-  }
+  # provisioner "file" {
+  #   source      = "./tests/goss-windows-2022.yaml"
+  #   destination = "C:/goss-windows-2022.yaml"
+  # }
 
-  provisioner "file" {
-    source      = "./tests/goss-windows.yaml"
-    destination = "C:/goss-windows.yaml"
-  }
+  # provisioner "file" {
+  #   source      = "./tests/goss-windows.yaml"
+  #   destination = "C:/goss-windows.yaml"
+  # }
 
-  provisioner "file" {
-    source      = "./tests/goss-common.yaml"
-    destination = "C:/goss-common.yaml"
-  }
+  # provisioner "file" {
+  #   source      = "./tests/goss-common.yaml"
+  #   destination = "C:/goss-common.yaml"
+  # }
 
-  provisioner "breakpoint" {
-    note    = "Enable this breakpoint to pause before trying to run goss tests"
-    disable = true
-  }
+  # provisioner "breakpoint" {
+  #   note    = "Enable this breakpoint to pause before trying to run goss tests"
+  #   disable = true
+  # }
 
-  provisioner "powershell" {
-    environment_vars = local.provisioning_env_vars
-    inline = [
-      "$ErrorActionPreference = 'Stop'",
-      "goss --version",
-      #"goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s",
-      #"goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s",
-      #"goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s",
-      "Remove-Item -Force C:/goss-windows.yaml",
-      "Remove-Item -Force C:/goss-common.yaml",
-      "Remove-Item -Force C:/visualstudio.vsconfig",
-    ]
-  }
+  # provisioner "powershell" {
+  #   environment_vars = local.provisioning_env_vars
+  #   inline = [
+  #     "$ErrorActionPreference = 'Stop'",
+  #     "goss --version",
+  #     #"goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s",
+  #     #"goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s",
+  #     #"goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s",
+  #     "Remove-Item -Force C:/goss-windows.yaml",
+  #     "Remove-Item -Force C:/goss-common.yaml",
+  #     "Remove-Item -Force C:/visualstudio.vsconfig",
+  #   ]
+  # }
 
   # This provisioner must be the last for Azure builds, after reboots
   provisioner "powershell" {
@@ -149,7 +149,9 @@ build {
     inline = [
       "Import-Module C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Module\\Ec2Launch.psm1",
       "Import-LocalizedData -BaseDirectory C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Module\\ -FileName 'Ec2Launch.psd1' -BindingVariable moduleManifest",
+      "echo version_EC2Launch: ",
       "$moduleManifest.Get_Item('ModuleVersion')",
+      "dir \"$env:ProgramFiles\\amazon\" ",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" reset --block",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" sysprep --block",
     ]
