@@ -1,52 +1,54 @@
 def flagRunUpdatecli
 
-// returns a list of changed files using git diff to get all changes not only last commit ones
-List<String> getChangedFilesList() {
+// returns a list of changed files using github api to get all changes not only last commit ones and without a node
+List<String>  getChangedFilesList() {
     def changedFiles = []
+    def prNumber = env.CHANGE_ID // Get PR number from Jenkins environment
+    def repo = "your-org/your-repo" // Change this to your GitHub repo
+    def apiUrl = "https://api.github.com/repos/${repo}/pulls/${prNumber}/files"
 
-    node {
-        checkout scm
-        def gitDiffCommand = "git diff --name-only origin/${env.CHANGE_TARGET}...HEAD"
-        def output = sh(script: gitDiffCommand, returnStdout: true).trim()
-        if (output) {
-            changedFiles = output.split("\n")
-        }
-        println "Changed files: ${changedFiles}" //debug
+    def response = new URL(apiUrl).text
+    def json = new groovy.json.JsonSlurper().parseText(response)
+
+    for (file in json) {
+        println "file ${file}" //debug
+        changedFiles.add(file.filename)
     }
 
+    println "Changed files: ${changedFiles}"
     return changedFiles
 }
 
 stage('Which files') {
-    flagRunUpdatecli = false
+  flagRunUpdatecli = false
 
-    if (env.BRANCH_IS_PRIMARY) {
+  if (env.BRANCH_IS_PRIMARY) {
+    flagRunUpdatecli = true
+  } else {
+    def filelist = getChangedFilesList()  // Get all changed files
+    echo "============= The list: ${filelist}"
+
+    // Check if any changed file contains 'updatecli'
+    if (filelist.any { it.contains('updatecli') }) {
         flagRunUpdatecli = true
-    } else {
-        def filelist = getChangedFilesList()  // Get all changed files
-        echo "============= The list: ${filelist}"
-
-        // Check if any changed file contains 'updatecli'
-        if (filelist.any { it.contains('updatecli') }) {
-            flagRunUpdatecli = true
-        }
     }
+  }
 }
 
 stage('UpdateCli') {
-    if (flagRunUpdatecli || pullRequest.labels.contains('run-updatecli')) {
-        withCredentials([
-            azureServicePrincipal('updatecli-azure-serviceprincipal'),
-            string(credentialsId: 'updatecli-aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
-            string(credentialsId: 'updatecli-aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
-        ]) {
-            currentBuild.result = 'ABORTED'
-            error('Stopping early as WIP')
-            // if (env.BRANCH_IS_PRIMARY) {
-            //     updatecli(action: 'apply', updatecliAgentLabel: 'linux-amd64-docker', cronTriggerExpression: '@daily')
-            // } else {
-            //     updatecli(action: 'diff', updatecliAgentLabel: 'linux-amd64-docker')
-            // }
-        }
+  if (flagRunUpdatecli || pullRequest.labels.contains('run-updatecli')) {
+    withCredentials([
+      azureServicePrincipal('updatecli-azure-serviceprincipal'),
+      string(credentialsId: 'updatecli-aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+      string(credentialsId: 'updatecli-aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+    ]) {
+      currentBuild.result = 'ABORTED'
+      error('Stopping early as WIP')
+      // if (env.BRANCH_IS_PRIMARY) {
+      //     updatecli(action: 'apply', updatecliAgentLabel: 'linux-amd64-docker', cronTriggerExpression: '@daily')
+      // } else {
+      //     updatecli(action: 'diff', updatecliAgentLabel: 'linux-amd64-docker')
+      // }
     }
+  }
 }
