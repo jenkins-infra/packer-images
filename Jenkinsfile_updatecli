@@ -1,23 +1,18 @@
 def flagRunUpdatecli
 
-// returns a list of changed files
+// returns a list of changed files using git diff to get all changes not only last commit ones
 @NonCPS
 List<String> getChangedFilesList() {
-  changedFiles = []
-  println "Debug: changeSets size = ${currentBuild.changeSets.size()}" // Debug line
-  for (changeLogSet in currentBuild.changeSets) {
-    println "Debug: Processing changeLogSet: ${changeLogSet}" // Debug line
-    for (entry in changeLogSet.getItems()) { // for each commit in the detected changes
-      println "Debug: Processing entry: ${entry.getCommitId()}" // Debug line
-      for (file in entry.getAffectedFiles()) {
-        println "Changed file: ${file.getPath()}" // Debug line
-        if (changedFiles.contains(file.getPath()) == false) {
-          changedFiles.add(file.getPath()) // add changed file to list if not already in
-        }
-      }
+    def changedFiles = []
+    def gitDiffCommand = "git diff --name-only origin/${env.CHANGE_TARGET}...HEAD"
+
+    def output = sh(script: gitDiffCommand, returnStdout: true).trim()
+    if (output) {
+        changedFiles = output.split("\n")
     }
-  }
-  return changedFiles
+
+    println "Changed files: ${changedFiles}"
+    return changedFiles
 }
 
 stage('Which files') {
