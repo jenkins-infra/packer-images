@@ -1,5 +1,5 @@
 ---
-name: Bump python3 version
+name: Bump python3 version for windows
 
 scms:
   default:
@@ -29,6 +29,9 @@ conditions:
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
       command: curl https://community.chocolatey.org/packages/python3/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
+    transformers:
+      - findsubmatch:
+          pattern: 'Package Approved'
 
 targets:
   updateVersion:
