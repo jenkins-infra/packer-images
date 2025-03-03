@@ -103,6 +103,8 @@ pipeline {
               echo "============= the list ${filelist}"
               // here I can set flags depending on filenames or path
               // flags that I will take care of below
+              currentBuild.result = 'ABORTED'
+              error('Stopping early as WIP')
             }
           }
         }
