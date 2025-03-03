@@ -12,7 +12,7 @@ azure:
 aws:
   ubuntu:
     "22.04":
-      amd64: ami-00eab7ecccb541f63
+      amd64: ami-03fea1580c4614788
       arm64: ami-0e83a8ce22df77a97
   windows:
     "2019":
