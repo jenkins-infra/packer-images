@@ -156,6 +156,10 @@ build {
     elevated_password = build.Password
 
     inline = [
+      "echo ****************************************** DEBUG ******************",
+      "dir /s C:\\ProgramData\\Amazon\\ ",
+      "dir /s $env:ProgramFiles\\amazon\\ ",
+      "echo ****************************************** DEBUG ******************",
       "echo ================================================================================ SYSPREP ==============================================================",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" reset --block",
       "& \"$env:ProgramFiles\\amazon\\ec2launch\\ec2launch.exe\" sysprep --block",
