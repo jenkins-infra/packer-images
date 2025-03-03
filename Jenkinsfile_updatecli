@@ -1,21 +1,17 @@
 def flagRunUpdatecli
 
 // returns a list of changed files using git diff to get all changes not only last commit ones
-@NonCPS
 List<String> getChangedFilesList() {
     def changedFiles = []
 
     node {
-        checkout scm  // Ensures we have the correct branch checked out
-
+        checkout scm
         def gitDiffCommand = "git diff --name-only origin/${env.CHANGE_TARGET}...HEAD"
         def output = sh(script: gitDiffCommand, returnStdout: true).trim()
-
         if (output) {
             changedFiles = output.split("\n")
         }
-
-        println "Changed files: ${changedFiles}"
+        println "Changed files: ${changedFiles}" //debug
     }
 
     return changedFiles
