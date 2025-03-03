@@ -38,8 +38,8 @@ stages {
   stage('UpdateCli') {
       when {
         anyOf {
-          expression{flagRunUpdatecli == true},
-          pullRequest.labels.contains('run-updatecli')
+          expression{flagRunUpdatecli}
+          expression{pullRequest.labels.contains('run-updatecli')}
         }
       }
       withCredentials([
