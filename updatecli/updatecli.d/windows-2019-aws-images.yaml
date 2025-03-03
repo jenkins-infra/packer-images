@@ -23,7 +23,7 @@ sources:
           --owners amazon \
           --filters \
             "Name=platform,Values=windows" \
-            "Name=description,Values=Microsoft Windows Server 2019 Core Locale English AMI provided by Amazon" \
+            "Name=description,Values=Microsoft Windows Server 2019 Core with EC2LaunchV2\, English locale AMI provided by Amazon" \
             "Name=root-device-type,Values=ebs" \
             "Name=virtualization-type,Values=hvm" \
             "Name=architecture,Values=x86_64" \
