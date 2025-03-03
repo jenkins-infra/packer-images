@@ -36,12 +36,7 @@ stage('Which files') {
   }
 }
 stage('UpdateCli') {
-    when {
-      anyOf {
-        expression{flagRunUpdatecli}
-        expression{pullRequest.labels.contains('run-updatecli')}
-      }
-    }
+  if (flagRunUpdatecli or pullRequest.labels.contains('run-updatecli')) {
     withCredentials([
         azureServicePrincipal('updatecli-azure-serviceprincipal'),
         string(credentialsId: 'updatecli-aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
@@ -55,4 +50,5 @@ stage('UpdateCli') {
         //     updatecli(action: 'diff', updatecliAgentLabel: 'linux-amd64-docker')
         // }
     }
+  }
 }
