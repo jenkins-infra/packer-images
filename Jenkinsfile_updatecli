@@ -17,21 +17,17 @@ List<String> getChangedFilesList() {
 }
 
 stage('Which files') {
-  when {
-    allOf {
-      expression{env.BRANCH_NAME != 'master'}
-    }
-  }
-  steps {
-    script {
-      filelist = getChangedFilesList()
-      echo "============= the list ${filelist}"
-      // here I can set flags depending on filenames or path
-      // flags that I will take care of below
-      if ({$filelist.contains('updatecli')})
-        flagRunUpdatecli=true
-      else
-        flagRunUpdatecli=false
+  flagRunUpdatecli=false
+  if (env.BRANCH_NAME != 'master') {
+    steps {
+      script {
+        filelist = getChangedFilesList()
+        echo "============= the list ${filelist}"
+        // here I can set flags depending on filenames or path
+        // flags that I will take care of below
+        if ({$filelist.contains('updatecli')})
+          flagRunUpdatecli=true
+      }
     }
   }
 }
