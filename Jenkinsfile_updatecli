@@ -1,22 +1,19 @@
 def flagRunUpdatecli
 
-// returns a list of changed files using github api to get all changes not only last commit ones and without a node
-List<String>  getChangedFilesList() {
-    def changedFiles = []
-    def prNumber = env.CHANGE_ID // Get PR number from Jenkins environment
-    def repo = "your-org/your-repo" // Change this to your GitHub repo
-    def apiUrl = "https://api.github.com/repos/${repo}/pulls/${prNumber}/files"
-
-    def response = new URL(apiUrl).text
-    def json = new groovy.json.JsonSlurper().parseText(response)
-
-    for (file in json) {
-        println "file ${file}" //debug
-        changedFiles.add(file.filename)
+// returns a list of changed files only last commit ones
+@NonCPS
+List<String> getChangedFilesList() {
+  changedFiles = []
+  for (changeLogSet in currentBuild.changeSets) {
+    for (entry in changeLogSet.getItems()) { // for each commit in the detected changes
+      for (file in entry.getAffectedFiles()) {
+        if (changedFiles.contains(file.getPath()) == false) {
+          changedFiles.add(file.getPath()) // add changed file to list if not already in
+        }
+      }
     }
-
-    println "Changed files: ${changedFiles}"
-    return changedFiles
+  }
+  return changedFiles
 }
 
 stage('Which files') {
@@ -25,8 +22,8 @@ stage('Which files') {
   if (env.BRANCH_IS_PRIMARY) {
     flagRunUpdatecli = true
   } else {
-    def filelist = getChangedFilesList()  // Get all changed files
-    echo "============= The list: ${filelist}"
+    def filelist = getChangedFilesList()  // Get all changed files for this commit
+    printf "============= The list: %s\n" "${filelist}"
 
     // Check if any changed file contains 'updatecli'
     if (filelist.any { it.contains('updatecli') }) {
@@ -42,13 +39,14 @@ stage('UpdateCli') {
       string(credentialsId: 'updatecli-aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
       string(credentialsId: 'updatecli-aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
     ]) {
-      currentBuild.result = 'ABORTED'
-      error('Stopping early as WIP')
-      // if (env.BRANCH_IS_PRIMARY) {
-      //     updatecli(action: 'apply', updatecliAgentLabel: 'linux-amd64-docker', cronTriggerExpression: '@daily')
-      // } else {
-      //     updatecli(action: 'diff', updatecliAgentLabel: 'linux-amd64-docker')
-      // }
+      if (env.BRANCH_IS_PRIMARY) {
+          updatecli(action: 'apply', updatecliAgentLabel: 'linux-amd64-docker', cronTriggerExpression: '@daily')
+      } else {
+          updatecli(action: 'diff', updatecliAgentLabel: 'linux-amd64-docker')
+      }
     }
+  } else {
+    currentBuild.result = 'ABORTED'
+      error('no updatecli change to check in this commit')
   }
 }
