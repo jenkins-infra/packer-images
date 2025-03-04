@@ -23,7 +23,7 @@ stage('Which files') {
     flagRunUpdatecli = true
   } else {
     def filelist = getChangedFilesList()  // Get all changed files for this commit
-    printf "============= The list: %s\n" "${filelist}"
+    echo "============= The list: ${filelist}"
 
     // Check if any changed file contains 'updatecli'
     if (filelist.any { it.contains('updatecli') }) {
