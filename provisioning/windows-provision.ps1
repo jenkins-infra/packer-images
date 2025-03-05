@@ -367,6 +367,9 @@ if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
     AddToPathEnv "C:\Windows\System32\WindowsPowerShell\v1.0\"
 }
 
+## Enabling LongPaths
+Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name LongPathsEnabled -type DWord -Value 1
+
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
 DownloadFile "$env:OPENSSH_AUTHORIZED_KEYS_URL" "$temp_authorized_keys_file"
