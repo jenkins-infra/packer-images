@@ -90,6 +90,15 @@ build {
     pause_before = "1m"
   }
 
+  ## enable longpath
+  provisioner "powershell" {
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+    inline = [
+      "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name LongPathsEnabled -type DWord -Value 1",
+    ]
+  }
+
   provisioner "file" {
     source      = "./tests/goss-windows-2019.yaml"
     destination = "C:/goss-windows-2019.yaml"
