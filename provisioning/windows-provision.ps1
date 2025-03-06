@@ -14,6 +14,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force
 Add-Type -AssemblyName System.Web
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+
 ## Reusable Functions (must be declared before calling)
 Function Retry-Command {
     [CmdletBinding()]
@@ -63,10 +64,6 @@ Function AddToPathEnv($path) {
     $newPath = '{0};{1}' -f $path,$oldPath
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
 }
-
-# Set UTF8 as default
-[System.Console]::OutputEncoding = [System.Console]::InputEncoding = [System.Text.Encoding]::UTF8
-$PSDefaultParameterValues['*:Encoding'] = 'utf8'
 
 # Install OpenSSH (from Windows Features)
 Write-Output "= Installing OpenSSH Server..."
