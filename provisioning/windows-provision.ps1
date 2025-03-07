@@ -145,8 +145,8 @@ $downloads = [ordered]@{
         'local' = "$baseDir\MinGit.zip";
         'expandTo' = "$baseDir\git";
         'postExpand' = {
-            & "$baseDir\git\cmd\git.exe" config --system core.autocrlf true;
-            & "$baseDir\git\cmd\git.exe" config --system core.longpaths true;
+            & "$baseDir\git\cmd\git.exe" config set --system core.autocrlf "true";
+            & "$baseDir\git\cmd\git.exe" config set --system core.longPaths "true";
         };
         # git cmd and gnu tools included with git as paths
         'path' = "$baseDir\git\cmd;$baseDir\git\usr\bin";
