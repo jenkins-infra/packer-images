@@ -103,6 +103,7 @@ function install_common_requirements() {
     dnsutils `# Provides dig(1)` \
     lsb-release `# Provides CLI for distribution detction` \
     gpg-agent `# Required for GPG management` \
+    rsync `# Differential copy is quite useful` \
     software-properties-common `# Provides a LOT of APT utilities`
 }
 
