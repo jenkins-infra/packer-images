@@ -96,7 +96,9 @@ command:
   python3:
     exec: python3 --version
     exit-status: 0
-  # https://github.com/jenkins-infra/packer-images/pull/1043#pullrequestreview-1878135249
+  rsync:
+    exec: rsync --version
+    exit-status: 0
   ruby:
     exec: asdf list ruby
     exit-status: 0
