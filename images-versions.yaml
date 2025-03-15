@@ -18,7 +18,7 @@ aws:
     "2019":
       amd64: ami-045e7b788ec2de601
     "2022":
-      amd64: ami-0556430377b9269f6
+      amd64: ami-00f915df88f6d1e44
 docker:
   ubuntu:
     "22.04":
