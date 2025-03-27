@@ -3,6 +3,7 @@ source "amazon-ebs" "base" {
   skip_create_ami = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
   spot_instance_types = local.aws_spot_instance_types[var.architecture]
+  spot_price = "auto"
 
   # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
   # Note: tracked by updatecli
