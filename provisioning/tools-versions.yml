@@ -2,7 +2,7 @@
 asdf_version: 0.15.0
 awscli_version: 2.25.7
 azcopy_version: 10.28.1
-azurecli_version: 2.70.0
+azurecli_version: 2.71.0
 chocolatey_version: 1.4.0
 compose_version: 2.34.0
 cst_version: 1.19.3
