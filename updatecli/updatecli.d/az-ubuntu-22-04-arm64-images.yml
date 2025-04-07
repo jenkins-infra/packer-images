@@ -30,13 +30,10 @@ targets:
     name: Update azure `ubuntu 22.04` arm64 image version in locals
     sourceid: lastReleaseVersion
     kind: yaml
-    scmid: default
     spec:
       file: ./images-versions.yaml
       key: $.azure.ubuntu.'22.04'.arm64
-    transformers:
-      - addprefix: '"'
-      - addsuffix: '"'
+    scmid: default
 
 actions:
   default:
