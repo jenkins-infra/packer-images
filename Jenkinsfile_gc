@@ -25,21 +25,6 @@ pipeline {
                         sh './cleanup/azure.sh 1 prod'
                     }
                 }
-                stage('GC on AWS us-east-2') {
-                    environment {
-                        AWS_ACCESS_KEY_ID     = credentials('packer-aws-access-key-id')
-                        AWS_SECRET_ACCESS_KEY = credentials('packer-aws-secret-access-key')
-                        AWS_DEFAULT_REGION    = 'us-east-2'
-                    }
-                    steps {
-                        sh 'bash ./cleanup/aws.sh'
-                        sh './cleanup/aws_images.sh 1 dev'
-                        sh './cleanup/aws_images.sh 7 staging'
-                        sh './cleanup/aws_images.sh 60 prod'
-                        sh './cleanup/aws_snapshots.sh'
-                        }
-                    }
-                }
             }
         }
     }

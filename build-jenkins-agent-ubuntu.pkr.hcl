@@ -3,11 +3,6 @@ build {
     name = "ubuntu"
   }
 
-  source "amazon-ebs.base" {
-    name         = "ubuntu"
-    ssh_username = "ubuntu"
-  }
-
   source "azure-arm.base" {
     name = "ubuntu"
     # List available offers and publishers with the command `az vm image list --output table`
