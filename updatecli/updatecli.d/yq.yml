@@ -33,7 +33,6 @@ conditions:
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
       url: https://community.chocolatey.org/packages/yq/{{ source "lastReleaseVersion" }}
-      # command: curl https://community.chocolatey.org/packages/awscli/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
 
 targets:
   updateVersion:

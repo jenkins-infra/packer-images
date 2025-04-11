@@ -9,16 +9,6 @@ azure:
     "22.04":
       amd64: 22.04.202504080
       arm64: 22.04.202504080
-aws:
-  ubuntu:
-    "22.04":
-      amd64: ami-08c18c49bdb7f38f7
-      arm64: ami-082e5deb4356a22a6
-  windows:
-    "2019":
-      amd64: ami-0c973dceaa335327b
-    "2022":
-      amd64: ami-00f915df88f6d1e44
 docker:
   ubuntu:
     "22.04":
