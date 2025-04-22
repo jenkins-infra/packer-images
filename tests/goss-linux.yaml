@@ -63,7 +63,7 @@ command:
     exec: /opt/jdk-17/bin/java --version
     exit-status: 0
     stdout:
-      - 17.0.14+7
+      - 17.0.15+6
   jdk21:
     exec: /opt/jdk-21/bin/java --version
     exit-status: 0
@@ -73,7 +73,7 @@ command:
     exec: /opt/jdk-8/bin/java -version
     exit-status: 0
     stderr:
-      - 1.8.0_442
+      - 1.8.0_452
   maven:
     exec: JAVA_HOME=/opt/jdk-21 mvn -v
     exit-status: 0
