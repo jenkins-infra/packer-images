@@ -9,7 +9,7 @@ cst_version: 1.19.3
 docker_version: 28.1.1
 docker_buildx_version: 0.14.1
 doctl_version: 1.124.0
-gh_version: 2.69.0
+gh_version: 2.70.0
 git_lfs_version: 3.6.1
 git_linux_version: 2.49.0
 git_windows_version: 2.47.1
