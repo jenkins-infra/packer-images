@@ -30,13 +30,11 @@ targets:
     name: Update azure `windows 2022` image version in locals
     sourceid: lastReleaseVersion
     kind: yaml
-    scmid: default
     spec:
+      engine: yamlpath
       file: ./images-versions.yaml
       key: $.azure.windows.2022.amd64
-    transformers:
-      - addprefix: '"'
-      - addsuffix: '"'
+    scmid: default
 
 actions:
   default:
