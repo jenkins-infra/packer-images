@@ -18,8 +18,10 @@ locals {
   images_versions = yamldecode(file("./images-versions.yaml"))
 
   azure_vm_size = {
-    "amd64" = "Standard_D4ads_v5" # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
-    "arm64" = "Standard_D4pds_v5" # 4 CPU / 16 GB
+    # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
+    "amd64" = "Standard_D4ads_v5"
+    # 4 CPU / 16 GB
+    "arm64" = "Standard_D4pds_v5"
   }
   azure_destination_resource_group = "${var.build_type}-packer-images"
   azure_galleries = {
@@ -27,7 +29,8 @@ locals {
     "staging_packer_images" = ["East US 2"]
     "dev_packer_images"     = ["East US 2"]
   }
-  disk_size_gb = 150 # Must be greater than 127 Gb to allow Azure template for Windows
+  # Must be greater than 127 Gb to allow Azure template for Windows
+  disk_size_gb = 150
   provisioning_env_vars = concat(
     [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"],
     [
