@@ -108,7 +108,7 @@ command:
     exec: updatecli version
     exit-status: 0
     stdout:
-      - 0.98.0
+      - 0.99.0
   yq:
     exec: yq --version
     exit-status: 0
