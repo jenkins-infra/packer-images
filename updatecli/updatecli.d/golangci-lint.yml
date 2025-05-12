@@ -1,0 +1,43 @@
+---
+name: Bump golangci-lint version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastVersion:
+    kind: githubrelease
+    spec:
+      owner: golangci
+      repository: golangci-lint
+      token: "{{ requiredEnv .github.token }}"
+    transformers:
+      - trimprefix: v
+
+targets:
+  updateVersion:
+    name: "Update the `golangci-lint` version in the tools-versions.yml file"
+    kind: yaml
+    spec:
+      file: ./provisioning/tools-versions.yml
+      key: $.golangcilint_version
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump golangci-lint version to {{ source "lastVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - dependency
+        - golangci-lint
