@@ -36,7 +36,7 @@ command:
     exec: golangci-lint --version
     exit-status: 0
     stdout:
-      - 1.55.2
+      - 2.1.6
   helm:
     exec: helm version
     exit-status: 0
