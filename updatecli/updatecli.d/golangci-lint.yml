@@ -31,6 +31,13 @@ targets:
       file: ./provisioning/tools-versions.yml
       key: $.golangcilint_version
     scmid: default
+  updateVersionInGoss:
+    name: "Update the `golangci-lint` version the goss test"
+    kind: yaml
+    spec:
+      file: ./tests/goss-linux.yaml
+      key: $.command.golangci-lint.stdout[0]
+    scmid: default
 
 actions:
   default:
