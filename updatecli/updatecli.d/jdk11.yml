@@ -15,28 +15,25 @@ scms:
 
 sources:
   lastReleaseVersion:
-    kind: githubrelease
-    name: Get the latest Adoptium JDK11 version
+    kind: temurin
     spec:
-      owner: "adoptium"
-      repository: "temurin11-binaries"
-      token: "{{ requiredEnv .github.token }}"
-      username: "{{ .github.username }}"
-      versionfilter:
-        kind: regex
-        # jdk-11.0.12+7(https://github.com/adoptium/temurin11-binaries/releases/tag/jdk-11.0.12%2B7) is OK
-        # jdk-11.0.16.1+1 (https://github.com/adoptium/temurin11-binaries/releases/tag/jdk-11.0.16.1%2B1) is OK
-        pattern: "^jdk-11.(\\d*).(\\d*).(\\d*)(.(\\d*))+(\\d*)$"
+      featureversion: 11
+      releasetype: ga
     transformers:
       - trimprefix: "jdk-"
 
 conditions:
-  checkIfReleaseIsAvailable:
-    kind: shell
+  checkIfReleaseIsAvailableForall:
+    kind: temurin
+    # checked version comes from the source
+    sourceid: lastReleaseVersion
     spec:
-      command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
-      environments:
-        - name: PATH
+      # release type is mandatory to support ea version (bug in updatecli)
+      releasetype: ga
+      platforms:
+        - linux/x64
+        - linux/aarch64
+        - windows/x64
 
 targets:
   updateJDK11Version:
