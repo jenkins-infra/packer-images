@@ -15,27 +15,25 @@ scms:
 
 sources:
   lastReleaseVersion:
-    kind: githubrelease
-    name: Get the latest Adoptium JDK8 version
+    kind: temurin
     spec:
-      owner: "adoptium"
-      repository: "temurin8-binaries"
-      token: "{{ requiredEnv .github.token }}"
-      username: "{{ .github.username }}"
-      versionfilter:
-        kind: regex
-        # (https://github.com/adoptium/temurin8-binaries/releases/tag/jdk8u345-b01) is OK but jdk8u302-b08.1 is not
-        pattern: "^jdk8u(\\d*)-b(\\d*)$"
+      featureversion: 8
+      releasetype: ga
     transformers:
       - trimprefix: "jdk"
 
 conditions:
-  checkIfReleaseIsAvailable:
-    kind: shell
+  checkIfReleaseIsAvailableForall:
+    kind: temurin
+    # checked version comes from the source
+    sourceid: lastReleaseVersion
     spec:
-      command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
-      environments:
-        - name: PATH
+      # release type is mandatory to support ea version (bug in updatecli)
+      releasetype: ga
+      platforms:
+        - linux/x64
+        - linux/aarch64
+        - windows/x64
 
 targets:
   updateJDK8Version:

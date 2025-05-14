@@ -15,26 +15,25 @@ scms:
 
 sources:
   lastReleaseVersion:
-    kind: githubrelease
-    name: Get the latest Adoptium JDK21 version
+    kind: temurin
     spec:
-      owner: "adoptium"
-      repository: "temurin21-binaries"
-      token: "{{ requiredEnv .github.token }}"
-      username: "{{ .github.username }}"
-      versionfilter:
-        kind: regex
-        pattern: "^jdk-21.(\\d*).(\\d*).(\\d*)+(\\d*)$"
+      featureversion: 21
+      releasetype: ga
     transformers:
       - trimprefix: "jdk-"
 
 conditions:
-  checkIfReleaseIsAvailable:
-    kind: shell
+  checkIfReleaseIsAvailableForall:
+    kind: temurin
+    # checked version comes from the source
+    sourceid: lastReleaseVersion
     spec:
-      command: bash ./updatecli/scripts/check-jdk.sh # source input value passed as argument
-      environments:
-        - name: PATH
+      # release type is mandatory to support ea version (bug in updatecli)
+      releasetype: ga
+      platforms:
+        - linux/x64
+        - linux/aarch64
+        - windows/x64
 
 targets:
   updateJDK21Version:
