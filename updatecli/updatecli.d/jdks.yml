@@ -1,0 +1,77 @@
+{{ range $item := .jdks }}
+{{ $major := $item.major }}
+{{ $releasetype := default "ga" $item.releasetype }}
+---
+name: Bump JDK '{{ $major }}' version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ $.github.user }}"
+      email: "{{ $.github.email }}"
+      owner: "{{ $.github.owner }}"
+      repository: "{{ $.github.repository }}"
+      token: "{{ requiredEnv $.github.token }}"
+      username: "{{ $.github.username }}"
+      branch: "{{ $.github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: temurin
+    spec:
+      featureversion: {{ $major }}
+      releasetype: {{ $releasetype }}
+    transformers:
+      - trimprefix: "jdk{{ if (ne $major 8) }}-{{ end }}"
+
+conditions:
+  checkIfReleaseIsAvailableForall:
+    kind: temurin
+    # checked version comes from the source
+    sourceid: lastReleaseVersion
+    spec:
+      # release type is mandatory to support ea version (bug in updatecli)
+      releasetype: {{ $releasetype }}
+      platforms:
+        - linux/x64
+        - linux/aarch64
+        - windows/x64
+
+targets:
+  updateJDKVersion:
+    name: Update the JDK{{ $major }} version in the Packer default values
+    kind: yaml
+    spec:
+      file: "provisioning/tools-versions.yml"
+      key: "$.jdk{{ $major }}_version"
+    scmid: default
+  updateJDKVersionInGoss:
+    name: Update the JDK{{ $major }} version in the goss test
+    kind: yaml
+{{ if (eq $major 8) }}
+    transformers:
+      - findsubmatch:
+          pattern: '8u(.*)-'
+          captureindex: 1
+      - addprefix: '1.8.0_'
+{{ end }}
+    spec:
+      engine: "yamlpath"
+      files:
+        - tests/goss-linux.yaml
+        - tests/goss-windows.yaml
+      key: $.command.jdk{{ $major }}.{{ if (ne $major 8) }}stdout{{ else }}stderr{{ end }}[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: Bump JDK{{ $major }} version to {{ source "lastReleaseVersion" }}
+    spec:
+      labels:
+        - enhancement
+        - jdk{{ $major }}
+...
+{{ end }}
