@@ -28,8 +28,10 @@ sources:
 conditions:
   checkIfReleaseIsAvailableForall:
     kind: temurin
+    # checked version comes from the source
+    sourceid: lastReleaseVersion
     spec:
-      featureversion: {{ $major }}
+      # release type is mandatory to support ea version (bug in updatecli)
       releasetype: {{ $releasetype }}
       platforms:
         - linux/x64
