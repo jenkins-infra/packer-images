@@ -65,6 +65,9 @@ Function AddToPathEnv($path) {
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
 }
 
+# Requried by testing libraries such as playwright
+Install-WindowsFeature Server-Media-Foundation
+
 # Install OpenSSH (from Windows Features)
 Write-Output "= Installing OpenSSH Server..."
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
