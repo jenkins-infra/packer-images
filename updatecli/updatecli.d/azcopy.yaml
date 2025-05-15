@@ -25,6 +25,18 @@ sources:
     transformers:
       - trimprefix: 'v'
 
+conditions:
+  checkx86DebPackage:
+    kind: file
+    disablesourceinput: true
+    spec:
+      file: https://github.com/Azure/azure-storage-azcopy/releases/download/v{{ source "lastReleaseVersion" }}/azcopy-{{ source "lastReleaseVersion" }}.x86_64.deb
+  checkArm64DebPackage:
+    kind: file
+    disablesourceinput: true
+    spec:
+      file: https://github.com/Azure/azure-storage-azcopy/releases/download/v{{ source "lastReleaseVersion" }}/azcopy-{{ source "lastReleaseVersion" }}.arm64.deb
+
 targets:
   updateVersion:
     name: "Update the `azcopy` version in the tools-versions.yml file"
