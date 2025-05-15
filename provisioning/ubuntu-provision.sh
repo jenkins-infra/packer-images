@@ -458,13 +458,15 @@ function install_azurecli() {
 
 ## Ensure that azcopy is installed
 function install_azcopy() {
-  rep_config_pkg="$(mktemp)"
-  # Download and install the repository configuration package.
-  curl --silent --show-error --location --output "${rep_config_pkg}" https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
-  dpkg --install "${rep_config_pkg}"
-  rm -f "${rep_config_pkg}"
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends azcopy="${AZCOPY_VERSION}"
+  azcopy_arch="$(uname -m)"
+  if [ "${azcopy_arch}" == "aarch64" ]
+  then
+    azcopy_arch="arm64"
+  fi
+  azcopy_pkg="$(mktemp)"
+  curl --silent --show-error --location --output "${azcopy_pkg}" "https://github.com/Azure/azure-storage-azcopy/releases/download/v${AZCOPY_VERSION}/azcopy-${AZCOPY_VERSION}.${azcopy_arch}.deb"
+  dpkg --install "${azcopy_pkg}"
+  rm -f "${azcopy_pkg}"
 }
 
 ## Ensure that the GitHub command line (`gh`) is installed
