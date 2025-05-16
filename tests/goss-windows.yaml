@@ -66,6 +66,12 @@ command:
     exit-status: 0
     stdout:
       - 'True'
+  longpath:
+    exec: Invoke-Expression 'reg.exe query HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled'
+    exit-status: 0
+    stdout:
+      - '1'
+
 file:
   C:\Program Files\Chromium\Application\:
     contains: []
