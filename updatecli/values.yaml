@@ -11,3 +11,10 @@ jdks:
   - major: 11
   - major: 17
   - major: 21
+platforms:
+  - os: linux
+    arch: x64
+  - os: linux
+    arch: aarch64
+  - os: windows
+    arch: x64
