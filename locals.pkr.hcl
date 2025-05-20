@@ -31,6 +31,18 @@ locals {
   }
   # Must be greater than 127 Gb to allow Azure template for Windows
   disk_size_gb = 150
+
+  jdk_infos = yamldecode(file("jdks-infos.yaml"))
+  # Mapping architecture to temurin jdk defaults, see https://api.adoptium.net/q/swagger-ui/#/Types/getArchitectures
+  mapped_arch = lookup({
+    "amd64"  = "x64"
+    "arm64"  = "aarch64"
+  }, var.architecture, "x64") # fallback x64
+  # lets list the majors version of jdk to install per architectures
+  jdks = sort([
+    for jdk_version in keys(local.jdk_infos[var.agent_os_type][local.mapped_arch]) :
+    replace(jdk_version, "jdk", "")
+  ])
   provisioning_env_vars = concat(
     [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"],
     [
@@ -41,6 +53,15 @@ locals {
       "LANG=${var.locale}",
       "LANGUAGE=${element(split(".", var.locale), 0)}:C",
       "LC_ALL=${var.locale}",
+      "JDKS=${join(" ", local.jdks)}",
+      "JDK_ARCH=${local.mapped_arch}",
     ],
+    flatten([
+      for jdk_version, jdk_data in local.jdk_infos[var.agent_os_type][local.mapped_arch] :
+        [
+          "${jdk_version}_${var.agent_os_type}_${local.mapped_arch}_installer_url=${jdk_data.installer_url}",
+          "${jdk_version}_${var.agent_os_type}_${local.mapped_arch}_checksum_url=${jdk_data.checksum_url}"
+        ]
+    ])
   )
 }
