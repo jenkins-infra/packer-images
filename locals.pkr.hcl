@@ -43,4 +43,6 @@ locals {
       "LC_ALL=${var.locale}",
     ],
   )
+
+  jdks_infos = yamldecode(file("./jdks_infos.yaml"))
 }
