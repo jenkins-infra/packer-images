@@ -310,57 +310,34 @@ function install_git_gitlfs() {
   rm -rf /tmp/git-lfs*
 }
 
-# Reusable function to perform a Temurin JDK installations
-function download_temurin_jdk() {
-  JDK_VERSION="$1"
+## usage of jdks_infos.yaml
+function install_jdks(){
+  for major_jdk_version in ${JDKS}; do
+    echo "jdk to install : ${major_jdk_version}"
 
-  local jdk_short_version major_jdk_version cpu_arch_short download_url
+    # download checksum
+    checksum_url_var="jdk${major_jdk_version}_ubuntu_${JDK_ARCH}_checksum_url"
+    checksum_url="${!checksum_url_var}"
+    temp_checksum_file="/tmp/jdk${major_jdk_version}.sha256"
+    curl --fail --silent --show-error --location --output "${temp_checksum_file}" "${checksum_url}"
 
-  cpu_arch_short="$(uname -m)"
-  if test "${cpu_arch_short}" == 'x86_64'
-  then
-    # Custom Temurin Architecture ID...
-    cpu_arch_short='x64'
-  fi
+    # download jdk and extract
+    installer_url_var="jdk${major_jdk_version}_ubuntu_${JDK_ARCH}_installer_url"
+    temp_archive="/tmp/jdk${major_jdk_version}.tgz"
+    installation_dir="/opt/jdk-$major_jdk_version"
+    curl --fail --silent --show-error --location --output "${temp_archive}" "${!installer_url_var}"
+    mkdir -p "${installation_dir}"
+    tar --extract --gunzip --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
 
-  # JDK8 has different URL pattern
-  if test "${JDK_VERSION:0:2}" == '8u'
-  then
-    jdk_short_version="${JDK_VERSION//-/}"
-    major_jdk_version='8'
-    download_url="https://github.com/adoptium/temurin8-binaries/releases/download/jdk${JDK_VERSION}/OpenJDK8U-jdk_${cpu_arch_short}_linux_hotspot_${jdk_short_version}.tar.gz"
-  else
-    jdk_short_version="${JDK_VERSION//+/_}"
-    major_jdk_version="$(\
-      echo "${JDK_VERSION%+*}" `# Remove suffix after any eventual '+' character` \
-      | cut -d'.' -f1          `# Only keep the first number (there can be no '.' or multiple)` \
-    )"
-    download_url="https://github.com/adoptium/temurin${major_jdk_version}-binaries/releases/download/jdk-${JDK_VERSION}/OpenJDK${major_jdk_version}U-jdk_${cpu_arch_short}_linux_hotspot_${jdk_short_version}.tar.gz"
-  fi
+    # adapt checksum filename
+    sed -i "s| .*$| ${temp_archive}|" "${temp_checksum_file}"
 
-  local temp_archive="/tmp/jdk${major_jdk_version}.tgz"
-  local installation_dir="/opt/jdk-$major_jdk_version"
+    # checksum test
+    sha256sum -c "${temp_checksum_file}"
 
-  curl --fail --silent --show-error --location --output "${temp_archive}" "${download_url}"
-
-  mkdir -p "${installation_dir}"
-  tar --extract --gunzip --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
-
-  rm -f "${temp_archive}"
-}
-
-function install_jdks() {
-  apt-get update --quiet
-  ## Prevent Java null pointer exception due to missing fontconfig / add jq that should already be installed but make this install_jdk function idempotent
-  apt-get install --yes --no-install-recommends fontconfig jq="${JQ_VERSION}*"
-
-  # JDK*_VERSION are env. vars provided outside of the script
-  # shellcheck disable=SC2153
-  for jdk_version_to_install in "${JDK8_VERSION}" "${JDK11_VERSION}" "${JDK17_VERSION}" "${JDK21_VERSION}"
-  do
-    echo "=== Installing Temurin JDK version ${jdk_version_to_install}..."
-    download_temurin_jdk "${jdk_version_to_install}"
-    echo "=== Installation of Temurin JDK version ${jdk_version_to_install} done."
+    # cleanup
+    rm -f "${temp_archive}"
+    rm -f "${temp_checksum_file}"
   done
 }
 
