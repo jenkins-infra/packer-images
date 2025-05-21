@@ -316,13 +316,11 @@ function install_jdks(){
     echo "jdk to install : ${major_jdk_version}"
 
     # download checksum
-    #checksum_url_var="jdk${major_jdk_version}_ubuntu_${JDK_ARCH}_checksum_url"
     checksum_url_var="jdk${major_jdk_version}_checksum_url"
     temp_checksum_file="/tmp/jdk${major_jdk_version}.sha256"
     curl --fail --silent --show-error --location --output "${temp_checksum_file}" "${!checksum_url_var}"
 
     # download jdk and extract
-    #installer_url_var="jdk${major_jdk_version}_ubuntu_${JDK_ARCH}_installer_url"
     installer_url_var="jdk${major_jdk_version}_installer_url"
     temp_archive="/tmp/jdk${major_jdk_version}.tgz"
     installation_dir="/opt/jdk-$major_jdk_version"
@@ -337,8 +335,8 @@ function install_jdks(){
     sha256sum -c "${temp_checksum_file}"
 
     # cleanup
-    rm -f "${temp_archive}"
-    rm -f "${temp_checksum_file}"
+    rm -f "${temp_archive}" "${temp_checksum_file}"
+
   done
 }
 
