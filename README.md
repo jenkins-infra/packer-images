@@ -90,4 +90,4 @@ packer build -timestamp-ui -force -only="docker.ubuntu" ./
 az group create -n myResourceGroup -l eastus
 ```
 
-* Define the cloud credentials with the 3 additional environment variables `PKR_VAR_subscription_id`, `PKR_VAR_client_id` and `PKR_VAR_client_secret`
+* Define the cloud credentials with the 3 additional environment variables `PKR_VAR_azure_subscription_id`, `PKR_VAR_azure_client_id` and `PKR_VAR_azure_client_secret`
