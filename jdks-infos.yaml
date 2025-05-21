@@ -1,6 +1,6 @@
 ---
 ubuntu:
-  x64:
+  amd64:
     jdk8:
       installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u452-b09/OpenJDK8U-jdk_x64_linux_hotspot_8u452b09.tar.gz
       release_name: jdk8u452-b09
@@ -17,7 +17,7 @@ ubuntu:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.7%2B6/OpenJDK21U-jdk_x64_linux_hotspot_21.0.7_6.tar.gz
       release_name: jdk-21.0.7+6
       checksum_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.7%2B6/OpenJDK21U-jdk_x64_linux_hotspot_21.0.7_6.tar.gz.sha256.txt
-  aarch64:
+  arm64:
     jdk8:
       installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u452-b09/OpenJDK8U-jdk_aarch64_linux_hotspot_8u452b09.tar.gz
       release_name: jdk8u452-b09
@@ -35,7 +35,7 @@ ubuntu:
       release_name: jdk-21.0.7+6
       checksum_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.7%2B6/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.7_6.tar.gz.sha256.txt
 windows:
-  x64:
+  amd64:
     jdk8:
       installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u452-b09/OpenJDK8U-jdk_x64_windows_hotspot_8u452b09.zip
       release_name: jdk8u452-b09
