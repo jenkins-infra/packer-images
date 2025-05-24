@@ -31,6 +31,14 @@ locals {
   }
   # Must be greater than 127 Gb to allow Azure template for Windows
   disk_size_gb = 150
+
+  jdk_infos = yamldecode(file("jdks-infos.yaml"))
+
+  # lets list the majors version of jdk to install per architectures
+  jdks = sort([
+    for jdk_version in keys(local.jdk_infos[var.agent_os_type][var.architecture]) :
+    replace(jdk_version, "jdk", "")
+  ])
   provisioning_env_vars = concat(
     [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"],
     [
@@ -41,6 +49,15 @@ locals {
       "LANG=${var.locale}",
       "LANGUAGE=${element(split(".", var.locale), 0)}:C",
       "LC_ALL=${var.locale}",
+      "JDKS=${join(" ", local.jdks)}",
     ],
+    flatten([
+      for jdk_version, jdk_data in local.jdk_infos[var.agent_os_type][var.architecture] :
+        [
+          "${jdk_version}_installer_url=${jdk_data.installer_url}",
+          "${jdk_version}_checksum_url=${jdk_data.checksum_url}",
+          "${jdk_version}_checksum=${jdk_data.checksum}"
+        ]
+    ])
   )
 }
