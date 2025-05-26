@@ -34,7 +34,8 @@ locals {
 
   jdk_infos = yamldecode(file("jdks-infos.yaml"))
 
-  # lets list the majors version of jdk to install per architectures
+  # list of the majors jdks to install for this platform/os extracted from the jdks-infos.yaml file
+  # require for bash safe iteration
   jdks = sort([
     for jdk_version in keys(local.jdk_infos[var.agent_os_type][var.architecture]) :
     replace(jdk_version, "jdk", "")
@@ -49,7 +50,7 @@ locals {
       "LANG=${var.locale}",
       "LANGUAGE=${element(split(".", var.locale), 0)}:C",
       "LC_ALL=${var.locale}",
-      "JDKS=${join(" ", local.jdks)}",
+      "JDKS=${join(" ", local.jdks)}", # space separated for bash iteration
     ],
     flatten([
       for jdk_version, jdk_data in local.jdk_infos[var.agent_os_type][var.architecture] :

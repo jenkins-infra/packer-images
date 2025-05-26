@@ -310,30 +310,24 @@ function install_git_gitlfs() {
   rm -rf /tmp/git-lfs*
 }
 
-## usage of jdks_infos.yaml
+## install the jdks major versions for the current os and platform
 function install_jdks(){
   for major_jdk_version in ${JDKS}; do
     echo "jdk to install : ${major_jdk_version}"
-
-    # download jdk and extract
     installer_url_var="jdk${major_jdk_version}_installer_url"
-    temp_archive="/tmp/jdk${major_jdk_version}.tgz"
-    installation_dir="/opt/jdk-$major_jdk_version"
+    temp_archive="$(mktemp)"
+    installation_dir="/opt/jdk-${major_jdk_version}"
     curl --fail --silent --show-error --location --output "${temp_archive}" "${!installer_url_var}"
     # checksum test
     checksum_value_var="jdk${major_jdk_version}_checksum_value"
-    REAL_CHECKSUM=$(sha256sum "${temp_archive}" | awk '{print $1}')
-    if [ "${REAL_CHECKSUM}" = "${!checksum_value_var}" ]; then
+    real_checksum=$(sha256sum "${temp_archive}" | awk '{print $1}')
+    if [ "${real_checksum}" = "${!checksum_value_var}" ]; then
       mkdir -p "${installation_dir}"
       tar --extract --gunzip --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
     else
       echo "wrong checksum for ${major_jdk_version} install"
       exit 1
     fi
-
-    # cleanup
-    rm -f "${temp_archive}"
-
   done
 }
 
