@@ -127,20 +127,6 @@ targets:
 {{ $parts := splitList "/" $platform }}
 {{ $os := index $parts 0 }}
 {{ $arch := index $parts 1 }}
-{{ $field := "checksum_url"}}
-  update_{{ $field }}_{{ $platform }}:
-    name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
-    sourceid: {{ $os }}_{{ $arch }}_{{ $field }}
-    kind: yaml
-    # scmid: default
-    spec:
-      file: ./jdks_infos.yaml
-      key: $.{{ $os }}.{{ $arch }}.jdk{{ $major }}.{{ $field }}
-{{ end }}
-{{ range $platform := splitList " " $platforms }}
-{{ $parts := splitList "/" $platform }}
-{{ $os := index $parts 0 }}
-{{ $arch := index $parts 1 }}
 {{ $field := "checksum_value"}}
   update_{{ $field }}_{{ $platform }}:
     name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
@@ -155,10 +141,10 @@ targets:
 {{ $parts := splitList "/" $platform }}
 {{ $os := index $parts 0 }}
 {{ $arch := index $parts 1 }}
-{{ $field := "release_name"}}
+{{ $field := "signature_url"}}
   update_{{ $field }}_{{ $platform }}:
     name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
-    sourceid: lastReleaseVersion
+    sourceid: {{ $os }}_{{ $arch }}_{{ $field }}
     kind: yaml
     # scmid: default
     spec:
