@@ -39,7 +39,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 22.15.1
+      - 22.16.0
       - '!Please install a version by running one of the following'
   pwsh:
     exec: pwsh -command "(Get-Host).Version"
@@ -60,7 +60,7 @@ command:
     exec: vagrant --version
     exit-status: 0
     stdout:
-      - 2.4.5
+      - 2.4.6
   dotnet35:
     exec: pwsh -command "Test-Path -Path 'HKLM:\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5'"
     exit-status: 0

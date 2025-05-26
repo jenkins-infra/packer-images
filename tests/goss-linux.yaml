@@ -41,19 +41,19 @@ command:
     exec: helm version
     exit-status: 0
     stdout:
-      - 3.17.3
+      - 3.18.0
   helmfile:
     exec: helmfile --version
     exit-status: 0
     stdout:
-      - 1.0.0
+      - 1.1.0
   helmplugins:
     exec: helm plugin list
     exit-status: 0
     stdout:
-      - /diff.*3.11.0/
+      - /diff.*3.12.0/
       - /helm-git.*1.3.0/
-      - /secrets.*4.6.4/
+      - /secrets.*4.6.5/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
@@ -83,7 +83,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 22.15.1
+      - 22.16.0
       - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version
