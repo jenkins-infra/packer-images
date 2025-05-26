@@ -315,27 +315,24 @@ function install_jdks(){
   for major_jdk_version in ${JDKS}; do
     echo "jdk to install : ${major_jdk_version}"
 
-    # download checksum
-    checksum_url_var="jdk${major_jdk_version}_checksum_url"
-    temp_checksum_file="/tmp/jdk${major_jdk_version}.sha256"
-    curl --fail --silent --show-error --location --output "${temp_checksum_file}" "${!checksum_url_var}"
-
     # download jdk and extract
     installer_url_var="jdk${major_jdk_version}_installer_url"
     temp_archive="/tmp/jdk${major_jdk_version}.tgz"
     installation_dir="/opt/jdk-$major_jdk_version"
     curl --fail --silent --show-error --location --output "${temp_archive}" "${!installer_url_var}"
-    mkdir -p "${installation_dir}"
-    tar --extract --gunzip --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
-
-    # adapt checksum filename
-    sed -i "s| .*$| ${temp_archive}|" "${temp_checksum_file}"
-
     # checksum test
-    sha256sum -c "${temp_checksum_file}"
+    checksum_value_var="jdk${major_jdk_version}_checksum_value"
+    REAL_CHECKSUM=$(sha256sum "${temp_archive}" | awk '{print $1}')
+    if [ "${REAL_CHECKSUM}" = "${!checksum_value_var}" ]; then
+      mkdir -p "${installation_dir}"
+      tar --extract --gunzip --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
+    else
+      echo "wrong checksum for ${major_jdk_version} install"
+      exit 1
+    fi
 
     # cleanup
-    rm -f "${temp_archive}" "${temp_checksum_file}"
+    rm -f "${temp_archive}"
 
   done
 }
