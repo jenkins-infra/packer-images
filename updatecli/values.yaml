@@ -7,20 +7,13 @@ github:
   repository: "packer-images"
 
 jdks:
-  # - major: 8
+  - major: 8
   - major: 11
-  # - major: 17
-  # - major: 21
-platforms:
-  # - os: linux
-  #   arch: x64
-  - os: linux
-    arch: aarch64
-  # - os: windows
-  #   arch: x64
+  - major: 17
+  - major: 21
 mappedArch:
-  x64: amd64
-  aarch64: arm64
+  amd64: x64
+  arm64: aarch64
 mappedOs:
-  linux: ubuntu
+  ubuntu: linux
   windows: windows
