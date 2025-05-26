@@ -100,7 +100,7 @@ $jdkList = $env:JDKS -split '\s+'
 foreach ($jdkMajorVersion in $jdkList) {
     $key = "jdk$jdkMajorVersion"
     $urlVar = "JDK${jdkMajorVersion}_INSTALLER_URL"
-    if (-not $url) {
+    if (-not $urlVar) {
         Write-Warning "⚠️ $urlVar undefined, $key ignored."
         continue
     }
@@ -109,6 +109,30 @@ foreach ($jdkMajorVersion in $jdkList) {
         'url'          = $env:$urlVar;
         'local'        = "$baseDir\temurin$jdkVersion.zip";
         'expandTo'     = $baseDir;
+        'preExpand'    = {
+            'preExpand' = {
+                $checksumEnvVar = "JDK${using:jdkMajorVersion}_CHECKSUM_VALUE"
+                $expectedChecksum = $env:$checksumEnvVar
+
+                $zipFile = Get-ChildItem -Path "$using:baseDir\jdk-${using:jdkMajorVersion}*.zip" | Select-Object -First 1
+                if (-not $zipFile) {
+                    Write-Error "❌ ZIP file not found for JDK $using:jdkMajorVersion"
+                    return $false
+                }
+
+                $actualChecksum = Get-FileHash -Path $zipFile.FullName -Algorithm SHA256 | Select-Object -ExpandProperty Hash
+
+                if ($actualChecksum -ieq $expectedChecksum) {
+                    Write-Host "✅ Checksum valid for JDK $using:jdkMajorVersion"
+                    return $true
+                } else {
+                    Write-Error "❌ Checksum mismatch for JDK $using:jdkMajorVersion"
+                    Write-Error "Expected: $expectedChecksum"
+                    Write-Error "Actual  : $actualChecksum"
+                    return $false
+                }
+            }
+        }
         'postExpand'   = {
             & Move-Item -Path "$baseDir\jdk-${jdkMajorVersion}*" -Destination "$baseDir\jdk-${jdkMajorVersion}"
         };
