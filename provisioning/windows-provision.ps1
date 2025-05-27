@@ -109,6 +109,9 @@ foreach (${jdkMajorVersion} in ${jdkList}) {
     if (-not ${DownloadUrl}) {
         Write-Warning "⚠️ ${urlVar} undefined, ${key} ignored."
         continue
+    } else {
+        Write-Host "🧵 DownloadUrl ${DownloadUrl}"
+        Write-Host "🧵 baseDir ${baseDir}"
     }
 
     ${downloads}[${key}] = @{
