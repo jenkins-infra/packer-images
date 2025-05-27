@@ -106,27 +106,27 @@ foreach ($jdkMajorVersion in $jdkList) {
     }
 
     $downloads[$key] = @{
-        'url'          = $env:$urlVar;
-        'local'        = "$baseDir\temurin$jdkVersion.zip";
-        'expandTo'     = $baseDir;
+        'url'          = $env:${urlVar};
+        'local'        = "${baseDir}\temurin${jdkVersion}.zip";
+        'expandTo'     = ${baseDir};
         'preExpand'    = {
             'preExpand' = {
                 $checksumEnvVar = "JDK${using:jdkMajorVersion}_CHECKSUM_VALUE"
-                $expectedChecksum = $env:$checksumEnvVar
+                $expectedChecksum = $env:${checksumEnvVar}
 
-                $zipFile = Get-ChildItem -Path "$using:baseDir\jdk-${using:jdkMajorVersion}*.zip" | Select-Object -First 1
+                $zipFile = Get-ChildItem -Path "${using:baseDir}\jdk-${using:jdkMajorVersion}*.zip" | Select-Object -First 1
                 if (-not $zipFile) {
-                    Write-Error "❌ ZIP file not found for JDK $using:jdkMajorVersion"
+                    Write-Error "❌ ZIP file not found for JDK ${using:jdkMajorVersion}"
                     return $false
                 }
 
                 $actualChecksum = Get-FileHash -Path $zipFile.FullName -Algorithm SHA256 | Select-Object -ExpandProperty Hash
 
                 if ($actualChecksum -ieq $expectedChecksum) {
-                    Write-Host "✅ Checksum valid for JDK $using:jdkMajorVersion"
+                    Write-Host "✅ Checksum valid for JDK ${using:jdkMajorVersion}"
                     return $true
                 } else {
-                    Write-Error "❌ Checksum mismatch for JDK $using:jdkMajorVersion"
+                    Write-Error "❌ Checksum mismatch for JDK ${using:jdkMajorVersion}"
                     Write-Error "Expected: $expectedChecksum"
                     Write-Error "Actual  : $actualChecksum"
                     return $false
