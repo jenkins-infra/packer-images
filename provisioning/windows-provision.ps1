@@ -96,9 +96,8 @@ Get-PackageProvider NuGet -ForceBootstrap
 $downloads = [ordered]@{}
 
 ## Dynamically add the jdk to install
-
-## Dynamically add the jdk to install
-$jdkList = ${jdksenv} -split '\s+'
+$jdkList = ${JDKS} -split '\s+'
+Write-Host "list of JDKs to install ${JDKS}"
 foreach ($jdkMajorVersion in $jdkList) {
     $key = "jdk${jdkMajorVersion}"
 
@@ -108,24 +107,24 @@ foreach ($jdkMajorVersion in $jdkList) {
     $DownloadUrl = [System.Environment]::GetEnvironmentVariable($urlVarName)
     $ChecksumValue = [System.Environment]::GetEnvironmentVariable($checksumVarName)
     if (-not $DownloadUrl) {
-        Write-Warning "⚠️ ${urlVarName} undefined, ${key} ignored."
-        continue
+        Write-Warning "${urlVarName} undefined, ${key} ignored."
+        return $false #no need to continue if variable not set
     }
     $localZipPath = "$baseDir\temurin${jdkMajorVersion}.zip"
     $expandTarget = "$baseDir"
     $preExpandScript = {
         if (-Not (Test-Path -Path $localZipPath)) {
-            Write-Error "❌ ZIP file not found at $localZipPath"
+            Write-Error "ZIP file not found at $localZipPath Download went wrong"
             return $false
         }
 
         $actualHash = (Get-FileHash -Path $localZipPath -Algorithm SHA256).Hash.ToLower()
         if ($actualHash -ne $ChecksumValue.ToLower()) {
-            Write-Error "❌ Checksum mismatch for $key. Expected: $ChecksumValue, Got: $actualHash"
+            Write-Error "Checksum mismatch for $key. Expected: $ChecksumValue, Got: $actualHash"
             return $false
         }
 
-        Write-Host "✅ Checksum validated for $key"
+        Write-Host "OK Checksum validated for $key"
         return $true
     }.GetNewClosure()
     $postExpandScript = {
@@ -133,7 +132,7 @@ foreach ($jdkMajorVersion in $jdkList) {
         if ($expandedDir) {
             Move-Item -Path $expandedDir.FullName -Destination "${baseDir}\jdk-${jdkMajorVersion}" -Force
         } else {
-            Write-Warning "⚠️ No expanded folder found for jdk${jdkMajorVersion}"
+            Write-Warning "No expanded folder found for jdk${jdkMajorVersion}"
             Get-ChildItem -Path "$baseDir" -Directory
         }
     }.GetNewClosure()
