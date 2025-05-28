@@ -96,52 +96,55 @@ Get-PackageProvider NuGet -ForceBootstrap
 $downloads = [ordered]@{}
 
 ## Dynamically add the jdk to install
-$jdkList = ${env:JDKS} -split '\s+'
-foreach (${jdkMajorVersion} in ${jdkList}) {
-    ${key} = "jdk${jdkMajorVersion}"
 
-    ${urlVar} = "JDK${jdkMajorVersion}_INSTALLER_URL"
-    ${checksumVar} = "JDK${jdkMajorVersion}_CHECKSUM_VALUE"
+## Dynamically add the jdk to install
+$jdkList = ${jdksenv} -split '\s+'
+foreach ($jdkMajorVersion in $jdkList) {
+    $key = "jdk${jdkMajorVersion}"
 
-    ${DownloadUrl} = [Environment]::GetEnvironmentVariable(${urlVar})
-    ${expectedChecksum} = [Environment]::GetEnvironmentVariable(${checksumVar})
+    $urlVarName = "JDK${jdkMajorVersion}_INSTALLER_URL"
+    $checksumVarName = "JDK${jdkMajorVersion}_CHECKSUM_VALUE"
 
-    if (-not ${DownloadUrl}) {
-        Write-Warning "⚠️ ${urlVar} undefined, ${key} ignored."
+    $DownloadUrl = [System.Environment]::GetEnvironmentVariable($urlVarName)
+    $ChecksumValue = [System.Environment]::GetEnvironmentVariable($checksumVarName)
+    if (-not $DownloadUrl) {
+        Write-Warning "⚠️ ${urlVarName} undefined, ${key} ignored."
         continue
-    } else {
-        Write-Host "🧵 DownloadUrl ${DownloadUrl}"
-        Write-Host "🧵 baseDir ${baseDir}"
     }
+    $localZipPath = "$baseDir\temurin${jdkMajorVersion}.zip"
+    $expandTarget = "$baseDir"
+    $preExpandScript = {
+        if (-Not (Test-Path -Path $localZipPath)) {
+            Write-Error "❌ ZIP file not found at $localZipPath"
+            return $false
+        }
 
-    ${downloads}[${key}] = @{
-        'url'          = ${DownloadUrl};
-        'local'        = "${baseDir}\temurin${jdkMajorVersion}.zip";
-        'expandTo'     = ${baseDir};
+        $actualHash = (Get-FileHash -Path $localZipPath -Algorithm SHA256).Hash.ToLower()
+        if ($actualHash -ne $ChecksumValue.ToLower()) {
+            Write-Error "❌ Checksum mismatch for $key. Expected: $ChecksumValue, Got: $actualHash"
+            return $false
+        }
 
-        'preExpand' = {
-            ${zipFile} = Get-ChildItem -Path "${using:baseDir}\temurin${using:jdkMajorVersion}.zip" -ErrorAction SilentlyContinue
-            if (-not ${zipFile}) {
-                Write-Error "❌ ZIP file not found for JDK ${using:jdkMajorVersion}"
-                return $false
-            }
-            ${actualChecksum} = Get-FileHash -Path ${zipFile}.FullName -Algorithm SHA256 | Select-Object -ExpandProperty Hash
-            if (${actualChecksum} -ieq "${using:expectedChecksum}") {
-                Write-Host "✅ Checksum valid for JDK ${using:jdkMajorVersion}"
-                return $true
-            } else {
-                Write-Error "❌ Checksum mismatch for JDK ${using:jdkMajorVersion}"
-                Write-Error "Expected: ${using:expectedChecksum}"
-                Write-Error "Actual  : ${actualChecksum}"
-                return $false
-            }
-        };
+        Write-Host "✅ Checksum validated for $key"
+        return $true
+    }.GetNewClosure()
+    $postExpandScript = {
+        $expandedDir = Get-ChildItem -Path "$baseDir" -Directory | Where-Object { $_.Name -like "jdk*${jdkMajorVersion}*" }
+        if ($expandedDir) {
+            Move-Item -Path $expandedDir.FullName -Destination "${baseDir}\jdk-${jdkMajorVersion}" -Force
+        } else {
+            Write-Warning "⚠️ No expanded folder found for jdk${jdkMajorVersion}"
+            Get-ChildItem -Path "$baseDir" -Directory
+        }
+    }.GetNewClosure()
 
-        'postExpand' = {
-            Move-Item -Path "${using:baseDir}\jdk-${using:jdkMajorVersion}*" -Destination "${using:baseDir}\jdk-${using:jdkMajorVersion}"
-        };
-
-        'cleanupLocal' = $true;
+    $downloads[$key] = @{
+        'url'  = $DownloadUrl
+        'local'        = $localZipPath
+        'expandTo'     = $expandTarget
+        'preExpand'    = $preExpandScript
+        'postExpand'   = $postExpandScript
+        'cleanupLocal' = $true
     }
 }
 
@@ -337,8 +340,9 @@ foreach($k in $downloads.Keys) {
     Write-Host "Downloading and setting up $k"
 
     DownloadFile $download['url'] $download['local']
-    if($download.ContainsKey('preexpand')) {
-        Invoke-Command $download['preexpand']
+
+    if($download.ContainsKey('preExpand')) {
+        Invoke-Command -ScriptBlock $download['preExpand']
     }
 
     if($download.ContainsKey('expandTo')) {

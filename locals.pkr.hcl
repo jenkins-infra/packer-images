@@ -55,8 +55,8 @@ locals {
     flatten([
       for jdk_version, jdk_data in local.jdk_infos[var.agent_os_type][var.architecture] :
         [
-          "${jdk_version}_installer_url=${jdk_data.installer_url}",
-          "${jdk_version}_checksum_value=${jdk_data.checksum_value}"
+          "${upper(jdk_version)}_INSTALLER_URL=${jdk_data.installer_url}",
+          "${upper(jdk_version)}_CHECKSUM_VALUE=${jdk_data.checksum_value}"
         ]
     ])
   )

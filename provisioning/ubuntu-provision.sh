@@ -314,12 +314,12 @@ function install_git_gitlfs() {
 function install_jdks(){
   for major_jdk_version in ${JDKS}; do
     echo "jdk to install : ${major_jdk_version}"
-    installer_url_var="jdk${major_jdk_version}_installer_url"
+    installer_url_var="JDK${major_jdk_version}_INSTALLER_URL"
     temp_archive="$(mktemp)"
     installation_dir="/opt/jdk-${major_jdk_version}"
     curl --fail --silent --show-error --location --output "${temp_archive}" "${!installer_url_var}"
     # checksum test
-    checksum_value_var="jdk${major_jdk_version}_checksum_value"
+    checksum_value_var="JDK${major_jdk_version}_CHECKSUM_VALUE"
     real_checksum=$(sha256sum "${temp_archive}" | awk '{print $1}')
     if [ "${real_checksum}" = "${!checksum_value_var}" ]; then
       mkdir -p "${installation_dir}"
