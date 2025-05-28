@@ -93,204 +93,220 @@ $pythondir = 'C:\python{0}' -f "${env:PYTHON3_VERSION}".Replace(".", "").Substri
 Get-PackageProvider NuGet -ForceBootstrap
 
 ## List of tools to use
-$downloads = [ordered]@{
-    'jdk11' = @{
-        'url' = 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-{0}/OpenJDK11U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK11_VERSION),$env:JDK11_VERSION.Replace('+', '_');
-        'local' = "$baseDir\temurin11.zip";
-        'expandTo' = $baseDir;
-        'postExpand' = {
-            & Move-Item -Path "$baseDir\jdk-11*" -Destination "$baseDir\jdk-11"
-        };
-        'cleanupLocal' = 'true';
-    };
-    'jdk17' = @{
-        'url' = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-{0}/OpenJDK17U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK17_VERSION),$env:JDK17_VERSION.Replace('+', '_');
-        'local' = "$baseDir\temurin17.zip";
-        'expandTo' = $baseDir;
-        'postExpand' = {
-            & Move-Item -Path "$baseDir\jdk-17*" -Destination "$baseDir\jdk-17"
-        };
-        'cleanupLocal' = 'true';
-    };
-    'jdk21' = @{
-        'url' = 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-{0}/OpenJDK21U-jdk_x64_windows_hotspot_{1}.zip' -f [System.Web.HTTPUtility]::UrlEncode($env:JDK21_VERSION),$env:JDK21_VERSION.Replace('+', '_');
-        'local' = "$baseDir\temurin21.zip";
-        'expandTo' = $baseDir;
-        'postExpand' = {
-            & Move-Item -Path "$baseDir\jdk-21*" -Destination "$baseDir\jdk-21"
-        };
-        'cleanupLocal' = 'true';
-    };
-    'jdk8' = @{
-        'url' = 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk{0}/OpenJDK8U-jdk_x64_windows_hotspot_{1}.zip' -f $env:JDK8_VERSION,$env:JDK8_VERSION.Replace('-', '');
-        'local' = "$baseDir\temurin8.zip";
-        'expandTo' = $baseDir;
-        'postExpand' = {
-            & Move-Item -Path "$baseDir\jdk8*" -Destination "$baseDir\jdk-8"
-        };
-        'cleanupLocal' = 'true';
+$downloads = [ordered]@{}
+
+## Dynamically add the jdk to install
+$jdkList = ${env:JDKS} -split '\s+'
+Write-Host "list of JDKs to install ${env:JDKS}"
+foreach ($jdkMajorVersion in $jdkList) {
+    $key = "jdk${jdkMajorVersion}"
+
+    $urlVarName = "JDK${jdkMajorVersion}_INSTALLER_URL"
+    $checksumVarName = "JDK${jdkMajorVersion}_CHECKSUM_VALUE"
+
+    $DownloadUrl = [System.Environment]::GetEnvironmentVariable($urlVarName)
+    $ChecksumValue = [System.Environment]::GetEnvironmentVariable($checksumVarName)
+    if (-not $DownloadUrl) {
+        Write-Warning "${urlVarName} undefined, ${key} ignored."
+        return $false #no need to continue if variable not set
     }
-    'maven' = @{
-        'url' = 'https://dlcdn.apache.org/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
-        'local' = "$baseDir\maven.zip";
-        'expandTo' = $baseDir;
-        'path' = '{0}\apache-maven-{1}\bin' -f $baseDir,$env:MAVEN_VERSION;
-        'env' = @{
-            'MAVEN_HOME' = '{0}\apache-maven-{1}' -f $baseDir,$env:MAVEN_VERSION;
-        };
-        'cleanupLocal' = 'true';
-    };
-    'git' = @{
-        'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION;
-        'local' = "$baseDir\MinGit.zip";
-        'expandTo' = "$baseDir\git";
-        'postExpand' = {
-            & "$baseDir\git\cmd\git.exe" config set --system core.autocrlf "true";
-            & "$baseDir\git\cmd\git.exe" config set --system core.longPaths "true";
-        };
-        # git cmd and gnu tools included with git as paths
-        'path' = "$baseDir\git\cmd;$baseDir\git\usr\bin";
-        'cleanupLocal' = 'true';
-    };
-    'gitlfs' = @{
-        'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
-        'local' = "$baseDir\GitLfs.zip";
-        'expandTo' = "$baseDir";
-        'postExpand' = {
-            #There is a 1st-level directory in the archive since git-lfs 3.2.0
-            & Move-Item -Path "$baseDir\git-lfs-$env:GIT_LFS_VERSION\*" -Destination "$baseDir\git\mingw64\bin";
-            & Remove-Item -Force -Recurse "$baseDir\git-lfs-$env:GIT_LFS_VERSION";
-            & "$baseDir\git\cmd\git.exe" lfs install;
-        };
-        'path' = "$baseDir\git\mingw64\bin";
-        'cleanupLocal' = 'true';
-    };
-    'dockercompose' = @{
-        'url' = 'https://github.com/docker/compose/releases/download/v{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
-        'local' = "$baseDir\docker-compose.exe"
-    };
-    'hadolint' = @{
-        'url' = 'https://github.com/hadolint/hadolint/releases/download/v{0}/hadolint-Windows-x86_64.exe' -f $env:HADOLINT_VERSION;
-        'local' = "$baseDir\hadolint.exe";
-        'postExpand' = {
-            ## First call to hadolint is slow (initialize some local resources). Lets pre-heat it to avoid timeouts during tests later
-            & "$baseDir\hadolint.exe" -v;
-        };
-    };
-    'cst' = @{
-        'url' = 'https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{0}/container-structure-test-windows-amd64.exe' -f $env:CST_VERSION;
-        'local' = "$baseDir\container-structure-test.exe"
-    };
-    'jx-release-version' = @{
-        'url' = 'https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v{0}/jx-release-version-windows-amd64.zip' -f $env:JXRELEASEVERSION_VERSION;
-        'local' = "$baseDir\jx-release-version.zip"
-        'expandTo' = $baseDir;
-        'cleanupLocal' = 'true';
-    };
-    'jq' = @{
-        'url' = 'https://github.com/jqlang/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
-        'local' = "$baseDir\jq.exe"
-    };
-    'yq' = @{
-        'url' = 'https://github.com/mikefarah/yq/releases/download/v{0}/yq_windows_amd64.exe'  -f $env:YQ_VERSION;
-        'local' = "$baseDir\yq.exe"
-    };
-    'az' = @{
-        'url' = 'https://azcliprod.blob.core.windows.net/msi/azure-cli-{0}.msi' -f $env:AZURECLI_VERSION;
-        'local' = "$baseDir\AzureCLI.msi";
-        'postExpand' = {
-            ## Add these options to msiexec.exe to write debug to the log file
-            # /L*V "C:\package.log"
-            Start-Process msiexec.exe -Wait -ArgumentList "/i $baseDir\AzureCLI.msi /quiet /L*V C:\package.log";
-        };
-        'cleanupLocal' = 'true';
-        'path' = 'C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\';
-    };
-    'gh' = @{
-        'url' = 'https://github.com/cli/cli/releases/download/v{0}/gh_{0}_windows_amd64.zip' -f $env:GH_VERSION;
-        'local' = "$baseDir\gh.zip";
-        'expandTo' = "$baseDir\gh.tmp";
-        'postExpand' = {
-            & Move-Item -Path "$baseDir\gh.tmp\bin\gh.exe" -Destination "$baseDir\gh.exe";
-            & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
-        };
-        'cleanupLocal' = 'true';
-    };
-    'updatecli' = @{
-        'url' = 'https://github.com/updatecli/updatecli/releases/download/v{0}/updatecli_Windows_x86_64.zip' -f $env:UPDATECLI_VERSION;
-        'local' = "$baseDir\updatecli.zip";
-        'expandTo' = "$baseDir\updatecli.tmp";
-        'postExpand' = {
-            & Move-Item -Path "$baseDir\updatecli.tmp\updatecli.exe" -Destination "$baseDir\updatecli.exe";
-            & Remove-Item -Force -Recurse "$baseDir\updatecli.tmp";
-        };
-        'cleanupLocal' = 'true';
-    };
-    'netlify-deploy' = @{
-        'url' = 'https://github.com/halkeye/netlify-golang-deploy/releases/download/v{0}/netlify-golang-deploy_{0}_Windows_x86_64.zip' -f $env:NETLIFYDEPLOY_VERSION;
-        'local' = "$baseDir\netlify-golang-deploy.zip";
-        'expandTo' = "$baseDir\netlify-golang-deploy.tmp";
-        'postExpand' = {
-            & Move-Item -Path "$baseDir\netlify-golang-deploy.tmp\netlify-golang-deploy.exe" -Destination "$baseDir\netlify-deploy.exe";
-            & Remove-Item -Force -Recurse "$baseDir\netlify-golang-deploy.tmp";
-        };
-        'cleanupLocal' = 'true';
-    };
-    'terraform' = @{
-        'url' = 'https://releases.hashicorp.com/terraform/{0}/terraform_{0}_windows_amd64.zip' -f $env:TERRAFORM_VERSION;
-        'local' = "$baseDir\terraform.zip";
-        'expandTo' = "$baseDir"; # Only terraform.exe
-        'cleanupLocal' = 'true';
-    };
-    'kubectl' = @{
-        'url' = 'https://dl.k8s.io/release/v{0}/bin/windows/amd64/kubectl.exe'  -f $env:KUBECTL_VERSION;
-        'local' = "$baseDir\kubectl.exe"
-    };
-    'goss' = @{
-        'url' = 'https://github.com/goss-org/goss/releases/download/v{0}/goss-windows-amd64.exe'  -f $env:GOSS_VERSION;
-        'local' = "$baseDir\goss.exe"
-    };
-    'docker-buildx' = @{
-        'url' = 'https://github.com/docker/buildx/releases/download/v{0}/buildx-v{0}.windows-amd64.exe' -f $env:DOCKER_BUILDX_VERSION;
-        'local' = "$dockerPluginsDir\docker-buildx.exe"
-    };
-    'chocolatey-and-packages' = @{
-        'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
-        'local' = "$baseDir\chocolatey.zip";
-        'expandTo' = "$baseDir\chocolatey.tmp";
-        'postExpand' = {
-            # Installation of Chocolatey
-            & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
-            & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
-        };
-        'cleanupLocal' = 'true';
-        'path' = "C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;${pythondir}\;${pythondir}\Scripts\;";
-        'postInstall' = {
-            # Installation of make for Windows
-            & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
-            & "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version "${env:VAGRANT_VERSION}";
-            # install .NET 3.5 for MSI build
-            & "choco.exe" install dotnet3.5 --yes --no-progress --limit-output --fail-on-error-output
-            if(Test-Path "C:\Windows\Logs\DISM\dism.log") {
-                Get-Content "C:\Windows\Logs\DISM\dism.log"
-            }
-            # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
-            & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
-            & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
-            & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output;
-            & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
-            & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
-            & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
-            & "choco.exe" install trivy --yes --no-progress --limit-output --fail-on-error-output --version "${env:TRIVY_VERSION}";
-            & "choco.exe" install nodejs.install --yes --no-progress --limit-output --fail-on-error-output --version "${env:NODEJS_WINDOWS_VERSION}";
-            # Installation of python3 for Launchable
-            & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
-            # Installation of Launchable globally (no other python tool)
-            & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
-            & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
-        };
-    };
+    $localZipPath = "$baseDir\temurin${jdkMajorVersion}.zip"
+    $expandTarget = "$baseDir"
+    $preExpandScript = {
+        if (-Not (Test-Path -Path $localZipPath)) {
+            Write-Error "ZIP file not found at $localZipPath Download went wrong"
+            return $false
+        }
+
+        $actualHash = (Get-FileHash -Path $localZipPath -Algorithm SHA256).Hash.ToLower()
+        if ($actualHash -ne $ChecksumValue.ToLower()) {
+            Write-Error "Checksum mismatch for $key. Expected: $ChecksumValue, Got: $actualHash"
+            return $false
+        }
+
+        Write-Host "OK Checksum validated for $key"
+        return $true
+    }.GetNewClosure()
+    $postExpandScript = {
+        $expandedDir = Get-ChildItem -Path "$baseDir" -Directory | Where-Object { $_.Name -like "jdk*${jdkMajorVersion}*" }
+        if ($expandedDir) {
+            Move-Item -Path $expandedDir.FullName -Destination "${baseDir}\jdk-${jdkMajorVersion}" -Force
+        } else {
+            Write-Warning "No expanded folder found for jdk${jdkMajorVersion}"
+            Get-ChildItem -Path "$baseDir" -Directory
+        }
+    }.GetNewClosure()
+
+    $downloads[$key] = @{
+        'url'  = $DownloadUrl
+        'local'        = $localZipPath
+        'expandTo'     = $expandTarget
+        'preExpand'    = $preExpandScript
+        'postExpand'   = $postExpandScript
+        'cleanupLocal' = $true
+    }
 }
+
+$downloads['maven'] = @{
+    'url' = 'https://dlcdn.apache.org/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip' -f $env:MAVEN_VERSION;
+    'local' = "$baseDir\maven.zip";
+    'expandTo' = $baseDir;
+    'path' = '{0}\apache-maven-{1}\bin' -f $baseDir,$env:MAVEN_VERSION;
+    'env' = @{
+        'MAVEN_HOME' = '{0}\apache-maven-{1}' -f $baseDir,$env:MAVEN_VERSION;
+    };
+    'cleanupLocal' = 'true';
+};
+$downloads['git'] = @{
+    'url' = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION;
+    'local' = "$baseDir\MinGit.zip";
+    'expandTo' = "$baseDir\git";
+    'postExpand' = {
+        & "$baseDir\git\cmd\git.exe" config set --system core.autocrlf "true";
+        & "$baseDir\git\cmd\git.exe" config set --system core.longPaths "true";
+    };
+    # git cmd and gnu tools included with git as paths
+    'path' = "$baseDir\git\cmd;$baseDir\git\usr\bin";
+    'cleanupLocal' = 'true';
+};
+$downloads['gitlfs'] = @{
+    'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
+    'local' = "$baseDir\GitLfs.zip";
+    'expandTo' = "$baseDir";
+    'postExpand' = {
+        #There is a 1st-level directory in the archive since git-lfs 3.2.0
+        & Move-Item -Path "$baseDir\git-lfs-$env:GIT_LFS_VERSION\*" -Destination "$baseDir\git\mingw64\bin";
+        & Remove-Item -Force -Recurse "$baseDir\git-lfs-$env:GIT_LFS_VERSION";
+        & "$baseDir\git\cmd\git.exe" lfs install;
+    };
+    'path' = "$baseDir\git\mingw64\bin";
+    'cleanupLocal' = 'true';
+};
+$downloads['dockercompose'] = @{
+    'url' = 'https://github.com/docker/compose/releases/download/v{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
+    'local' = "$baseDir\docker-compose.exe"
+};
+$downloads['hadolint'] = @{
+    'url' = 'https://github.com/hadolint/hadolint/releases/download/v{0}/hadolint-Windows-x86_64.exe' -f $env:HADOLINT_VERSION;
+    'local' = "$baseDir\hadolint.exe";
+    'postExpand' = {
+        ## First call to hadolint is slow (initialize some local resources). Lets pre-heat it to avoid timeouts during tests later
+        & "$baseDir\hadolint.exe" -v;
+    };
+};
+$downloads['cst'] = @{
+    'url' = 'https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{0}/container-structure-test-windows-amd64.exe' -f $env:CST_VERSION;
+    'local' = "$baseDir\container-structure-test.exe"
+};
+$downloads['jx-release-version'] = @{
+    'url' = 'https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v{0}/jx-release-version-windows-amd64.zip' -f $env:JXRELEASEVERSION_VERSION;
+    'local' = "$baseDir\jx-release-version.zip"
+    'expandTo' = $baseDir;
+    'cleanupLocal' = 'true';
+};
+$downloads['jq'] = @{
+    'url' = 'https://github.com/jqlang/jq/releases/download/jq-{0}/jq-win64.exe'  -f $env:JQ_VERSION;
+    'local' = "$baseDir\jq.exe"
+};
+$downloads['yq'] = @{
+    'url' = 'https://github.com/mikefarah/yq/releases/download/v{0}/yq_windows_amd64.exe'  -f $env:YQ_VERSION;
+    'local' = "$baseDir\yq.exe"
+};
+$downloads['az'] = @{
+    'url' = 'https://azcliprod.blob.core.windows.net/msi/azure-cli-{0}.msi' -f $env:AZURECLI_VERSION;
+    'local' = "$baseDir\AzureCLI.msi";
+    'postExpand' = {
+        ## Add these options to msiexec.exe to write debug to the log file
+        # /L*V "C:\package.log"
+        Start-Process msiexec.exe -Wait -ArgumentList "/i $baseDir\AzureCLI.msi /quiet /L*V C:\package.log";
+    };
+    'cleanupLocal' = 'true';
+    'path' = 'C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\wbin\';
+};
+$downloads['gh'] = @{
+    'url' = 'https://github.com/cli/cli/releases/download/v{0}/gh_{0}_windows_amd64.zip' -f $env:GH_VERSION;
+    'local' = "$baseDir\gh.zip";
+    'expandTo' = "$baseDir\gh.tmp";
+    'postExpand' = {
+        & Move-Item -Path "$baseDir\gh.tmp\bin\gh.exe" -Destination "$baseDir\gh.exe";
+        & Remove-Item -Force -Recurse "$baseDir\gh.tmp";
+    };
+    'cleanupLocal' = 'true';
+};
+$downloads['updatecli'] = @{
+    'url' = 'https://github.com/updatecli/updatecli/releases/download/v{0}/updatecli_Windows_x86_64.zip' -f $env:UPDATECLI_VERSION;
+    'local' = "$baseDir\updatecli.zip";
+    'expandTo' = "$baseDir\updatecli.tmp";
+    'postExpand' = {
+        & Move-Item -Path "$baseDir\updatecli.tmp\updatecli.exe" -Destination "$baseDir\updatecli.exe";
+        & Remove-Item -Force -Recurse "$baseDir\updatecli.tmp";
+    };
+    'cleanupLocal' = 'true';
+};
+$downloads['netlify-deploy'] = @{
+    'url' = 'https://github.com/halkeye/netlify-golang-deploy/releases/download/v{0}/netlify-golang-deploy_{0}_Windows_x86_64.zip' -f $env:NETLIFYDEPLOY_VERSION;
+    'local' = "$baseDir\netlify-golang-deploy.zip";
+    'expandTo' = "$baseDir\netlify-golang-deploy.tmp";
+    'postExpand' = {
+        & Move-Item -Path "$baseDir\netlify-golang-deploy.tmp\netlify-golang-deploy.exe" -Destination "$baseDir\netlify-deploy.exe";
+        & Remove-Item -Force -Recurse "$baseDir\netlify-golang-deploy.tmp";
+    };
+    'cleanupLocal' = 'true';
+};
+$downloads['terraform'] = @{
+    'url' = 'https://releases.hashicorp.com/terraform/{0}/terraform_{0}_windows_amd64.zip' -f $env:TERRAFORM_VERSION;
+    'local' = "$baseDir\terraform.zip";
+    'expandTo' = "$baseDir"; # Only terraform.exe
+    'cleanupLocal' = 'true';
+};
+$downloads['kubectl'] = @{
+    'url' = 'https://dl.k8s.io/release/v{0}/bin/windows/amd64/kubectl.exe'  -f $env:KUBECTL_VERSION;
+    'local' = "$baseDir\kubectl.exe"
+};
+$downloads['goss'] = @{
+    'url' = 'https://github.com/goss-org/goss/releases/download/v{0}/goss-windows-amd64.exe'  -f $env:GOSS_VERSION;
+    'local' = "$baseDir\goss.exe"
+};
+$downloads['docker-buildx'] = @{
+    'url' = 'https://github.com/docker/buildx/releases/download/v{0}/buildx-v{0}.windows-amd64.exe' -f $env:DOCKER_BUILDX_VERSION;
+    'local' = "$dockerPluginsDir\docker-buildx.exe"
+};
+$downloads['chocolatey-and-packages'] = @{
+    'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
+    'local' = "$baseDir\chocolatey.zip";
+    'expandTo' = "$baseDir\chocolatey.tmp";
+    'postExpand' = {
+        # Installation of Chocolatey
+        & "$baseDir\chocolatey.tmp\tools\chocolateyInstall.ps1";
+        & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
+    };
+    'cleanupLocal' = 'true';
+    'path' = "C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;${pythondir}\;${pythondir}\Scripts\;";
+    'postInstall' = {
+        # Installation of make for Windows
+        & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
+        & "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version "${env:VAGRANT_VERSION}";
+        # install .NET 3.5 for MSI build
+        & "choco.exe" install dotnet3.5 --yes --no-progress --limit-output --fail-on-error-output
+        if(Test-Path "C:\Windows\Logs\DISM\dism.log") {
+            Get-Content "C:\Windows\Logs\DISM\dism.log"
+        }
+        # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
+        & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
+        & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
+        & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output;
+        & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
+        & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
+        & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
+        & "choco.exe" install trivy --yes --no-progress --limit-output --fail-on-error-output --version "${env:TRIVY_VERSION}";
+        & "choco.exe" install nodejs.install --yes --no-progress --limit-output --fail-on-error-output --version "${env:NODEJS_WINDOWS_VERSION}";
+        # Installation of python3 for Launchable
+        & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
+        # Installation of Launchable globally (no other python tool)
+        & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+        & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+    };
+};
 
 if("2019" -eq $env:AGENT_OS_VERSION) {
     # We only do this for 2019 until installing on 2022 can be debugged
@@ -323,8 +339,9 @@ foreach($k in $downloads.Keys) {
     Write-Host "Downloading and setting up $k"
 
     DownloadFile $download['url'] $download['local']
-    if($download.ContainsKey('preexpand')) {
-        Invoke-Command $download['preexpand']
+
+    if($download.ContainsKey('preExpand')) {
+        Invoke-Command -ScriptBlock $download['preExpand']
     }
 
     if($download.ContainsKey('expandTo')) {
