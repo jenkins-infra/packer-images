@@ -318,7 +318,6 @@ function install_jdks(){
     temp_archive="$(mktemp)"
     installation_dir="/opt/jdk-${major_jdk_version}"
     curl --fail --silent --show-error --location --output "${temp_archive}" "${!installer_url_var}"
-    # checksum test
     checksum_value_var="JDK${major_jdk_version}_CHECKSUM_VALUE"
     real_checksum=$(sha256sum "${temp_archive}" | awk '{print $1}')
     if [ "${real_checksum}" = "${!checksum_value_var}" ]; then
