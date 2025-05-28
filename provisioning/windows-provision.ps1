@@ -96,8 +96,8 @@ Get-PackageProvider NuGet -ForceBootstrap
 $downloads = [ordered]@{}
 
 ## Dynamically add the jdk to install
-$jdkList = ${JDKS} -split '\s+'
-Write-Host "list of JDKs to install ${JDKS}"
+$jdkList = ${env:JDKS} -split '\s+'
+Write-Host "list of JDKs to install ${env:JDKS}"
 foreach ($jdkMajorVersion in $jdkList) {
     $key = "jdk${jdkMajorVersion}"
 
