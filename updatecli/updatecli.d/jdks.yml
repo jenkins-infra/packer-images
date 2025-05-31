@@ -1,6 +1,7 @@
 {{ range $item := .jdks }}
 {{ $major := $item.major }}
 {{ $releasetype := default "ga" $item.releasetype }}
+{{ $platforms := default "ubuntu/amd64 ubuntu/arm64 windows/amd64" $item.releasetype }}
 ---
 name: Bump JDK '{{ $major }}' version
 
@@ -24,9 +25,53 @@ sources:
       releasetype: {{ $releasetype }}
     transformers:
       - trimprefix: "jdk{{ if (ne $major 8) }}-{{ end }}"
+{{ range $platform := splitList " " $platforms }}
+{{ $parts := splitList "/" $platform }}
+{{ $os := index $parts 0 }}
+{{ $arch := index $parts 1 }}
+  {{ $os }}_{{ $arch }}_checksum_url:
+    kind: temurin
+    spec:
+      architecture: {{ index $.mappedArch $arch }}
+      featureversion: {{ $major }}
+      operatingsystem: {{ index $.mappedOs $os }}
+      releasetype: {{ $releasetype }}
+      result: checksum_url
+  {{ $os }}_{{ $arch }}_checksum_value:
+    dependson:
+      - {{ $os }}_{{ $arch }}_checksum_url
+    kind: file
+    spec:
+      {{ $filesource := print $os "_" $arch "_checksum_url" }}
+      file: '{{ source $filesource }}'
+    transformers:
+      - findsubmatch:
+          pattern: "^([a-f0-9]+)"
+  {{ $os }}_{{ $arch }}_installer_url:
+    kind: temurin
+    spec:
+      architecture: {{ index $.mappedArch $arch }}
+      featureversion: {{ $major }}
+      operatingsystem: {{ index $.mappedOs $os }}
+      releasetype: {{ $releasetype }}
+      result: installer_url
+  {{ $os }}_{{ $arch }}_signature_url:
+    kind: temurin
+    spec:
+      architecture: {{ index $.mappedArch $arch }}
+      featureversion: {{ $major }}
+      operatingsystem: {{ index $.mappedOs $os }}
+      releasetype: {{ $releasetype }}
+      result: signature_url
+{{ end }}
 
 conditions:
-  checkIfReleaseIsAvailableForall:
+{{ range $platform := splitList " " $platforms }}
+{{ $parts := splitList "/" $platform }}
+{{ $os := index $parts 0 }}
+{{ $arch := index $parts 1 }}
+
+  syn_checkIfReleaseIsAvailableFor{{ $platform }}:
     kind: temurin
     # checked version comes from the source
     sourceid: lastReleaseVersion
@@ -34,21 +79,23 @@ conditions:
       # release type is mandatory to support ea version (bug in updatecli)
       releasetype: {{ $releasetype }}
       platforms:
-        - linux/x64
-        - linux/aarch64
-        - windows/x64
+        - {{ index $.mappedOs $os }}/{{ index $.mappedArch $arch }}
+{{ end }}
 
 targets:
   updateJDKVersion:
+    sourceid: lastReleaseVersion
     name: Update the JDK{{ $major }} version in the Packer default values
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
       key: "$.jdk{{ $major }}_version"
-    scmid: default
+    # scmid: default
   updateJDKVersionInGoss:
+    sourceid: lastReleaseVersion
     name: Update the JDK{{ $major }} version in the goss test
     kind: yaml
+    # scmid: default
 {{ if (eq $major 8) }}
     transformers:
       - findsubmatch:
@@ -62,7 +109,48 @@ targets:
         - tests/goss-linux.yaml
         - tests/goss-windows.yaml
       key: $.command.jdk{{ $major }}.{{ if (ne $major 8) }}stdout{{ else }}stderr{{ end }}[0]
-    scmid: default
+{{ range $platform := splitList " " $platforms }}
+{{ $parts := splitList "/" $platform }}
+{{ $os := index $parts 0 }}
+{{ $arch := index $parts 1 }}
+{{ $field := "installer_url"}}
+  update_{{ $field }}_{{ $platform }}:
+    name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
+    sourceid: {{ $os }}_{{ $arch }}_{{ $field }}
+    kind: yaml
+    # scmid: default
+    spec:
+      file: ./jdks_infos.yaml
+      key: $.{{ $os }}.{{ $arch }}.jdk{{ $major }}.{{ $field }}
+{{ end }}
+{{ range $platform := splitList " " $platforms }}
+{{ $parts := splitList "/" $platform }}
+{{ $os := index $parts 0 }}
+{{ $arch := index $parts 1 }}
+{{ $field := "checksum_value"}}
+  update_{{ $field }}_{{ $platform }}:
+    name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
+    sourceid: {{ $os }}_{{ $arch }}_{{ $field }}
+    kind: yaml
+    # scmid: default
+    spec:
+      file: ./jdks_infos.yaml
+      key: $.{{ $os }}.{{ $arch }}.jdk{{ $major }}.{{ $field }}
+{{ end }}
+{{ range $platform := splitList " " $platforms }}
+{{ $parts := splitList "/" $platform }}
+{{ $os := index $parts 0 }}
+{{ $arch := index $parts 1 }}
+{{ $field := "signature_url"}}
+  update_{{ $field }}_{{ $platform }}:
+    name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
+    sourceid: {{ $os }}_{{ $arch }}_{{ $field }}
+    kind: yaml
+    # scmid: default
+    spec:
+      file: ./jdks_infos.yaml
+      key: $.{{ $os }}.{{ $arch }}.jdk{{ $major }}.{{ $field }}
+{{ end }}
 
 actions:
   default:

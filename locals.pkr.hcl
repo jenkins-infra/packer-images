@@ -60,4 +60,6 @@ locals {
         ]
     ])
   )
+
+  jdks_infos = yamldecode(file("./jdks_infos.yaml"))
 }
