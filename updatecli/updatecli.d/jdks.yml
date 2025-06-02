@@ -55,14 +55,6 @@ sources:
       operatingsystem: {{ index $.mappedOs $os }}
       releasetype: {{ $releasetype }}
       result: installer_url
-  {{ $os }}_{{ $arch }}_signature_url:
-    kind: temurin
-    spec:
-      architecture: {{ index $.mappedArch $arch }}
-      featureversion: {{ $major }}
-      operatingsystem: {{ index $.mappedOs $os }}
-      releasetype: {{ $releasetype }}
-      result: signature_url
 {{ end }}
 
 conditions:
@@ -83,19 +75,11 @@ conditions:
 {{ end }}
 
 targets:
-  updateJDKVersion:
-    sourceid: lastReleaseVersion
-    name: Update the JDK{{ $major }} version in the Packer default values
-    kind: yaml
-    spec:
-      file: "provisioning/tools-versions.yml"
-      key: "$.jdk{{ $major }}_version"
-    # scmid: default
   updateJDKVersionInGoss:
     sourceid: lastReleaseVersion
     name: Update the JDK{{ $major }} version in the goss test
     kind: yaml
-    # scmid: default
+    scmid: default
 {{ if (eq $major 8) }}
     transformers:
       - findsubmatch:
@@ -115,12 +99,12 @@ targets:
 {{ $arch := index $parts 1 }}
 {{ $field := "installer_url"}}
   update_{{ $field }}_{{ $platform }}:
-    name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
+    name: update {{ $field }} in jdks-infos.yaml for {{ $platform }}
     sourceid: {{ $os }}_{{ $arch }}_{{ $field }}
     kind: yaml
-    # scmid: default
+    scmid: default
     spec:
-      file: ./jdks_infos.yaml
+      file: ./jdks-infos.yaml
       key: $.{{ $os }}.{{ $arch }}.jdk{{ $major }}.{{ $field }}
 {{ end }}
 {{ range $platform := splitList " " $platforms }}
@@ -129,26 +113,12 @@ targets:
 {{ $arch := index $parts 1 }}
 {{ $field := "checksum_value"}}
   update_{{ $field }}_{{ $platform }}:
-    name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
+    name: update {{ $field }} in jdks-infos.yaml for {{ $platform }}
     sourceid: {{ $os }}_{{ $arch }}_{{ $field }}
     kind: yaml
-    # scmid: default
+    scmid: default
     spec:
-      file: ./jdks_infos.yaml
-      key: $.{{ $os }}.{{ $arch }}.jdk{{ $major }}.{{ $field }}
-{{ end }}
-{{ range $platform := splitList " " $platforms }}
-{{ $parts := splitList "/" $platform }}
-{{ $os := index $parts 0 }}
-{{ $arch := index $parts 1 }}
-{{ $field := "signature_url"}}
-  update_{{ $field }}_{{ $platform }}:
-    name: update {{ $field }} in jdks_infos.yaml for {{ $platform }}
-    sourceid: {{ $os }}_{{ $arch }}_{{ $field }}
-    kind: yaml
-    # scmid: default
-    spec:
-      file: ./jdks_infos.yaml
+      file: ./jdks-infos.yaml
       key: $.{{ $os }}.{{ $arch }}.jdk{{ $major }}.{{ $field }}
 {{ end }}
 
