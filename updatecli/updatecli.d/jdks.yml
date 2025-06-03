@@ -1,7 +1,7 @@
 {{ range $item := .jdks }}
 {{ $major := $item.major }}
 {{ $releasetype := default "ga" $item.releasetype }}
-{{ $platforms := default "ubuntu/amd64 ubuntu/arm64 windows/amd64" $item.releasetype }}
+{{ $platforms := default "ubuntu/amd64 ubuntu/arm64 windows/amd64" $item.platform }}
 ---
 name: Bump JDK '{{ $major }}' version
 
