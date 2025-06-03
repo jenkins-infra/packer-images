@@ -32,7 +32,7 @@ sources:
   {{ $os }}_{{ $arch }}_checksum_url:
     kind: temurin
     spec:
-      architecture: {{ if eq $arch "arm64" }}x64{{ else if eq $arch "arm64" }}aarch64{{ end }}
+      architecture: {{ if eq $arch "amd64" }}x64{{ else if eq $arch "arm64" }}aarch64{{ end }}
       featureversion: {{ $major }}
       operatingsystem: {{ if eq $os "ubuntu" }}linux{{ else if eq $os "windows" }}windows{{ end }}
       releasetype: {{ $releasetype }}
@@ -50,7 +50,7 @@ sources:
   {{ $os }}_{{ $arch }}_installer_url:
     kind: temurin
     spec:
-      architecture: {{ if eq $arch "arm64" }}x64{{ else if eq $arch "arm64" }}aarch64{{ end }}
+      architecture: {{ if eq $arch "amd64" }}x64{{ else if eq $arch "arm64" }}aarch64{{ end }}
       featureversion: {{ $major }}
       operatingsystem: {{ if eq $os "ubuntu" }}linux{{ else if eq $os "windows" }}windows{{ end }}
       releasetype: {{ $releasetype }}
