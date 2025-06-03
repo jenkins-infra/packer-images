@@ -11,9 +11,3 @@ jdks:
   - major: 11
   - major: 17
   - major: 21
-mappedArch:
-  amd64: x64
-  arm64: aarch64
-mappedOs:
-  ubuntu: linux
-  windows: windows

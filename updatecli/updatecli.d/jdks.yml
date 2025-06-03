@@ -32,9 +32,9 @@ sources:
   {{ $os }}_{{ $arch }}_checksum_url:
     kind: temurin
     spec:
-      architecture: {{ index $.mappedArch $arch }}
+      architecture: {{ if eq $arch "arm64" }}x64{{ else if eq $arch "arm64" }}aarch64{{ end }}
       featureversion: {{ $major }}
-      operatingsystem: {{ index $.mappedOs $os }}
+      operatingsystem: {{ if eq $os "ubuntu" }}linux{{ else if eq $os "windows" }}windows{{ end }}
       releasetype: {{ $releasetype }}
       result: checksum_url
   {{ $os }}_{{ $arch }}_checksum_value:
@@ -50,28 +50,11 @@ sources:
   {{ $os }}_{{ $arch }}_installer_url:
     kind: temurin
     spec:
-      architecture: {{ index $.mappedArch $arch }}
+      architecture: {{ if eq $arch "arm64" }}x64{{ else if eq $arch "arm64" }}aarch64{{ end }}
       featureversion: {{ $major }}
-      operatingsystem: {{ index $.mappedOs $os }}
+      operatingsystem: {{ if eq $os "ubuntu" }}linux{{ else if eq $os "windows" }}windows{{ end }}
       releasetype: {{ $releasetype }}
       result: installer_url
-{{ end }}
-
-conditions:
-{{ range $platform := splitList " " $platforms }}
-{{ $parts := splitList "/" $platform }}
-{{ $os := index $parts 0 }}
-{{ $arch := index $parts 1 }}
-
-  syn_checkIfReleaseIsAvailableFor{{ $platform }}:
-    kind: temurin
-    # checked version comes from the source
-    sourceid: lastReleaseVersion
-    spec:
-      # release type is mandatory to support ea version (bug in updatecli)
-      releasetype: {{ $releasetype }}
-      platforms:
-        - {{ index $.mappedOs $os }}/{{ index $.mappedArch $arch }}
 {{ end }}
 
 targets:
