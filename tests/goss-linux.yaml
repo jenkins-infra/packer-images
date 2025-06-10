@@ -21,7 +21,7 @@ command:
     exec: doctl version
     exit-status: 0
     stdout:
-      - 1.129.0
+      - 1.130.0
   git:
     exec: git --version
     exit-status: 0
@@ -31,7 +31,7 @@ command:
     exec: go version
     exit-status: 0
     stdout:
-      - 1.24.3
+      - 1.24.4
   golangci-lint:
     exec: golangci-lint --version
     exit-status: 0
@@ -51,7 +51,7 @@ command:
     exec: helm plugin list
     exit-status: 0
     stdout:
-      - /diff.*3.12.1/
+      - /diff.*3.12.2/
       - /helm-git.*1.4.0/
       - /secrets.*4.6.5/
   jdk11:
@@ -78,7 +78,7 @@ command:
     exec: JAVA_HOME=/opt/jdk-21 mvn -v
     exit-status: 0
     stdout:
-      - 3.9.9
+      - 3.9.10
   nodejs:
     exec: node --version
     exit-status: 0
