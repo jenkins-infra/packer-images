@@ -7,7 +7,9 @@ github:
   repository: "packer-images"
 
 jdks:
-  - major: 8
-  - major: 11
-  - major: 17
-  - major: 21
+  # - major: 8
+  # - major: 11
+  # - major: 17
+  # - major: 21
+  - major: 25
+    releasetype: ea

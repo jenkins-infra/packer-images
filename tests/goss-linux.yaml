@@ -69,6 +69,11 @@ command:
     exit-status: 0
     stdout:
       - 21.0.7+6
+  jdk25:
+    exec: /opt/jdk-25/bin/java --version
+    exit-status: 0
+    stdout:
+      - 25+26-ea-beta
   jdk8:
     exec: /opt/jdk-8/bin/java -version
     exit-status: 0
