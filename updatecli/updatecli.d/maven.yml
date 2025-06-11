@@ -44,6 +44,7 @@ targets:
     spec:
       files:
         - tests/goss-linux.yaml
+        - tests/goss-windows.yaml
       key: $.command.maven.stdout[0]
     scmid: default
 
