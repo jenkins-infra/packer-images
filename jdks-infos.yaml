@@ -13,6 +13,11 @@ ubuntu:
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.7%2B6/OpenJDK21U-jdk_x64_linux_hotspot_21.0.7_6.tar.gz
       checksum_value: 974d3acef0b7193f541acb61b76e81670890551366625d4f6ca01b91ac152ce0
+    jdk25:
+      #TODO track with updatecli
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B26-ea-beta/OpenJDK-jdk_x64_linux_hotspot_25_26-ea.tar.gz
+      #TODO track with updatecli
+      checksum_value: 09c1d4e0d07ac7972db467de49d2e6eae215e3060aee97381d844239474b83e9
   arm64:
     jdk8:
       installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u452-b09/OpenJDK8U-jdk_aarch64_linux_hotspot_8u452b09.tar.gz
@@ -26,6 +31,11 @@ ubuntu:
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.7%2B6/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.7_6.tar.gz
       checksum_value: 31dba70ba928c78c20d62049ac000f79f7a7ab11f9d9c11e703f52d60aa64f93
+    jdk25:
+      #TODO track with updatecli
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B26-ea-beta/OpenJDK-jdk_aarch64_linux_hotspot_25_26-ea.tar.gz
+      #TODO track with updatecli
+      checksum_value: 9a18eddcbcc2f94e81b8ff197284fc3bdb3825bf893c2eda2b77667e1ee1ef7f
 windows:
   amd64:
     jdk8:
@@ -40,3 +50,8 @@ windows:
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.7%2B6/OpenJDK21U-jdk_x64_windows_hotspot_21.0.7_6.zip
       checksum_value: 38f4b9fa0b36def9812f6576fd45f6224630477db8c4e669ee78eaa35abb9195
+    jdk25:
+      #TODO track with updatecli
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B25-ea-beta/OpenJDK-jdk_x64_windows_hotspot_25_25-ea.zip
+      #TODO track with updatecli
+      checksum_value: 8070571fbe2941a4b5ae068635d0f20a3b8b99d73a3f2d014f2748da85655d8e
