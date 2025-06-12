@@ -62,7 +62,7 @@ targets:
     sourceid: lastReleaseVersion
     name: Update the JDK{{ $major }} version in the goss test
     kind: yaml
-    scmid: default
+    # scmid: default
 {{ if (eq $major 8) }}
     transformers:
       - findsubmatch:
