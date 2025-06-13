@@ -25,6 +25,9 @@ sources:
       releasetype: {{ $releasetype }}
     transformers:
       - trimprefix: "jdk{{ if (ne $major 8) }}-{{ end }}"
+{{ if (eq $releasetype "ea") }}
+      - trimsuffix: "-ea-beta"
+{{ end }}
 {{ range $platform := splitList " " $platforms }}
 {{ $parts := splitList "/" $platform }}
 {{ $os := index $parts 0 }}
