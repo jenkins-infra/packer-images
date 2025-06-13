@@ -25,6 +25,9 @@ sources:
       releasetype: {{ $releasetype }}
     transformers:
       - trimprefix: "jdk{{ if (ne $major 8) }}-{{ end }}"
+{{ if (eq $releasetype "ea") }}
+      - trimsuffix: "-ea-beta"
+{{ end }}
 {{ range $platform := splitList " " $platforms }}
 {{ $parts := splitList "/" $platform }}
 {{ $os := index $parts 0 }}
@@ -62,7 +65,7 @@ targets:
     sourceid: lastReleaseVersion
     name: Update the JDK{{ $major }} version in the goss test
     kind: yaml
-    # scmid: default
+    scmid: default
 {{ if (eq $major 8) }}
     transformers:
       - findsubmatch:
