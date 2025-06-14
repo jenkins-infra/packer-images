@@ -35,7 +35,7 @@ ubuntu:
       #TODO track with updatecli
       installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B26-ea-beta/OpenJDK-jdk_aarch64_linux_hotspot_25_26-ea.tar.gz
       #TODO track with updatecli
-      checksum_value: 9a18eddcbcc2f94e81b8ff197284fc3bdb3825bf893c2eda2b77667e1ee1ef7f
+      checksum_value: 8938007bb1908ae917ddb5775fb8f657b9b104f46aeb0746445d51314e6de164
 windows:
   amd64:
     jdk8:
