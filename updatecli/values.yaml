@@ -11,5 +11,5 @@ jdks:
   - major: 11
   - major: 17
   - major: 21
-  - major: 25
-    releasetype: ea
+  # - major: 25
+  #   releasetype: ea
