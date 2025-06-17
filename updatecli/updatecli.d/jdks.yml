@@ -66,6 +66,11 @@ targets:
     name: Update the JDK{{ $major }} version in the goss test
     kind: yaml
     scmid: default
+    dependson:
+{{ range $platform := splitList " " $platforms }}
+      - target#update_installer_url_{{ $platform }}:AND
+      - target#update_checksum_value_{{ $platform }}:AND
+{{ end }}
 {{ if (eq $major 8) }}
     transformers:
       - findsubmatch:
