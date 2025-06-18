@@ -126,7 +126,7 @@ command:
     exec: typos --version
     exit-status: 0
     stdout:
-      - typos-cli 1.31.1
+      - 1.33.1
   unzip:
     exec: unzip -v
     exit-status: 0
