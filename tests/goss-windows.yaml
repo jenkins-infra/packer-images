@@ -29,7 +29,7 @@ command:
     exec: C:\tools\jdk-25\bin\java --version
     exit-status: 0
     stdout:
-      - "25+26"
+      - "25+27"
   jdk8:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
@@ -65,7 +65,7 @@ command:
     exec: vagrant --version
     exit-status: 0
     stdout:
-      - 2.4.6
+      - 2.4.7
   dotnet35:
     exec: pwsh -command "Test-Path -Path 'HKLM:\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5'"
     exit-status: 0
