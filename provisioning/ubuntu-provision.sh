@@ -656,6 +656,17 @@ function install_rngd() {
   systemctl start rngd || true
 }
 
+## Install Typos
+function install_typos() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
+
+  curl --silent --show-error --location --output /tmp/typos.tar.gz "https://github.com/crate-ci/typos/releases/download/v${TYPOS_VERSION}/typos-v${TYPOS_VERSION}-$(uname -m)-unknown-linux-musl.tar.gz"
+  tar xvfz /tmp/typos.tar.gz -C /usr/local/bin ./typos
+  chmod a+x /usr/local/bin/typos
+  rm -rf /tmp/typos.tar.gz
+}
+
 function main() {
   check_commands
   copy_custom_scripts
@@ -705,6 +716,7 @@ function main() {
   install_sops
   install_yamllint
   install_rngd
+  install_typos
 
   echo "== Installed packages:"
   dpkg -l
