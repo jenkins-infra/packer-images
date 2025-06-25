@@ -29,7 +29,7 @@ command:
     exec: C:\tools\jdk-25\bin\java --version
     exit-status: 0
     stdout:
-      - "25+27"
+      - "25+28"
   jdk8:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
