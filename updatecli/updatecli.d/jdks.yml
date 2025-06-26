@@ -59,7 +59,20 @@ sources:
       releasetype: {{ $releasetype }}
       result: installer_url
 {{ end }}
-
+conditions:
+  bumpAllorNone:
+    sourceid: lastReleaseVersion
+    kind: temurin
+    spec:
+      releasetype: {{ $releasetype }}
+      ## add all platform to make sure to update everyone or none
+      platforms:
+{{ range $platform := splitList " " $platforms }}
+{{ $parts := splitList "/" $platform }}
+{{ $os := index $parts 0 }}
+{{ $arch := index $parts 1 }}
+        - {{ if eq $os "ubuntu" }}linux{{ else if eq $os "windows" }}windows{{ end }}/{{ if eq $arch "amd64" }}x64{{ else if eq $arch "arm64" }}aarch64{{ end }}
+{{ end }}
 targets:
   updateJDKVersionInGoss:
     sourceid: lastReleaseVersion
