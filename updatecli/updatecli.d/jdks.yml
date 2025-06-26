@@ -28,7 +28,6 @@ sources:
 {{ if (eq $releasetype "ea") }}
       - trimsuffix: "-ea-beta"
 {{ end }}
-    ## dynamics sources
 {{ range $platform := splitList " " $platforms }}
 {{ $parts := splitList "/" $platform }}
 {{ $os := index $parts 0 }}
@@ -98,7 +97,6 @@ targets:
         - tests/goss-linux.yaml
         - tests/goss-windows.yaml
       key: $.command.jdk{{ $major }}.{{ if (ne $major 8) }}stdout{{ else }}stderr{{ end }}[0]
-  ## add dynamics targets
 {{ range $platform := splitList " " $platforms }}
 {{ $parts := splitList "/" $platform }}
 {{ $os := index $parts 0 }}
