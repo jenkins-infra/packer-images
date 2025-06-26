@@ -14,3 +14,13 @@ docker:
     "22.04":
       amd64: sha256:6f63292a7444f9346bf6ec6816dd93029dae021ee00cabb564c440417519680c
       arm64: sha256:103c9bebe997b8f0f71868e30217cebffc3bce08337c6ae6c6beac31634c1546
+aws:
+  ubuntu:
+    "22.04":
+      amd64: ami-08c18c49bdb7f38f7
+      arm64: ami-082e5deb4356a22a6
+  windows:
+    "2019":
+      amd64: ami-0c973dceaa335327b
+    "2022":
+      amd64: ami-00f915df88f6d1e44
