@@ -1,4 +1,17 @@
 build {
+  source "amazon-ebs.base" {
+    name           = "windows"
+    communicator   = "winrm"
+    user_data_file = "./provisioning/setupWinRM.ps1"
+    winrm_insecure = true
+    winrm_timeout  = "20m"
+    winrm_use_ssl  = true
+    winrm_username = local.windows_winrm_user[var.image_type]
+
+    fast_launch {
+      enable_fast_launch = true
+    }
+  }
   source "azure-arm.base" {
     name         = "windows"
     communicator = "winrm"
@@ -123,6 +136,18 @@ build {
     inline = [
       "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit /mode:vm",
       "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
+    ]
+  }
+
+  # This provisioner must be the last for AWS EBS builds, after reboots
+  provisioner "powershell" {
+    only              = ["amazon-ebs.windows"]
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+
+    inline = [
+      "& \"$env:ProgramFiles/amazon/ec2launch/ec2launch.exe\" reset --block",
+      "& \"$env:ProgramFiles/amazon/ec2launch/ec2launch.exe\" sysprep --block",
     ]
   }
 }
