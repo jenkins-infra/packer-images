@@ -45,5 +45,5 @@ vagrant_version: 2.4.7
 windows_pwsh_version: 7.5.2
 xq_version: 1.2.3
 yq_version: 4.45.4
-playwright_version: 1.53.1
+playwright_version: 1.53.2
 vs_buildtools_version: 16
