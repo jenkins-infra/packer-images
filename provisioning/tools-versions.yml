@@ -22,7 +22,7 @@ helm_diff_version: 3.12.3
 helmfile_version: 1.1.2
 helm_git_version: 1.4.0
 helm_secrets_version: 4.6.5
-jenkins_remoting_version: 3309.v27b_9314fd1a_4
+jenkins_remoting_version: 3324.vea_eda_e98cd69
 jq_version: 1.6
 jxreleaseversion_version: 2.7.10
 kubectl_version: 1.31.10
