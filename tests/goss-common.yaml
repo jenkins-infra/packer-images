@@ -72,7 +72,7 @@ command:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.31.10
+      - 1.31.11
   launchable:
     exec: launchable --version
     exit-status: 0
