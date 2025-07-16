@@ -27,7 +27,7 @@ jq_version: 1.6
 jxreleaseversion_version: 2.7.10
 kubectl_version: 1.31.11
 launchable_version: 1.66.0
-maven_version: 3.9.10
+maven_version: 3.9.11
 netlifydeploy_version: 0.1.8
 nodejs_linux_version: 22.17.1
 nodejs_windows_version: 22.17.1
