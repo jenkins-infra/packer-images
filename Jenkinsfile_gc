@@ -13,7 +13,7 @@ pipeline {
             parallel {
                 stage('GC on Azure') {
                     environment {
-                        PACKER_AZURE = credentials('packer-azure-serviceprincipal-sponsorship')
+                        PACKER_AZURE = credentials('packer-azure-serviceprincipal')
                     }
                     steps {
                         sh 'az login --service-principal -u "$PACKER_AZURE_CLIENT_ID" -p "$PACKER_AZURE_CLIENT_SECRET" -t "$PACKER_AZURE_TENANT_ID"'
