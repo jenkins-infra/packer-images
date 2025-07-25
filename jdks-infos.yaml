@@ -8,8 +8,8 @@ ubuntu:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.28%2B6/OpenJDK11U-jdk_x64_linux_hotspot_11.0.28_6.tar.gz
       checksum_value: 7dfd551795a8884b26cbb02e0301da95db40160bb194f48271dc2ef9367f50c2
     jdk17:
-      installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_x64_linux_hotspot_17.0.15_6.tar.gz
-      checksum_value: 9616877c733c9249328ea9bd83a5c8c30e0f9a7af180cac8ffda9034161c2df2
+      installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.16%2B8/OpenJDK17U-jdk_x64_linux_hotspot_17.0.16_8.tar.gz
+      checksum_value: 166774efcf0f722f2ee18eba0039de2d685b350ee14d7b69e6f83437dafd2af1
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.8%2B9/OpenJDK21U-jdk_x64_linux_hotspot_21.0.8_9.tar.gz
       checksum_value: f2dc5418092c43003db8f9005c4a286e1c0104fea96ccdd49e8ebd037cac9219
@@ -26,8 +26,8 @@ ubuntu:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.28%2B6/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.28_6.tar.gz
       checksum_value: 32c316cb3998a9c9dee2829fbb577ea1c0ed666700cec73e049d44c342bb19af
     jdk17:
-      installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.15_6.tar.gz
-      checksum_value: 0db0d6cbe33238f33aa52837b1dc8fc6067b34d206b3e0f9243c7f8c9b9539a5
+      installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.16%2B8/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.16_8.tar.gz
+      checksum_value: 423416447885d9e45f96dd9e0b2c1367da5e1b0353e187cfdf9388c9820ac147
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.8%2B9/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.8_9.tar.gz
       checksum_value: e5c41a1ab0865ea5de9b4529bf8526005f1d4593090845387d14fe450ce39c33
@@ -45,8 +45,8 @@ windows:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.28%2B6/OpenJDK11U-jdk_x64_windows_hotspot_11.0.28_6.zip
       checksum_value: 1422b070f94c93d3fdba7e0bcaa269389c92a928de54e47d988a1002d3a35dc2
     jdk17:
-      installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_x64_windows_hotspot_17.0.15_6.zip
-      checksum_value: 118cf8d586ee3200e2d2e6e49717db4fb1a22005700fbf85f06166046ec74863
+      installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.16%2B8/OpenJDK17U-jdk_x64_windows_hotspot_17.0.16_8.zip
+      checksum_value: 8c7cfff78a55c56ebaf470ed6a89c6466b47d8274bdabdda997d7507c20325c5
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.8%2B9/OpenJDK21U-jdk_x64_windows_hotspot_21.0.8_9.zip
       checksum_value: 5dbb74a4edda94c2aae97a1e30f448db0ad9023a9466fe31a8c68377d9dfbac4
