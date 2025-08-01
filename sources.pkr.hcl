@@ -2,6 +2,9 @@
 source "amazon-ebs" "base" {
   skip_create_ami = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
   ami_name      = "${local.image_name}-${var.architecture}-${local.now_unix_timestamp}"
+
+  # Spot instances costs 5 to 6 time less: we accept failure some time to time.
+  # Note: eviction rate should be re-evaluated every quarter to stay under the 0-5%.
   spot_instance_types = local.aws_spot_instance_types[var.architecture]
   spot_price                  = "auto"
 
@@ -80,6 +83,12 @@ source "azure-arm" "base" {
     version       = var.image_version
     scm_ref       = var.scm_ref
     build_type    = var.build_type
+  }
+
+  # Spot instances costs 5 to 6 time less: we accept failure some time to time.
+  # Note: eviction rate should be re-evaluated every quarter to stay under the 0-5%.
+  spot {
+    eviction_policy = "Delete"
   }
 }
 
