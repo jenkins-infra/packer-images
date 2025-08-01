@@ -33,7 +33,7 @@ ubuntu:
       checksum_value: e5c41a1ab0865ea5de9b4529bf8526005f1d4593090845387d14fe450ce39c33
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B27-ea-beta/OpenJDK25U-jdk_aarch64_linux_hotspot_25_27-ea.tar.gz
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B33-ea-beta/OpenJDK25U-jdk_aarch64_linux_hotspot_25_33-ea.tar.gz
       #TODO track with updatecli
       checksum_value: d8bd267db2f4d059dafa7fed29cfa84506c2128a5af09291af5ffebc03992a2b
 windows:
