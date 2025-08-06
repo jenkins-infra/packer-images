@@ -29,12 +29,6 @@ build {
     winrm_username  = local.windows_winrm_user[var.image_type]
   }
 
-  ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
-  # Note that restarts are only done when required by windows updates
-  provisioner "windows-update" { pause_before = "1m" }
-  provisioner "windows-update" { pause_before = "1m" }
-  provisioner "windows-update" { pause_before = "1m" }
-
   # Installing Docker requires a restart: this first call to the installation script will prepare requirements
   provisioner "powershell" {
     pause_before      = "1m"
@@ -79,14 +73,6 @@ build {
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
     script            = "./provisioning/windows-provision.ps1"
-  }
-
-  # Recommended (and sometimes required) before running deprovisioning (sysprep)
-  # ref. https:#www.packer.io/docs/builders/azure/arm#windows
-  provisioner "windows-restart" {
-    max_retries = 3
-    # Previous provisioner might restart
-    pause_before = "1m"
   }
 
   provisioner "file" {
