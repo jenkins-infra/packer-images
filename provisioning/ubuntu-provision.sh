@@ -447,24 +447,6 @@ function install_gh() {
   rm -rf /tmp/gh*
 }
 
-## Install Vagrant as per https://www.vagrantup.com/downloads
-function install_vagrant() {
-  local keyring_file=/usr/share/keyrings/hashicorp-archive-keyring.gpg
-  gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/hashicorp.gpg
-  chmod a+r "${keyring_file}"
-  echo "deb [signed-by=${keyring_file}] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list
-  apt update --quiet
-
-  if test "${ARCHITECTURE}" == "amd64"
-  then
-    install_package_version vagrant "${VAGRANT_VERSION}"
-  else
-    # Support of vagrant on other CPUs than AMD64 is partial: version are not always the same.
-    # As it is an edge case
-    apt-get install --yes --no-install-recommends vagrant
-  fi
-}
-
 ## Install Ruby with asdf
 function install_ruby() {
   versionToInstall="${1:-$RUBY_VERSION}"
@@ -701,7 +683,6 @@ function main() {
   install_golangcilint # must come after golang
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"
-  install_vagrant
   install_xq
   install_yq
   install_packer
