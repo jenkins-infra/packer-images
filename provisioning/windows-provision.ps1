@@ -257,7 +257,13 @@ $downloads['netlify-deploy'] = @{
 $downloads['terraform'] = @{
     'url' = 'https://releases.hashicorp.com/terraform/{0}/terraform_{0}_windows_amd64.zip' -f $env:TERRAFORM_VERSION;
     'local' = "$baseDir\terraform.zip";
-    'expandTo' = "$baseDir"; # Only terraform.exe
+    'expandTo' = "$baseDir";
+    'cleanupLocal' = 'true';
+};
+$downloads['packer'] = @{
+    'url' = 'https://releases.hashicorp.com/packer/{0}/packer_{0}_windows_amd64.zip' -f $env:PACKER_VERSION;
+    'local' = "$baseDir\packer.zip";
+    'expandTo' = "$baseDir";
     'cleanupLocal' = 'true';
 };
 $downloads['kubectl'] = @{
@@ -293,7 +299,6 @@ $downloads['chocolatey-and-packages'] = @{
         }
         # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
         & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
-        & "choco.exe" install packer --yes --no-progress --limit-output --fail-on-error-output --version "${env:PACKER_VERSION}";
         & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
         & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
