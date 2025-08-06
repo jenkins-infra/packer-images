@@ -282,11 +282,10 @@ $downloads['chocolatey-and-packages'] = @{
         & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
     };
     'cleanupLocal' = 'true';
-    'path' = "C:\HashiCorp\Vagrant\;C:\Program Files\Amazon\AWSCLIV2\;${pythondir}\;${pythondir}\Scripts\;";
+    'path' = "C:\Program Files\Amazon\AWSCLIV2\;${pythondir}\;${pythondir}\Scripts\;";
     'postInstall' = {
         # Installation of make for Windows
         & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
-        & "choco.exe" install vagrant --yes --no-progress --limit-output --fail-on-error-output --version "${env:VAGRANT_VERSION}";
         # install .NET 3.5 for MSI build
         & "choco.exe" install dotnet3.5 --yes --no-progress --limit-output --fail-on-error-output
         if(Test-Path "C:\Windows\Logs\DISM\dism.log") {

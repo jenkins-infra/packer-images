@@ -130,9 +130,6 @@ command:
   unzip:
     exec: unzip -v
     exit-status: 0
-  vagrant:
-    exec: vagrant -v
-    exit-status: 0
   xq:
     exec: xq --version
     exit-status: 0
