@@ -475,12 +475,28 @@ function install_yq() {
 
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
 function install_packer() {
-  # Ensure that ASDF is installed
-  test -f "${asdf_install_dir}/asdf.sh"
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends curl ca-certificates unzip gpg gpg-agent # Should already be there but this function should be autonomous
 
-  # Install packer with ASDF and set it as default installation
-  install_asdf_plugin packer https://github.com/asdf-community/asdf-hashicorp.git
-  install_asdf_package packer "${PACKER_VERSION}"
+  local download_dir checksum_file archive_path
+  download_dir="$(mktemp -d)"
+  archive_path="packer_${PACKER_VERSION}_linux_${ARCHITECTURE}.zip"
+  checksum_file="packer_${PACKER_VERSION}_SHA256SUMS"
+  pushd "${download_dir}"
+  for url in \
+    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${archive_path}" \
+    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${checksum_file}" \
+    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${checksum_file}.sig"
+  do
+    curl --silent --show-error --location --remote-name "${url}"
+  done
+  gpg --import /tmp/gpg-keys/hashicorp.gpg
+  gpg --trust-model always --verify ./"${checksum_file}".sig
+  grep "${archive_path}" "${checksum_file}" | sha256sum --check
+
+  unzip "${archive_path}" -d /usr/local/bin packer
+  popd
+  rm -rf "${download_dir}"
 }
 
 ## Install Datadog agent but not starting it and not enabling it (that will be the role of the system spinning up VM through cloud-init usually)
