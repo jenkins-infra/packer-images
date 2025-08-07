@@ -31,7 +31,7 @@ command:
     exec: go version
     exit-status: 0
     stdout:
-      - 1.24.5
+      - 1.24.6
   golangci-lint:
     exec: golangci-lint --version
     exit-status: 0
@@ -129,9 +129,6 @@ command:
       - 1.33.1
   unzip:
     exec: unzip -v
-    exit-status: 0
-  vagrant:
-    exec: vagrant -v
     exit-status: 0
   xq:
     exec: xq --version

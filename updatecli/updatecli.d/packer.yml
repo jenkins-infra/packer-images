@@ -29,11 +29,14 @@ sources:
 
 conditions:
   ## Only check for chocolatey package: ASDF package is always faster than chocolatey to publish + both packages are relying on hashicorp
-  checkForChocolateyPackage:
-    kind: shell
+  checkForWindowsBinary:
+    kind: file
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
-      command: curl https://community.chocolatey.org/packages/packer/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
+      files:
+        - https://releases.hashicorp.com/packer/{{ source "lastReleaseVersion" }}/packer_{{ source "lastReleaseVersion" }}_windows_amd64.zip
+        - https://releases.hashicorp.com/packer/{{ source "lastReleaseVersion" }}/packer_{{ source "lastReleaseVersion" }}_linux_amd64.zip
+        - https://releases.hashicorp.com/packer/{{ source "lastReleaseVersion" }}/packer_{{ source "lastReleaseVersion" }}_linux_arm64.zip
 
 targets:
   updateVersion:

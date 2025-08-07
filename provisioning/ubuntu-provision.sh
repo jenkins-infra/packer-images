@@ -447,24 +447,6 @@ function install_gh() {
   rm -rf /tmp/gh*
 }
 
-## Install Vagrant as per https://www.vagrantup.com/downloads
-function install_vagrant() {
-  local keyring_file=/usr/share/keyrings/hashicorp-archive-keyring.gpg
-  gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/hashicorp.gpg
-  chmod a+r "${keyring_file}"
-  echo "deb [signed-by=${keyring_file}] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list
-  apt update --quiet
-
-  if test "${ARCHITECTURE}" == "amd64"
-  then
-    install_package_version vagrant "${VAGRANT_VERSION}"
-  else
-    # Support of vagrant on other CPUs than AMD64 is partial: version are not always the same.
-    # As it is an edge case
-    apt-get install --yes --no-install-recommends vagrant
-  fi
-}
-
 ## Install Ruby with asdf
 function install_ruby() {
   versionToInstall="${1:-$RUBY_VERSION}"
@@ -493,12 +475,28 @@ function install_yq() {
 
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
 function install_packer() {
-  # Ensure that ASDF is installed
-  test -f "${asdf_install_dir}/asdf.sh"
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends curl ca-certificates unzip gpg gpg-agent # Should already be there but this function should be autonomous
 
-  # Install packer with ASDF and set it as default installation
-  install_asdf_plugin packer https://github.com/asdf-community/asdf-hashicorp.git
-  install_asdf_package packer "${PACKER_VERSION}"
+  local download_dir checksum_file archive_path
+  download_dir="$(mktemp -d)"
+  archive_path="packer_${PACKER_VERSION}_linux_${ARCHITECTURE}.zip"
+  checksum_file="packer_${PACKER_VERSION}_SHA256SUMS"
+  pushd "${download_dir}"
+  for url in \
+    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${archive_path}" \
+    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${checksum_file}" \
+    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${checksum_file}.sig"
+  do
+    curl --silent --show-error --location --remote-name "${url}"
+  done
+  gpg --import /tmp/gpg-keys/hashicorp.gpg
+  gpg --trust-model always --verify ./"${checksum_file}".sig
+  grep "${archive_path}" "${checksum_file}" | sha256sum --check
+
+  unzip "${archive_path}" -d /usr/local/bin packer
+  popd
+  rm -rf "${download_dir}"
 }
 
 ## Install Datadog agent but not starting it and not enabling it (that will be the role of the system spinning up VM through cloud-init usually)
@@ -701,7 +699,6 @@ function main() {
   install_golangcilint # must come after golang
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"
-  install_vagrant
   install_xq
   install_yq
   install_packer

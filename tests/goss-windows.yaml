@@ -61,11 +61,6 @@ command:
     exit-status: 0
     stdout:
       - 3.4.5
-  vagrant:
-    exec: vagrant --version
-    exit-status: 0
-    stdout:
-      - 2.4.7
   dotnet35:
     exec: pwsh -command "Test-Path -Path 'HKLM:\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5'"
     exit-status: 0
