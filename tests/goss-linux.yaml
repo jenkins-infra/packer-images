@@ -5,7 +5,7 @@ command:
     exec: asdf version
     exit-status: 0
     stdout:
-      - v0.15.0
+      - v0.18.0
   azcopy:
     exec: azcopy --version
     exit-status: 0
