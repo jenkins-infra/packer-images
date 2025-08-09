@@ -16,7 +16,7 @@ source "amazon-ebs" "base" {
   launch_block_device_mappings {
     delete_on_termination = true
     device_name           = "/dev/sda1"
-    volume_size           = local.disk_size_gb # TODO: check if we can rename this local to cover both windows and Ubuntu
+    volume_size           = 50
     volume_type           = "gp3"
   }
 
