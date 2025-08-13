@@ -41,7 +41,7 @@ command:
     exec: helm version
     exit-status: 0
     stdout:
-      - 3.18.4
+      - 3.18.5
   helmfile:
     exec: helmfile --version
     exit-status: 0
