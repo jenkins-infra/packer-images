@@ -17,7 +17,7 @@ ubuntu:
       #TODO track with updatecli
       installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B33-ea-beta/OpenJDK25U-jdk_x64_linux_hotspot_25_33-ea.tar.gz
       #TODO track with updatecli
-      checksum_value: 30b836e180d892070a690a93c3d3ab057450d6dfa1bf3c0c32b57f7833f633ae
+      checksum_value: 6ac36df3cbf56f3a2c1881062ffd4a55e3a955584f225c36bfc4b9167dbfff0e
   arm64:
     jdk8:
       installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u462-b08/OpenJDK8U-jdk_aarch64_linux_hotspot_8u462b08.tar.gz
