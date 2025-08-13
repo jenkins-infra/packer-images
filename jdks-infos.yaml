@@ -15,9 +15,9 @@ ubuntu:
       checksum_value: f2dc5418092c43003db8f9005c4a286e1c0104fea96ccdd49e8ebd037cac9219
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B33-ea-beta/OpenJDK25U-jdk_x64_linux_hotspot_25_33-ea.tar.gz
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B35-ea-beta/OpenJDK25U-jdk_x64_linux_hotspot_25_35-ea.tar.gz
       #TODO track with updatecli
-      checksum_value: 30b836e180d892070a690a93c3d3ab057450d6dfa1bf3c0c32b57f7833f633ae
+      checksum_value: 6ac36df3cbf56f3a2c1881062ffd4a55e3a955584f225c36bfc4b9167dbfff0e
   arm64:
     jdk8:
       installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u462-b08/OpenJDK8U-jdk_aarch64_linux_hotspot_8u462b08.tar.gz
@@ -33,9 +33,9 @@ ubuntu:
       checksum_value: e5c41a1ab0865ea5de9b4529bf8526005f1d4593090845387d14fe450ce39c33
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B33-ea-beta/OpenJDK25U-jdk_aarch64_linux_hotspot_25_33-ea.tar.gz
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B35-ea-beta/OpenJDK25U-jdk_aarch64_linux_hotspot_25_35-ea.tar.gz
       #TODO track with updatecli
-      checksum_value: 84a6726b41e9038e416468f4e033e455c7050511ea2ef001142c090acb2be0ba
+      checksum_value: 6a4eb5fa21e1a742dfe544721c9f9b7be67f00b9a267f9019d1d40bf291873a5
 windows:
   amd64:
     jdk8:
@@ -52,6 +52,6 @@ windows:
       checksum_value: 5dbb74a4edda94c2aae97a1e30f448db0ad9023a9466fe31a8c68377d9dfbac4
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B33-ea-beta/OpenJDK25U-jdk_x64_windows_hotspot_25_33-ea.zip
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B35-ea-beta/OpenJDK25U-jdk_x64_windows_hotspot_25_35-ea.zip
       #TODO track with updatecli
-      checksum_value: f47391dadc7874e5beb8b7afbe1c6b78a7e115af69d285a25216ddb38b507726
+      checksum_value: 6b55587fbe069aea42eeb923814cd772a0d2af14233e07b321c354d44bad53d8
