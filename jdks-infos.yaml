@@ -54,4 +54,4 @@ windows:
       #TODO track with updatecli
       installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B35-ea-beta/OpenJDK25U-jdk_x64_windows_hotspot_25_35-ea.zip
       #TODO track with updatecli
-      checksum_value: 6b55587fbe069aea42eeb923814cd772a0d2af14233e07b321c354d44bad53d8
+      checksum_value: 09f137b60eabec165161644fb3af49730e898620d4c6cbdf3f328b9b5b5e808b
