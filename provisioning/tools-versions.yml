@@ -1,6 +1,6 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.15.0
-awscli_version: 2.28.11
+awscli_version: 2.28.13
 azcopy_version: 10.30.0
 azurecli_version: 2.76.0
 chocolatey_version: 1.4.0
@@ -17,7 +17,7 @@ golang_version: 1.25.0
 golangcilint_version: 2.4.0
 goss_version: 0.4.9
 hadolint_version: 2.12.0
-helm_version: 3.18.5
+helm_version: 3.18.6
 helm_diff_version: 3.12.5
 helmfile_version: 1.1.5
 helm_git_version: 1.4.0
@@ -44,5 +44,5 @@ updatecli_version: 0.105.1
 windows_pwsh_version: 7.5.2
 xq_version: 1.2.3
 yq_version: 4.47.1
-playwright_version: 1.54.2
+playwright_version: 1.55.0
 vs_buildtools_version: 16
