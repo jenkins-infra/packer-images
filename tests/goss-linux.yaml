@@ -97,7 +97,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.54.2
+      - 1.55.0
   python3:
     exec: python3 --version
     exit-status: 0
