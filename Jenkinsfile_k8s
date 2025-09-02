@@ -110,27 +110,7 @@ pipeline {
           exclude {
             axis {
               name 'agent_type'
-              values 'windows-2019'
-            }
-            axis {
-              name 'compute_type'
-              values 'docker'
-            }
-          }
-          exclude {
-            axis {
-              name 'agent_type'
-              values 'windows-2022'
-            }
-            axis {
-              name 'compute_type'
-              values 'docker'
-            }
-          }
-          exclude {
-            axis {
-              name 'agent_type'
-              values 'windows-2025'
+              values 'windows-2019', 'windows-2022', 'windows-2025'
             }
             axis {
               name 'compute_type'
