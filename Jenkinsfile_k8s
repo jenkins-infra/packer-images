@@ -43,6 +43,7 @@ def withPackerNode(String packer_template, String compute_type, String cpu_archi
 
       return body.call()
     }
+<<<<<<< HEAD
   } else {
     // No node allocation: keep the same default agent node (e.g. declarative top-level)
     return body.call()
@@ -61,6 +62,25 @@ node('linux-arm64-docker') {
         stage('Packer Init') {
           // Call the initializing function once for the default agent
           packerInitPlugins()
+=======
+    stage('Packer Images') {
+      matrix {
+        axes {
+          axis {
+            name 'cpu_architecture'
+            values 'amd64', 'arm64'
+          }
+          axis {
+            name 'agent_type'
+            // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
+            values 'ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025'
+          }
+          axis {
+            name 'compute_type'
+            // "azure-arm" stands for "Azure Resource Manager", unrelated to arm64 CPU
+            values 'amazon-ebs', 'azure-arm', 'docker'
+          }
+>>>>>>> 63ccb4c (feat(pipeline) adding windows 2025 to the build list)
         }
       }
 
