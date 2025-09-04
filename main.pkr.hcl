@@ -10,7 +10,7 @@ packer {
       source  = "github.com/rgl/windows-update"
     }
     azure = {
-      version = "2.4.0"
+      version = "2.5.0"
       source  = "github.com/hashicorp/azure"
     }
     docker = {
