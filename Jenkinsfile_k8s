@@ -86,7 +86,8 @@ pipeline {
           axis {
             name 'agent_type'
             // make sure to port any addition to the list of agent types to the Build Docker Manifest stage if it's docker related
-            values 'ubuntu-22.04', 'windows-2019', 'windows-2022'
+            // values 'ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025'
+            values 'windows-2025'
           }
           axis {
             name 'compute_type'
@@ -106,21 +107,11 @@ pipeline {
               notValues 'ubuntu-22.04'
             }
           }
-          // No build on Windows or Docker, not yet implemented
+          // No build Docker on Windows, not yet implemented
           exclude {
             axis {
               name 'agent_type'
-              values 'windows-2019'
-            }
-            axis {
-              name 'compute_type'
-              values 'docker'
-            }
-          }
-          exclude {
-            axis {
-              name 'agent_type'
-              values 'windows-2022'
+              values 'windows-2019', 'windows-2022', 'windows-2025'
             }
             axis {
               name 'compute_type'
