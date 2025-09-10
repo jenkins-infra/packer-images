@@ -92,7 +92,7 @@ command:
     exec: packer -v
     exit-status: 0
     stdout:
-      - 1.14.1
+      - 1.14.2
   terraform:
     exec: terraform -v
     exit-status: 0
