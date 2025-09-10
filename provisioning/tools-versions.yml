@@ -25,7 +25,7 @@ helm_secrets_version: 4.6.10
 jenkins_remoting_version: 3327.v868139a_d00e0
 jq_version: 1.6
 jxreleaseversion_version: 2.7.10
-kubectl_version: 1.31.12
+kubectl_version: 1.32.9
 launchable_version: 1.66.0
 maven_version: 3.9.11
 netlifydeploy_version: 0.1.8
