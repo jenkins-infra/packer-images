@@ -173,25 +173,25 @@ node('linux-arm64-docker') {
       parallel matrixBranches
 
       // Build Docker Manifest stage for ubuntu-22.04 only
-    //   if (env.TAG_NAME != null) {
-    //     stage('Build Docker Manifest') {
-    //       withEnv(['agent_type=ubuntu-22.04']) {
-    //         infra.withDockerPushCredentials {
-    //           sh 'docker manifest create \
-    //               jenkinsciinfra/jenkins-agent-${agent_type}:latest \
-    //               --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-    //               --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-    //           sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":latest'
+      // if (env.TAG_NAME != null) {
+      //   stage('Build Docker Manifest') {
+      //     withEnv(['agent_type=ubuntu-22.04']) {
+      //       infra.withDockerPushCredentials {
+      //         sh 'docker manifest create \
+      //             jenkinsciinfra/jenkins-agent-${agent_type}:latest \
+      //             --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+      //             --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+      //         sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":latest'
 
-    //           sh 'docker manifest create \
-    //               jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} \
-    //               --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
-    //               --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
-    //           sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":"${TAG_NAME}"'
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+      //         sh 'docker manifest create \
+      //             jenkinsciinfra/jenkins-agent-${agent_type}:${TAG_NAME} \
+      //             --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
+      //             --amend jenkinsciinfra/jenkins-agent-${agent_type}:amd64'
+      //         sh 'docker manifest push jenkinsciinfra/jenkins-agent-"${agent_type}":"${TAG_NAME}"'
+      //       }
+      //     }
+      //   }
+      // }
+    }
   }
 }
