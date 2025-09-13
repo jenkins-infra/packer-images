@@ -46,7 +46,7 @@ command:
     exec: helmfile --version
     exit-status: 0
     stdout:
-      - 1.1.6
+      - 1.1.7
   helmplugins:
     exec: helm plugin list
     exit-status: 0
