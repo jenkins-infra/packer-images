@@ -4,13 +4,9 @@ azure:
     "2019":
       amd64: "17763.6293.240905"
     "2022":
-<<<<<<< HEAD
       amd64: "20348.4171.250903"
-=======
-      amd64: "20348.4052.250808"
     "2025":
       amd64: "26100.4946.250810"
->>>>>>> 63ccb4c (feat(pipeline) adding windows 2025 to the build list)
   ubuntu:
     "22.04":
       amd64: 22.04.202507300
@@ -29,10 +25,6 @@ aws:
     "2019":
       amd64: ami-073f13e8228a111a4
     "2022":
-<<<<<<< HEAD
       amd64: ami-0c537d8f3cfa1b695
-=======
-      amd64: ami-05ffc56a2f995fd1e
     "2025":
       amd64: ami-06582243701c8d921
->>>>>>> 63ccb4c (feat(pipeline) adding windows 2025 to the build list)
