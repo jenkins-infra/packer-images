@@ -68,8 +68,8 @@ node('linux-arm64-docker') {
         // cpu_architecture: ['amd64', 'arm64'],
         // agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022'],
         // compute_type: ['amazon-ebs', 'azure-arm', 'docker']
-        // Temporarily limit to arm64/ubuntu-22-04/docker to test tags on PR
-        cpu_architecture: ['arm64'],
+        // Temporarily limit to arm64-amd64/ubuntu-22-04/docker to test tags on PR
+        cpu_architecture: ['amd64', 'arm64'],
         agent_type: ['ubuntu-22.04'],
         compute_type: ['docker']
       ]
