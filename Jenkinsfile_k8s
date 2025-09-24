@@ -53,6 +53,7 @@ def withPackerNode(String packer_template, String compute_type, String cpu_archi
 node('linux-arm64-docker') {
   withEnv(["PATH=${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"]) {
     timeout(time: 120, unit: 'MINUTES') {
+      // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       def GIT_COMMIT = checkout(scm).GIT_COMMIT
 
       // Side Tasks stage
@@ -65,13 +66,9 @@ node('linux-arm64-docker') {
 
       // Packer Images stage - Matrix implementation
       def matrixAxes = [
-        // cpu_architecture: ['amd64', 'arm64'],
-        // agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022'],
-        // compute_type: ['amazon-ebs', 'azure-arm', 'docker']
-        // Temporarily limit to arm64-amd64/ubuntu-22-04/docker to test tags on PR
         cpu_architecture: ['amd64', 'arm64'],
-        agent_type: ['ubuntu-22.04'],
-        compute_type: ['docker']
+        agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022'],
+        compute_type: ['amazon-ebs', 'azure-arm', 'docker']
       ]
 
       def matrixBranches = [:]
