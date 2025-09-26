@@ -17,7 +17,7 @@ docker:
 aws:
   ubuntu:
     "22.04":
-      amd64: ami-001209a78b30e703c
+      amd64: ami-034bcb306215cad52
       arm64: ami-0a5ee0f0c6f60deaa
   windows:
     "2019":
