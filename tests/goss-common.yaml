@@ -102,7 +102,7 @@ command:
     exec: trivy --version
     exit-status: 0
     stdout:
-      - 0.67.0
+      - 0.67.2
   updatecli:
     exec: updatecli version
     exit-status: 0
