@@ -44,5 +44,5 @@ updatecli_version: 0.108.0
 windows_pwsh_version: 7.5.3
 xq_version: 1.2.3
 yq_version: 4.48.1
-playwright_version: 1.56.0
+playwright_version: 1.56.1
 vs_buildtools_version: 16
