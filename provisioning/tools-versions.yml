@@ -4,14 +4,14 @@ awscli_version: 2.31.16
 azcopy_version: 10.30.1
 azurecli_version: 2.78.0
 chocolatey_version: 1.4.0
-compose_version: 2.40.0
+compose_version: 2.40.1
 cst_version: 1.21.1
 docker_version: 28.5.1
 docker_buildx_version: 0.14.1
 doctl_version: 1.145.0
 gh_version: 2.82.0
 git_lfs_version: 3.7.1
-git_linux_version: 2.51.0
+git_linux_version: 2.51.1
 git_windows_version: 2.51.0
 golang_version: 1.25.3
 golangcilint_version: 2.5.0
@@ -44,5 +44,5 @@ updatecli_version: 0.108.0
 windows_pwsh_version: 7.5.3
 xq_version: 1.2.3
 yq_version: 4.48.1
-playwright_version: 1.56.0
+playwright_version: 1.56.1
 vs_buildtools_version: 16
