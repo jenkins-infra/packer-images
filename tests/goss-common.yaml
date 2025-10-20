@@ -35,7 +35,7 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.40.0
+      - 2.40.1
   gh_cli:
     exec: gh --version
     exit-status: 0
@@ -45,7 +45,7 @@ command:
     exec: git-lfs --version
     exit-status: 0
     stdout:
-      - 3.7.0
+      - 3.7.1
   goss:
     exec: goss --version
     exit-status: 0
