@@ -14,7 +14,7 @@ command:
     exec: C:\tools\jdk-11\bin\java --version
     exit-status: 0
     stdout:
-      - 11.0.28+6
+      - 11.0.29+7
   jdk17:
     exec: C:\tools\jdk-17\bin\java --version
     exit-status: 0
