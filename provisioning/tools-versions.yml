@@ -40,7 +40,7 @@ sops_version: 3.11.0
 terraform_version: 1.12.2
 trivy_version: 0.67.2
 typos_version: 1.33.1 # TODO track with updatecli
-updatecli_version: 0.110.0
+updatecli_version: 0.109.0
 windows_pwsh_version: 7.5.4
 xq_version: 1.2.3
 yq_version: 4.48.1
