@@ -5,7 +5,7 @@ azcopy_version: 10.31.0
 azurecli_version: 2.79.0
 chocolatey_version: 1.4.0
 compose_version: 2.40.3
-cst_version: 1.21.1
+cst_version: 1.22.0
 docker_version: 28.5.2
 docker_buildx_version: 0.14.1
 doctl_version: 1.147.0
