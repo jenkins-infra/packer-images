@@ -53,7 +53,7 @@ command:
     stdout:
       - /diff.*3.14.1/
       - /helm-git.*1.4.1/
-      - /secrets.*4.7.1/
+      - /secrets.*4.7.4/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
