@@ -31,12 +31,10 @@ targets:
   updateVersion:
     name: "Update the amazon plugin version in main.pkr.hcl"
     sourceid: lastReleaseVersion
-    kind: file
+    kind: hcl
     spec:
       file: main.pkr.hcl
-      matchpattern: 'amazon = \{((\r\n|\r|\n)(\s+))version = ".*"'
-      replacepattern: >-
-        amazon = {${1}version = "{{ source "lastReleaseVersion" }}"
+      path: packer.required_plugins.amazon.version
     scmid: default
 
 actions:
