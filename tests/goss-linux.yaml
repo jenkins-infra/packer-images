@@ -10,7 +10,7 @@ command:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.30.1
+      - 10.31.0
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
@@ -21,64 +21,64 @@ command:
     exec: doctl version
     exit-status: 0
     stdout:
-      - 1.142.0
+      - 1.147.0
   git:
     exec: git --version
     exit-status: 0
     stdout:
-      - 2.51.0
+      - 2.52.0
   golang:
     exec: go version
     exit-status: 0
     stdout:
-      - 1.25.1
+      - 1.25.4
   golangci-lint:
     exec: golangci-lint --version
     exit-status: 0
     stdout:
-      - 2.5.0
+      - 2.6.2
   helm:
     exec: helm version
     exit-status: 0
     stdout:
-      - 3.19.0
+      - 3.19.1
   helmfile:
     exec: helmfile --version
     exit-status: 0
     stdout:
-      - 1.1.7
+      - 1.2.1
   helmplugins:
     exec: helm plugin list
     exit-status: 0
     stdout:
-      - /diff.*3.13.0/
-      - /helm-git.*1.4.0/
-      - /secrets.*4.6.10/
+      - /diff.*3.14.1/
+      - /helm-git.*1.4.1/
+      - /secrets.*4.7.4/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
     stdout:
-      - 11.0.28+6
+      - 11.0.29+7
   jdk17:
     exec: /opt/jdk-17/bin/java --version
     exit-status: 0
     stdout:
-      - 17.0.16+8
+      - 17.0.17+10
   jdk21:
     exec: /opt/jdk-21/bin/java --version
     exit-status: 0
     stdout:
-      - 21.0.8+9
+      - 21.0.9+10
   jdk25:
     exec: /opt/jdk-25/bin/java --version
     exit-status: 0
     stdout:
-      - "25+36"
+      - "25.0.1+8"
   jdk8:
     exec: /opt/jdk-8/bin/java -version
     exit-status: 0
     stderr:
-      - 1.8.0_462
+      - 1.8.0_472
   maven:
     exec: JAVA_HOME=/opt/jdk-21 mvn -v
     exit-status: 0
@@ -88,7 +88,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 22.20.0
+      - 22.21.1
       - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version
@@ -97,7 +97,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.55.1
+      - 1.56.1
   python3:
     exec: python3 --version
     exit-status: 0
@@ -109,7 +109,7 @@ command:
     exit-status: 0
     stdout:
       - 2.6.10
-      - 3.4.6
+      - 3.4.7
   rngd:
     exec: rngd --version
     exit-status: 0
@@ -117,7 +117,7 @@ command:
     exec: sops --version
     exit-status: 0
     stdout:
-      - 3.10.2
+      - 3.11.0
   ssh_agent:
     exec: command -v ssh-agent
     exit-status: 0

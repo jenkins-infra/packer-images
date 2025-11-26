@@ -1,5 +1,5 @@
 ---
-name: Bump `kubectl` version
+name: Bump `amazon` packer plugin version
 
 scms:
   default:
@@ -16,41 +16,35 @@ scms:
 sources:
   lastReleaseVersion:
     kind: githubrelease
-    name: Get latest `kubectl` CLI version
-    transformers:
-      - trimprefix: "kubernetes-"
+    name: Get the latest amazon packer plugin version
     spec:
-      owner: "kubernetes"
-      repository: "kubectl"
+      owner: "hashicorp"
+      repository: "packer-plugin-amazon"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
-        kind: regex
-        pattern: "^kubernetes-1.33.(\\d*)$"
+        kind: semver
+    transformers:
+      - trimprefix: v
 
 targets:
   updateVersion:
-    name: "Update `kubectl` version in the tools-versions.yml file"
+    name: "Update the amazon plugin version in main.pkr.hcl"
     sourceid: lastReleaseVersion
-    kind: yaml
+    kind: file
     spec:
-      file: provisioning/tools-versions.yml
-      key: $.kubectl_version
-    scmid: default
-  updateVersionInGoss:
-    name: Update `kubectl` version in the goss test
-    kind: yaml
-    spec:
-      file: tests/goss-common.yaml
-      key: $.command.kubectl.stdout[0]
+      file: main.pkr.hcl
+      matchpattern: 'amazon = \{((\r\n|\r|\n)(\s+))version = ".*"'
+      replacepattern: >-
+        amazon = {${1}version = "{{ source "lastReleaseVersion" }}"
     scmid: default
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump `kubectl` version to {{ source "lastReleaseVersion" }}
+    title: Bump `amazon` packer plugin version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:
         - dependencies
-        - kubectl
+        - packer-amazon-plugin

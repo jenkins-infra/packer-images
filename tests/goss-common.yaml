@@ -5,12 +5,12 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.31.0
+      - 2.32.3
   azurecli:
     exec: az --version
     exit-status: 0
     stdout:
-      - 2.77.0
+      - 2.80.0
   bundle:
     exec: bundle -v
     exit-status: 0
@@ -18,12 +18,12 @@ command:
     exec: container-structure-test version
     exit-status: 0
     stdout:
-      - 1.20.0
+      - 1.22.0
   docker-ce:
     exec: docker -v
     exit-status: 0
     stdout:
-      - 28.4.0
+      - 28.5.2
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
@@ -35,17 +35,17 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 2.39.4
+      - 2.40.3
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.80.0
+      - 2.83.1
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
     stdout:
-      - 3.7.0
+      - 3.7.1
   goss:
     exec: goss --version
     exit-status: 0
@@ -66,12 +66,12 @@ command:
     exec: jx-release-version -version
     exit-status: 0
     stdout:
-      - 2.7.10
+      - 2.8.0
   kubectl:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.32.9
+      - 1.33.6
   launchable:
     exec: launchable --version
     exit-status: 0
@@ -92,7 +92,7 @@ command:
     exec: packer -v
     exit-status: 0
     stdout:
-      - 1.14.2
+      - 1.14.3
   terraform:
     exec: terraform -v
     exit-status: 0
@@ -102,14 +102,14 @@ command:
     exec: trivy --version
     exit-status: 0
     stdout:
-      - 0.66.0
+      - 0.67.2
   updatecli:
     exec: updatecli version
     exit-status: 0
     stdout:
-      - 0.107.0
+      - 0.110.3
   yq:
     exec: yq --version
     exit-status: 0
     stdout:
-      - 4.47.1
+      - 4.48.2

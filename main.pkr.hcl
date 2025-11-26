@@ -1,8 +1,8 @@
 packer {
   required_version = ">= 1.7.2, < 2"
   required_plugins {
-    amazon = { # TODO: track this version with `updatecli`
-      version = "1.3.3"
+    amazon = {
+      version = "1.8.0"
       source  = "github.com/hashicorp/amazon"
     }
     windows-update = {
