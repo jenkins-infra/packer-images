@@ -67,7 +67,7 @@ node('linux-arm64-docker') {
       // Packer Images stage - Matrix implementation
       def matrixAxes = [
         cpu_architecture: ['amd64', 'arm64'],
-        agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022'],
+        agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025'],
         compute_type: ['amazon-ebs', 'azure-arm', 'docker']
       ]
 
