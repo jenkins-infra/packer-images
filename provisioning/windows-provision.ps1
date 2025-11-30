@@ -408,6 +408,9 @@ Remove-Item -Force "$temp_authorized_keys_file"
 Write-Host "== OS Version"
 [System.Environment]::OSVersion.Version
 
+Write-Host "== Environment variables"
+Get-Children Env:
+
 Write-Host "== Disks"
 Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" |
 Select-Object -Property DeviceID, DriveType, VolumeName,
