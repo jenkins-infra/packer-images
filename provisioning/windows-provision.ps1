@@ -364,7 +364,7 @@ foreach($k in $downloads.Keys) {
     if($download.ContainsKey('env')) {
         foreach($name in $download['env'].Keys) {
             $value = $download['env'][$name]
-            New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name $name -Value $val | Out-Null
+            New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name $name -Value $value | Out-Null
         }
     }
 
