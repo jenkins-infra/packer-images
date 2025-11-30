@@ -333,6 +333,7 @@ AddToPathEnv $baseDir
 ## Proceed to install tools
 # TODO: foreach in parallel for downloads
 foreach($k in $downloads.Keys) {
+    Write-Host "---"
     $download = $downloads[$k]
     if($download.ContainsKey('check')) {
         $res = Invoke-Command $download['check']
