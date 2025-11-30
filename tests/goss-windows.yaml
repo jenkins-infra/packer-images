@@ -36,7 +36,7 @@ command:
     stderr:
       - 1.8.0_472
   maven:
-    exec: pwsh -command "$env:JAVA_HOME='C:\tools\jdk-21'; mvn -v"
+    exec: pwsh -command "if (-not $env:MAVEN_VERSION) { Write-Error 'MAVEN_VERSION not set'; exit 1 }; pwsh -command "$env:JAVA_HOME='C:\tools\jdk-21'; mvn -v"
     exit-status: 0
     stdout:
       - 3.9.11
