@@ -36,8 +36,10 @@ command:
     stderr:
       - 1.8.0_472
   maven-env:
-    exec: pwsh -command "if (-not $env:MAVEN_HOME) { Write-Error 'MAVEN_HOME not set'; exit 1 }"
+    exec: pwsh -command "echo $env:MAVEN_HOME"
     exit-status: 0
+    stdout:
+      - 'C:\tools\apache-maven-'
   maven:
     exec: pwsh -command "$env:JAVA_HOME='C:\tools\jdk-21'; mvn -v"
     exit-status: 0
