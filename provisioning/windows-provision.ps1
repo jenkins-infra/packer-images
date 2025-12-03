@@ -333,6 +333,7 @@ AddToPathEnv $baseDir
 ## Proceed to install tools
 # TODO: foreach in parallel for downloads
 foreach($k in $downloads.Keys) {
+    Write-Host "---"
     $download = $downloads[$k]
     if($download.ContainsKey('check')) {
         $res = Invoke-Command $download['check']
@@ -364,7 +365,7 @@ foreach($k in $downloads.Keys) {
     if($download.ContainsKey('env')) {
         foreach($name in $download['env'].Keys) {
             $value = $download['env'][$name]
-            New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name $name -Value $val | Out-Null
+            New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name $name -Value $value | Out-Null
         }
     }
 
@@ -406,6 +407,9 @@ Remove-Item -Force "$temp_authorized_keys_file"
 ## Final information: print out status
 Write-Host "== OS Version"
 [System.Environment]::OSVersion.Version
+
+Write-Host "== Environment variables"
+Get-ChildItem Env:
 
 Write-Host "== Disks"
 Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" |

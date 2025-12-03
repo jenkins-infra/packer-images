@@ -35,6 +35,11 @@ command:
     exit-status: 0
     stderr:
       - 1.8.0_472
+  maven-env:
+    exec: pwsh -command "echo $env:MAVEN_HOME"
+    exit-status: 0
+    stdout:
+      - 'C:\tools\apache-maven-'
   maven:
     exec: pwsh -command "$env:JAVA_HOME='C:\tools\jdk-21'; mvn -v"
     exit-status: 0
