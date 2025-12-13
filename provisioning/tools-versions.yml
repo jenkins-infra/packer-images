@@ -1,6 +1,6 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.15.0
-awscli_version: 2.32.14
+awscli_version: 2.32.16
 azcopy_version: 10.31.0
 azurecli_version: 2.81.0
 chocolatey_version: 1.4.0
@@ -40,7 +40,7 @@ sops_version: 3.11.0
 terraform_version: 1.12.2
 trivy_version: 0.68.1
 typos_version: 1.33.1 # TODO track with updatecli
-updatecli_version: 0.111.0
+updatecli_version: 0.112.0
 windows_pwsh_version: 7.5.4
 xq_version: 1.2.3
 yq_version: 4.49.2

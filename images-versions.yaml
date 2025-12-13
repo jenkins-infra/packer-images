@@ -9,7 +9,7 @@ azure:
       amd64: "26100.6584.250906"
   ubuntu:
     "22.04":
-      amd64: 22.04.202510230
+      amd64: 22.04.202512120
       arm64: 22.04.202512120
 docker:
   ubuntu:
@@ -23,8 +23,8 @@ aws:
       arm64: ami-0f3bb1aab2e14631f
   windows:
     "2019":
-      amd64: ami-0eb8a0e38b16e982c
+      amd64: ami-082bed1262d781ffd
     "2022":
-      amd64: ami-043caaf4b51d812c1
+      amd64: ami-030fff51323c5aaaf
     "2025":
       amd64: ami-04798ca53c9db7746
