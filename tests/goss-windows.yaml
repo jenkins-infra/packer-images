@@ -65,7 +65,7 @@ command:
     exec: ruby -v
     exit-status: 0
     stdout:
-      - 3.4.7
+      - 3.4.8
   dotnet35:
     exec: pwsh -command "Test-Path -Path 'HKLM:\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5'"
     exit-status: 0
