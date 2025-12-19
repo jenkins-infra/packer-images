@@ -109,7 +109,7 @@ command:
     exit-status: 0
     stdout:
       - 2.6.10
-      - 3.4.7
+      - 3.4.8
   rngd:
     exec: rngd --version
     exit-status: 0
