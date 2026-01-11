@@ -1,0 +1,63 @@
+{{ range $windowsVersion := .windowsVersions }}
+{{ $version := $windowsVersion.version }}
+{{ $awsDescription := $windowsVersion.awsDescription }}
+---
+name: Bump AWS `windows {{ $version }} AMD64` AMI ID
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ $.github.user }}"
+      email: "{{ $.github.email }}"
+      owner: "{{ $.github.owner }}"
+      repository: "{{ $.github.repository }}"
+      token: "{{ requiredEnv $.github.token }}"
+      username: "{{ $.github.username }}"
+      branch: "{{ $.github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    kind: shell
+    name: Get the latest AWS `Windows {{ $version }} AMD64` AMI ID
+    spec:
+      command: >
+        aws ec2 describe-images \
+          --owners amazon \
+          --filters \
+            "Name=platform,Values=windows" \
+            "Name=description,Values={{ $awsDescription }}" \
+            "Name=root-device-type,Values=ebs" \
+            "Name=virtualization-type,Values=hvm" \
+            "Name=architecture,Values=x86_64" \
+          --query 'sort_by(Images, &CreationDate)[-1].ImageId' \
+          --region us-east-2 \
+          --output text
+      environments:
+        - name: PATH
+        - name: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+
+targets:
+  updateVersion:
+    name: Update AWS `Windows {{ $version }} AMD64` AMI ID in locals
+    sourceid: lastReleaseVersion
+    kind: yaml
+    scmid: default
+    spec:
+      file: ./images-versions.yaml
+      key: $.aws.windows.{{ $version }}.amd64
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      title: Bump AWS `Windows {{ $version }} AMD64` AMI ID
+      description: "Update AWS AMI ID for Windows {{ $version }} AMD64"
+      labels:
+        - enhancement
+        - aws-windows
+        - windows-{{ $version }}
+...
+{{ end }}
