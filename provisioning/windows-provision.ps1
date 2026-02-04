@@ -327,7 +327,7 @@ if("2019" -eq $env:AGENT_OS_VERSION) {
     };
 } else {
     $downloads['vs-build-tools'] = @{
-        'url' = 'https://aka.ms/vs/{0}/release/vs_buildtools.exe' -f $env:VS_BUILDTOOLS_VERSION;
+        'url' = 'https://aka.ms/vs/{0}/vs_buildtools.exe' -f $env:VS_BUILDTOOLS_VERSION;
         'local' = "$baseDir\vs_buildtools.exe";
         'postExpand' = {
             $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "$baseDir\vs_buildtools.exe" `
