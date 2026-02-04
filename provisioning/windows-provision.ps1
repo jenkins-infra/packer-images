@@ -316,11 +316,22 @@ $downloads['chocolatey-and-packages'] = @{
 if("2019" -eq $env:AGENT_OS_VERSION) {
     # We only do this for 2019 until installing on 2022 can be debugged
     $downloads['vs-build-tools'] = @{
+        'url' = 'https://aka.ms/vs/{0}/release/vs_buildtools.exe' -f $env:VS_BUILDTOOLS_VERSION_LEGACY;
+        'local' = "$baseDir\vs_buildtools.exe";
+        'postExpand' = {
+            $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "$baseDir\vs_buildtools.exe" `
+                -ArgumentList "--quiet --wait --norestart --nocache --config C:\visualstudio.legacy.vsconfig"
+            $p.WaitForExit()
+        };
+        'cleanupLocal' = 'true';
+    };
+} else {
+    $downloads['vs-build-tools'] = @{
         'url' = 'https://aka.ms/vs/{0}/release/vs_buildtools.exe' -f $env:VS_BUILDTOOLS_VERSION;
         'local' = "$baseDir\vs_buildtools.exe";
         'postExpand' = {
             $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "$baseDir\vs_buildtools.exe" `
-                -ArgumentList "--installPath `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community`" --quiet --wait --norestart --nocache --config C:\visualstudio.vsconfig"
+                -ArgumentList "--quiet --wait --norestart --nocache --config C:\visualstudio.vsconfig"
             $p.WaitForExit()
         };
         'cleanupLocal' = 'true';
