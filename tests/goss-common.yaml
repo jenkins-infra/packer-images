@@ -5,12 +5,12 @@ command:
     exec: aws --version
     exit-status: 0
     stdout:
-      - 2.33.12
+      - 2.33.13
   azurecli:
     exec: az --version
     exit-status: 0
     stdout:
-      - 2.82.0
+      - 2.83.0
   bundle:
     exec: bundle -v
     exit-status: 0
