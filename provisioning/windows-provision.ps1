@@ -322,6 +322,14 @@ if("2019" -eq $env:AGENT_OS_VERSION) {
             $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "$baseDir\vs_buildtools.exe" `
                 -ArgumentList "--installPath `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community`" --quiet --wait --norestart --nocache --config C:\visualstudio.vsconfig"
             $p.WaitForExit()
+            if($p.ExitCode -ne 0) {
+                Write-Error "Visual Studio Build Tools installation failed with exit code $($p.ExitCode)"
+                Get-ChildItem -Path "${env:TEMP}" -Filter "dd_*.log" | ForEach-Object {
+                    Write-Host "`n`n`n=== Content of $($_.FullName) ==="
+                    Get-Content -Path $_.FullName
+                    Write-Host "=== End of $($_.FullName) ===`n`n`n"
+                }
+            }
         };
         'cleanupLocal' = 'true';
     };
