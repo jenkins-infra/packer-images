@@ -34,7 +34,7 @@ command:
     exec: C:\tools\jdk-8\bin\java -version
     exit-status: 0
     stderr:
-      - 1.8.0_472
+      - 1.8.0_482
   maven-env:
     exec: pwsh -command "echo $env:MAVEN_HOME"
     exit-status: 0
