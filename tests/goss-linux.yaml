@@ -10,7 +10,7 @@ command:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.31.1
+      - 10.32.0
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
@@ -21,7 +21,7 @@ command:
     exec: doctl version
     exit-status: 0
     stdout:
-      - 1.149.0
+      - 1.150.0
   git:
     exec: git --version
     exit-status: 0
@@ -58,17 +58,17 @@ command:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
     stdout:
-      - 11.0.29+7
+      - 11.0.30+7
   jdk17:
     exec: /opt/jdk-17/bin/java --version
     exit-status: 0
     stdout:
-      - 17.0.17+10
+      - 17.0.18+8
   jdk21:
     exec: /opt/jdk-21/bin/java --version
     exit-status: 0
     stdout:
-      - 21.0.9+10
+      - 21.0.10+7
   jdk25:
     exec: /opt/jdk-25/bin/java --version
     exit-status: 0
@@ -78,7 +78,7 @@ command:
     exec: /opt/jdk-8/bin/java -version
     exit-status: 0
     stderr:
-      - 1.8.0_472
+      - 1.8.0_482
   maven:
     exec: JAVA_HOME=/opt/jdk-21 mvn -v
     exit-status: 0
