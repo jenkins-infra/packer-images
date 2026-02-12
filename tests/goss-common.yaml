@@ -76,7 +76,7 @@ command:
     exec: launchable --version
     exit-status: 0
     stdout:
-      - 1.66.0
+      - 2.4.0
   make:
     exec: make --version
     exit-status: 0
