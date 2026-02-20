@@ -7,7 +7,7 @@ chocolatey_version: 1.4.0
 compose_version: 5.0.2
 cst_version: 1.22.1
 docker_version: 28.5.2
-docker_buildx_version: 0.14.1
+docker_buildx_version: 0.31.0
 doctl_version: 1.150.0
 gh_version: 2.86.0
 git_lfs_version: 3.7.1
