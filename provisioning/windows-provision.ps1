@@ -342,20 +342,40 @@ if("2019" -eq $env:AGENT_OS_VERSION) {
 AddToPathEnv $baseDir
 
 ## Proceed to install tools
-# TODO: foreach in parallel for downloads
+$jobs = @()
+
+Write-Host "Downloading all tools..."
+foreach($k in $downloads.Keys) {
+    $download = $downloads[$k]
+    if(-Not ($download.ContainsKey('preExpand')) -and ($download.ContainsKey('expandTo'))) {
+        $expendTo = $download['expandTo']
+    } else {
+        $expendTo = $false
+    }
+
+    $jobs += Start-Job -ScriptBlock {
+        param($url, $local, $expendTo)
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-WebRequest $url -OutFile $local
+        if ($expendTo) {
+            Expand-Archive -Path $local -DestinationPath $expendTo
+        }
+    } -ArgumentList $download.url, $download.local, $expendTo
+}
+
+Wait-Job $jobs
+Receive-Job $jobs
+
 foreach($k in $downloads.Keys) {
     Write-Host "---"
     $download = $downloads[$k]
-    Write-Host "Downloading and setting up $k"
-
-    DownloadFile $download['url'] $download['local']
+    Write-Host "Setting up $k"
 
     if($download.ContainsKey('preExpand')) {
         Invoke-Command -ScriptBlock $download['preExpand']
-    }
-
-    if($download.ContainsKey('expandTo')) {
-        Expand-Archive -Path $download['local'] -DestinationPath $download['expandTo']
+        if($download.ContainsKey('expandTo')) {
+            Expand-Archive -Path $download['local'] -DestinationPath $download['expandTo']
+        }
     }
 
     if($download.ContainsKey('postExpand')) {
