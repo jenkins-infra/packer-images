@@ -346,13 +346,6 @@ AddToPathEnv $baseDir
 foreach($k in $downloads.Keys) {
     Write-Host "---"
     $download = $downloads[$k]
-    if($download.ContainsKey('check')) {
-        $res = Invoke-Command $download['check']
-        if(!$res) {
-            Write-Host "Check did not pass, not setting up $k"
-            continue;
-        }
-    }
     Write-Host "Downloading and setting up $k"
 
     DownloadFile $download['url'] $download['local']
