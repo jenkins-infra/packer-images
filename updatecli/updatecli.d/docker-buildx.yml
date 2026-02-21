@@ -14,7 +14,7 @@ scms:
       branch: "{{ .github.branch }}"
 
 sources:
-  lastReleaseVersion:
+  latestVersion:
     kind: githubrelease
     name: Get latest docker buildx version
     spec:
@@ -28,7 +28,7 @@ sources:
       - trimprefix: v
 
 targets:
-  updateGitLfsVersion:
+  updateVersion:
     name: Update docker buildx version in the Packer default values
     kind: yaml
     spec:
@@ -39,7 +39,7 @@ targets:
 actions:
   default:
     kind: github/pullrequest
-    title: Bump docker buildx version to {{ source "lastReleaseVersion" }}
+    title: Bump docker buildx version to {{ source "latestVersion" }}
     scmid: default
     spec:
       labels:
