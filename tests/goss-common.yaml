@@ -98,11 +98,6 @@ command:
     exit-status: 0
     stdout:
       - 1.12.2
-  trivy:
-    exec: trivy --version
-    exit-status: 0
-    stdout:
-      - 0.68.2
   updatecli:
     exec: updatecli version
     exit-status: 0
