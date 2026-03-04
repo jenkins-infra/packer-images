@@ -33,7 +33,7 @@ locals {
   }
   azure_destination_resource_group = "${var.build_type}-packer-images"
   azure_galleries = {
-    "prod_packer_images"    = ["East US 2"]
+    "prod_packer_images"    = ["East US 2", "Sweden Central"]
     "staging_packer_images" = ["East US 2"]
     "dev_packer_images"     = ["East US 2"]
   }
