@@ -52,7 +52,7 @@ def withPackerNode(String packer_template, String compute_type, String cpu_archi
 
 node('linux-arm64-docker') {
   withEnv(["PATH=${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"]) {
-    timeout(time: 120, unit: 'MINUTES') {
+    timeout(time: 150, unit: 'MINUTES') {
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       def GIT_COMMIT = checkout(scm).GIT_COMMIT
 
