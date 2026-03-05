@@ -10,7 +10,7 @@ command:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.32.0
+      - 10.32.1
   chromium-browser:
     exec: chromium-browser --version
     exit-status: 0
@@ -36,7 +36,7 @@ command:
     exec: golangci-lint --version
     exit-status: 0
     stdout:
-      - 2.8.0
+      - 2.10.1
   helm:
     exec: helm version
     exit-status: 0
@@ -51,7 +51,7 @@ command:
     exec: helm plugin list
     exit-status: 0
     stdout:
-      - /diff.*3.15.1/
+      - /diff.*3.15.2/
       - /helm-git.*1.5.2/
       - /secrets.*4.7.5/
   jdk11:
@@ -97,7 +97,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.58.1
+      - 1.58.2
   python3:
     exec: python3 --version
     exit-status: 0
@@ -117,7 +117,7 @@ command:
     exec: sops --version
     exit-status: 0
     stdout:
-      - 3.11.0
+      - 3.12.1
   ssh_agent:
     exec: command -v ssh-agent
     exit-status: 0

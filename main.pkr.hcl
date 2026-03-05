@@ -6,7 +6,7 @@ packer {
       source  = "github.com/hashicorp/amazon"
     }
     windows-update = {
-      version = "0.17.2"
+      version = "0.17.3"
       source  = "github.com/rgl/windows-update"
     }
     azure = {
