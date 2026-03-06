@@ -18,12 +18,13 @@ sources:
     kind: githubrelease
     name: Get the latest launchable release version
     spec:
-      owner: "launchableinc"
-      repository: "cli"
+      owner: "cloudbees-oss"
+      repository: "smart-tests-cli"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       versionfilter:
         kind: semver
+        pattern: ~1 # Use the 1.x.y version (2.x.y is smart-tests)
     transformers:
       - trimprefix: v
 
