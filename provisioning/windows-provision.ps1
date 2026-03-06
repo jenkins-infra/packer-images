@@ -264,6 +264,9 @@ $downloads['packer'] = @{
     'url' = 'https://releases.hashicorp.com/packer/{0}/packer_{0}_windows_amd64.zip' -f $env:PACKER_VERSION;
     'local' = "$baseDir\packer.zip";
     'expandTo' = "$baseDir";
+    'preExpand' = {
+        & Remove-Item "$baseDir\LICENSE.txt";
+    }
     'cleanupLocal' = 'true';
 };
 $downloads['kubectl'] = @{
