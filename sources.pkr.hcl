@@ -1,7 +1,7 @@
 # This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
   skip_create_ami = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
-  ami_name      = "${local.image_name}-${var.architecture}-${var.image_version}-${local.now_unix_timestamp}"
+  ami_name      = "${local.image_name}-${var.image_version}-${local.now_unix_timestamp}"
 
   # Spot instances costs 5 to 6 time less: we accept failure some time to time.
   # Note: eviction rate should be re-evaluated every quarter to stay under the 0-5%.
