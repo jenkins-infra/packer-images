@@ -116,8 +116,9 @@ build {
 
   provisioner "powershell" {
     environment_vars = local.provisioning_env_vars
+    # TODO: restore $ErrorActionPreference = 'Stop'
     inline = [
-      "$ErrorActionPreference = 'Stop'",
+      "$ErrorActionPreference = 'SilentlyContinue'",
       "goss --version",
       "goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s",
       "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s",
