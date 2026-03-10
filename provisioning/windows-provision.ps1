@@ -421,7 +421,7 @@ Write-Host "== OS Version"
 [System.Environment]::OSVersion.Version
 
 Write-Host "== Environment variables"
-Get-ChildItem Env:
+Get-ChildItem Env: | Format-Table -Property Key, Value -AutoSize
 
 Write-Host "== Disks"
 Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3'" |
