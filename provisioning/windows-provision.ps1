@@ -297,7 +297,7 @@ $downloads['chocolatey-and-packages'] = @{
         & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
         # install .NET 3.5 for MSI build
         Install-WindowsFeature Net-Framework-Core
-        Get-WindowsFeature | Where Name -like "NET*" | Format-Table Name, DisplayName, InstallState -Auto
+        Get-WindowsFeature | Where-Object Name -like "NET*" | Format-Table Name, DisplayName, InstallState -AutoSize
         # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
         & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
         & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output;
