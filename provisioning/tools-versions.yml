@@ -46,4 +46,4 @@ vs_buildtools_version_legacy: 16
 vs_buildtools_version: stable
 windows_pwsh_version: 7.5.4
 xq_version: 1.2.3
-yq_version: 4.50.1
+yq_version: 4.52.4
