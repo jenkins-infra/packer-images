@@ -95,11 +95,6 @@ build {
   }
 
   provisioner "file" {
-    source      = "./tests/goss-windows-2022.yaml"
-    destination = "C:/goss-windows-2022.yaml"
-  }
-
-  provisioner "file" {
     source      = "./tests/goss-windows.yaml"
     destination = "C:/goss-windows.yaml"
   }
