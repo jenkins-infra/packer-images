@@ -4,11 +4,13 @@ command:
   awscli:
     exec: aws --version
     exit-status: 0
+    timeout: 20000
     stdout:
       - 2.34.4
   azurecli:
     exec: az --version
     exit-status: 0
+    timeout: 20000
     stdout:
       - 2.84.0
   bundle:
