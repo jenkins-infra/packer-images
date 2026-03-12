@@ -91,6 +91,7 @@ command:
   packer:
     exec: packer -v
     exit-status: 0
+    timeout: 20000
     stdout:
       - 1.15.0
   terraform:
@@ -101,6 +102,7 @@ command:
   trivy:
     exec: trivy --version
     exit-status: 0
+    timeout: 20000
     stdout:
       - 0.69.3
   updatecli:
