@@ -111,11 +111,11 @@ build {
 
   provisioner "powershell" {
     environment_vars = local.provisioning_env_vars
-    # TODO: restore $ErrorActionPreference = 'Stop'
     inline = [
-      "$ErrorActionPreference = 'SilentlyContinue'",
       "goss --version",
+      "$ErrorActionPreference = 'SilentlyContinue'",
       "if (Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
+      "$ErrorActionPreference = 'Stop'",
       "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s",
       "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s",
       "Remove-Item -Force C:/goss-windows.yaml",
