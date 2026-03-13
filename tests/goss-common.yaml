@@ -4,11 +4,13 @@ command:
   awscli:
     exec: aws --version
     exit-status: 0
+    timeout: 20000
     stdout:
       - 2.34.4
   azurecli:
     exec: az --version
     exit-status: 0
+    timeout: 20000
     stdout:
       - 2.84.0
   bundle:
@@ -91,16 +93,19 @@ command:
   packer:
     exec: packer -v
     exit-status: 0
+    timeout: 20000
     stdout:
       - 1.15.0
   terraform:
     exec: terraform -v
     exit-status: 0
+    timeout: 20000
     stdout:
       - 1.12.2
   trivy:
     exec: trivy --version
     exit-status: 0
+    timeout: 20000
     stdout:
       - 0.69.3
   updatecli:
