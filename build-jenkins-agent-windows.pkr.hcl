@@ -111,7 +111,7 @@ build {
 
   provisioner "powershell" {
     environment_vars = local.provisioning_env_vars
-    common_goss_args = "--use-alpha=1 --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s"
+    common_goss_args = "--use-alpha=1 --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s --format documentation"
     inline = [
       "goss --version",
       "$ErrorActionPreference = 'SilentlyContinue'",
