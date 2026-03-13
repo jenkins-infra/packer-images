@@ -3,7 +3,7 @@ asdf_version: 0.15.0
 awscli_version: 2.34.4
 azcopy_version: 10.32.1
 azurecli_version: 2.84.0
-chocolatey_version: 1.4.0
+chocolatey_version: 2.6.0
 compose_version: 5.1.0
 cst_version: 1.22.1
 docker_buildx_version: 0.32.1
