@@ -76,10 +76,8 @@ command:
       - 'True'
 file:
   C:\Program Files\Chromium\Application\:
-    contains: []
     exists: true
     filetype: directory
   C:\Program Files\Datadog\Datadog agent\bin\:
-    contains: []
     exists: true
     filetype: directory
