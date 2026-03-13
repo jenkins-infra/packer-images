@@ -1,5 +1,5 @@
 # if manually change, please update the goss file accordingly
-asdf_version: 0.15.0
+asdf_version: 0.18.1
 awscli_version: 2.34.4
 azcopy_version: 10.32.1
 azurecli_version: 2.84.0
