@@ -1,3 +1,7 @@
+local "common_goss_args" {
+  expression = "--use-alpha=1 --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s --format documentation"
+}
+
 build {
   source "amazon-ebs.base" {
     name           = "windows"
@@ -111,14 +115,13 @@ build {
 
   provisioner "powershell" {
     environment_vars = local.provisioning_env_vars
-    common_goss_args = "--use-alpha=1 --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s --format documentation"
     inline = [
       "goss --version",
       "$ErrorActionPreference = 'SilentlyContinue'",
-      "if (Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --gossfile C:/goss-windows-${var.agent_os_version}.yaml ${common_goss_args} } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
+      "if (Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --gossfile C:/goss-windows-${var.agent_os_version}.yaml ${local.common_goss_args} } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
       "$ErrorActionPreference = 'Stop'",
-      "goss --gossfile C:/goss-windows.yaml ${common_goss_args}",
-      "goss --gossfile C:/goss-common.yaml ${common_goss_args}",
+      "goss --gossfile C:/goss-windows.yaml ${local.common_goss_args}",
+      "goss --gossfile C:/goss-common.yaml ${local.common_goss_args}",
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
       "Remove-Item -Force C:/visualstudio.vsconfig",
