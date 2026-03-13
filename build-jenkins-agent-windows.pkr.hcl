@@ -115,7 +115,7 @@ build {
     inline = [
       "$ErrorActionPreference = 'SilentlyContinue'",
       "goss --version",
-      "if ((Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
+      "if (Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
       "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s",
       "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s",
       "Remove-Item -Force C:/goss-windows.yaml",
