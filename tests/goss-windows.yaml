@@ -81,3 +81,6 @@ file:
   C:\Program Files\Datadog\Datadog agent\bin\:
     exists: true
     filetype: directory
+  C:\ProgramData\Datadog\datadog.yaml:
+    exists: true
+    filetype: file
