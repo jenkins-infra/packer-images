@@ -111,13 +111,14 @@ build {
 
   provisioner "powershell" {
     environment_vars = local.provisioning_env_vars
+    common_goss_args = "--use-alpha=1 --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s"
     inline = [
       "goss --version",
       "$ErrorActionPreference = 'SilentlyContinue'",
-      "if (Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --use-alpha=1 --gossfile C:/goss-windows-${var.agent_os_version}.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
+      "if (Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --gossfile C:/goss-windows-${var.agent_os_version}.yaml ${common_goss_args} } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
       "$ErrorActionPreference = 'Stop'",
-      "goss --use-alpha=1 --gossfile C:/goss-windows.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s",
-      "goss --use-alpha=1 --gossfile C:/goss-common.yaml --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s",
+      "goss --gossfile C:/goss-windows.yaml ${common_goss_args}",
+      "goss --gossfile C:/goss-common.yaml ${common_goss_args}",
       "Remove-Item -Force C:/goss-windows.yaml",
       "Remove-Item -Force C:/goss-common.yaml",
       "Remove-Item -Force C:/visualstudio.vsconfig",
