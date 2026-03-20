@@ -39,7 +39,7 @@ ruby_puppet_version: 2.6.10
 ruby_version: 3.4.8
 sops_version: 3.12.2
 terraform_version: 1.12.2
-trivy_version: 0.69.4
+trivy_version: 0.69.3
 typos_version: 1.33.1 # TODO track with updatecli
 updatecli_version: 0.114.0
 vs_buildtools_version_legacy: 16
