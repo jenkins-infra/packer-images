@@ -115,6 +115,7 @@ node('linux-arm64-docker') {
                   "PKR_VAR_agent_os_version=${pkr_var_agent_os_version}",
                   "PKR_VAR_architecture=${pkr_var_architecture}",
                   "PKR_VAR_image_type=${pkr_var_image_type}",
+                  "PKR_VAR_azure_gallery_subscription_id=1e7d5219-acbc-4495-8629-bdbb22e9b3ed",
                   "PATH=${WORKSPACE}/.bin:${env.PATH}"
                 ]) {
                   withCredentials([
