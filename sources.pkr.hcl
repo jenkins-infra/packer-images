@@ -52,7 +52,7 @@ source "azure-arm" "base" {
   skip_create_image = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
   vm_size = local.azure_vm_size[var.architecture]
 
-  # network defined in https://github.com/jenkins-infra/azure-net/blob/a396b20f676602703c0dbdf4cee977eae2669cd7/vnets.tf#L535
+  # network defined in https://github.com/jenkins-infra/azure-net
   virtual_network_name                = "infra-ci-jenkins-io-vnet"
   virtual_network_subnet_name         = "infra-ci-jenkins-io-vnet-packer-builds"
   virtual_network_resource_group_name = "infra-ci-jenkins-io"
@@ -83,12 +83,6 @@ source "azure-arm" "base" {
     version       = var.image_version
     scm_ref       = var.scm_ref
     build_type    = var.build_type
-  }
-
-  # Spot instances costs 5 to 6 time less: we accept failure some time to time.
-  # Note: eviction rate should be re-evaluated every quarter to stay under the 0-5%.
-  spot {
-    eviction_policy = "Delete"
   }
 }
 
