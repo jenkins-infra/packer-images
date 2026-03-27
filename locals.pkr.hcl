@@ -27,9 +27,9 @@ locals {
 
   azure_vm_size = {
     # 4 CPU / 16 GB / Huge size required to avoid https:#docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-troubleshoot#sysprep-timing and avoid full disk (DS2v2 only have 14 Gb SSD for system)
-    "amd64" = "Standard_D4ads_v5"
+    "amd64" = "Standard_D4ads_v7"
     # 4 CPU / 16 GB
-    "arm64" = "Standard_D4pds_v5"
+    "arm64" = "Standard_D4pds_v6"
   }
   azure_destination_resource_group = "${var.build_type}-packer-images"
   azure_galleries = {

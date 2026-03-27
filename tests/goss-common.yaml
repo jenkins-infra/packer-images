@@ -6,7 +6,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.34.4
+      - 2.34.17
   azurecli:
     exec: az --version
     exit-status: 0
@@ -37,12 +37,12 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 5.1.0
+      - 5.1.1
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.88.0
+      - 2.89.0
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
@@ -73,7 +73,7 @@ command:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.33.9
+      - 1.33.10
   launchable:
     exec: launchable --version
     exit-status: 0
@@ -102,17 +102,11 @@ command:
     timeout: 20000
     stdout:
       - 1.12.2
-  trivy:
-    exec: trivy --version
-    exit-status: 0
-    timeout: 20000
-    stdout:
-      - 0.69.3
   updatecli:
     exec: updatecli version
     exit-status: 0
     stdout:
-      - 0.114.0
+      - 0.115.0
   yq:
     exec: yq --version
     exit-status: 0
