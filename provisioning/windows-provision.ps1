@@ -320,7 +320,7 @@ if("2019" -eq $env:AGENT_OS_VERSION) {
         'local' = "$baseDir\vs_buildtools.exe";
         'postExpand' = {
             $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "$baseDir\vs_buildtools.exe" `
-                -ArgumentList "--quiet --wait --norestart --nocache --config C:\visualstudio.legacy.vsconfig"
+                -ArgumentList "--installPath `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community`" --quiet --wait --norestart --nocache --config C:\visualstudio.legacy.vsconfig"
             $p.WaitForExit()
         };
         'cleanupLocal' = 'true';
