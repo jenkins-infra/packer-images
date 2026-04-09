@@ -12,7 +12,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.84.0
+      - 2.85.0
   bundle:
     exec: bundle -v
     exit-status: 0
