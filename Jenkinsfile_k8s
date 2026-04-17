@@ -177,6 +177,9 @@ node('linux-arm64-docker') {
             }
           }
         }
+        stage('Publish Build Status Report') {
+          publishBuildStatusReport()
+        }
       }
     }
   }
