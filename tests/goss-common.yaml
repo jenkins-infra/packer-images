@@ -111,4 +111,4 @@ command:
     exec: yq --version
     exit-status: 0
     stdout:
-      - 4.52.5
+      - 4.53.2
