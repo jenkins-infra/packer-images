@@ -91,17 +91,6 @@ $pythondir = 'C:\python{0}\tools' -f "${env:PYTHON3_VERSION}".Replace(".", "").S
 
 # Ensure NuGet package provider is initialized (non-interactively)
 Get-PackageProvider NuGet -ForceBootstrap
-# Install winget
-Install-Module -Name Microsoft.WinGet.Client -Force -Repository PSGallery
-winget --version
-winget --info
-
-# Installation of python3 for Launchable
-Write-Output "= Installing Python3..."
-winget install python --version "${env:PYTHON3_VERSION}"
-
-# TODO: remove
-Get-Childitem -Path C:\ -Include *python* -File -Recurse -ErrorAction SilentlyContinue
 
 ## List of tools to use
 $downloads = [ordered]@{}
@@ -158,6 +147,18 @@ foreach ($jdkMajorVersion in $jdkList) {
     }
 }
 
+$downloads['nuget-for-python-and-launchable'] = @{
+    'url' = 'https://dist.nuget.org/win-x86-commandline/v{0}/nuget.exe'  -f $env:NUGET_VERSION;
+    'local' = "$baseDir\nuget.exe";
+    'path' = "${pythondir}\;${pythondir}\Scripts\;";
+    'postInstall' = {
+        # Installation of python3
+        & "nuget.exe" nuget install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory 'C:\';
+        # Installation of Launchable globally (no other python tool)
+        & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+        & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+    };
+};
 $downloads['maven'] = @{
     # We should use the 'archives' downoad system to ensure we always find older version (as the mirror download system only provide latest)
     'url' = 'https://archive.apache.org/dist/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip'  -f $env:MAVEN_VERSION;
