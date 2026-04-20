@@ -91,9 +91,17 @@ $pythondir = 'C:\python{0}\tools' -f "${env:PYTHON3_VERSION}".Replace(".", "").S
 
 # Ensure NuGet package provider is initialized (non-interactively)
 Get-PackageProvider NuGet -ForceBootstrap
+# Install winget
+Install-Module -Name Microsoft.WinGet.Client -Force -Repository PSGallery
+Write-Host "Using Repair-WinGetPackageManager cmdlet to bootstrap WinGet..."
+Repair-WinGetPackageManager -AllUsers
 
 # Installation of python3 for Launchable
-nuget install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory 'C:\'
+Write-Output "= Installing Python3..."
+winget install python --version "${env:PYTHON3_VERSION}"
+
+# TODO: remove
+Get-Childitem -Path C:\ -Include *python* -File -Recurse -ErrorAction SilentlyContinue
 
 ## List of tools to use
 $downloads = [ordered]@{}
