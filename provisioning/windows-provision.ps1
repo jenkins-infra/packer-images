@@ -415,6 +415,14 @@ foreach($line in Get-Content "$temp_authorized_keys_file") {
 }
 Remove-Item -Force "$temp_authorized_keys_file"
 
+## Remove default Pester 3.4.0 module to avoid cerficate check errors when installing more recent ones
+# Ref: https://pester.dev/docs/v4/introduction/installation#installing-from-psgallery-windows-10-or-windows-server-2016
+$module = "C:\Program Files\WindowsPowerShell\Modules\Pester"
+takeown /F $module /A /R
+icacls $module /reset
+icacls $module /grant "*S-1-5-32-544:F" /inheritance:d /T
+Remove-Item -Path $module -Recurse -Force -Confirm:$false
+
 ## Final information: print out status
 Write-Host "== OS Version"
 [System.Environment]::OSVersion.Version
