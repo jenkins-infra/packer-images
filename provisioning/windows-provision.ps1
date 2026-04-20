@@ -317,9 +317,6 @@ $downloads['chocolatey-and-packages'] = @{
         & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install nodejs.install --yes --no-progress --limit-output --fail-on-error-output --version "${env:NODEJS_WINDOWS_VERSION}";
-        # Installation of Launchable globally (no other python tool)
-        & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
-        & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
     };
 };
 
