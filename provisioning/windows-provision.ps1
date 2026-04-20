@@ -94,7 +94,7 @@ Get-PackageProvider NuGet -ForceBootstrap
 # Install winget
 Install-Module -Name Microsoft.WinGet.Client -Force -Repository PSGallery
 Write-Host "Using Repair-WinGetPackageManager cmdlet to bootstrap WinGet..."
-Repair-WinGetPackageManager -AllUsers
+Repair-WinGetPackageManager -Verbose -Force
 
 # Installation of python3 for Launchable
 Write-Output "= Installing Python3..."
