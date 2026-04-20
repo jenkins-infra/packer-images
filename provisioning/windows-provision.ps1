@@ -87,7 +87,7 @@ $dockerPluginsDir = 'C:\ProgramData\docker\cli-plugins'
 New-Item -ItemType Directory -Path $dockerPluginsDir -Force | Out-Null
 
 # Compute the future python installation dir
-$pythondir = 'C:\python{0}\tools' -f "${env:PYTHON3_VERSION}".Replace(".", "").Substring(0, 3)
+$pythondir = 'C:\python{0}' -f "${env:PYTHON3_VERSION}".Replace(".", "").Substring(0, 3)
 
 # Ensure NuGet package provider is initialized (non-interactively)
 Get-PackageProvider NuGet -ForceBootstrap
@@ -153,7 +153,7 @@ $downloads['nuget-then-python-and-launchable'] = @{
     'path' = "${pythondir}\;${pythondir}\Scripts\;";
     'postInstall' = {
         # Installation of python3
-        & "$baseDir\nuget.exe" install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory 'C:\';
+        & "$baseDir\nuget.exe" install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory $pythondir;
         Get-Childitem -Path C:\ -Include *python* -File -Recurse -ErrorAction SilentlyContinue;
         # Installation of Launchable globally (no other python tool)
         & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
