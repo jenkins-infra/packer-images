@@ -93,8 +93,8 @@ $pythondir = 'C:\python{0}\tools' -f "${env:PYTHON3_VERSION}".Replace(".", "").S
 Get-PackageProvider NuGet -ForceBootstrap
 # Install winget
 Install-Module -Name Microsoft.WinGet.Client -Force -Repository PSGallery
-Write-Host "Using Repair-WinGetPackageManager cmdlet to bootstrap WinGet..."
-Repair-WinGetPackageManager -Verbose -Force
+winget --version
+winget --info
 
 # Installation of python3 for Launchable
 Write-Output "= Installing Python3..."
