@@ -87,10 +87,13 @@ $dockerPluginsDir = 'C:\ProgramData\docker\cli-plugins'
 New-Item -ItemType Directory -Path $dockerPluginsDir -Force | Out-Null
 
 # Compute the future python installation dir
-$pythondir = 'C:\python{0}' -f "${env:PYTHON3_VERSION}".Replace(".", "").Substring(0, 3)
+$pythondir = 'C:\python{0}\tools' -f "${env:PYTHON3_VERSION}".Replace(".", "").Substring(0, 3)
 
 # Ensure NuGet package provider is initialized (non-interactively)
 Get-PackageProvider NuGet -ForceBootstrap
+
+# Installation of python3 for Launchable
+nuget install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory 'C:\'
 
 ## List of tools to use
 $downloads = [ordered]@{}
@@ -305,8 +308,6 @@ $downloads['chocolatey-and-packages'] = @{
         & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install nodejs.install --yes --no-progress --limit-output --fail-on-error-output --version "${env:NODEJS_WINDOWS_VERSION}";
-        # Installation of python3 for Launchable
-        & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
         # Installation of Launchable globally (no other python tool)
         & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
         & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
