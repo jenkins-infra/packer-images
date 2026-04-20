@@ -147,7 +147,7 @@ foreach ($jdkMajorVersion in $jdkList) {
     }
 }
 
-$downloads['nuget-for-python-and-launchable'] = @{
+$downloads['nuget-then-python-and-launchable'] = @{
     'url' = 'https://dist.nuget.org/win-x86-commandline/v{0}/nuget.exe'  -f $env:NUGET_VERSION;
     'local' = "$baseDir\nuget.exe";
     'path' = "${pythondir}\;${pythondir}\Scripts\;";
