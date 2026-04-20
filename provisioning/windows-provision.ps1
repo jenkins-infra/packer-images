@@ -153,7 +153,8 @@ $downloads['nuget-then-python-and-launchable'] = @{
     'path' = "${pythondir}\;${pythondir}\Scripts\;";
     'postInstall' = {
         # Installation of python3
-        & "$baseDir\nuget.exe" nuget install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory 'C:\';
+        & "$baseDir\nuget.exe" install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory 'C:\';
+        Get-Childitem -Path C:\ -Include *python* -File -Recurse -ErrorAction SilentlyContinue;
         # Installation of Launchable globally (no other python tool)
         & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
         & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
