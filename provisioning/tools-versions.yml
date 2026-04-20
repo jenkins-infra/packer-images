@@ -43,6 +43,6 @@ typos_version: 1.33.1 # TODO track with updatecli
 updatecli_version: 0.116.2
 vs_buildtools_version_legacy: 16
 vs_buildtools_version: stable
-windows_pwsh_version: 7.5.5
+windows_pwsh_version: 7.6.0
 xq_version: 1.2.3
 yq_version: 4.53.2
