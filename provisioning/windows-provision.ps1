@@ -150,7 +150,7 @@ foreach ($jdkMajorVersion in $jdkList) {
 $downloads['nuget-then-python-and-launchable'] = @{
     'url' = 'https://dist.nuget.org/win-x86-commandline/v{0}/nuget.exe'  -f $env:NUGET_VERSION;
     'local' = "$baseDir\nuget.exe";
-    'path' = "${pythondir}\;${pythondir}\Scripts\;";
+    'path' = "${pythondir}\;${pythondir}\Scripts";
     'postInstall' = {
         # Installation of python3
         & "$baseDir\nuget.exe" install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory $pythondir;
@@ -303,7 +303,7 @@ $downloads['chocolatey-and-packages'] = @{
         & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
     };
     'cleanupLocal' = 'true';
-    'path' = "C:\Program Files\Amazon\AWSCLIV2\;${pythondir}\;${pythondir}\Scripts\;";
+    'path' = "C:\Program Files\Amazon\AWSCLIV2";
     'postInstall' = {
         # Installation of make for Windows
         & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
