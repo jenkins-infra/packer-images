@@ -31,7 +31,7 @@ command:
     exec: go version
     exit-status: 0
     stdout:
-      - 1.26.1
+      - 1.26.2
   golangci-lint:
     exec: golangci-lint --version
     exit-status: 0

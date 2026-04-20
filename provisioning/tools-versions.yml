@@ -13,7 +13,7 @@ gh_version: 2.90.0
 git_lfs_version: 3.7.1
 git_linux_version: 2.53.0
 git_windows_version: 2.53.0
-golang_version: 1.26.1
+golang_version: 1.26.2
 golangcilint_version: 2.11.4
 goss_version: 0.4.9
 hadolint_version: 2.14.0
@@ -40,9 +40,9 @@ ruby_version: 3.4.8
 sops_version: 3.12.2
 terraform_version: 1.12.2
 typos_version: 1.33.1 # TODO track with updatecli
-updatecli_version: 0.116.2
+updatecli_version: 0.116.3
 vs_buildtools_version_legacy: 16
 vs_buildtools_version: stable
-windows_pwsh_version: 7.5.5
+windows_pwsh_version: 7.6.0
 xq_version: 1.2.3
 yq_version: 4.53.2
