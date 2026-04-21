@@ -86,9 +86,6 @@ New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 $dockerPluginsDir = 'C:\ProgramData\docker\cli-plugins'
 New-Item -ItemType Directory -Path $dockerPluginsDir -Force | Out-Null
 
-# Compute the future python installation dir
-$pythondir = 'C:\python{0}' -f "${env:PYTHON3_VERSION}".Replace(".", "").Substring(0, 3)
-
 # Ensure NuGet package provider is initialized (non-interactively)
 Get-PackageProvider NuGet -ForceBootstrap
 
@@ -147,6 +144,19 @@ foreach ($jdkMajorVersion in $jdkList) {
     }
 }
 
+$pythondir = 'C:\python.{0}\tools' -f $env:PYTHON3_VERSION
+$downloads['nuget-then-python-and-launchable'] = @{
+    'url' = 'https://dist.nuget.org/win-x86-commandline/v{0}/nuget.exe' -f $env:NUGET_VERSION;
+    'local' = "$baseDir\nuget.exe";
+    'path' = "${pythondir};${pythondir}\Scripts";
+    'postInstall' = {
+        # Installation of python3
+        & "$baseDir\nuget.exe" install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory 'C:\';
+        # Installation of Launchable globally (no other python tool)
+        & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+        & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+    };
+};
 $downloads['maven'] = @{
     # We should use the 'archives' downoad system to ensure we always find older version (as the mirror download system only provide latest)
     'url' = 'https://archive.apache.org/dist/maven/maven-3/{0}/binaries/apache-maven-{0}-bin.zip'  -f $env:MAVEN_VERSION;
@@ -291,7 +301,7 @@ $downloads['chocolatey-and-packages'] = @{
         & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
     };
     'cleanupLocal' = 'true';
-    'path' = "C:\Program Files\Amazon\AWSCLIV2\;${pythondir}\;${pythondir}\Scripts\;";
+    'path' = "C:\Program Files\Amazon\AWSCLIV2";
     'postInstall' = {
         # Installation of make for Windows
         & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
@@ -305,11 +315,6 @@ $downloads['chocolatey-and-packages'] = @{
         & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install nodejs.install --yes --no-progress --limit-output --fail-on-error-output --version "${env:NODEJS_WINDOWS_VERSION}";
-        # Installation of python3 for Launchable
-        & "choco.exe" install python3 --yes --no-progress --limit-output --fail-on-error-output --version "${env:PYTHON3_VERSION}";
-        # Installation of Launchable globally (no other python tool)
-        & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
-        & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
     };
 };
 
