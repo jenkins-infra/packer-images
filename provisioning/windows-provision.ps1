@@ -86,9 +86,6 @@ New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 $dockerPluginsDir = 'C:\ProgramData\docker\cli-plugins'
 New-Item -ItemType Directory -Path $dockerPluginsDir -Force | Out-Null
 
-# Compute the future python installation dir
-$pythondir = 'C:\python{0}' -f "${env:PYTHON3_VERSION}".Replace(".", "").Substring(0, 3)
-
 # Ensure NuGet package provider is initialized (non-interactively)
 Get-PackageProvider NuGet -ForceBootstrap
 
@@ -147,17 +144,18 @@ foreach ($jdkMajorVersion in $jdkList) {
     }
 }
 
+$pythondir = 'C:\python.{0}\tools' -f $env:PYTHON3_VERSION
 $downloads['nuget-then-python-and-launchable'] = @{
     'url' = 'https://dist.nuget.org/win-x86-commandline/v{0}/nuget.exe'  -f $env:NUGET_VERSION;
     'local' = "$baseDir\nuget.exe";
     'path' = "${pythondir};${pythondir}\Scripts";
     'postInstall' = {
         # Installation of python3
-        & "$baseDir\nuget.exe" install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory $pythondir;
+        & "$baseDir\nuget.exe" install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory 'C:\';
         tree /F $pythondir;
         # Installation of Launchable globally (no other python tool)
-        & "${pythondir}\tools\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
-        & "${pythondir}\tools\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+        & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+        & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
     };
 };
 $downloads['maven'] = @{
