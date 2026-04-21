@@ -150,13 +150,14 @@ foreach ($jdkMajorVersion in $jdkList) {
 $downloads['nuget-then-python-and-launchable'] = @{
     'url' = 'https://dist.nuget.org/win-x86-commandline/v{0}/nuget.exe'  -f $env:NUGET_VERSION;
     'local' = "$baseDir\nuget.exe";
-    'path' = "${pythondir}\;${pythondir}\Scripts";
+    'path' = "${pythondir};${pythondir}\Scripts";
     'postInstall' = {
         # Installation of python3
         & "$baseDir\nuget.exe" install python -Version "${env:PYTHON3_VERSION}" -OutputDirectory $pythondir;
+        tree /F $pythondir;
         # Installation of Launchable globally (no other python tool)
-        & "${pythondir}\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
-        & "${pythondir}\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
+        & "${pythondir}\tools\python.exe" -m pip --no-cache-dir --upgrade install setuptools wheel pip;
+        & "${pythondir}\tools\python.exe" -m pip --no-cache-dir install launchable=="${env:LAUNCHABLE_VERSION}";
     };
 };
 $downloads['maven'] = @{
