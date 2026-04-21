@@ -30,7 +30,7 @@ targets:
       key: $.nuget_version
     scmid: default
   updateVersionInGoss:
-    name: Update `nuget` version in the Linux goss test harness
+    name: Update `nuget` version in the Windows goss test harness
     kind: yaml
     spec:
       files:
