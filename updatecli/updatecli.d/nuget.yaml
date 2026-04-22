@@ -1,0 +1,49 @@
+---
+name: Bump `nuget` version
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  lastReleaseVersion:
+    name: Get latest `nuget` version
+    kind: shell
+    spec:
+      command: curl --silent --fail https://dist.nuget.org/index.json | jq -r '.artifacts.[] | select(.name == "win-x86-commandline") | .versions[].version' | sort -hr | head -n 1
+
+targets:
+  updateVersion:
+    name: Update `nuget` version in the tools-versions.yml file
+    sourceid: lastReleaseVersion
+    kind: yaml
+    spec:
+      file: provisioning/tools-versions.yml
+      key: $.nuget_version
+    scmid: default
+  updateVersionInGoss:
+    name: Update `nuget` version in the Windows goss test harness
+    kind: yaml
+    spec:
+      files:
+        - tests/goss-windows.yaml
+      key: $.command.nuget.stdout[0]
+    scmid: default
+
+actions:
+  default:
+    kind: github/pullrequest
+    title: Bump `nuget` version to {{ source "lastReleaseVersion" }}
+    scmid: default
+    spec:
+      labels:
+        - dependencies
+        - nuget
