@@ -95,7 +95,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 1.15.2
+      - 1.15.3
   terraform:
     exec: terraform -v
     exit-status: 0
