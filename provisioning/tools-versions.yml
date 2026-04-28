@@ -31,7 +31,7 @@ maven_version: 3.9.15
 netlifydeploy_version: 0.1.8
 nodejs_linux_version: 24.15.0
 nodejs_windows_version: 24.15.0
-nuget_version: 7.0.3
+nuget_version: ""
 openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys
 packer_version: 1.15.3
 playwright_version: 1.59.1
