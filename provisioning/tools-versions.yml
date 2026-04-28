@@ -39,7 +39,7 @@ python3_version: 3.13.1
 ruby_puppet_version: 2.6.10
 ruby_version: 3.4.8
 sops_version: 3.12.2
-terraform_version: 1.12.2
+terraform_version: 1.14.9
 typos_version: 1.33.1 # TODO track with updatecli
 updatecli_version: 0.116.3
 vs_buildtools_version_legacy: 16
