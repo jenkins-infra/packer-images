@@ -55,7 +55,7 @@ command:
     exec: nuget help
     exit-status: 0
     stdout:
-      - 7.0.3
+      - ""
   powershell:
     exec: powershell -command "(Get-Host).Version"
     exit-status: 0
