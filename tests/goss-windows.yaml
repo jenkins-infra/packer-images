@@ -49,7 +49,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 22.22.1
+      - 24.15.0
       - '!Please install a version by running one of the following'
   nuget:
     exec: nuget help
