@@ -18,7 +18,7 @@ sources:
     name: Get latest `nuget` version
     kind: shell
     spec:
-      command: curl --silent --fail https://dist.nuget.org/index.json | jq -r '.artifacts.[] | select(.name == "win-x86-commandline") | .versions[].version' | sort -hr | head -n 1
+      command: bash ./updatecli/scripts/fetch-nuget-latest-version.sh
 
 targets:
   updateVersion:
