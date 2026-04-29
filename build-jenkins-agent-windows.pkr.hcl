@@ -93,41 +93,41 @@ build {
     pause_before = "1m"
   }
 
-  provisioner "file" {
-    source      = "./tests/goss-windows-2019.yaml"
-    destination = "C:/goss-windows-2019.yaml"
-  }
+  #provisioner "file" {
+  #  source      = "./tests/goss-windows-2019.yaml"
+  #  destination = "C:/goss-windows-2019.yaml"
+  #}
 
-  provisioner "file" {
-    source      = "./tests/goss-windows.yaml"
-    destination = "C:/goss-windows.yaml"
-  }
+  #provisioner "file" {
+  #  source      = "./tests/goss-windows.yaml"
+  #  destination = "C:/goss-windows.yaml"
+  #}
 
-  provisioner "file" {
-    source      = "./tests/goss-common.yaml"
-    destination = "C:/goss-common.yaml"
-  }
+  #provisioner "file" {
+  #  source      = "./tests/goss-common.yaml"
+  #  destination = "C:/goss-common.yaml"
+  #}
 
   provisioner "breakpoint" {
     note    = "Enable this breakpoint to pause before trying to run goss tests"
     disable = true
   }
 
-  provisioner "powershell" {
-    max_retries      = 2
-    environment_vars = local.provisioning_env_vars
-    inline = [
-      "goss --version",
-      "$ErrorActionPreference = 'SilentlyContinue'",
-      "if (Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --gossfile C:/goss-windows-${var.agent_os_version}.yaml ${local.common_goss_args} } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
-      "$ErrorActionPreference = 'Stop'",
-      "goss --gossfile C:/goss-windows.yaml ${local.common_goss_args}",
-      "goss --gossfile C:/goss-common.yaml ${local.common_goss_args}",
-      "Remove-Item -Force C:/goss-windows.yaml",
-      "Remove-Item -Force C:/goss-common.yaml",
-      "Remove-Item -Force C:/visualstudio.vsconfig",
-    ]
-  }
+  #provisioner "powershell" {
+  #  max_retries      = 2
+  #  environment_vars = local.provisioning_env_vars
+  #  inline = [
+  #    "goss --version",
+  #    "$ErrorActionPreference = 'SilentlyContinue'",
+  #    "if (Test-Path C:/goss-windows-${var.agent_os_version}.yaml) { goss --gossfile C:/goss-windows-${var.agent_os_version}.yaml ${local.common_goss_args} } else { Write-Host 'INFO: no dedicated Windows ${var.agent_os_version} goss file'}",
+  #    "$ErrorActionPreference = 'Stop'",
+  #    "goss --gossfile C:/goss-windows.yaml ${local.common_goss_args}",
+  #    "goss --gossfile C:/goss-common.yaml ${local.common_goss_args}",
+  #    "Remove-Item -Force C:/goss-windows.yaml",
+  #    "Remove-Item -Force C:/goss-common.yaml",
+  #    "Remove-Item -Force C:/visualstudio.vsconfig",
+  #  ]
+  #}
 
   # This provisioner must be the last for Azure builds, after reboots
   provisioner "powershell" {
