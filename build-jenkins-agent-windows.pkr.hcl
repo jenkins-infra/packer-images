@@ -113,6 +113,13 @@ build {
     disable = true
   }
 
+  # Sanity check for PowerShell: ensure that pwsh is present
+  provisioner "powershell" {
+    inline = [
+      "pwsh --version",
+    ]
+  }
+  
   #provisioner "powershell" {
   #  max_retries      = 2
   #  environment_vars = local.provisioning_env_vars
