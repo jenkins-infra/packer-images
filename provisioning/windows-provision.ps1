@@ -394,20 +394,11 @@ foreach($k in $downloads.Keys) {
     }
 }
 
-# Special case for Powershell, we need to make sure powershell.exe and pwsh.exe are both available
-# On Windows Server, Windows Powershell 5.1 is installed by default (powershell.exe)
-# On nanoserver, Powershell Core 7 is installed by default (pwsh.ex)
+# On Windows Server, Windows Powershell 5.x is installed by default (powershell.exe) but we also need Powershell 7.x (pwsh.exe)
 # https://docs.microsoft.com/en-us/powershell/scripting/whats-new/migrating-from-windows-powershell-51-to-powershell-7?view=powershell-7.2#using-powershell-7-side-by-side-with-windows-powershell-51
 Write-Output "== Ensure both Windows Powershell and Powershell Core are available"
-if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
-    Write-Output "= Windows Powershell already present, installing Powershell Core..."
-    Invoke-Command {& "choco.exe" install pwsh --yes --no-progress --limit-output --fail-on-error-output --version "${env:WINDOWS_PWSH_VERSION}";}
-    AddToPathEnv "C:\Program Files\PowerShell\7\"
-} else {
-    Write-Output "= Powershell Core already present, installing Windows Powershell..."
-    Invoke-Command {& "choco.exe" install powershell --yes --no-progress --limit-output --fail-on-error-output;}
-    AddToPathEnv "C:\Windows\System32\WindowsPowerShell\v1.0\"
-}
+"$baseDir\nuget.exe" install powershell -Version "${env:WINDOWS_PWSH_VERSION}";
+AddToPathEnv "C:\Program Files\PowerShell\7\"
 
 ## Enabling LongPaths
 Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name LongPathsEnabled -type DWord -Value 1
