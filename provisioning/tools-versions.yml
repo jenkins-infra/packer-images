@@ -21,7 +21,7 @@ helm_diff_version: 3.15.6
 helm_git_version: 1.5.2
 helm_secrets_version: 4.7.6
 helm_version: 3.19.1
-helmfile_version: 1.4.4
+helmfile_version: 1.4.5
 jenkins_remoting_version: 3355.v388858a_47b_33
 jq_version: 1.6
 jxreleaseversion_version: 2.8.4
