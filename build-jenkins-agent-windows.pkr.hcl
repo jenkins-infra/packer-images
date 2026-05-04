@@ -119,7 +119,7 @@ build {
       "pwsh --version",
     ]
   }
-  
+
   #provisioner "powershell" {
   #  max_retries      = 2
   #  environment_vars = local.provisioning_env_vars

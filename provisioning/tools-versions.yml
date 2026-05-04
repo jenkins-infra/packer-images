@@ -1,6 +1,6 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.15.0
-awscli_version: 2.34.40
+awscli_version: 2.34.41
 azcopy_version: 10.32.3
 azurecli_version: 2.85.0
 chocolatey_version: 1.4.0
@@ -14,14 +14,14 @@ git_lfs_version: 3.7.1
 git_linux_version: 2.54.0
 git_windows_version: 2.54.0
 golang_version: 1.26.2
-golangcilint_version: 2.11.4
+golangcilint_version: 2.12.1
 goss_version: 0.4.9
 hadolint_version: 2.14.0
 helm_diff_version: 3.15.6
 helm_git_version: 1.5.2
 helm_secrets_version: 4.7.6
 helm_version: 3.19.1
-helmfile_version: 1.4.4
+helmfile_version: 1.5.0
 jenkins_remoting_version: 3355.v388858a_47b_33
 jq_version: 1.6
 jxreleaseversion_version: 2.8.4
