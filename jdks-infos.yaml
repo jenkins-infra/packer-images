@@ -52,6 +52,6 @@ windows:
       checksum_value: 08cae782814f027f8b159d6b68823f0f87422eb475c1a0ea1abc7a4357aaf11f
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.2%2B10/OpenJDK25U-jdk_x64_windows_hotspot_25.0.2_10.zip
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.3%2B9/OpenJDK25U-jdk_x64_windows_hotspot_25.0.3_9.zip
       #TODO track with updatecli
       checksum_value: 709312cd0420296d9b9de917fe6e28a5b979e875ee5ab91783fb79bcd5857235
