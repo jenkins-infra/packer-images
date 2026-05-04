@@ -289,7 +289,8 @@ $downloads['goss'] = @{
 };
 $downloads['docker-buildx'] = @{
     'url' = 'https://github.com/docker/buildx/releases/download/v{0}/buildx-v{0}.windows-amd64.exe' -f $env:DOCKER_BUILDX_VERSION;
-    'local' = "$dockerPluginsDir\docker-buildx.exe"
+    'local' = "$dockerPluginsDir\docker-buildx.exe";
+    'path' = $dockerPluginsDir;
 };
 $downloads['chocolatey-and-packages'] = @{
     'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
