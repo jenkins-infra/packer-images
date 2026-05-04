@@ -83,7 +83,7 @@ $baseDir = 'C:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 
 # Special case for docker plugins
-$dockerPluginsDir = "${env:ProgramFiles}"\Docker\cli-plugins
+$dockerPluginsDir = "${0}\Docker\cli-plugins" -f $env:ProgramFiles
 New-Item -ItemType Directory -Path $dockerPluginsDir -Force | Out-Null
 
 # Ensure NuGet package provider is initialized (non-interactively)
