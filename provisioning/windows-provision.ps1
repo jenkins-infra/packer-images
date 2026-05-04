@@ -52,7 +52,7 @@ Function Retry-Command {
 }
 
 Function DownloadFile($url, $targetFile) {
-    Write-Host "Downloading $url"
+    Write-Host "Downloading $url to $targetFile"
     Retry-Command -ScriptBlock {
         $ProgressPreference = 'SilentlyContinue' # Disable Progress bar for faster downloads
         Invoke-WebRequest $url -OutFile $targetFile
