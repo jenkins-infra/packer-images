@@ -82,6 +82,10 @@ New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled Tru
 $baseDir = 'C:\tools'
 New-Item -ItemType Directory -Path $baseDir -Force | Out-Null
 
+# Special case for docker plugins
+$dockerPluginsDir = 'C:\Program Files\Docker\cli-plugins'
+New-Item -ItemType Directory -Path $dockerPluginsDir -Force | Out-Null
+
 # Ensure NuGet package provider is initialized (non-interactively)
 Get-PackageProvider NuGet -ForceBootstrap
 
@@ -285,7 +289,7 @@ $downloads['goss'] = @{
 };
 $downloads['docker-buildx'] = @{
     'url' = 'https://github.com/docker/buildx/releases/download/v{0}/buildx-v{0}.windows-amd64.exe' -f $env:DOCKER_BUILDX_VERSION;
-    'local' = 'C:\Program Files\Docker\cli-plugins\docker-buildx.exe'
+    'local' = "$dockerPluginsDir\docker-buildx.exe";
 };
 $downloads['chocolatey-and-packages'] = @{
     'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
