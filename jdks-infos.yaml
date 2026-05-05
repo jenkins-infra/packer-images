@@ -49,7 +49,7 @@ windows:
       checksum_value: b5b235c48adf6a081874b812c630b9f4b5f637b7a5ed18b9174d08a41ec4c235
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.11%2B10/OpenJDK21U-jdk_x64_windows_hotspot_21.0.11_10.zip
-      checksum_value: 08cae782814f027f8b159d6b68823f0f87422eb475c1a0ea1abc7a4357aaf11f
+      checksum_value: d3625e7cadf23787ea540229544b6e2ab494b3b54da1801879e583e1dfee0a64
     jdk25:
       #TODO track with updatecli
       installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.3%2B9/OpenJDK25U-jdk_x64_windows_hotspot_25.0.3_9.zip
