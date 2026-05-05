@@ -30,7 +30,7 @@ ubuntu:
       checksum_value: 83a52172678ec8975164648654869cb2e71d7c748b47aca94b29bbfa10c18e81
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.11%2B10/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.11_10.tar.gz
-      checksum_value: 357fee29fb0d5c079f6730db98b28942df13a6eed426f6c61cd4ad703ab27b9a
+      checksum_value: 8d498ec88e1c1989fab95c6784240ab92d011e29c54d20a3f9c324b13476f9ad
     jdk25:
       #TODO track with updatecli
       installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.3%2B9/OpenJDK25U-jdk_aarch64_linux_hotspot_25.0.3_9.tar.gz
