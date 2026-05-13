@@ -597,8 +597,7 @@ function install_playwright() {
   # Don't forget to change dir and to remove any `stderr` to avoid polluting the evakuated command
   playwright_deps_install_command="$(su - "${username}" -c "\
     source ${asdf_install_dir}/asdf.sh \
-    && npx playwright install-deps --dry-run" \
-  2>/dev/null)"
+    && npx playwright install-deps --dry-run")"
   eval "${playwright_deps_install_command}"
 
   # Install pinned playwright globally
