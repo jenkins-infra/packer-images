@@ -2,8 +2,8 @@
 ubuntu:
   amd64:
     jdk8:
-      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u482-b08/OpenJDK8U-jdk_x64_linux_hotspot_8u482b08.tar.gz
-      checksum_value: e74becad56b4cc01f1556a671e578d3788789f5257f9499f6fbed84e63a55ecf
+      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u492-b09/OpenJDK8U-jdk_x64_linux_hotspot_8u492b09.tar.gz
+      checksum_value: da257f161d7f8c6ca5b0e5d9e4090f65ac28c5e398072e68b8ae87988b1d1a2e
     jdk11:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.31%2B11/OpenJDK11U-jdk_x64_linux_hotspot_11.0.31_11.tar.gz
       checksum_value: 1e9de64586b519c0a981319489257cabedd9457599f3823424a87c3158fbe939
@@ -20,8 +20,8 @@ ubuntu:
       checksum_value: 69264a7a211bf5029830d07bc3370f879769d62ebc5b5488e90c9343a2da0e1f
   arm64:
     jdk8:
-      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u482-b08/OpenJDK8U-jdk_aarch64_linux_hotspot_8u482b08.tar.gz
-      checksum_value: ada72fbf191fb287b4c1e54be372b64c40c27c2ffbfa01f880c92af11f4e7c94
+      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u492-b09/OpenJDK8U-jdk_aarch64_linux_hotspot_8u492b09.tar.gz
+      checksum_value: 3c2253b986909c20f79d6de7a0cb957f89c243df57615897836046e24d2e5257
     jdk11:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.31%2B11/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.31_11.tar.gz
       checksum_value: 257f4d39e060658fc2eb89a803ca43b3f337e64e253f2d94ebae1d85c9ef5f69
@@ -39,8 +39,8 @@ ubuntu:
 windows:
   amd64:
     jdk8:
-      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u482-b08/OpenJDK8U-jdk_x64_windows_hotspot_8u482b08.zip
-      checksum_value: 51637ae41af1bce379a9d059109820864949c8d57ca302e0d502fcf329d33a72
+      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u492-b09/OpenJDK8U-jdk_x64_windows_hotspot_8u492b09.zip
+      checksum_value: 1e33881ea6bfc1c532e3eaad1c1de7777169c0c1333e2b880621e0e0a16073b2
     jdk11:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.31%2B11/OpenJDK11U-jdk_x64_windows_hotspot_11.0.31_11.zip
       checksum_value: 5695bd8fed700acb74e0c13945fc6d7564441a31d345c100b82ee1aac553a6b7
