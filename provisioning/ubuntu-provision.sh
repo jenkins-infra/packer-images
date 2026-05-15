@@ -590,19 +590,23 @@ function install_nodejs() {
 }
 
 function install_playwright() {
-  ### Install playwright's dependencies before the module itself
-  ## The command 'npx playwright install-deps --dry-run' prints the expectd command for installing dependencies.
+  # Install for user '$username'
+  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g playwright@${PLAYWRIGHT_VERSION}"
+  
+  # The command 'npx playwright install-deps --dry-run' prints the expected command for installing dependencies.
   # But this command requires `sudo` access (which the ${username} user does not have).
   # Also, the `root` user does not have access to the ASDF setup.
-  # Don't forget to change dir and to remove any `stderr` to avoid polluting the evakuated command
   playwright_deps_install_command="$(su - "${username}" -c "\
     source ${asdf_install_dir}/asdf.sh \
     && npx playwright install-deps --dry-run" \
-  2>/dev/null)"
-  eval "${playwright_deps_install_command}"
+  )"
 
-  # Install pinned playwright globally
-  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g playwright@${PLAYWRIGHT_VERSION}"
+  # Report to build logs
+  echo "[Playwright] installing dependencies using the command:"
+  echo "${playwright_deps_install_command}"
+  echo
+  
+  eval "${playwright_deps_install_command}" 
 }
 
 ## Install Launchable with python3 in its own virtual environment
