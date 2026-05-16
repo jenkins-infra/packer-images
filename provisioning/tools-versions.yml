@@ -41,7 +41,7 @@ ruby_version: 3.4.8
 sops_version: 3.13.0
 terraform_version: 1.12.2
 typos_version: 1.33.1 # TODO track with updatecli
-updatecli_version: 0.116.3
+updatecli_version: 0.117.0
 vs_buildtools_version_legacy: 16
 vs_buildtools_version: stable
 windows_pwsh_version: 7.6.1
