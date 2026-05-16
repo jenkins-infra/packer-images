@@ -15,7 +15,7 @@ docker:
   ubuntu:
     "22.04":
       amd64: sha256:14be402d3f1eeeb5e7da73d3260322c68e7b51c88388f53e88eb21d6450bd520
-      arm64: sha256:0124b5388c7c05576c0cedeab121a7c590b0ec16b4238e6b997ad9d57ccdefd8
+      arm64: sha256:c1fc012913af7a4dd0d86553d9dae19b323e7fb60d5407e800cbfbc8f7e6aa63
 aws:
   ubuntu:
     "22.04":
