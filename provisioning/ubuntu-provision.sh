@@ -590,23 +590,25 @@ function install_nodejs() {
 }
 
 function install_playwright() {
-  # Install for user '$username'
+  # Install pinned playwright globally first (as NPX needs it)
   su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g playwright@${PLAYWRIGHT_VERSION}"
-  
-  # The command 'npx playwright install-deps --dry-run' prints the expected command for installing dependencies.
-  # But this command requires `sudo` access (which the ${username} user does not have).
-  # Also, the `root` user does not have access to the ASDF setup.
-  playwright_deps_install_command="$(su - "${username}" -c "\
+
+  # Install required system dependencies - https://playwright.dev/docs/browsers#install-system-dependencies
+  # Note: need to extract the list of missing packages as jenkins user but install as root
+  playwright_system_deps="$(su - "${username}" -c "\
     source ${asdf_install_dir}/asdf.sh \
-    && npx playwright install-deps --dry-run" \
+    && npx playwright install-deps --dry-run \
+      | grep -v 'Missing system dependencies' `# Remove initial header line` \
+    || true `# playwright install-deps command fails if packages are missing. let's report later for diagnosing` " \
   )"
 
-  # Report to build logs
-  echo "[Playwright] installing dependencies using the command:"
-  echo "${playwright_deps_install_command}"
+  # Report in build logs
+  echo "Installing the following system dependencies for playwright:"
+  echo "${playwright_system_deps}"
   echo
-  
-  eval "${playwright_deps_install_command}" 
+
+  # Perform the installation as root user
+  echo "${playwright_system_deps}" | xargs apt-get install -y
 }
 
 ## Install Launchable with python3 in its own virtual environment
