@@ -6,7 +6,7 @@ azurecli_version: 2.86.0
 chocolatey_version: 1.4.0
 compose_version: 5.1.3
 cst_version: 1.22.1
-docker_buildx_version: 0.34.0
+docker_buildx_version: 0.34.1
 docker_version: 29.5.1
 doctl_version: 1.159.0
 gh_version: 2.92.0
