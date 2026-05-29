@@ -5,6 +5,10 @@ pipeline {
     triggers {
         cron('@hourly')
     }
+    options {
+        disableConcurrentBuilds abortPrevious: true
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '200')
+    }
     stages {
         stage('Garbage Collection') {
             environment {
