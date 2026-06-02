@@ -19,7 +19,8 @@ build {
   source "azure-arm.base" {
     name         = "windows"
     communicator = "winrm"
-    # List available offers and publishers with the command `az vm image list --output table`
+    # List available offers and publishers with the command `az vm image list --publisher MicrosoftWindowsServer --all --output table`
+    # Warnings: take quite some time; "windowsserver2022" not listed
     image_offer     = var.agent_os_version == "2022" ? "windowsserver2022" : "WindowsServer"
     image_publisher = "MicrosoftWindowsServer"
     # List available SKUs with the command `az vm image list-skus --offer WindowsServer --location eastus --publisher MicrosoftWindowsServer --output table`
