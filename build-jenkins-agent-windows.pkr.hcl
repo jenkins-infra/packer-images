@@ -20,9 +20,10 @@ build {
     name         = "windows"
     communicator = "winrm"
     # List available offers and publishers with the command `az vm image list --output table`
-    image_offer     = "WindowsServer"
+    image_offer     = var.agent_os_version == "2022" ? "windowsserver2022" : "WindowsServer"
     image_publisher = "MicrosoftWindowsServer"
     # List available SKUs with the command `az vm image list-skus --offer WindowsServer --location eastus --publisher MicrosoftWindowsServer --output table`
+    # For Windows version 2022, you'll have to use `--offer windowsserver2022` (cf https://github.com/jenkins-infra/helpdesk/issues/5142)
     image_sku       = "${var.agent_os_version}-datacenter-core-g2"
     image_version   = try(local.images_versions["azure"]["windows"][var.agent_os_version][var.architecture], "N/A")
     os_type         = "Windows"
