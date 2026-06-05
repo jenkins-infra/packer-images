@@ -1,11 +1,3 @@
-final String cronExpr = env.BRANCH_IS_PRIMARY ? '@daily' : ''
-
-properties([
-    buildDiscarder(logRotator(numToKeepStr: '10')),
-    disableConcurrentBuilds(abortPrevious: true),
-    pipelineTriggers([cron(cronExpr)]),
-])
-
 final String updatecliAction = env.BRANCH_IS_PRIMARY ? 'apply' : 'diff'
 
 timeout(time: 20, unit: 'MINUTES') {
@@ -18,6 +10,7 @@ timeout(time: 20, unit: 'MINUTES') {
             updatecli(
                 action: updatecliAction,
                 updatecliAgentLabel: 'linux-amd64-docker', // we need a VM with Docker
+                cronTriggerExpression: env.BRANCH_IS_PRIMARY ? '@daily' : ''
             )
         }
     }
