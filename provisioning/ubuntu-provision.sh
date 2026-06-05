@@ -5,7 +5,6 @@
 set -eux -o pipefail
 
 ## Check for environment variables or fail miserably (due to set -u enabled)
-echo "== Provisiong jenkins-infra agent for ubuntu 20"
 case "$(uname -m)" in
     x86_64)
       if test "${ARCHITECTURE}" != "amd64"; then
@@ -577,21 +576,50 @@ function install_goss() {
   chmod +rx /usr/local/bin/goss
 }
 
-## Install Nodejs with asdf
+## Install Nodejs from prebuilt binaries
 function install_nodejs() {
-  # Ensure that ASDF is installed
-  test -f "${asdf_install_dir}/asdf.sh"
-  # Install Node.js with ASDF and set it as default installation
-  install_asdf_plugin nodejs https://github.com/asdf-vm/asdf-nodejs.git
-  install_asdf_package nodejs "${NODEJS_LINUX_VERSION}"
+  local keyring_file nodejs_download_url nodejs_temp_download_dir nodejs_archive_file nodejs_shasum_file nodejs_shasum_gpg_file nodejs_install_dir
 
-  # Bump NPM to its latest available version
-  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g npm"
+  keyring_file="/tmp/gpg-keys/nodejs-keyring.kbx"
+  nodejs_download_url="https://nodejs.org/dist/v${NODEJS_LINUX_VERSION}"
+  nodejs_temp_download_dir="$(mktemp -d)"
+  nodejs_install_dir="/opt/nodejs"
+
+  # Relative paths (assuming we're working from inside the temp dir)
+  nodejs_archive_file="node-v${NODEJS_LINUX_VERSION}-linux-$([ "${ARCHITECTURE}" = "arm64" ] && echo 'arm64' || echo 'x64').tar.xz"
+  nodejs_shasum_file="SHASUMS256.txt"
+  nodejs_shasum_gpg_file="SHASUMS256.txt.asc"
+
+  # Required to unarchive
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends xz-utils # Should already be there but this function should be autonomous
+
+  pushd "${nodejs_temp_download_dir}"
+  curl --fail --retry 3 --silent --location --show-error --output "${nodejs_archive_file}" \
+    "${nodejs_download_url}/${nodejs_archive_file}"
+  curl --fail --retry 3 --silent --location --show-error --output "${nodejs_shasum_gpg_file}" \
+    "${nodejs_download_url}/${nodejs_shasum_gpg_file}"
+  ls -ltrh # Debug when gpg fails
+  gpgv --keyring="${keyring_file}" --output "${nodejs_shasum_file}" < "${nodejs_shasum_gpg_file}"
+  ls -ltrh # Debug when gpg fails
+  shasum --check "${nodejs_shasum_file}" --ignore-missing | grep "${nodejs_archive_file}"
+
+  mkdir -p "${nodejs_install_dir}"
+  tar --extract --xz --file="${nodejs_archive_file}" --directory="${nodejs_install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name
+
+  ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
+  sed -e '/^PATH/s/"$/:\/opt\/nodejs"\/bin/g' -i /etc/environment
+
+  popd
+  rm -rf "${nodejs_temp_download_dir}"
+
+  # Ensure we have the usual 3 package managers up to date (and sanity check that the user "$username" can run NPM/NodeJS)
+  su - "${username}" -c "source /etc/environment && npm install -g npm yarn pnpm"
 }
 
 function install_playwright() {
   # Install pinned playwright globally first (as NPX needs it)
-  su - "${username}" -c "source ${asdf_install_dir}/asdf.sh && npm install -g playwright@${PLAYWRIGHT_VERSION}"
+  su - "${username}" -c "source /etc/environment && npm install -g playwright@${PLAYWRIGHT_VERSION}"
 
   # Install required system dependencies - https://playwright.dev/docs/browsers#install-system-dependencies
   # Note: need to extract the list of missing packages as jenkins user but install as root
