@@ -608,7 +608,7 @@ function install_nodejs() {
   tar --extract --xz --file="${nodejs_archive_file}" --directory="${nodejs_install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name
 
   ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
-  sed -e '/^PATH/s/"$/:\/opt\/nodejs"\/bin/g' -i /etc/environment
+  sed -e '/^PATH/s/"$/:\/opt\/nodejs\/bin/g' -i /etc/environment
 
   popd
   rm -rf "${nodejs_temp_download_dir}"
