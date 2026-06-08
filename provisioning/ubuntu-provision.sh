@@ -39,7 +39,7 @@ launchable_venv_dir="/usr/local/launchable"
 ## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
   ## Check for presence of requirements or fail fast
-  for cli in add-apt-repository apt-get apt-cache awk curl grep groupadd head tar uname useradd
+  for cli in apt-get apt-cache awk grep groupadd head tar uname useradd
   do
     if ! command -v $cli >/dev/null 2>&1
     then
@@ -100,10 +100,14 @@ function install_common_requirements() {
     ca-certificates `# Adds certificate authority for proper use of TLS` \
     curl `# A nice HTTP client` \
     dnsutils `# Provides dig(1)` \
+    locales `# to generate with the correct environment variables` \
     lsb-release `# Provides CLI for distribution detction` \
     gpg-agent `# Required for GPG management` \
     rsync `# Differential copy is quite useful` \
-    software-properties-common `# Provides a LOT of APT utilities`
+    sudo `# We want admin permissions` \
+    software-properties-common `# Provides a LOT of APT utilities` \
+    tar `# To unarchive stuff` \
+    xz-utils `# To unarchive MORE stuff`
 }
 
 function install_ssh_requirements() {
@@ -602,24 +606,24 @@ function install_nodejs() {
   ls -ltrh # Debug when gpg fails
   gpgv --keyring="${keyring_file}" --output "${nodejs_shasum_file}" < "${nodejs_shasum_gpg_file}"
   ls -ltrh # Debug when gpg fails
-  shasum --check "${nodejs_shasum_file}" --ignore-missing | grep "${nodejs_archive_file}"
+  sha256sum --check "${nodejs_shasum_file}" --ignore-missing | grep "${nodejs_archive_file}"
 
   mkdir -p "${nodejs_install_dir}"
   tar --extract --xz --file="${nodejs_archive_file}" --directory="${nodejs_install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name
 
   ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
-  sed -e '/^PATH/s/"$/:\/opt\/nodejs\/bin/g' -i /etc/environment
+  sed -e '/^PATH/s/"$/:\/opt\/nodejs\/bin"/g' -i /etc/environment
 
   popd
   rm -rf "${nodejs_temp_download_dir}"
 
-  # Ensure we have the usual 3 package managers up to date (and sanity check that the user "$username" can run NPM/NodeJS)
-  su - "${username}" -c "source /etc/environment && npm install -g npm yarn pnpm"
+  # Ensure we have the usual 3 package managers up to date
+  source /etc/environment && npm install -g npm yarn pnpm
 }
 
 function install_playwright() {
   # Install pinned playwright globally first (as NPX needs it)
-  su - "${username}" -c "source /etc/environment && npm install -g playwright@${PLAYWRIGHT_VERSION}"
+  source /etc/environment && npm install -g playwright@"${PLAYWRIGHT_VERSION}"
 
   # Install required system dependencies - https://playwright.dev/docs/browsers#install-system-dependencies
   # Note: need to extract the list of missing packages as jenkins user but install as root
