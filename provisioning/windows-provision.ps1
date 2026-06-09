@@ -310,7 +310,6 @@ $downloads['chocolatey-and-packages'] = @{
         Get-WindowsFeature | Where-Object Name -like "NET*" | Format-Table Name, DisplayName, InstallState -AutoSize
         # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
         & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
-        & "choco.exe" install chromium --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
         & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
         & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;

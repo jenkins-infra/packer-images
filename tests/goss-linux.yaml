@@ -11,9 +11,6 @@ command:
     exit-status: 0
     stdout:
       - 10.32.4
-  chromium-browser:
-    exec: chromium-browser --version
-    exit-status: 0
   datadog-agent:
     exec: datadog-agent version
     exit-status: 0
