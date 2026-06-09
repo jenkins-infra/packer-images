@@ -267,29 +267,6 @@ function install_python() {
   python3 -m pip install --no-cache-dir pip --upgrade
 }
 
-## Install chromium
-### Using chromium because chrome is not available on arm64
-### see https://bugs.chromium.org/p/chromium/issues/detail?id=677140
-function install_chromium() {
-  apt-get remove --yes chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra
-
-  # Using this PPA as the chromium default repositories require snap which doesn't work in docker.
-  # see https://askubuntu.com/questions/1255692/is-it-still-possible-to-install-chromium-as-a-deb-package-on-20-04-lts-using-som
-  add-apt-repository --yes ppa:phd/chromium-browser
-  apt-get update --quiet
-
-  # Pin 'chromium' package to this PPA repository (to avoid chromium installed from another source)
-  # Then the candidate will always be the 18.04 package version (20.04 packages require snap but snap does not run inside Docker)
-  # Check with apt-cache policy chromium-browser
-  echo '
-Package: *
-Pin: release o=LP-PPA-phd-chromium-browser
-Pin-Priority: 1001
-' | tee /etc/apt/preferences.d/phd-chromium-browser
-
-  apt-get install --yes chromium-browser
-}
-
 ## Install git and git-lfs
 function install_git_gitlfs() {
   if [ -n "${GIT_LINUX_VERSION}" ]
@@ -698,7 +675,6 @@ function main() {
   install_goss # needed by the pipeline
   install_docker # needed by the pipeline
   install_jdks # needed by the pipeline
-  install_chromium
   install_datadog
   install_JA_requirements
   install_qemu

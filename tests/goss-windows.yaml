@@ -80,9 +80,6 @@ command:
     stdout:
       - 'True'
 file:
-  C:\Program Files\Chromium\Application\:
-    exists: true
-    filetype: directory
   C:\Program Files\Datadog\Datadog agent\bin\:
     exists: true
     filetype: directory
