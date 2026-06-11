@@ -599,25 +599,19 @@ function install_nodejs() {
 }
 
 function install_playwright() {
-  # Install pinned playwright globally first (as NPX needs it)
-  source /etc/environment && npm install -g playwright@"${PLAYWRIGHT_VERSION}"
+  source /etc/environment
 
-  # Install required system dependencies - https://playwright.dev/docs/browsers#install-system-dependencies
-  # Note: need to extract the list of missing packages as jenkins user but install as root
-  playwright_system_deps="$(su - "${username}" -c "\
-    source ${asdf_install_dir}/asdf.sh \
-    && npx playwright install-deps --dry-run \
-      | grep -v 'Missing system dependencies' `# Remove initial header line` \
-    || true `# playwright install-deps command fails if packages are missing. let's report later for diagnosing` " \
-  )"
+  # Install pinned playwright globally first
+  npm install -g playwright@"${PLAYWRIGHT_VERSION}"
 
-  # Report in build logs
-  echo "Installing the following system dependencies for playwright:"
-  echo "${playwright_system_deps}"
-  echo
+  # Install system dependencies, must be run as root - https://playwright.dev/docs/browsers#install-system-dependencies
+  playwright install-deps
 
-  # Perform the installation as root user
-  echo "${playwright_system_deps}" | xargs apt-get install -y
+  # Install web browser(s) as jenkins (to ensure cache is in its home and reusable)
+  su - "${username}" -c "playwright install --only-shell chromium"
+
+  # Sanity checks
+  su - "${username}" -c "playwright install --list"
 }
 
 ## Install Launchable with python3 in its own virtual environment
