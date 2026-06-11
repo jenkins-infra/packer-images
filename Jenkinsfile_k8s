@@ -1,20 +1,24 @@
-// Scripted version
 if (env.BRANCH_IS_PRIMARY) {
   // dedicated properties for master branch
   properties([
     buildDiscarder(logRotator(numToKeepStr: '10')),
     // Daily build is enough: only the tagged build would generate downstream PRs on jenkins-infra
     pipelineTriggers([cron('@daily')]),
-    // Do not build concurently on the principal branch (to avoid Azure ARM issues with shared resources)
+    // Do not build concurrently on the principal branch (to avoid Azure ARM issues with shared resources)
     disableConcurrentBuilds(),
   ])
 }
 
+def lightweightMatrix = false
+
 if (env.CHANGE_ID) {
   properties([
-    // Do not build concurently on pull requests (to avoid Azure ARM issues with shared resources), and abort previous running build
+    // Do not build concurrently on pull requests (to avoid Azure ARM issues with shared resources), and abort previous running build
     disableConcurrentBuilds(abortPrevious: true)
   ])
+
+  // TODO: set up lightwieght build from PR labels
+  lightweightMatrix = true
 }
 
 // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
@@ -88,6 +92,29 @@ node('linux-arm64-docker') {
               return
             }
 
+            // Decrease cloud costs: only build a few cells of the matrix if the build is marked as "lightweight"
+            if (env.CHANGE_ID && lightweightMatrix) {
+              if (compute_type == 'amazon-ebs') {
+                if (agent_type == 'windows-2019') {
+                  return
+                }
+                if (agent_type == 'windows-2022') {
+                  return
+                }
+                if (agent_type == 'ubuntu-22.04' && cpu_architecture == 'arm64') {
+                  return
+                }
+              }
+              if (compute_type == 'azure-arm') {
+                if (agent_type == 'windows-2025') {
+                  return
+                }
+                if (agent_type == 'ubuntu-22.04' && cpu_architecture == 'amd64') {
+                  return
+                }
+              }
+            }
+
             def matrixKey = "${agent_type}-${compute_type}-${cpu_architecture}"
 
             matrixBranches[matrixKey] = {
@@ -99,7 +126,6 @@ node('linux-arm64-docker') {
                 final String pkr_var_image_type = compute_type
                 final String pkr_var_tag_name = env.TAG_NAME
 
-                echo 'DEBUG - Actual work'
                 withEnv([
                   // AWS
                   "AWS_DEFAULT_REGION=us-east-2",
@@ -126,7 +152,7 @@ node('linux-arm64-docker') {
                   ]) {
                     withPackerNode(pkr_var_agent_os_type + '-' + pkr_var_agent_os_version, pkr_var_image_type, pkr_var_architecture) {
                       // Validate template (for all elements)
-                      sh 'PACKER_LOG=1 packer validate ./'
+                      sh 'packer validate ./'
 
                       // Execute build only for this matrix cell's setup
                       retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
@@ -141,7 +167,6 @@ node('linux-arm64-docker') {
                       // else we would loose the docker image
                       if (pkr_var_image_type == 'docker' && pkr_var_tag_name != null) {
                         stage('Publish all tags for Docker image') {
-                          echo "Pushing jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:${pkr_var_tag_name} & jenkinsciinfra/jenkins-agent-${pkr_var_agent_os_type}:latest for ${pkr_var_architecture}"
                           infra.withDockerPushCredentials {
                             sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}'
                           }
