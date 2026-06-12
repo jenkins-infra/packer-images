@@ -1,12 +1,12 @@
 # This source defines all the common settings for any AWS AMI (whatever Operating System)
 source "amazon-ebs" "base" {
   skip_create_ami = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
-  ami_name      = "${local.image_name}-${var.image_version}-${local.now_unix_timestamp}"
+  ami_name        = "${local.image_name}-${var.image_version}-${local.now_unix_timestamp}"
 
   # Spot instances costs 5 to 6 time less: we accept failure some time to time.
   # Note: eviction rate should be re-evaluated every quarter to stay under the 0-5%.
   spot_instance_types = local.aws_spot_instance_types[var.architecture]
-  spot_price                  = "auto"
+  spot_price          = "auto"
 
   # Egg-and-chicken: what is the base image to start from (eg. what is my egg)?
   # Note: tracked by updatecli
@@ -48,9 +48,8 @@ source "amazon-ebs" "base" {
 
 # This source defines all the common settings for any Azure image (whatever Operating System)
 source "azure-arm" "base" {
-  managed_image_resource_group_name = local.azure_destination_resource_group
-  skip_create_image = var.build_type == "dev" ? true : false # skip ami creation on PRs and local developement
-  vm_size = local.azure_vm_size[var.architecture]
+  skip_create_image = var.build_type == "dev" ? true : false # skip image creation on PRs and local development
+  vm_size           = local.azure_vm_size[var.architecture]
 
   # network defined in https://github.com/jenkins-infra/azure-net
   virtual_network_name                = "infra-ci-jenkins-io-sponsored-vnet"
@@ -68,7 +67,7 @@ source "azure-arm" "base" {
   # Where to export the image
   shared_image_gallery_destination {
     subscription   = var.azure_gallery_subscription_id
-    resource_group = local.azure_destination_resource_group
+    resource_group = "${var.build_type}-packer-images"
     gallery_name   = "${var.build_type}_packer_images"
     # Not unique name defined in https://github.com/jenkins-infra/azure
     image_name          = "${local.image_name}"
