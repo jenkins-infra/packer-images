@@ -31,7 +31,6 @@ locals {
     # 4 CPU / 16 GB
     "arm64" = "Standard_D4pds_v6"
   }
-  azure_destination_resource_group = "${var.build_type}-packer-images"
   azure_galleries = {
     "prod_packer_images"    = ["East US 2", "Sweden Central"]
     "staging_packer_images" = ["East US 2"]
@@ -62,10 +61,10 @@ locals {
     ],
     flatten([
       for jdk_version, jdk_data in local.jdk_infos[var.agent_os_type][var.architecture] :
-        [
-          "${upper(jdk_version)}_INSTALLER_URL=${jdk_data.installer_url}",
-          "${upper(jdk_version)}_CHECKSUM_VALUE=${jdk_data.checksum_value}"
-        ]
+      [
+        "${upper(jdk_version)}_INSTALLER_URL=${jdk_data.installer_url}",
+        "${upper(jdk_version)}_CHECKSUM_VALUE=${jdk_data.checksum_value}"
+      ]
     ])
   )
 }
