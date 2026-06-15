@@ -96,6 +96,17 @@ command:
     timeout: 20000
     stdout:
       - 1.15.4
+  playwright:
+    exec: playwright --version
+    exit-status: 0
+    stdout:
+      - 1.61.0
+  playwright-chromium-cache:
+    exec: playwright install --list
+    exit-status: 0
+    stdout:
+      - 'chromium_headless_shell'
+      - 'ffmpeg'
   terraform:
     exec: terraform -v
     exit-status: 0

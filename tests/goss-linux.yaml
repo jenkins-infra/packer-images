@@ -90,17 +90,6 @@ command:
   parallel:
     exec: parallel --version
     exit-status: 0
-  playwright:
-    exec: playwright --version
-    exit-status: 0
-    stdout:
-      - 1.61.0
-  playwright-chromium-cache:
-    exec: playwright install --list
-    exit-status: 0
-    stdout:
-      - 'chromium_headless_shell'
-      - 'ffmpeg'
   python3:
     exec: python3 --version
     exit-status: 0
