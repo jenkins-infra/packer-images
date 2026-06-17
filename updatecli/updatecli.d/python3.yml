@@ -28,10 +28,7 @@ conditions:
     kind: shell
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
-      command: curl https://community.chocolatey.org/packages/python3/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail --output /dev/null
-    transformers:
-      - findsubmatch:
-          pattern: 'Package Approved'
+      command: curl https://community.chocolatey.org/packages/python3/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail | grep 'Package Approved'
 
 targets:
   updateVersion:
