@@ -63,10 +63,15 @@ Function AddToPathEnv($path) {
     $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
     $newPath = '{0};{1}' -f $path,$oldPath
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
+    # Update self (script) environment
+    $env:Path = $newPath
 }
 
-# Requried by testing libraries such as playwright
-Install-WindowsFeature Server-Media-Foundation
+Function AddEnvToSystem($name, $value) {
+    New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name $name -Value $value | Out-Null
+    # Update self (script) environment
+    Set-Item "env:$name" $value
+}
 
 # Install OpenSSH (from Windows Features)
 Write-Output "= Installing OpenSSH Server..."
@@ -88,6 +93,10 @@ New-Item -ItemType Directory -Path $dockerPluginsDir -Force | Out-Null
 
 # Ensure NuGet package provider is initialized (non-interactively)
 Get-PackageProvider NuGet -ForceBootstrap
+
+# Install .NET 3.5 (used by MSI builds)
+Install-WindowsFeature Net-Framework-Core
+Get-WindowsFeature | Where-Object Name -like "NET*" | Format-Table Name, DisplayName, InstallState -AutoSize
 
 ## List of tools to use
 $downloads = [ordered]@{}
@@ -291,6 +300,8 @@ $downloads['docker-buildx'] = @{
     'url' = 'https://github.com/docker/buildx/releases/download/v{0}/buildx-v{0}.windows-amd64.exe' -f $env:DOCKER_BUILDX_VERSION;
     'local' = "$dockerPluginsDir\docker-buildx.exe";
 };
+# Used as bin dir for NodeJS/NPM and also the NPM global packages
+$nodeJsInstallDir = "C:\Program Files\nodejs"
 $downloads['chocolatey-and-packages'] = @{
     'url' = 'https://github.com/chocolatey/choco/releases/download/{0}/chocolatey.{0}.nupkg' -f $env:CHOCOLATEY_VERSION;
     'local' = "$baseDir\chocolatey.zip";
@@ -301,19 +312,38 @@ $downloads['chocolatey-and-packages'] = @{
         & Remove-Item -Force -Recurse "$baseDir\chocolatey.tmp";
     };
     'cleanupLocal' = 'true';
-    'path' = "C:\Program Files\Amazon\AWSCLIV2";
+    'path' = "C:\Program Files\Amazon\AWSCLIV2;$nodeJsInstallDir";
     'postInstall' = {
-        # Installation of make for Windows
-        & "choco.exe" install make --yes --no-progress --limit-output --fail-on-error-output;
-        # install .NET 3.5 for MSI build
-        Install-WindowsFeature Net-Framework-Core
-        Get-WindowsFeature | Where-Object Name -like "NET*" | Format-Table Name, DisplayName, InstallState -AutoSize
+        # chocolatey internal command used to update current shell's environment. Not strictly required but we never know what bad surprise it could avoid.
+        refreshenv;
+        # Installation packages without pinned versions in one shot (faster)
+        choco install make datadog-agent vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
         # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
-        & "choco.exe" install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
-        & "choco.exe" install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
-        & "choco.exe" install datadog-agent --yes --no-progress --limit-output --fail-on-error-output;
-        & "choco.exe" install vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
-        & "choco.exe" install nodejs.install --yes --no-progress --limit-output --fail-on-error-output --version "${env:NODEJS_WINDOWS_VERSION}";
+        choco install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
+        choco install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
+        choco install nodejs.install --yes --no-progress --limit-output --fail-on-error-output --version "${env:NODEJS_WINDOWS_VERSION}";
+        # Default NPM prefix dir, on Windows, is in the %AppData% of the current user so not really globally available...
+        npm config set prefix $nodeJsInstallDir;
+    };
+};
+$downloads['playwright'] = @{
+    'check' = {
+        # Check NPM is present as we need it (implies NodeJS of course)
+        npm --version;
+    }
+    'env' = @{
+        'PLAYWRIGHT_BROWSERS_PATH' = "$baseDir\playwright-cache"
+    }
+    'postInstall' = {
+        Install-WindowsFeature Server-Media-Foundation
+        # Install Playwright NodeJS CLI
+        npm install -g playwright@"${env:PLAYWRIGHT_VERSION}"
+        # Install system dependencies, must be run as root - https://playwright.dev/docs/browsers#install-system-dependencies
+        playwright install-deps
+        # Install web browser(s)
+        playwright install --only-shell chromium
+        # Sanity check
+        playwright install --list
     };
 };
 
@@ -342,6 +372,7 @@ if("2019" -eq $env:AGENT_OS_VERSION) {
     };
 }
 
+
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed
 AddToPathEnv $baseDir
 
@@ -359,7 +390,9 @@ foreach($k in $downloads.Keys) {
     }
     Write-Host "Downloading and setting up $k"
 
-    DownloadFile $download['url'] $download['local']
+    if($download.ContainsKey('url')) {
+        DownloadFile $download['url'] $download['local']
+    }
 
     if($download.ContainsKey('preExpand')) {
         Invoke-Command -ScriptBlock $download['preExpand']
@@ -380,7 +413,7 @@ foreach($k in $downloads.Keys) {
     if($download.ContainsKey('env')) {
         foreach($name in $download['env'].Keys) {
             $value = $download['env'][$name]
-            New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name $name -Value $value | Out-Null
+            AddToPathEnv $name $value
         }
     }
 
