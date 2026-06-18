@@ -1,0 +1,15 @@
+---
+- name: tests
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - ../../provisioning/tools-versions.yml
+    - ../../jdks-infos.yaml
+
+  tasks:
+    - name: Import common tests
+      ansible.builtin.import_tasks: tasks/tests_common.yml
+
+    - name: Import Linux tests
+      ansible.builtin.import_tasks: tasks/tests_linux.yml
+      tags: [linux_only]
