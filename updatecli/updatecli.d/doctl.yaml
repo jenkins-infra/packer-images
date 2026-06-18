@@ -51,3 +51,4 @@ actions:
       labels:
         - enhancement
         - DOCTL
+        - ubuntu

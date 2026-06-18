@@ -53,3 +53,4 @@ actions:
       description: "Update AWS AMI ID for Ubuntu 22.04 ARM64"
       labels:
         - enhancement
+        - ubuntu

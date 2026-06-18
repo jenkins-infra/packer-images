@@ -48,3 +48,4 @@ actions:
       labels:
         - dependency
         - golangci-lint
+        - ubuntu

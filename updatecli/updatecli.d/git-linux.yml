@@ -60,4 +60,4 @@ actions:
       labels:
         - enhancement
         - git
-        - linux
+        - ubuntu

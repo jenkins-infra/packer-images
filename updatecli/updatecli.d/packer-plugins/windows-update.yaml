@@ -48,3 +48,4 @@ actions:
       labels:
         - dependencies
         - packer-windows-update-plugin
+        - windows
