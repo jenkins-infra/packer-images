@@ -10,6 +10,7 @@ if (env.BRANCH_IS_PRIMARY) {
 }
 
 def lightweightMatrix = false
+def conditionalBuild
 
 if (env.CHANGE_ID) {
   properties([
@@ -17,8 +18,19 @@ if (env.CHANGE_ID) {
     disableConcurrentBuilds(abortPrevious: true)
   ])
 
-  // TODO: set up lightwieght build from PR labels
   lightweightMatrix = true
+
+  stage('Detect PR Labels') {
+    conditionalBuild = sh(
+      script: '''
+        set -euo pipefail
+        ./scripts/detect-agent-type.sh
+      ''',
+      returnStdout: true
+    ).trim()
+
+    echo "conditionalBuild: ${conditionalBuild}"
+  }
 }
 
 // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
@@ -68,10 +80,40 @@ node('linux-arm64-docker') {
         }
       }
 
+      def agentTypes = ['ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025']
+
+      // Apply PR label filtering
+      if (env.CHANGE_ID && prAgentFilter != null) {
+        switch (prAgentFilter) {
+          case 'ubuntu-only':
+            agentTypes = ['ubuntu-22.04']
+            break
+
+          case 'windows-only':
+            agentTypes = ['windows-2019', 'windows-2022', 'windows-2025']
+            break
+
+          case 'windows-2019-only':
+            agentTypes = ['windows-2019']
+            break
+
+          case 'windows-2022-only':
+            agentTypes = ['windows-2022']
+            break
+
+          case 'windows-2025-only':
+            agentTypes = ['windows-2025']
+            break
+
+          default:
+            echo "INFO: No label consensus for conditional builds"
+        }
+      }
+
       // Packer Images stage - Matrix implementation
       def matrixAxes = [
         cpu_architecture: ['amd64', 'arm64'],
-        agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025'],
+        agent_type: agentTypes,
         compute_type: ['amazon-ebs', 'azure-arm', 'docker']
       ]
 
