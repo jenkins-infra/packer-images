@@ -28,6 +28,9 @@ for label in ${labels}; do
 	ubuntu)
 		has_ubuntu=true
 		;;
+	windows)
+		has_windows=true
+		;;
 	windows-2019)
 		has_windows=true
 		has_windows_2019=true
