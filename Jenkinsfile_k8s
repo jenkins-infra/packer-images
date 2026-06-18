@@ -83,8 +83,8 @@ node('linux-arm64-docker') {
       def agentTypes = ['ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025']
 
       // Apply PR label filtering
-      if (env.CHANGE_ID && prAgentFilter != null) {
-        switch (prAgentFilter) {
+      if (env.CHANGE_ID && conditionalBuild != null) {
+        switch (conditionalBuild) {
           case 'ubuntu-only':
             agentTypes = ['ubuntu-22.04']
             break
