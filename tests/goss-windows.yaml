@@ -64,6 +64,7 @@ command:
     exit-status: 0
     stdout:
       - /7.*6.*3/
+  # Note: kept here as in Linux the binary name is `python3`
   python3:
     exec: python --version
     exit-status: 0
