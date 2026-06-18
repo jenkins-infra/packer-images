@@ -229,16 +229,22 @@ function install_golangcilint(){
     tar --extract --gunzip --strip-components=1 --directory="/usr/local/bin/" "golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}/golangci-lint"
 }
 
+## Install jq from the official GitHub release (single source, OS-independent)
+function install_jq(){
+  # JQ_VERSION is an env var provided outside of the script
+  # shellcheck disable=SC2153
+  jq_download_url="https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-${ARCHITECTURE}"
+  curl --fail --silent --show-error --location --output /usr/local/bin/jq "${jq_download_url}"
+  chmod a+x /usr/local/bin/jq
+}
+
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
   apt-get update --quiet
-  # JQ_VERSION is an env var provided outside of the script
-  # shellcheck disable=SC2153
   apt-get install --yes --no-install-recommends \
     make \
     unzip \
     zip \
-    jq="${JQ_VERSION}*" `# This package exists for both intel and ARM on Ubuntu 20.04. Fix version to ensure constant behavior.` \
     parallel
 }
 
@@ -683,6 +689,7 @@ function main() {
   install_azurecli
   install_gh
   install_golang
+  install_jq
   install_golangcilint # must come after golang
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"
