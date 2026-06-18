@@ -57,8 +57,13 @@ build {
   }
 
   provisioner "breakpoint" {
-    note    = "Enable this breakpoint to pause before trying to run goss tests"
+    note    = "Enable this breakpoint to pause before trying to run ansible tests"
     disable = true
+  }
+
+  provisioner "ansible" {
+    playbook_file = "tests/ansible/playbook.yml"
+    extra_arguments         = ["--skip-tags", "windows_only"]
   }
 
   provisioner "shell" {
