@@ -273,11 +273,15 @@ function install_python() {
   make
   make install
   cd ..
+  # cleanup
   rm -rf python-src python-src.tgz
-
-  python3 -m venv /opt/venv
-  . /opt/venv/bin/activate
-  pip install --upgrade pip
+  apt-get remove --purge \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    zlib1g-dev \
+    libmpdec-dev
+  apt-get autoremove
 }
 
 ## Install git and git-lfs
