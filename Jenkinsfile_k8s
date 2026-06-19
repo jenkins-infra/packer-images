@@ -17,7 +17,6 @@ if (env.CHANGE_ID) {
     disableConcurrentBuilds(abortPrevious: true)
   ])
 
-  // TODO: set up lightwieght build from PR labels
   lightweightMatrix = true
 }
 
@@ -68,10 +67,35 @@ node('linux-arm64-docker') {
         }
       }
 
+      // Conditional build depending on pull request labels
+      // If there is only one type of Windows version label, build only that one
+      // If there is more than one or "windows" label, build all Windows type
+      // If there is only one "ubuntu-*" or "linux" label, build only Ubuntu
+      // If there is none of these labels or a mix or Windows and Linux/Ubuntu labels, build all
+      def agentTypes = []
+      def agentTypeFamilies = [
+        'linux': ['ubuntu-22.04'],
+        'windows': ['windows-2019', 'windows-2022', 'windows-2025'],
+      ]
+
+      if (env.CHANGE_ID) {
+        pullRequest.labels.each {
+          if (it.startsWith('ubuntu-') || it.startsWith('windows-')) {
+            agentTypes.add(it)
+          }
+          if (it == 'linux' || it == 'windows') {
+            agentTypes += agentTypeFamilies[it]
+          }
+        }
+      } else {
+        agentTypes += agentTypeFamilies['linux']
+        agentTypes += agentTypeFamilies['windows']
+      }
+
       // Packer Images stage - Matrix implementation
       def matrixAxes = [
         cpu_architecture: ['amd64', 'arm64'],
-        agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025'],
+        agent_type: agentTypes,
         compute_type: ['amazon-ebs', 'azure-arm', 'docker']
       ]
 

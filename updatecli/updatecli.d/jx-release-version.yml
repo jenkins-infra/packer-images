@@ -54,3 +54,5 @@ actions:
       labels:
         - enhancement
         - jx-release-version
+        - linux
+        - windows

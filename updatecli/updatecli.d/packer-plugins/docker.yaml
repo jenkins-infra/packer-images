@@ -48,3 +48,4 @@ actions:
       labels:
         - dependencies
         - packer-docker-plugin
+        - linux

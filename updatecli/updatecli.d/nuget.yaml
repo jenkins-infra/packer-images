@@ -47,3 +47,4 @@ actions:
       labels:
         - dependencies
         - nuget
+        - windows

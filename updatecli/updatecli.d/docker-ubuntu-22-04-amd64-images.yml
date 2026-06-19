@@ -42,3 +42,5 @@ actions:
       description: "Follow up docker images for ubuntu 22_04 amd64"
       labels:
         - enhancement
+        - ubuntu
+        - linux

@@ -54,3 +54,5 @@ actions:
       labels:
         - enhancement
         - container-structure-test
+        - linux
+        - windows

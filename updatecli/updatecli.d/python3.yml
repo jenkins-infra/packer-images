@@ -58,3 +58,4 @@ actions:
       labels:
         - enhancement
         - python3
+        - windows
