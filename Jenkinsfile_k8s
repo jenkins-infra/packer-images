@@ -71,11 +71,7 @@ node('linux-arm64-docker') {
       ]
 
       if (env.CHANGE_ID) {
-        if (!pullRequest.labels) {
-          echo 'At least one label required on pull requests'
-          currentBuild.result = 'UNSTABLE'
-          return
-        }
+        def noLabel = true
         pullRequest.labels.each {
           if (it.startsWith('ubuntu-') || it.startsWith('windows-')) {
             agentTypes.add(it)
@@ -83,6 +79,12 @@ node('linux-arm64-docker') {
           if (it == 'linux' || it == 'windows') {
             agentTypes += agentTypeFamilies[it]
           }
+          noLabel = false
+        }
+        if (noLabel) {
+          echo 'At least one label required on pull requests'
+          currentBuild.result = 'UNSTABLE'
+          return
         }
       } else {
         agentTypes += agentTypeFamilies['linux']
