@@ -37,5 +37,5 @@ actions:
       labels:
         - enhancement
         - datadog
-        - ubuntu
+        - linux
         - windows

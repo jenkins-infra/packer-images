@@ -53,5 +53,5 @@ actions:
       labels:
         - enhancement
         - docker-compose
-        - ubuntu
+        - linux
         - windows

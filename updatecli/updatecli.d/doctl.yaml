@@ -50,5 +50,5 @@ actions:
     spec:
       labels:
         - enhancement
-        - DOCTL
-        - ubuntu
+        - doctl
+        - linux

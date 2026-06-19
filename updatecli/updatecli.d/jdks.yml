@@ -135,5 +135,7 @@ actions:
       labels:
         - enhancement
         - jdk{{ $major }}
+        - linux
+        - windows
 ...
 {{ end }}

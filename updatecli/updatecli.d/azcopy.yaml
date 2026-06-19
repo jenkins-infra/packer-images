@@ -63,4 +63,4 @@ actions:
       labels:
         - enhancement
         - azcopy
-        - ubuntu
+        - linux

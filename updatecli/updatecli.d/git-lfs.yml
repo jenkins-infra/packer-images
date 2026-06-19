@@ -53,5 +53,5 @@ actions:
       labels:
         - enhancement
         - git-lfs
-        - ubuntu
+        - linux
         - windows

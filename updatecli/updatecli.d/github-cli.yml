@@ -55,5 +55,5 @@ actions:
         - enhancement
         - gh
         - github-cli
-        - ubuntu
+        - linux
         - windows

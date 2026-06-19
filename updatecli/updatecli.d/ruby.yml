@@ -87,3 +87,5 @@ actions:
       labels:
         - enhancement
         - ruby
+        - linux
+        - windows

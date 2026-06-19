@@ -61,5 +61,5 @@ actions:
       labels:
         - enhancement
         - awscli
+        - linux
         - windows
-        - ubuntu

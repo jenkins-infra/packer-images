@@ -43,3 +43,5 @@ actions:
       labels:
         - enhancement
         - remoting
+        - linux
+        - windows

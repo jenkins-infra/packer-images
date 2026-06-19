@@ -48,3 +48,5 @@ actions:
       labels:
         - dependencies
         - packer-amazon-plugin
+        - linux
+        - windows

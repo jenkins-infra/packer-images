@@ -61,3 +61,5 @@ actions:
       labels:
         - enhancement
         - yq
+        - linux
+        - windows

@@ -48,3 +48,5 @@ actions:
       labels:
         - dependencies
         - packer-azure-plugin
+        - linux
+        - windows

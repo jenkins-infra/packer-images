@@ -54,5 +54,5 @@ actions:
       labels:
         - enhancement
         - azure-cli
-        - ubuntu
+        - linux
         - windows

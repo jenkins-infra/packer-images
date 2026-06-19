@@ -75,3 +75,4 @@ actions:
         - enhancement
         - pwsh
         - powershell-core
+        - windows

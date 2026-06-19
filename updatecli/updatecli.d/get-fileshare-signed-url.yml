@@ -37,4 +37,4 @@ actions:
       labels:
         - enhancement
         - get-fileshare-signed-url
-        - ubuntu
+        - linux

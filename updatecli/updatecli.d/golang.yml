@@ -55,4 +55,4 @@ actions:
       labels:
         - dependency
         - golang
-        - ubuntu
+        - linux

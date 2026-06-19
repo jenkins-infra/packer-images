@@ -66,3 +66,5 @@ actions:
       labels:
         - enhancement
         - jq
+        - linux
+        - windows

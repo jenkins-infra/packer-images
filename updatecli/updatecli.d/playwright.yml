@@ -52,3 +52,5 @@ actions:
       labels:
         - enhancement
         - playwright
+        - linux
+        - windows
