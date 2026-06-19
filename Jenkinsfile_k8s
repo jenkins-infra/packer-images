@@ -10,7 +10,6 @@ if (env.BRANCH_IS_PRIMARY) {
 }
 
 def lightweightMatrix = false
-def conditionalBuild
 
 if (env.CHANGE_ID) {
   properties([
