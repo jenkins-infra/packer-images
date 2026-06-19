@@ -57,8 +57,6 @@ def withPackerNode(String packer_template, String compute_type, String cpu_archi
 node('linux-arm64-docker') {
   withEnv(["PATH=${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin"]) {
     timeout(time: 150, unit: 'MINUTES') {
-      def agentTypes = ['ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025']
-
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       def GIT_COMMIT = checkout(scm).GIT_COMMIT
 
@@ -70,44 +68,20 @@ node('linux-arm64-docker') {
         }
       }
 
-      stage('Determine conditional build from PR labels') {
-        if (env.CHANGE_ID) {
-          withCredentials([usernamePassword(credentialsId: 'github-app-infra',usernameVariable: 'UNUSED',passwordVariable: 'GITHUB_TOKEN')]) {
-            conditionalBuild = sh(
-              script: '''
-                set -euo pipefail
-                ./scripts/conditional-build.sh
-              ''',
-              returnStdout: true
-            ).trim()
+      // Conditional build depending on pull request labels
+      def agentTypes = []
+      def agentTypeFamilies = [
+        'ubuntu': ['ubuntu-22.04'],
+        'windows': ['windows-2019', 'windows-2022', 'windows-2025'],
+      ]
 
-            echo "conditionalBuild result: ${conditionalBuild}"
-            if (env.CHANGE_ID && conditionalBuild != null) {
-              switch (conditionalBuild) {
-                case 'ubuntu-only':
-                  agentTypes = ['ubuntu-22.04']
-                  break
-
-                case 'windows-only':
-                  agentTypes = ['windows-2019', 'windows-2022', 'windows-2025']
-                  break
-
-                case 'windows-2019-only':
-                  agentTypes = ['windows-2019']
-                  break
-
-                case 'windows-2022-only':
-                  agentTypes = ['windows-2022']
-                  break
-
-                case 'windows-2025-only':
-                  agentTypes = ['windows-2025']
-                  break
-
-                default:
-                  echo "INFO: No label consensus for conditional builds"
-              }
-            }
+      if (env.CHANGE_ID) {
+        pullRequest.labels.each {
+          if (it.startsWith('windows-') || it.startsWith('ubuntu-')) {
+            agentTypes.add(it)
+          }
+          if (it == 'windows' || it == 'ubuntu') {
+            agentTypes += agentTypeFamilies[it]
           }
         }
       }
