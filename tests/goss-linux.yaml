@@ -93,6 +93,9 @@ command:
   python3:
     exec: python3 --version
     exit-status: 0
+    # TODO: track with updatecli
+    stdout:
+      - 3.14.6
   rsync:
     exec: rsync --version
     exit-status: 0
