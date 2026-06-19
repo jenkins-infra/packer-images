@@ -80,13 +80,16 @@ node('linux-arm64-docker') {
 
       if (env.CHANGE_ID) {
         pullRequest.labels.each {
-          if (it.startsWith('windows-') || it.startsWith('ubuntu-')) {
+          if (it.startsWith('ubuntu-') || it.startsWith('windows-')) {
             agentTypes.add(it)
           }
-          if (it == 'windows' || it == 'linux') {
+          if (it == 'linux' || it == 'windows') {
             agentTypes += agentTypeFamilies[it]
           }
         }
+      } else {
+        agentTypes += agentTypeFamilies['linux']
+        agentTypes += agentTypeFamilies['windows']
       }
 
       // Packer Images stage - Matrix implementation
