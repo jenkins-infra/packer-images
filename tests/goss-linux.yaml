@@ -116,7 +116,6 @@ command:
   ssh_agent:
     exec: command -v ssh-agent
     exit-status: 0
-  # TODO track with updatecli
   typos:
     exec: typos --version
     exit-status: 0
