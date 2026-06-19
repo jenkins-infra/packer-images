@@ -3,7 +3,7 @@ local "common_goss_args" {
 }
 
 locals {
-  is_pullrequest = var.change_id != ""
+  is_pullrequest = var.build_type == "dev"
 }
 
 build {
