@@ -18,6 +18,11 @@ if (env.CHANGE_ID) {
   ])
 
   lightweightMatrix = true
+
+  if (!pullRequest.labels) {
+    currentBuild.result = 'UNSTABLE'
+    exit 'At least one label required on pull requests'
+  }
 }
 
 // Initialize the packer project by installing the plugins in $PACKER_HOME_DIR/ - ref. https://www.packer.io/docs/configure
@@ -79,10 +84,6 @@ node('linux-arm64-docker') {
       ]
 
       if (env.CHANGE_ID) {
-        if (!pullRequest.labels) {
-          currentBuild.result = 'UNSTABLE'
-          exit 'At least one label required on pull requests'
-        }
         pullRequest.labels.each {
           if (it.startsWith('ubuntu-') || it.startsWith('windows-')) {
             agentTypes.add(it)
