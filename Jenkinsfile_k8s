@@ -59,14 +59,6 @@ node('linux-arm64-docker') {
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       def GIT_COMMIT = checkout(scm).GIT_COMMIT
 
-      // Side Tasks stage
-      withEnv(["DRYRUN=${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"]) {
-        stage('Packer Init') {
-          // Call the initializing function once for the default agent
-          packerInitPlugins()
-        }
-      }
-
       // Conditional build depending on pull request labels
       // If there is only one type of Windows version label, build only that one
       // If there is more than one or "windows" label, build all Windows type
@@ -80,8 +72,9 @@ node('linux-arm64-docker') {
 
       if (env.CHANGE_ID) {
         if (!pullRequest.labels) {
+          echo 'At least one label required on pull requests'
           currentBuild.result = 'UNSTABLE'
-          exit 'At least one label required on pull requests'
+          return
         }
         pullRequest.labels.each {
           if (it.startsWith('ubuntu-') || it.startsWith('windows-')) {
@@ -104,6 +97,14 @@ node('linux-arm64-docker') {
       ]
 
       def matrixBranches = [:]
+
+      // Side Tasks stage
+      withEnv(["DRYRUN=${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"]) {
+        stage('Packer Init') {
+          // Call the initializing function once for the default agent
+          packerInitPlugins()
+        }
+      }
 
       matrixAxes.cpu_architecture.each { cpu_architecture ->
         matrixAxes.agent_type.each { agent_type ->
