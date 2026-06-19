@@ -90,10 +90,16 @@ command:
   parallel:
     exec: parallel --version
     exit-status: 0
-  python3:
+  # Python3 installed from Ubuntu/debian package
+  python3package:
     exec: python3 --version
     exit-status: 0
-    # TODO: track with updatecli
+    stdout:
+      - "3.10"
+  # Python3 installed from source
+  python3:
+    exec: /usr/local/bin/python3.14 --version
+    exit-status: 0
     stdout:
       - 3.14.6
   rsync:
