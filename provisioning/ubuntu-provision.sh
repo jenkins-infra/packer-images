@@ -275,13 +275,12 @@ function install_python() {
   cd ..
   # cleanup
   rm -rf python-src python-src.tgz
-  apt-get remove --purge \
+  apt-get remove --purge --yes \
     build-essential \
     pkg-config \
     libssl-dev \
     zlib1g-dev \
     libmpdec-dev
-  apt-get autoremove
 }
 
 ## Install git and git-lfs
