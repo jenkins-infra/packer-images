@@ -71,11 +71,11 @@ node('linux-arm64-docker') {
       // Conditional build depending on pull request labels
       // If there is only one type of Windows version label, build only that one
       // If there is more than one or "windows" label, build all Windows type
-      // If there is only one "ubuntu" or "ubuntu-*" label, build only Ubuntu
-      // If there is none of these labels or a mix or Windows and Ubuntu labels, build all
+      // If there is only one "ubuntu-*" or "linux" label, build only Ubuntu
+      // If there is none of these labels or a mix or Windows and Linux/Ubuntu labels, build all
       def agentTypes = []
       def agentTypeFamilies = [
-        'ubuntu': ['ubuntu-22.04'],
+        'linux': ['ubuntu-22.04'],
         'windows': ['windows-2019', 'windows-2022', 'windows-2025'],
       ]
 
@@ -84,7 +84,7 @@ node('linux-arm64-docker') {
           if (it.startsWith('windows-') || it.startsWith('ubuntu-')) {
             agentTypes.add(it)
           }
-          if (it == 'windows' || it == 'ubuntu') {
+          if (it == 'windows' || it == 'linux') {
             agentTypes += agentTypeFamilies[it]
           }
         }
