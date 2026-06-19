@@ -81,6 +81,7 @@ node('linux-arm64-docker') {
           }
           noLabel = false
         }
+        // Mark the build as unstable and exit early if the pull request doesn't have any label
         if (noLabel) {
           echo 'At least one label required on pull requests'
           currentBuild.result = 'UNSTABLE'
