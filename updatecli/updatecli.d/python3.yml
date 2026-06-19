@@ -1,5 +1,5 @@
 ---
-name: Bump python3 version for windows
+name: Bump python3 version
 
 scms:
   default:
@@ -23,16 +23,22 @@ sources:
         - name: PATH
 
 conditions:
-  ## Only check for chocolatey package
+  # Check for chocolatey package
   checkForChocolateyPackage:
     kind: shell
-    disablesourceinput: true # Do not pass source as argument to the command line
+    disablesourceinput: true  # Do not pass source as argument to the command line
     spec:
       command: curl https://community.chocolatey.org/packages/python3/{{ source "lastReleaseVersion" }} --silent --show-error --location --fail | grep 'Package Approved'
+  # Check if the Python source tarball exists on python.org
+  checkPythonSourceAvailable:
+    kind: shell
+    disablesourceinput: true
+    spec:
+      command: curl --silent --show-error --fail --head https://www.python.org/ftp/python/{{ source "lastReleaseVersion" }}/Python-{{ source "lastReleaseVersion" }}.tgz
 
 targets:
   updateVersion:
-    name: "Update the python3 version in the tools-versions.yml file"
+    name: Update `python3` version in the tools-versions.yml file
     sourceid: lastReleaseVersion
     kind: yaml
     spec:
@@ -40,22 +46,24 @@ targets:
       key: "$.python3_version"
     scmid: default
   updatePackerVersionInGoss:
-    name: Update the `python3` version in the goss test
+    name: Update `python3` version in goss tests
     kind: yaml
     spec:
       engine: "yamlpath"
       files:
-        - "tests/goss-windows.yaml" #fixed only on windows
+        - tests/goss-linux.yaml
+        - tests/goss-windows.yaml
       key: $.command.python3.stdout[0]
     scmid: default
 
 actions:
   default:
     kind: github/pullrequest
-    title: Bump python3 version to {{ source "lastReleaseVersion" }}
+    title: Bump `python3` version to {{ source "lastReleaseVersion" }}
     scmid: default
     spec:
       labels:
         - enhancement
         - python3
+        - linux
         - windows
