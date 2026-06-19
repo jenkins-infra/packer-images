@@ -54,3 +54,4 @@ actions:
       labels:
         - enhancement
         - helm
+        - linux

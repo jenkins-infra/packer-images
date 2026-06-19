@@ -17,7 +17,6 @@ if (env.CHANGE_ID) {
     disableConcurrentBuilds(abortPrevious: true)
   ])
 
-  // TODO: set up lightwieght build from PR labels
   lightweightMatrix = true
 }
 
@@ -60,6 +59,48 @@ node('linux-arm64-docker') {
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
       def GIT_COMMIT = checkout(scm).GIT_COMMIT
 
+      // Conditional build depending on pull request labels
+      // If there is only one type of Windows version label, build only that one
+      // If there is more than one or "windows" label, build all Windows type
+      // If there is only one "ubuntu-*" or "linux" label, build only Ubuntu
+      // If there is none of these labels or a mix or Windows and Linux/Ubuntu labels, build all
+      def agentTypes = []
+      def agentTypeFamilies = [
+        'linux': ['ubuntu-22.04'],
+        'windows': ['windows-2019', 'windows-2022', 'windows-2025'],
+      ]
+
+      if (env.CHANGE_ID) {
+        def noLabel = true
+        pullRequest.labels.each {
+          if (it.startsWith('ubuntu-') || it.startsWith('windows-')) {
+            agentTypes.add(it)
+          }
+          if (it == 'linux' || it == 'windows') {
+            agentTypes += agentTypeFamilies[it]
+          }
+          noLabel = false
+        }
+        // Mark the build as unstable and exit early if the pull request doesn't have any label
+        if (noLabel) {
+          echo 'At least one label required on pull requests'
+          currentBuild.result = 'UNSTABLE'
+          return
+        }
+      } else {
+        agentTypes += agentTypeFamilies['linux']
+        agentTypes += agentTypeFamilies['windows']
+      }
+
+      // Packer Images stage - Matrix implementation
+      def matrixAxes = [
+        cpu_architecture: ['amd64', 'arm64'],
+        agent_type: agentTypes,
+        compute_type: ['amazon-ebs', 'azure-arm', 'docker']
+      ]
+
+      def matrixBranches = [:]
+
       // Side Tasks stage
       withEnv(["DRYRUN=${env.BRANCH_IS_PRIMARY ? 'false' : 'true'}"]) {
         stage('Packer Init') {
@@ -67,15 +108,6 @@ node('linux-arm64-docker') {
           packerInitPlugins()
         }
       }
-
-      // Packer Images stage - Matrix implementation
-      def matrixAxes = [
-        cpu_architecture: ['amd64', 'arm64'],
-        agent_type: ['ubuntu-22.04', 'windows-2019', 'windows-2022', 'windows-2025'],
-        compute_type: ['amazon-ebs', 'azure-arm', 'docker']
-      ]
-
-      def matrixBranches = [:]
 
       matrixAxes.cpu_architecture.each { cpu_architecture ->
         matrixAxes.agent_type.each { agent_type ->

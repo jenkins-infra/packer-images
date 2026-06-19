@@ -47,7 +47,10 @@ targets:
     scmid: default
   updateJQVersionInGoss:
     name: Update the `jq` version in the goss test
+    sourceid: lastReleaseVersion
     kind: yaml
+    transformers:
+      - addprefix: "jq-"
     spec:
       files:
         - tests/goss-common.yaml
@@ -63,3 +66,5 @@ actions:
       labels:
         - enhancement
         - jq
+        - linux
+        - windows

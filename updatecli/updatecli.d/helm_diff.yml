@@ -57,3 +57,5 @@ actions:
       labels:
         - enhancement
         - helm-diff
+        - linux
+        - windows

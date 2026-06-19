@@ -69,3 +69,4 @@ actions:
       labels:
         - enhancement
         - nodejs
+        - windows

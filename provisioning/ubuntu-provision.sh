@@ -265,12 +265,28 @@ function install_qemu() {
 function install_python() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
-    python3 \
-    python3-docker \
-    python3-pip \
-    python3-venv \
-    python3-wheel
-  python3 -m pip install --no-cache-dir pip --upgrade
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    zlib1g-dev \
+    libmpdec-dev
+  mkdir python-src
+  python3_source_download_url="https://www.python.org/ftp/python/${PYTHON3_VERSION}/Python-${PYTHON3_VERSION}.tgz"
+  curl --fail --silent --show-error "${python3_source_download_url}" --output python-src.tgz
+  tar xzf python-src.tgz --strip-components=1 -C python-src
+  cd python-src
+  ./configure
+  make
+  make install
+  cd ..
+  # cleanup
+  rm -rf python-src python-src.tgz
+  apt-get remove --purge --yes \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    zlib1g-dev \
+    libmpdec-dev
 }
 
 ## Install git and git-lfs

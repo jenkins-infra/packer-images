@@ -1,13 +1,13 @@
 # if manually change, please update the goss file accordingly
 asdf_version: 0.15.0
-awscli_version: 2.35.7
+awscli_version: 2.35.8
 azcopy_version: 10.32.4
 azurecli_version: 2.87.0
 chocolatey_version: 1.4.0
 compose_version: 5.1.4
 cst_version: 1.22.1
 docker_buildx_version: 0.35.0
-docker_version: 29.5.3
+docker_version: 29.6.0
 doctl_version: 1.162.0
 gh_version: 2.95.0
 git_lfs_version: 3.7.1
@@ -46,4 +46,4 @@ vs_buildtools_version_legacy: 16
 vs_buildtools_version: stable
 windows_pwsh_version: 7.6.3
 xq_version: 1.2.3
-yq_version: 4.53.2
+yq_version: 4.53.3

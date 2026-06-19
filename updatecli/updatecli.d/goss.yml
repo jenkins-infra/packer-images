@@ -53,3 +53,5 @@ actions:
       labels:
         - enhancement
         - goss
+        - linux
+        - windows

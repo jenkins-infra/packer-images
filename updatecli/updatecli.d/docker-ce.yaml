@@ -56,3 +56,5 @@ actions:
       labels:
         - enhancement
         - docker-ce
+        - linux
+        - windows

@@ -54,3 +54,5 @@ actions:
       labels:
         - enhancement
         - updatecli
+        - linux
+        - windows

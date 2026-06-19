@@ -57,3 +57,5 @@ actions:
       labels:
         - enhancement
         - maven
+        - linux
+        - windows

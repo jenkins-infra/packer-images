@@ -54,3 +54,5 @@ actions:
       labels:
         - dependencies
         - kubectl
+        - linux
+        - windows
