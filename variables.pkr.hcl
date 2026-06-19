@@ -65,3 +65,7 @@ variable "locale" {
   type    = string
   default = "en_US.UTF-8"
 }
+variable "change_id" {
+  type    = string
+  default = env("CHANGE_ID")
+}

@@ -2,6 +2,10 @@ local "common_goss_args" {
   expression = "--use-alpha=1 --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s --format documentation"
 }
 
+locals {
+  is_pullrequest = var.change_id != ""
+}
+
 build {
   source "amazon-ebs.base" {
     name           = "windows"
@@ -37,9 +41,19 @@ build {
 
   ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
   # Note that restarts are only done when required by windows updates
-  provisioner "windows-update" { pause_before = "1m" }
-  provisioner "windows-update" { pause_before = "1m" }
-  provisioner "windows-update" { pause_before = "1m" }
+  # Note: skipped on pull requests
+  provisioner "windows-update" {
+    only         = local.is_pullrequest ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
+    pause_before = "1m"
+  }
+  provisioner "windows-update" {
+    only         = local.is_pullrequest ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
+    pause_before = "1m"
+  }
+  provisioner "windows-update" {
+    only         = local.is_pullrequest ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
+    pause_before = "1m"
+  }
 
   # Installing Docker requires a restart: this first call to the installation script will prepare requirements
   provisioner "powershell" {
@@ -139,8 +153,9 @@ build {
   #}
 
   # This provisioner must be the last for Azure builds, after reboots
+  # Note: skipped on pull requests
   provisioner "powershell" {
-    only              = ["azure-arm.windows"]
+    only              = local.is_pullrequest ? [] : ["azure-arm.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
     inline = [
@@ -150,8 +165,9 @@ build {
   }
 
   # This provisioner must be the last for AWS EBS builds, after reboots
+  # Note: skipped on pull requests
   provisioner "powershell" {
-    only              = ["amazon-ebs.windows"]
+    only              = local.is_pullrequest ? [] : ["amazon-ebs.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
 
