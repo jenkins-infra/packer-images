@@ -6,7 +6,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.35.8
+      - 2.35.11
   azurecli:
     exec: az --version
     exit-status: 0
@@ -37,7 +37,7 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 5.1.4
+      - 5.2.0
   gh_cli:
     exec: gh --version
     exit-status: 0
@@ -68,7 +68,7 @@ command:
     exec: jx-release-version -version
     exit-status: 0
     stdout:
-      - 2.9.3
+      - 2.9.6
   kubectl:
     exec: kubectl version --client
     exit-status: 0
@@ -100,7 +100,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.61.0
+      - 1.61.1
   playwright-chromium-cache:
     exec: playwright install --list
     exit-status: 0
@@ -112,7 +112,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 1.15.6
+      - 1.15.7
   updatecli:
     exec: updatecli version
     exit-status: 0

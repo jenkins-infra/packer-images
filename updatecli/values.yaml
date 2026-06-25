@@ -16,7 +16,10 @@ jdks:
 windowsVersions:
   - version: 2019
     awsDescription: Microsoft Windows Server 2019 Core with EC2LaunchV2\, English locale AMI provided by Amazon
+    azureOffer: WindowsServer
   - version: 2022
     awsDescription: Microsoft Windows Server 2022 Core Locale English AMI provided by Amazon
+    azureOffer: windowsserver2022
   - version: 2025
     awsDescription: Microsoft Windows Server 2025 Core Locale English AMI provided by Amazon
+    azureOffer: WindowsServer

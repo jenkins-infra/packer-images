@@ -264,12 +264,21 @@ function install_qemu() {
 ## Install Python 3
 function install_python() {
   apt-get update --quiet
+  # python3-* required for python installed from Ubunbu/debian package
+  # TODO: check if we can use molecule in jenkinsci/packaging without (most of) them
   apt-get install --yes --no-install-recommends \
-    build-essential \
-    pkg-config \
-    libssl-dev \
-    zlib1g-dev \
-    libmpdec-dev
+	python3 \
+	python3-docker \
+    python3-pip \
+    python3-venv \
+    python3-wheel \
+	build-essential gdb lcov pkg-config \
+	libbz2-dev libffi-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
+	libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev \
+	lzma lzma-dev tk-dev uuid-dev zlib1g-dev libmpdec-dev libzstd-dev \
+	inetutils-inetd
+
+  python3 -m pip install --no-cache-dir pip --upgrade
   mkdir python-src
   python3_source_download_url="https://www.python.org/ftp/python/${PYTHON3_VERSION}/Python-${PYTHON3_VERSION}.tgz"
   curl --fail --silent --show-error "${python3_source_download_url}" --output python-src.tgz
@@ -277,16 +286,17 @@ function install_python() {
   cd python-src
   ./configure
   make
-  make install
+  # "altinstall" instead of "install" to avoid simlink of /usr/local/bin/python3.14 to /usr/local/bin/
+  make altinstall
   cd ..
   # cleanup
   rm -rf python-src python-src.tgz
   apt-get remove --purge --yes \
-    build-essential \
-    pkg-config \
-    libssl-dev \
-    zlib1g-dev \
-    libmpdec-dev
+	build-essential gdb lcov pkg-config \
+	libbz2-dev libffi-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
+	libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev \
+	lzma lzma-dev tk-dev uuid-dev zlib1g-dev libmpdec-dev libzstd-dev \
+	inetutils-inetd
 }
 
 ## Install git and git-lfs
