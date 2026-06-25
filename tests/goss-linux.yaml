@@ -1,6 +1,11 @@
 ---
 # Test Harness specific for all Linux hosts
 command:
+  ansible:
+    exec: . /usr/local/ansible-venv/bin/activate && ansible --version
+    exit-status: 0
+    stdout:
+      - core 2.21.0
   asdf:
     exec: asdf version
     exit-status: 0

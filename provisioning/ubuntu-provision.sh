@@ -35,6 +35,7 @@ groupid=1001
 install_dir=/usr/local/bin
 asdf_install_dir="${userhome}/.asdf"
 launchable_venv_dir="/usr/local/launchable"
+ansible_venv_dir="/usr/local/ansible-venv"
 
 ## This function checks a list of commands are working, and exits with code 1 if not
 function check_commands() {
@@ -655,6 +656,13 @@ function install_launchable() {
   ln -s "${launchable_venv_dir}/bin/launchable" /usr/local/bin/launchable
 }
 
+## Ensure ansible is installed
+function install_ansible() {
+  python3.14 -m venv "${ansible_venv_dir}"
+  . "${ansible_venv_dir}"/bin/activate
+  pip --require-virtualenv --no-cache-dir install ansible-core=="${ANSIBLE_CORE_VERSION}"
+}
+
 ## ensure yamllint is installed
 function install_yamllint() {
   apt-get update --quiet
@@ -707,6 +715,7 @@ function main() {
   install_azcopy
   install_doctl
   install_python
+  install_ansible
   install_docker_compose
   install_maven
   install_hadolint
