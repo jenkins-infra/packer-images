@@ -39,15 +39,15 @@ build {
   # Note that restarts are only done when required by windows updates
   # Note: skipped on pull requests
   provisioner "windows-update" {
-    only         = var.build_type != "dev" ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only         = var.build_type == "dev" ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
   provisioner "windows-update" {
-    only         = var.build_type != "dev" ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only         = var.build_type == "dev" ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
   provisioner "windows-update" {
-    only         = var.build_type != "dev" ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only         = var.build_type == "dev" ? [] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
 
@@ -151,7 +151,7 @@ build {
   # This provisioner must be the last for Azure builds, after reboots
   # Note: skipped on pull requests
   provisioner "powershell" {
-    only              = var.build_type != "dev" ? [] : ["azure-arm.windows"]
+    only              = var.build_type == "dev" ? [] : ["azure-arm.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
     inline = [
@@ -163,7 +163,7 @@ build {
   # This provisioner must be the last for AWS EBS builds, after reboots
   # Note: skipped on pull requests
   provisioner "powershell" {
-    only              = var.build_type != "dev" ? [] : ["amazon-ebs.windows"]
+    only              = var.build_type == "dev" ? [] : ["amazon-ebs.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
 
