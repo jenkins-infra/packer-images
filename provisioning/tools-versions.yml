@@ -24,7 +24,7 @@ helm_version: 3.19.1
 helmfile_version: 1.6.0
 jenkins_remoting_version: 3383.vc8881d4b_0e76
 jq_version: 1.6
-jxreleaseversion_version: 2.9.3
+jxreleaseversion_version: 2.9.6
 kubectl_version: 1.34.9
 launchable_version: 1.124.4
 maven_version: 3.9.16
