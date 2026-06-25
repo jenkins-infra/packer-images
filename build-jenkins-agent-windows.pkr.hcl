@@ -99,7 +99,10 @@ build {
 
   # Recommended (and sometimes required) before running deprovisioning (sysprep)
   # ref. https:#www.packer.io/docs/builders/azure/arm#windows
+  # Note: skipped on pull requests
   provisioner "windows-restart" {
+    # TODO: might be needed when reactivating Windows tests
+    only        = var.build_type == "dev" ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     max_retries = 3
     # Previous provisioner might restart
     pause_before = "1m"
