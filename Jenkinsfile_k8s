@@ -188,6 +188,15 @@ node('linux-arm64-docker') {
 
                       // Execute build only for this matrix cell's setup
                       retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
+                        sh '''
+                        if [[ ! -d /usr/local/ansible-venv ]]; then
+                          . /usr/local/ansible-venv/bin/activate
+                        else
+                          python3.14 -m venv /usr/local/ansible-venv
+                          . /usr/local/ansible-venv/bin/activate
+                          pip --require-virtualenv --no-cache-dir install ansible-core==2.21.0
+                        fi
+                        '''
                         sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
                         // adding manually a cpu architecture tag to the docker image
                         if (pkr_var_image_type == 'docker') {
