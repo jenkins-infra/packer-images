@@ -66,6 +66,9 @@ With the requirements verified locally, execute the following command:
 export PKR_VAR_image_type=docker
 export PKR_VAR_agent_os_type=ubuntu
 export PKR_VAR_agent_os_version=22.04
+export PKR_VAR_architecture="$(uname -m)"
+# Note: set it to "staging" to run all steps that are skipped on pull requests
+export PKR_VAR_build_type=dev
 ```
 
 * Validate the template:
