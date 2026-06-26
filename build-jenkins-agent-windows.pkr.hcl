@@ -2,11 +2,6 @@ local "common_goss_args" {
   expression = "--use-alpha=1 --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s --format documentation"
 }
 
-locals {
-  skip_on_pr = var.build_type == "dev"
-  skip_on_pr_except_for_2019 = var.build_type == "dev" && var.agent_os_version != "2019"
-}
-
 build {
   source "amazon-ebs.base" {
     name           = "windows"

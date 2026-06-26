@@ -1,9 +1,11 @@
 locals {
-  now_unix_timestamp    = formatdate("YYYYMMDDhhmmss", timestamp())
-  agent                 = format("%s-%s", var.agent_os_type, var.agent_os_version)
-  agent_os_version_safe = replace(var.agent_os_version, ".", "_")
-  image_name            = format("jenkins-agent-%s-%s-%s", var.agent_os_type, var.agent_os_version, var.architecture)
-  unique_image_name     = format("%s-%s", local.image_name, local.now_unix_timestamp)
+  now_unix_timestamp         = formatdate("YYYYMMDDhhmmss", timestamp())
+  agent                      = format("%s-%s", var.agent_os_type, var.agent_os_version)
+  agent_os_version_safe      = replace(var.agent_os_version, ".", "_")
+  image_name                 = format("jenkins-agent-%s-%s-%s", var.agent_os_type, var.agent_os_version, var.architecture)
+  unique_image_name          = format("%s-%s", local.image_name, local.now_unix_timestamp)
+  skip_on_pr                 = var.build_type == "dev"
+  skip_on_pr_except_for_2019 = var.build_type == "dev" && var.agent_os_version != "2019"
 
   aws_spot_instance_types = {
     # 4 vCPU x86 / 16 GB / $0.1504 - https://aws.amazon.com/fr/ec2/instance-types/t3/#Product_Details
