@@ -2,6 +2,11 @@ local "common_goss_args" {
   expression = "--use-alpha=1 --loglevel DEBUG validate --max-concurrent=1 --retry-timeout 60s --sleep 60s --format documentation"
 }
 
+locals {
+  skip_on_pr = var.build_type == "dev"
+  skip_on_pr_except_for_2019 = var.build_type == "dev" && var.agent_os_version != "2019"
+}
+
 build {
   source "amazon-ebs.base" {
     name           = "windows"
@@ -39,15 +44,15 @@ build {
   # Note that restarts are only done when required by windows updates
   # Note: skipped on pull requests
   provisioner "windows-update" {
-    only         = var.build_type == "dev" ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
   provisioner "windows-update" {
-    only         = var.build_type == "dev" ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
   provisioner "windows-update" {
-    only         = var.build_type == "dev" ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
 
@@ -102,7 +107,7 @@ build {
   # Note: skipped on pull requests
   provisioner "windows-restart" {
     # TODO: might be needed when reactivating Windows tests
-    only        = var.build_type == "dev" ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only        = local.skip_on_pr ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     max_retries = 3
     # Previous provisioner might restart
     pause_before = "1m"
@@ -154,7 +159,7 @@ build {
   # This provisioner must be the last for Azure builds, after reboots
   # Note: skipped on pull requests
   provisioner "powershell" {
-    only              = var.build_type == "dev" ? ["skipped-on-pr"] : ["azure-arm.windows"]
+    only              = local.skip_on_pr ? ["skipped-on-pr"] : ["azure-arm.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
     inline = [
@@ -166,7 +171,7 @@ build {
   # This provisioner must be the last for AWS EBS builds, after reboots
   # Note: skipped on pull requests
   provisioner "powershell" {
-    only              = var.build_type == "dev" ? ["skipped-on-pr"] : ["amazon-ebs.windows"]
+    only              = local.skip_on_pr ? ["skipped-on-pr"] : ["amazon-ebs.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
 
