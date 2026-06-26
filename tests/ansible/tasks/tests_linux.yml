@@ -2,6 +2,7 @@
 - name: source asdf
   ansible.builtin.command: . /home/jenkins/.asdf/asdf.sh
   changed_when: false
+  ignore_errors: true
 
 - name: Extract JDK versions from installer URLs
   ansible.builtin.set_fact:
