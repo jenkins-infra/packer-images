@@ -1,4 +1,8 @@
 ---
+- name: source asdf
+  ansible.builtin.command: . /home/jenkins/.asdf/asdf.sh
+  changed_when: false
+
 - name: Extract JDK versions from installer URLs
   ansible.builtin.set_fact:
     jdk8_version: "1.8.0_{{ ubuntu.amd64.jdk8.installer_url | regex_search('8u(\\d+)b', '\\1') | first }}"
