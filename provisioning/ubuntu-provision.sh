@@ -661,6 +661,7 @@ function install_ansible() {
   python3.14 -m venv "${ansible_venv_dir}"
   . "${ansible_venv_dir}"/bin/activate
   pip --require-virtualenv --no-cache-dir install ansible-core=="${ANSIBLE_CORE_VERSION}"
+  deactivate
 }
 
 ## ensure yamllint is installed
