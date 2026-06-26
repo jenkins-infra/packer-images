@@ -1,6 +1,7 @@
 ---
 - name: tests
   hosts: all
+  become: true
   gather_facts: false
   vars_files:
     - ../../provisioning/tools-versions.yml
