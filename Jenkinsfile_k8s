@@ -174,7 +174,7 @@ node('linux-arm64-docker') {
                   "PKR_VAR_architecture=${pkr_var_architecture}",
                   "PKR_VAR_image_type=${pkr_var_image_type}",
                   "PKR_VAR_azure_gallery_subscription_id=1e7d5219-acbc-4495-8629-bdbb22e9b3ed",
-                  "PATH=${WORKSPACE}/.bin:${env.PATH}"
+                  "PATH=${WORKSPACE}/.bin:${WORKSPACE}/.ansible/bin:${env.PATH}"
                 ]) {
                   withCredentials([
                     string(credentialsId: 'packer-aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
@@ -183,20 +183,18 @@ node('linux-arm64-docker') {
                     azureServicePrincipal(credentialsId: 'packer-azure-serviceprincipal')
                   ]) {
                     withPackerNode(pkr_var_agent_os_type + '-' + pkr_var_agent_os_version, pkr_var_image_type, pkr_var_architecture) {
-                      // Validate template (for all elements)
-                      sh 'packer validate ./'
+                      sh '''
+                      if [ ! -f "${WORKSPACE}/.ansible/bin/ansible-playbook" ]; then
+                        rm -rf "${WORKSPACE}/.ansible"
+                        python3 -m venv "${WORKSPACE}/.ansible"
+                        "${WORKSPACE}/.ansible/bin/pip" install --no-cache-dir ansible
+                      fi
+
+                      packer validate ./
+                      '''
 
                       // Execute build only for this matrix cell's setup
                       retry(count: 2, conditions: [kubernetesAgent(handleNonKubernetes: true), nonresumable()]) {
-                        sh '''
-                        if [[ ! -d /usr/local/ansible-venv ]]; then
-                          . /usr/local/ansible-venv/bin/activate
-                        else
-                          python3.14 -m venv /usr/local/ansible-venv
-                          . /usr/local/ansible-venv/bin/activate
-                          pip --require-virtualenv --no-cache-dir install ansible-core==2.21.0
-                        fi
-                        '''
                         sh 'packer build -timestamp-ui -force -only="${PKR_VAR_image_type}.${PKR_VAR_agent_os_type}" ./'
                         // adding manually a cpu architecture tag to the docker image
                         if (pkr_var_image_type == 'docker') {
