@@ -1,5 +1,5 @@
-# if manually change, please update the goss file accordingly
-ansible_core_version: 2.21.0  # TODO track with updatecli
+# TODO: track with updatecli
+ansible_core_version: 2.21.0
 asdf_version: 0.15.0
 awscli_version: 2.35.11
 azcopy_version: 10.32.4

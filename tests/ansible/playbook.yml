@@ -1,0 +1,20 @@
+---
+- name: tests
+  hosts: all
+  become: true
+  become_user: jenkins
+  gather_facts: false
+  vars_files:
+    - ../../provisioning/tools-versions.yml
+    - ../../jdks-infos.yaml
+
+  tasks:
+    - name: Import common tests
+      ansible.builtin.import_tasks: tasks/tests_common.yml
+
+    - name: Import Linux tests
+      ansible.builtin.import_tasks: tasks/tests_linux.yml
+      tags: [linux_only]
+      environment:
+        PATH: "/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin:{{ ansible_env.PATH }}"
+        ASDF_DIR: "/home/jenkins/.asdf"
