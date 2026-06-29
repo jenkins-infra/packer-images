@@ -2,6 +2,7 @@
 - name: tests
   hosts: all
   become: true
+  become_user: jenkins
   gather_facts: false
   vars_files:
     - ../../provisioning/tools-versions.yml
