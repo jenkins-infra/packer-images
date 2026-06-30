@@ -39,7 +39,7 @@ playwright_version: 1.61.1
 python3_version: 3.14.6
 ruby_puppet_version: 2.6.10
 ruby_version: 3.4.8
-sops_version: 3.13.1
+sops_version: 3.13.2
 terraform_version: 1.15.7
 typos_version: 1.33.1 # TODO track with updatecli
 updatecli_version: 0.118.0
