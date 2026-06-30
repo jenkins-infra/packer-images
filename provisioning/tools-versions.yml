@@ -1,19 +1,19 @@
 # if manually change, please update the goss file accordingly
-ansible_core_version: 2.21.0  # TODO track with updatecli
+ansible_core_version: 2.21.0 # TODO track with updatecli
 asdf_version: 0.15.0
-awscli_version: 2.35.11
+awscli_version: 2.35.12
 azcopy_version: 10.32.4
 azurecli_version: 2.87.0
 chocolatey_version: 1.4.0
 compose_version: 5.2.0
 cst_version: 1.22.1
 docker_buildx_version: 0.35.0
-docker_version: 29.6.0
+docker_version: 29.6.1
 doctl_version: 1.163.0
 gh_version: 2.95.0
 git_lfs_version: 3.7.1
 git_linux_version: 2.54.0
-git_windows_version: 2.54.0
+git_windows_version: 2.55.0
 golang_version: 1.26.4
 golangcilint_version: 2.12.2
 goss_version: 0.4.9
@@ -39,7 +39,7 @@ playwright_version: 1.61.1
 python3_version: 3.14.6
 ruby_puppet_version: 2.6.10
 ruby_version: 3.4.8
-sops_version: 3.13.1
+sops_version: 3.13.2
 terraform_version: 1.15.7
 typos_version: 1.33.1 # TODO track with updatecli
 updatecli_version: 0.118.0
