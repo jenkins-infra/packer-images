@@ -231,7 +231,6 @@ function install_golangcilint(){
 }
 
 ## Install jq from the official GitHub release (single source, OS-independent)
-## The binary is GPG-verified against the jq release signing key (committed under gpg-keys/)
 function install_jq(){
   local keyring_file jq_temp_download_dir jq_binary_file jq_sig_file
 
@@ -251,7 +250,6 @@ function install_jq(){
   curl --fail --silent --show-error --location --output "${jq_sig_file}" \
     "https://raw.githubusercontent.com/jqlang/jq/master/sig/v${JQ_VERSION}/${jq_sig_file}"
 
-  # jq signs the binary directly, so verify it against the release key
   gpgv --keyring="${keyring_file}" "${jq_sig_file}" "${jq_binary_file}"
 
   cp "${jq_binary_file}" /usr/local/bin/jq
