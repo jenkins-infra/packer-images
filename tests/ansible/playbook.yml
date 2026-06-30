@@ -3,7 +3,7 @@
   hosts: all
   become: true
   become_user: jenkins
-  gather_facts: false
+  gather_facts: true
   vars_files:
     - ../../provisioning/tools-versions.yml
     - ../../jdks-infos.yaml
