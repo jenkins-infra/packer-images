@@ -9,6 +9,7 @@
     - ../../jdks-infos.yaml
   vars:
     ansible_python_interpreter: /usr/local/bin/python3.14
+    ansible_remote_tmp: /tmp/.ansible
 
   tasks:
     - name: Import common tests
