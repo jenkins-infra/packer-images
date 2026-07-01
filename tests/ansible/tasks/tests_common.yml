@@ -14,7 +14,7 @@
   ignore_errors: true
 
 - name: Check bundle
-  ansible.builtin.command: bundle -v
+  ansible.builtin.command: /home/jenkins/.asdf/shims/bundle -v
   register: bundle_version_output
   changed_when: false
   failed_when: bundle_version_output.rc != 0
