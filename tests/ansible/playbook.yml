@@ -19,5 +19,5 @@
       ansible.builtin.import_tasks: tasks/tests_linux.yml
       tags: [linux_only]
       environment:
-        PATH: "/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin:{{ ansible_env.PATH }}"
+        PATH: "/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin:{{ ansible_facts['env']['PATH'] }}"
         ASDF_DIR: "/home/jenkins/.asdf"
