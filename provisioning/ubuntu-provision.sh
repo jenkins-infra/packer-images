@@ -717,6 +717,16 @@ function install_typos() {
   rm -rf /tmp/typos.tar.gz
 }
 
+function install_xmllint() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends libxml2-utils
+}
+
+function install_bc() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends bc
+}
+
 function main() {
   check_commands
   copy_custom_scripts
@@ -766,6 +776,8 @@ function main() {
   install_yamllint
   install_rngd
   install_typos
+  install_xmllint
+  install_bc
 
   echo "== Installed packages:"
   dpkg -l

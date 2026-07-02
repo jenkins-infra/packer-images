@@ -16,6 +16,9 @@ command:
     exit-status: 0
     stdout:
       - 10.32.4
+  bc:
+    exec: bc --version
+    exit-status: 0
   datadog-agent:
     exec: datadog-agent version
     exit-status: 0
@@ -142,6 +145,9 @@ command:
       - 1.2.3
   yamllint:
     exec: yamllint -v
+    exit-status: 0
+  xmllint:
+    exec: xmllint --version
     exit-status: 0
   zip:
     exec: zip -v
