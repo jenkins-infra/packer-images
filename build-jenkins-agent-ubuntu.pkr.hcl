@@ -3,11 +3,6 @@ build {
     name = "ubuntu"
   }
 
-  # Use this local source if you want to test Ansible against an existing docker image
-  source "docker.test" {
-    name = "local"
-  }
-
   source "amazon-ebs.base" {
     name         = "ubuntu"
     ssh_username = "ubuntu"
@@ -31,38 +26,32 @@ build {
   }
 
   provisioner "file" {
-    only        = ["docker.ubuntu", "amazon-ebs.ubuntu", "azure-arm.ubuntu"]
     source      = "./provisioning/add_auth_key_to_user.sh"
     destination = "/tmp/add_auth_key_to_user.sh"
   }
 
   provisioner "file" {
-    only        = ["docker.ubuntu", "amazon-ebs.ubuntu", "azure-arm.ubuntu"]
     source      = "./provisioning/get-fileshare-signed-url.sh"
     destination = "/tmp/get-fileshare-signed-url.sh"
   }
 
   provisioner "file" {
-    only        = ["docker.ubuntu", "amazon-ebs.ubuntu", "azure-arm.ubuntu"]
     source      = "./gpg-keys"
     destination = "/tmp/gpg-keys"
   }
 
   provisioner "shell" {
-    only             = ["docker.ubuntu", "amazon-ebs.ubuntu", "azure-arm.ubuntu"]
     environment_vars = local.provisioning_env_vars
     execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
   provisioner "file" {
-    only        = ["docker.ubuntu", "amazon-ebs.ubuntu", "azure-arm.ubuntu"]
     source      = "./tests/goss-linux.yaml"
     destination = "/tmp/goss-linux.yaml"
   }
 
   provisioner "file" {
-    only        = ["docker.ubuntu", "amazon-ebs.ubuntu", "azure-arm.ubuntu"]
     source      = "./tests/goss-common.yaml"
     destination = "/tmp/goss-common.yaml"
   }
@@ -79,7 +68,6 @@ build {
   }
 
   provisioner "shell" {
-    only             = ["docker.ubuntu", "amazon-ebs.ubuntu", "azure-arm.ubuntu"]
     execute_command  = "{{ .Vars }} sudo -E su - jenkins -c \"bash -eu '{{ .Path }}'\""
     environment_vars = local.provisioning_env_vars
     inline = [
