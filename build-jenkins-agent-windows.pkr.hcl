@@ -135,6 +135,12 @@ build {
     ]
   }
 
+  provisioner "ansible" {
+    playbook_file   = "tests/ansible/playbook.yml"
+    extra_arguments = ["--skip-tags", "linux_only"]
+    # ansible_env_vars = ["ANSIBLE_PIPELINING=true"] # to prevent "[WARNING]: sftp/scp transfer mechanism failed on [127.0.0.1]"
+  }
+
   #provisioner "powershell" {
   #  max_retries      = 2
   #  environment_vars = local.provisioning_env_vars
