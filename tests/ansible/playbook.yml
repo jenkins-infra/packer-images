@@ -12,8 +12,13 @@
     ansible_remote_tmp: /tmp/.ansible
 
   tasks:
+    - name: Import common tests (PoC)
+      ansible.builtin.import_tasks: tasks/tests_common_poc.yml
+      tags: [common_poc]
+
     - name: Import common tests
       ansible.builtin.import_tasks: tasks/tests_common.yml
+      tags: [linux_only]  # TODO: remove when Windows is confirmed working
 
     - name: Import Linux tests
       ansible.builtin.import_tasks: tasks/tests_linux.yml
