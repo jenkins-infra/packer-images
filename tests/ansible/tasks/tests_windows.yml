@@ -1,0 +1,7 @@
+---
+- name: Check nuget
+  ansible.builtin.command: nuget help
+  register: nuget_version_output
+  changed_when: false
+  failed_when: "nuget_version not in nuget_version_output.stdout"
+  ignore_errors: true
