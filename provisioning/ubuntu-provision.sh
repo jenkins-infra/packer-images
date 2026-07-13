@@ -382,9 +382,13 @@ function install_helm(){
     "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCHITECTURE}.tar.gz" | \
     tar --extract --gunzip --strip-components 1 --directory="${install_dir}"/ "linux-${ARCHITECTURE}/helm"
 
-  su - "${username}" -c "helm plugin install https://github.com/databus23/helm-diff --version v${HELM_DIFF_VERSION}"
-  su - "${username}" -c "helm plugin install https://github.com/jkroepke/helm-secrets --version v${HELM_SECRETS_VERSION}"
-  su - "${username}" -c "helm plugin install https://github.com/aslafy-z/helm-git.git --version v${HELM_GIT_VERSION}"
+  # Helm 4 verifies plugin signatures on install by default; these sources are unsigned so verification is skipped.
+  su - "${username}" -c "helm plugin install https://github.com/databus23/helm-diff --version v${HELM_DIFF_VERSION} --verify=false"
+  # Helm 4 dropped all-in-one plugins, so helm-secrets is split into three packages that must be installed from their release artifacts.
+  su - "${username}" -c "helm plugin install https://github.com/jkroepke/helm-secrets/releases/download/v${HELM_SECRETS_VERSION}/secrets-${HELM_SECRETS_VERSION}.tgz --verify=false"
+  su - "${username}" -c "helm plugin install https://github.com/jkroepke/helm-secrets/releases/download/v${HELM_SECRETS_VERSION}/secrets-getter-${HELM_SECRETS_VERSION}.tgz --verify=false"
+  su - "${username}" -c "helm plugin install https://github.com/jkroepke/helm-secrets/releases/download/v${HELM_SECRETS_VERSION}/secrets-post-renderer-${HELM_SECRETS_VERSION}.tgz --verify=false"
+  su - "${username}" -c "helm plugin install https://github.com/aslafy-z/helm-git.git --version v${HELM_GIT_VERSION} --verify=false"
 }
 
 ## Ensure that`helmfile` is installed
