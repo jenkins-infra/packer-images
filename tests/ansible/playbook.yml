@@ -1,5 +1,46 @@
 ---
-- name: tests
+# - name: tests
+#   hosts: all
+#   become: true
+#   become_user: jenkins
+#   gather_facts: true
+#   vars_files:
+#     - ../../provisioning/tools-versions.yml
+#     - ../../jdks-infos.yaml
+#   # vars:
+#   #   ansible_python_interpreter: /usr/local/bin/python3.14
+#   #   ansible_remote_tmp: /tmp/.ansible
+
+#   pre_tasks:
+#     - name: Set vars for Linux
+#       set_fact:
+#         ansible_python_interpreter: /usr/local/bin/python3.14
+#         ansible_remote_tmp: /tmp/.ansible
+#       when: ansible_facts['os_family'] != 'Windows'
+
+#     - name: Set vars for Windows
+#       set_fact:
+#         ansible_python_interpreter: C:\python.{{ python3_version }}\tools\python.exe
+#         ansible_remote_tmp: C:\Temp\.ansible
+#       when: ansible_facts['os_family'] == 'Windows'
+
+#   tasks:
+#     - name: Import common tests (PoC)
+#       ansible.builtin.import_tasks: tasks/tests_common_poc.yml
+#       tags: [common_poc]
+
+#     - name: Import common tests
+#       ansible.builtin.import_tasks: tasks/tests_common.yml
+#       tags: [linux_only]  # TODO: remove when Windows is confirmed working
+
+#     - name: Import Linux tests
+#       ansible.builtin.import_tasks: tasks/tests_linux.yml
+#       when: ansible_facts['os_family'] != 'Windows'
+#       environment:
+#         PATH: "/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin:{{ ansible_facts['env']['PATH'] }}"
+#         ASDF_DIR: "/home/jenkins/.asdf"
+
+- name: Linux tests
   hosts: all
   become: true
   become_user: jenkins
