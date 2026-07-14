@@ -2,7 +2,7 @@
 ansible_core_version: 2.21.0 # TODO track with updatecli
 asdf_version: 0.15.0
 awscli_version: 2.35.15
-azcopy_version: 10.32.4
+azcopy_version: 10.32.6
 azurecli_version: 2.87.0
 chocolatey_version: 1.4.0
 compose_version: 5.3.0
@@ -14,7 +14,7 @@ gh_version: 2.96.0
 git_lfs_version: 3.7.1
 git_linux_version: 2.54.0
 git_windows_version: 2.55.0
-golang_version: 1.26.4
+golang_version: 1.26.5
 golangcilint_version: 2.12.2
 goss_version: 0.4.9
 hadolint_version: 2.14.0
