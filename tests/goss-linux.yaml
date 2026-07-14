@@ -15,7 +15,7 @@ command:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.32.4
+      - 10.32.6
   bc:
     exec: bc --version
     exit-status: 0
