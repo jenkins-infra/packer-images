@@ -27,4 +27,4 @@ aws:
     "2022":
       amd64: ami-09253d36838fcb97a
     "2025":
-      amd64: ami-03b553281009b4bf2
+      amd64: ami-00fa2afb58e5a1319
