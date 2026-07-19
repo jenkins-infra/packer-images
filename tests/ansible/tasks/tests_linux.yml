@@ -1,0 +1,273 @@
+---
+- name: Debug PATH
+  ansible.builtin.command: echo $PATH
+  register: path_output
+
+- debug:
+    var: path_output.stdout
+
+# - name: Debug playwright install --list
+#   ansible.builtin.command: /opt/nodejs/bin/playwright install --list
+#   register: playwright_install_list
+
+# - debug:
+#     var: playwright_install_list.stdout
+
+# - name: source asdf
+#   ansible.builtin.command: source /home/jenkins/.asdf/asdf.sh
+#   changed_when: false
+#   ignore_errors: true
+
+- name: Extract JDK versions from installer URLs
+  ansible.builtin.set_fact:
+    jdk8_version: "1.8.0_{{ ubuntu.amd64.jdk8.installer_url | regex_search('8u(\\d+)b', '\\1') | first }}"
+    jdk11_version: "{{ ubuntu.amd64.jdk11.installer_url | regex_search('hotspot_(\\d+\\.\\d+\\.\\d+)_(\\d+)', '\\1', '\\2') | join('+') }}"
+    jdk17_version: "{{ ubuntu.amd64.jdk17.installer_url | regex_search('hotspot_(\\d+\\.\\d+\\.\\d+)_(\\d+)', '\\1', '\\2') | join('+') }}"
+    jdk21_version: "{{ ubuntu.amd64.jdk21.installer_url | regex_search('hotspot_(\\d+\\.\\d+\\.\\d+)_(\\d+)', '\\1', '\\2') | join('+') }}"
+    jdk25_version: "{{ ubuntu.amd64.jdk25.installer_url | regex_search('hotspot_(\\d+\\.\\d+\\.\\d+)_(\\d+)', '\\1', '\\2') | join('+') }}"
+  changed_when: false
+  ignore_errors: true
+
+# - name: Check asdf version
+#   ansible.builtin.command: asdf version
+#   register: asdf_version_output
+#   changed_when: false
+#   failed_when: "asdf_version not in asdf_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check azcopy version
+#   ansible.builtin.command: azcopy --version
+#   register: azcopy_version_output
+#   changed_when: false
+#   failed_when: "azcopy_version not in azcopy_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check chromium-browser version
+#   ansible.builtin.command: /opt/nodejs/lib/node_modules/playwright/node_modules/playwright-core/lib/server/chromium/chromium-browser --version
+#   register: chromium_version
+#   changed_when: false
+#   failed_when: chromium_version.rc != 0
+#   ignore_errors: true
+
+# - name: Check datadog-agent version
+#   ansible.builtin.command: datadog-agent version
+#   register: datadog_version
+#   changed_when: false
+#   failed_when: datadog_version.rc != 0
+#   ignore_errors: true
+
+# - name: Check doctl version
+#   ansible.builtin.command: doctl version
+#   register: doctl_version_output
+#   changed_when: false
+#   failed_when: "doctl_version not in doctl_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check git version
+#   ansible.builtin.command: git --version
+#   register: git_version_output
+#   changed_when: false
+#   failed_when: "git_linux_version not in git_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check Go version
+#   ansible.builtin.command: go version
+#   register: go_version_output
+#   changed_when: false
+#   failed_when: "golang_version not in go_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check golangci-lint version
+#   ansible.builtin.command: golangci-lint --version
+#   register: golangcilint_version_output
+#   changed_when: false
+#   failed_when: "golangcilint_version not in golangcilint_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check Helm version
+#   ansible.builtin.command: helm version
+#   register: helm_version_output
+#   changed_when: false
+#   failed_when: "helm_version not in helm_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check Helmfile version
+#   ansible.builtin.command: helmfile --version
+#   register: helmfile_version_output
+#   changed_when: false
+#   failed_when: "helmfile_version not in helmfile_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check Helm plugins (regex pattern matching)
+#   ansible.builtin.command: helm plugin list
+#   register: helm_plugins
+#   changed_when: false
+#   failed_when: >
+#     helm_plugins.stdout is not regex('diff.*' + helm_diff_version) or
+#     helm_plugins.stdout is not regex('helm-git.*' + helm_git_version) or
+#     helm_plugins.stdout is not regex('secrets.*' + helm_secrets_version)
+#   ignore_errors: true
+
+# - name: Check JDK 11 version
+#   ansible.builtin.command: /opt/jdk-11/bin/java --version
+#   register: jdk11_version_output
+#   changed_when: false
+#   failed_when: "jdk11_version not in jdk11_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check JDK 17 version
+#   ansible.builtin.command: /opt/jdk-17/bin/java --version
+#   register: jdk17_version_output
+#   changed_when: false
+#   failed_when: "jdk17_version not in jdk17_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check JDK 21 version
+#   ansible.builtin.command: /opt/jdk-21/bin/java --version
+#   register: jdk21_version_output
+#   changed_when: false
+#   failed_when: "jdk21_version not in jdk21_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check JDK 25 version
+#   ansible.builtin.command: /opt/jdk-25/bin/java --version
+#   register: jdk25_version_output
+#   changed_when: false
+#   failed_when: "jdk25_version not in jdk25_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check JDK 8 version (stderr output)
+#   ansible.builtin.command: /opt/jdk-8/bin/java -version
+#   register: jdk8_version_output
+#   changed_when: false
+#   failed_when: "jdk8_version not in jdk8_version_output.stderr"
+#   ignore_errors: true
+
+# - name: Check Maven with JDK 21 (environment variable)
+#   ansible.builtin.command: mvn -v
+#   environment:
+#     JAVA_HOME: /opt/jdk-21
+#   register: maven_version_output
+#   changed_when: false
+#   failed_when: "maven_version not in maven_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check Node.js version (with negation check)
+#   ansible.builtin.command: node --version
+#   register: nodejs_version_output
+#   changed_when: false
+#   failed_when: >
+#     nodejs_linux_version not in nodejs_version_output.stdout or
+#     'Please install a version by running one of the following' in nodejs_version_output.stdout
+#   ignore_errors: true
+
+# - name: Check Parallel version
+#   ansible.builtin.command: parallel --version
+#   register: parallel_version
+#   changed_when: false
+#   failed_when: parallel_version.rc != 0
+#   ignore_errors: true
+
+# - name: Check Playwright version
+#   ansible.builtin.command: playwright --version
+#   register: playwright_version_output
+#   changed_when: false
+#   failed_when: "playwright_version not in playwright_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check Python3 version
+#   ansible.builtin.command: python3 --version
+#   register: python3_version_output
+#   changed_when: false
+#   failed_when: python3_version_output.rc != 0
+#   ignore_errors: true
+
+# - name: Check rsync version
+#   ansible.builtin.command: rsync --version
+#   register: rsync_version
+#   changed_when: false
+#   failed_when: rsync_version.rc != 0
+#   ignore_errors: true
+
+# - name: Check Ruby versions via asdf
+#   ansible.builtin.command: asdf list ruby
+#   register: ruby_versions
+#   changed_when: false
+#   failed_when: >
+#     ruby_puppet_version not in ruby_versions.stdout or
+#     ruby_version not in ruby_versions.stdout
+#   ignore_errors: true
+
+# - name: Check rngd version
+#   ansible.builtin.command: rngd --version
+#   register: rngd_version
+#   changed_when: false
+#   failed_when: rngd_version.rc != 0
+#   ignore_errors: true
+
+# - name: Check SOPS version
+#   ansible.builtin.command: sops --version
+#   register: sops_version_output
+#   changed_when: false
+#   failed_when: "sops_version not in sops_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check SSH agent command
+#   ansible.builtin.command: which ssh-agent
+#   register: ssh_agent_check
+#   changed_when: false
+#   failed_when: ssh_agent_check.rc != 0
+#   ignore_errors: true
+
+# - name: Check typos version
+#   ansible.builtin.command: typos --version
+#   register: typos_version_output
+#   changed_when: false
+#   failed_when: "typos_version not in typos_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check unzip version
+#   ansible.builtin.command: unzip -v
+#   register: unzip_version
+#   changed_when: false
+#   failed_when: unzip_version.rc != 0
+#   ignore_errors: true
+
+# - name: Check xq version
+#   ansible.builtin.command: xq --version
+#   register: xq_version_output
+#   changed_when: false
+#   failed_when: "xq_version not in xq_version_output.stdout"
+#   ignore_errors: true
+
+# - name: Check yamllint version
+#   ansible.builtin.command: yamllint -v
+#   register: yamllint_version
+#   changed_when: false
+#   failed_when: yamllint_version.rc != 0
+#   ignore_errors: true
+
+# - name: Check zip version
+#   ansible.builtin.command: zip -v
+#   register: zip_version
+#   changed_when: false
+#   failed_when: zip_version.rc != 0
+#   ignore_errors: true
+
+# - name: Check /home/jenkins directory
+#   ansible.builtin.stat:
+#     path: /home/jenkins
+#   register: jenkins_home
+#   ignore_errors: true
+
+# - name: Validate jenkins home directory properties
+#   ansible.builtin.assert:
+#     that:
+#       - jenkins_home.stat.exists
+#       - jenkins_home.stat.isdir
+#       - jenkins_home.stat.mode == '0750'
+#       - jenkins_home.stat.pw_name == 'jenkins'
+#       - jenkins_home.stat.gr_name == 'jenkins'
+#     fail_msg: "Jenkins home directory validation failed"
+#     success_msg: "Jenkins home directory validated successfully"
+#   ignore_errors: true

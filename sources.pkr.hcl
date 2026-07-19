@@ -108,3 +108,15 @@ source "docker" "base" {
     "USER jenkins",
   ]
 }
+
+# This source is used to run tests against an already built image
+source "docker" "test" {
+  image = "jenkinsciinfra/jenkins-agent-ubuntu-22.04"
+
+  # Don't persist image on local docker engine
+  commit = false
+  discard = true
+
+  # Run as root so ansible's become: true / become_user: jenkins can sudo without requiring jenkins in sudoers
+  run_command = ["-d", "-i", "-t", "-u", "root", "--entrypoint=/bin/sh", "--", "{{.Image}}"]
+}

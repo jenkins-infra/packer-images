@@ -57,8 +57,14 @@ build {
   }
 
   provisioner "breakpoint" {
-    note    = "Enable this breakpoint to pause before trying to run goss tests"
+    note    = "Enable this breakpoint to pause before trying to run tests"
     disable = true
+  }
+
+  provisioner "ansible" {
+    playbook_file   = "tests/ansible/playbook.yml"
+    extra_arguments = ["--skip-tags", "windows_only"]
+    # ansible_env_vars = ["ANSIBLE_PIPELINING=true"] # to prevent "[WARNING]: sftp/scp transfer mechanism failed on [127.0.0.1]"
   }
 
   provisioner "shell" {

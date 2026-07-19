@@ -39,15 +39,12 @@ build {
   # Note that restarts are only done when required by windows updates
   # Note: skipped on pull requests
   provisioner "windows-update" {
-    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
   provisioner "windows-update" {
-    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
   provisioner "windows-update" {
-    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
   }
 
@@ -102,7 +99,6 @@ build {
   # Note: skipped on pull requests
   provisioner "windows-restart" {
     # TODO: might be needed when reactivating Windows tests
-    only        = local.skip_on_pr ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     max_retries = 3
     # Previous provisioner might restart
     pause_before = "1m"
@@ -135,6 +131,45 @@ build {
     ]
   }
 
+  provisioner "ansible" {
+    only            = ["amazon-ebs.windows"]
+    playbook_file   = "tests/ansible/playbook-windows.yml"
+    user            = "Administrator"
+    use_proxy       = false
+    extra_arguments = [
+      "-e", "ansible_winrm_server_cert_validation=ignore",
+      "--skip-tags", "linux_only",
+    ]
+  }
+
+
+  provisioner "shell-local" {
+    only              = ["azure-arm.windows"]
+    inline_shebang = "/bin/bash -e"
+    inline = [
+      "pipx inject python-env-name \"pywinrm\"",
+    ]
+  }
+
+  provisioner "powershell" {
+    only              = ["azure-arm.windows"]
+    script = "./provisioning/ConfigureRemotingForAnsible.ps1"
+  }
+
+  provisioner "ansible" {
+    only              = ["azure-arm.windows"]
+    playbook_file   = "tests/ansible/playbook-windows.yml"
+    skip_version_check  = false
+    user                = "Packer"
+    use_proxy           = false
+    extra_arguments = [
+      "-e",
+      "ansible_winrm_server_cert_validation=ignore",
+      "-e",
+      "ansible_winrm_transport=ntlm",
+    ]
+  }
+
   #provisioner "powershell" {
   #  max_retries      = 2
   #  environment_vars = local.provisioning_env_vars
@@ -154,7 +189,7 @@ build {
   # This provisioner must be the last for Azure builds, after reboots
   # Note: skipped on pull requests
   provisioner "powershell" {
-    only              = local.skip_on_pr ? ["skipped-on-pr"] : ["azure-arm.windows"]
+    only              = ["azure-arm.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
     inline = [
@@ -166,7 +201,7 @@ build {
   # This provisioner must be the last for AWS EBS builds, after reboots
   # Note: skipped on pull requests
   provisioner "powershell" {
-    only              = local.skip_on_pr ? ["skipped-on-pr"] : ["amazon-ebs.windows"]
+    only              = ["amazon-ebs.windows"]
     elevated_user     = local.windows_winrm_user[var.image_type]
     elevated_password = build.Password
 

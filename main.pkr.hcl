@@ -17,5 +17,10 @@ packer {
       version = "1.1.4"
       source  = "github.com/hashicorp/docker"
     }
+    # TODO: track with updatecli
+    ansible = {
+      version = "1.1.4"
+      source = "github.com/hashicorp/ansible"
+    }
   }
 }

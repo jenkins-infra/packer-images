@@ -1,0 +1,162 @@
+---
+- name: Check awscli
+  ansible.builtin.command: aws --version
+  register: awscli_version_output
+  changed_when: false
+  failed_when: "awscli_version not in awscli_version_output.stdout"
+  ignore_errors: true
+
+- name: Check azurecli
+  ansible.builtin.command: az --version
+  register: azurecli_version_output
+  changed_when: false
+  failed_when: "azurecli_version not in azurecli_version_output.stdout"
+  ignore_errors: true
+
+- name: Check bundle
+  ansible.builtin.command: /home/jenkins/.asdf/shims/bundle -v
+  register: bundle_version_output
+  changed_when: false
+  failed_when: bundle_version_output.rc != 0
+  ignore_errors: true
+
+- name: Check cst
+  ansible.builtin.command: container-structure-test version
+  register: cst_version_output
+  changed_when: false
+  failed_when: "cst_version not in cst_version_output.stdout"
+  ignore_errors: true
+
+- name: Check docker
+  ansible.builtin.command: docker -v
+  register: docker_version_output
+  changed_when: false
+  failed_when: "docker_version not in docker_version_output.stdout"
+  ignore_errors: true
+
+- name: Check docker_buildx
+  ansible.builtin.command: docker buildx version
+  register: docker_buildx_version_output
+  changed_when: false
+  failed_when: "docker_buildx_version not in docker_buildx_version_output.stdout"
+  ignore_errors: true
+
+- name: Verify no default Java in PATH (should fail)
+  ansible.builtin.command: java --version
+  register: java_check
+  changed_when: false
+  failed_when: java_check.rc == 0
+  ignore_errors: true
+
+- name: Validate Java is not in default path
+  ansible.builtin.assert:
+    that:
+      - java_check.rc != 0
+    fail_msg: "Java should not be in default PATH"
+    success_msg: "Java correctly not in default PATH"
+  ignore_errors: true
+
+- name: Check compose
+  ansible.builtin.command: docker-compose -v
+  register: compose_version_output
+  changed_when: false
+  failed_when: "compose_version not in compose_version_output.stdout"
+  ignore_errors: true
+
+- name: Check gh
+  ansible.builtin.command: gh --version
+  register: gh_version_output
+  changed_when: false
+  failed_when: "gh_version not in gh_version_output.stdout"
+  ignore_errors: true
+
+- name: Check git_lfs
+  ansible.builtin.command: git-lfs --version
+  register: git_lfs_version_output
+  changed_when: false
+  failed_when: "git_lfs_version not in git_lfs_version_output.stdout"
+  ignore_errors: true
+
+- name: Check hadolint
+  ansible.builtin.command: hadolint --version
+  register: hadolint_version_output
+  changed_when: false
+  failed_when: "hadolint_version not in hadolint_version_output.stdout"
+  ignore_errors: true
+
+- name: Check jq
+  ansible.builtin.command: jq --version
+  register: jq_version_output
+  changed_when: false
+  failed_when: "jq_version not in jq_version_output.stdout"
+  ignore_errors: true
+
+- name: Check jxreleaseversion
+  ansible.builtin.command: jx-release-version -version
+  register: jxreleaseversion_version_output
+  changed_when: false
+  failed_when: "jxreleaseversion_version not in jxreleaseversion_version_output.stdout"
+  ignore_errors: true
+
+- name: Check kubectl
+  ansible.builtin.command: kubectl version --client
+  register: kubectl_version_output
+  changed_when: false
+  failed_when: "kubectl_version not in kubectl_version_output.stdout"
+  ignore_errors: true
+
+- name: Check launchable
+  ansible.builtin.command: launchable --version
+  register: launchable_version_output
+  changed_when: false
+  failed_when: "launchable_version not in launchable_version_output.stdout"
+  ignore_errors: true
+
+- name: Check make
+  ansible.builtin.command: make --version
+  register: make_version_output
+  changed_when: false
+  failed_when: make_version_output.rc != 0
+  ignore_errors: true
+
+- name: Check netlifydeploy
+  ansible.builtin.command: netlify-deploy --help
+  register: netlifydeploy_version_output
+  changed_when: false
+  failed_when: netlifydeploy_version_output.rc != 0
+  ignore_errors: true
+
+- name: Check npm (with negation check)
+  ansible.builtin.command: npm --version
+  register: npm_version_output
+  changed_when: false
+  failed_when: "'No preset version installed for command npm' in npm_version_output.stdout or 'No preset version installed for command npm' in npm_version_output.stderr"
+  ignore_errors: true
+
+- name: Check packer
+  ansible.builtin.command: packer -v
+  register: packer_version_output
+  changed_when: false
+  failed_when: "packer_version not in packer_version_output.stdout"
+  ignore_errors: true
+
+- name: Check terraform
+  ansible.builtin.command: terraform -v
+  register: terraform_version_output
+  changed_when: false
+  failed_when: "terraform_version not in terraform_version_output.stdout"
+  ignore_errors: true
+
+- name: Check updatecli
+  ansible.builtin.command: updatecli version
+  register: updatecli_version_output
+  changed_when: false
+  failed_when: "updatecli_version not in updatecli_version_output.stdout"
+  ignore_errors: true
+
+- name: Check yq
+  ansible.builtin.command: yq --version
+  register: yq_version_output
+  changed_when: false
+  failed_when: "yq_version not in yq_version_output.stdout"
+  ignore_errors: true

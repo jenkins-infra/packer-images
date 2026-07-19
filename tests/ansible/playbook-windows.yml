@@ -1,0 +1,19 @@
+---
+- name: Windows tests
+  hosts: all
+  gather_facts: true
+  vars_files:
+    - ../../provisioning/tools-versions.yml
+    - ../../jdks-infos.yaml
+  vars:
+    ansible_python_interpreter: C:\python.3.14.6\tools\python.exe  # TODO: use short 3.14 in windows-provision.ps1
+    ansible_remote_tmp: C:\Temp\.ansible
+
+  tasks:
+    - name: Import common tests (PoC)
+      ansible.builtin.import_tasks: tasks/tests_common_poc.yml
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: Import Windows tests
+      ansible.builtin.import_tasks: tasks/tests_windows.yml
+      when: ansible_facts['os_family'] == 'Windows'
