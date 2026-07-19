@@ -35,17 +35,6 @@ build {
     winrm_username  = local.windows_winrm_user[var.image_type]
   }
 
-  ## Why repeating? https://github.com/rgl/packer-plugin-windows-update/issues/90#issuecomment-842569865
-  # Note that restarts are only done when required by windows updates
-  # Note: skipped on pull requests
-  provisioner "windows-update" {
-    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
-    pause_before = "1m"
-  }
-  provisioner "windows-update" {
-    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
-    pause_before = "1m"
-  }
   provisioner "windows-update" {
     only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     pause_before = "1m"
