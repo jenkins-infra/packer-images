@@ -35,6 +35,21 @@ build {
     winrm_username  = local.windows_winrm_user[var.image_type]
   }
 
+  # Install OpenSSH before running Windows updates to ensure Open SSH server, client and libcrypto.dll are in sync
+  # Ref. https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/openssh-server-service-wont-start-error-1053
+  provisioner "powershell" {
+    pause_before      = "1m"
+    environment_vars  = local.provisioning_env_vars
+    elevated_user     = local.windows_winrm_user[var.image_type]
+    elevated_password = build.Password
+    inline = [
+      "Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0",
+      "Set-Service -Name sshd -StartupType 'Automatic'",
+      "Start-Service sshd",
+      "New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null",
+    ]
+  }
+
   provisioner "windows-update" {
     only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     filters = [
