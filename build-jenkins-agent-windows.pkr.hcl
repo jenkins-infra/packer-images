@@ -36,7 +36,8 @@ build {
   }
 
   provisioner "windows-update" {
-    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
+    # only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only = ["azure-arm.windows"]
     filters = [
       # exclude KB5007651:
       #   Update for Windows Security platform - KB5007651 (Version 10.0.29510.1001)
