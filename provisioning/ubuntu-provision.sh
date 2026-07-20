@@ -667,8 +667,18 @@ function install_playwright() {
   # Install web browser(s) as jenkins (to ensure cache is in its home and reusable)
   su - "${username}" -c "playwright install --only-shell chromium"
 
+  # Symlink chrome binary
+  chrome_binary_search_pattern='chrome*headless*shell'
+  if [ "${ARCHITECTURE}" == "arm64" ]
+  then
+    chrome_binary_search_pattern='headless*shell'
+  fi
+  chrome_binary="$(su - "${username}" -c "find ~/.cache/ms-playwright -type f -name ${chrome_binary_search_pattern}")"
+  ln -s "${chrome_binary}" /usr/local/bin/chromium
+
   # Sanity checks
   su - "${username}" -c "playwright install --list"
+  /usr/local/bin/chromium --version
 }
 
 ## Install Launchable with python3 in its own virtual environment

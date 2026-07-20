@@ -19,6 +19,10 @@ command:
   bc:
     exec: bc --version
     exit-status: 0
+  chromium:
+    # Symlinked from playwright
+    exec: /usr/local/bin/chromium --version
+    exit-status: 0
   datadog-agent:
     exec: datadog-agent version
     exit-status: 0
