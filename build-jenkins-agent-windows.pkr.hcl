@@ -42,6 +42,8 @@ build {
       #   Update for Windows Security platform - KB5007651 (Version 10.0.29510.1001)
       # NB it can only be applied while the user is logged in.
       "exclude:$_.Title -like '*KB5007651*'",
+      # Ref. https://github.com/jenkins-infra/packer-images/issues/2915
+      "exclude:$_.Title -like '*KB5099538*'",
       "include:$true",
     ]
     pause_before = "1m"
