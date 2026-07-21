@@ -44,3 +44,4 @@ actions:
         - enhancement
         - ubuntu
         - linux
+        - packer-docker

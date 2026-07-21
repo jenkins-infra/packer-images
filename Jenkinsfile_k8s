@@ -69,34 +69,52 @@ node('linux-arm64-docker') {
         'linux': ['ubuntu-22.04'],
         'windows': ['windows-2019', 'windows-2022', 'windows-2025'],
       ]
+      def computeTypes = []
+      def allPackerProviders = ['amazon-ebs', 'azure-arm', 'docker']
 
       if (env.CHANGE_ID) {
-        def noLabel = true
+        boolean noOSLabel = true
+        boolean noPackerProviderLabel = true
+
         pullRequest.labels.each {
           if (it.startsWith('ubuntu-') || it.startsWith('windows-')) {
             agentTypes.add(it)
+            noOSLabel = false
           }
           if (it == 'linux' || it == 'windows') {
             agentTypes += agentTypeFamilies[it]
+            noOSLabel = false
           }
-          noLabel = false
+          if (it.startsWith('packer-')) {
+            final String packerProvider = it.minus('packer-')
+            if(allPackerProviders.contains(packerProvider)) {
+              computeTypes.add(packerProvider)
+              noPackerProviderLabel = false
+            }
+          }
         }
         // Mark the build as unstable and exit early if the pull request doesn't have any label
-        if (noLabel) {
-          echo 'At least one label required on pull requests'
+        if (noOSLabel) {
+          echo 'ERROR: At least one Operating System label required on pull requests'
           currentBuild.result = 'UNSTABLE'
           return
+        }
+        // Slightly different than OSes: if no provider is specified then we build them all
+        if(noPackerProviderLabel) {
+          echo 'INFO: no packer provider label found. Building all providers.'
+          computeTypes = allPackerProviders
         }
       } else {
         agentTypes += agentTypeFamilies['linux']
         agentTypes += agentTypeFamilies['windows']
+        computeTypes = allPackerProviders
       }
 
       // Packer Images stage - Matrix implementation
       def matrixAxes = [
         cpu_architecture: ['amd64', 'arm64'],
         agent_type: agentTypes,
-        compute_type: ['amazon-ebs', 'azure-arm', 'docker']
+        compute_type: computeTypes
       ]
 
       def matrixBranches = [:]

@@ -55,3 +55,4 @@ actions:
         - enhancement
         - ubuntu
         - linux
+        - packer-amazon-ebs

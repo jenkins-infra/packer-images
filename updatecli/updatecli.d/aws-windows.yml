@@ -57,7 +57,7 @@ actions:
       description: "Update AWS AMI ID for Windows {{ $version }} AMD64"
       labels:
         - enhancement
-        - aws-windows
+        - packer-amazon-ebs
         - windows-{{ $version }}
 ...
 {{ end }}
