@@ -52,7 +52,7 @@ actions:
       description: "Update Azure images for Windows {{ $version }}"
       labels:
         - enhancement
-        - azure-windows
+        - packer-azure-arm
         - windows-{{ $version }}
 ...
 {{ end }}
