@@ -59,7 +59,11 @@ Function DownloadFile($url, $targetFile) {
     }
 }
 
-Function AddToPathEnv($path) {
+Function AddToPathEnv {
+    param (
+        $path
+    )
+    Write-Host "Adding $path to the PATH environment variable..."
     $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
     $newPath = '{0};{1}' -f $path,$oldPath
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath | Out-Null
@@ -67,7 +71,13 @@ Function AddToPathEnv($path) {
     $env:Path = $newPath
 }
 
-Function AddEnvToSystem($name, $value) {
+function AddEnvToSystem {
+    param (
+        $name,
+        $value
+    )
+
+    Write-Host "Adding $name environment variable to system with the value $value..."
     New-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name $name -Value $value | Out-Null
     # Update self (script) environment
     Set-Item "env:$name" $value
@@ -364,7 +374,7 @@ if("2019" -eq $env:AGENT_OS_VERSION) {
 
 
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed
-AddToPathEnv $baseDir
+AddToPathEnv -path $baseDir
 
 ## Proceed to install tools
 # TODO: foreach in parallel for downloads
@@ -403,12 +413,12 @@ foreach($k in $downloads.Keys) {
     if($download.ContainsKey('env')) {
         foreach($name in $download['env'].Keys) {
             $value = $download['env'][$name]
-            AddToPathEnv $name $value
+            AddEnvToSystem -name $name -value $value
         }
     }
 
     if($download.ContainsKey('path')) {
-        AddToPathEnv $download['path']
+        AddToPathEnv -path $download['path']
     }
 
     if($download.ContainsKey('postInstall')) {
@@ -424,11 +434,11 @@ Write-Output "== Ensure both Windows Powershell and Powershell Core are availabl
 if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
     Write-Output "= Windows Powershell already present, installing Powershell Core..."
     Invoke-Command {& "choco.exe" install pwsh --yes --no-progress --limit-output --fail-on-error-output --version "${env:WINDOWS_PWSH_VERSION}";}
-    AddToPathEnv "C:\Program Files\PowerShell\7\"
+    AddToPathEnv -path "C:\Program Files\PowerShell\7\"
 } else {
     Write-Output "= Powershell Core already present, installing Windows Powershell..."
     Invoke-Command {& "choco.exe" install powershell --yes --no-progress --limit-output --fail-on-error-output;}
-    AddToPathEnv "C:\Windows\System32\WindowsPowerShell\v1.0\"
+    AddToPathEnv -path "C:\Windows\System32\WindowsPowerShell\v1.0\"
 }
 
 ## Enabling LongPaths
