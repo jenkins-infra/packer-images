@@ -153,6 +153,20 @@ foreach ($jdkMajorVersion in $jdkList) {
     }
 }
 
+# Install Powershell 7 from ZIP installer (in addition to the default 5.x shipped with Windows Server)
+# Ref. https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell-on-windows?view=powershell-7.6#install-the-zip-package
+$downloads['powershell-7'] = @{
+    # We should use the 'archives' downoad system to ensure we always find older version (as the mirror download system only provide latest)
+    'url' = 'https://github.com/PowerShell/PowerShell/releases/download/v{0}/PowerShell-{0}-win-x64.zip'  -f $env:WINDOWS_PWSH_VERSION;
+    'local' = "$baseDir\powershell-7.zip";
+    'expandTo' = "${env:ProgramFiles}\PowerShell\7";
+    'path' = "${env:ProgramFiles}\PowerShell\7";
+    'cleanupLocal' = 'true';
+    'postExpand' = {
+        "${env:ProgramFiles}\PowerShell\7\pwsh.exe";
+    };
+};
+
 $pythondir = 'C:\python.{0}\tools' -f $env:PYTHON3_VERSION
 $downloads['nuget-then-python-and-launchable'] = @{
     'url' = 'https://dist.nuget.org/win-x86-commandline/v{0}/nuget.exe' -f $env:NUGET_VERSION;
@@ -424,21 +438,6 @@ foreach($k in $downloads.Keys) {
     if($download.ContainsKey('postInstall')) {
         Invoke-Command $download['postInstall']
     }
-}
-
-# Special case for Powershell, we need to make sure powershell.exe and pwsh.exe are both available
-# On Windows Server, Windows Powershell 5.1 is installed by default (powershell.exe)
-# On nanoserver, Powershell Core 7 is installed by default (pwsh.ex)
-# https://docs.microsoft.com/en-us/powershell/scripting/whats-new/migrating-from-windows-powershell-51-to-powershell-7?view=powershell-7.2#using-powershell-7-side-by-side-with-windows-powershell-51
-Write-Output "== Ensure both Windows Powershell and Powershell Core are available"
-if ((Get-Host | Select-Object Version).Version.Major -eq 5) {
-    Write-Output "= Windows Powershell already present, installing Powershell Core..."
-    Invoke-Command {& "choco.exe" install pwsh --yes --no-progress --limit-output --fail-on-error-output --version "${env:WINDOWS_PWSH_VERSION}";}
-    AddToPathEnv -path "C:\Program Files\PowerShell\7\"
-} else {
-    Write-Output "= Powershell Core already present, installing Windows Powershell..."
-    Invoke-Command {& "choco.exe" install powershell --yes --no-progress --limit-output --fail-on-error-output;}
-    AddToPathEnv -path "C:\Windows\System32\WindowsPowerShell\v1.0\"
 }
 
 ## Enabling LongPaths
