@@ -26,7 +26,7 @@ helmfile_version: 1.7.1
 jenkins_remoting_version: 3384.v60d89463d9e0
 jq_version: 1.8.2
 jxreleaseversion_version: 2.10.0
-kubectl_version: 1.34.9
+kubectl_version: 1.34.10
 launchable_version: 1.124.4
 maven_version: 3.9.16
 netlifydeploy_version: 0.1.8
