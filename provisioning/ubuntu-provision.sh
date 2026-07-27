@@ -608,10 +608,19 @@ function install_kubectl() {
 ## Ensure Goss is installed
 function install_goss() {
   apt-get update --quiet
-  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
+  apt-get install --yes --no-install-recommends ca-certificates curl tar # Should already be there but this function should be autonomous
 
-  curl --silent --location --show-error "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss-linux-${ARCHITECTURE}" --output /usr/local/bin/goss
-  chmod +rx /usr/local/bin/goss
+  local archive_path
+  archive_path="$(mktemp -d)/goss.tgz"
+  goss_architecture="x86_64"
+  if [ "${ARCHITECTURE}" == "arm64" ]
+  then
+    goss_architecture="arm64"
+  fi
+  curl --silent --location --show-error "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss_${GOSS_VERSION}_linux_${goss_architecture}.tar.gz"  --output "$archive_path"
+  tar xzf "$archive_path" -C /usr/local/bin/ goss 
+  /usr/local/bin/goss --version # Sanity check to fail fast if "Not Found"
+  rm -rf "$(dirname "$archive_path")"
 }
 
 ## Install Nodejs from prebuilt binaries

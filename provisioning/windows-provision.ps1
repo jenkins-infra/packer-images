@@ -307,8 +307,14 @@ $downloads['kubectl'] = @{
     'local' = "$baseDir\kubectl.exe"
 };
 $downloads['goss'] = @{
-    'url' = 'https://github.com/goss-org/goss/releases/download/v{0}/goss-windows-amd64.exe'  -f $env:GOSS_VERSION;
-    'local' = "$baseDir\goss.exe"
+    'url'      = 'https://github.com/goss-org/goss/releases/download/v{0}/goss_{0}_windows_x86_64.zip' -f $env:GOSS_VERSION;
+    'local'    = "$baseDir\goss.zip"
+    'expandTo' = "$baseDir";
+    'postExpand' = {
+        Remove-Item "$baseDir\LICENSE";
+        Remove-Item "$baseDir\README.md";
+    }
+    'cleanupLocal' = 'true';
 };
 $downloads['docker-buildx'] = @{
     'url' = 'https://github.com/docker/buildx/releases/download/v{0}/buildx-v{0}.windows-amd64.exe' -f $env:DOCKER_BUILDX_VERSION;
