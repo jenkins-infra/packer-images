@@ -334,14 +334,14 @@ $downloads['chocolatey-and-packages'] = @{
     'cleanupLocal' = 'true';
     'path' = "C:\Program Files\Amazon\AWSCLIV2;$nodeJsInstallDir";
     'postInstall' = {
-        # chocolatey internal command used to update current shell's environment. Not strictly required but we never know what bad surprise it could avoid.
-        refreshenv;
         # Installation packages without pinned versions in one shot (faster)
         choco install make datadog-agent vcredist2015 --yes --no-progress --limit-output --fail-on-error-output;
         # Append a ".1" as all ruby packages in chocolatey have this suffix. Not sure why (maybe a package build id)
         choco install ruby --yes --no-progress --limit-output --fail-on-error-output --version "${env:RUBY_VERSION}.1";
         choco install awscli --yes --no-progress --limit-output --fail-on-error-output --version "${env:AWSCLI_VERSION}";
         choco install nodejs-lts --yes --no-progress --limit-output --fail-on-error-output --version "${env:NODEJS_WINDOWS_VERSION}";
+        # chocolatey internal command used to update current shell's environment. Not strictly required but we never know what bad surprise it could avoid.
+        refreshenv;
         # Default NPM prefix dir, on Windows, is in the %AppData% of the current user so not really globally available...
         npm config set prefix $nodeJsInstallDir;
     };
