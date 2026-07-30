@@ -38,7 +38,7 @@ conditions:
     kind: shell
     disablesourceinput: true # Do not pass source as argument to the command line
     spec:
-      command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/nodejs-lts/{{ source "lastReleaseVersion" }}
+      command: curl --silent --show-error --location --fail --output /dev/null https://community.chocolatey.org/packages/nodejs.install/{{ source "lastReleaseVersion" }}
 
 targets:
   updateVersion:
