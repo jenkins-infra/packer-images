@@ -57,7 +57,7 @@ command:
     exec: hadolint --version
     exit-status: 0
     stdout:
-      - 2.14.0
+      - 2.15.0
     timeout: 60000
   jq:
     exec: jq --version
