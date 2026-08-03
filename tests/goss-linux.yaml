@@ -97,7 +97,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 24.18.1
+      - 24.19.0
       - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version
