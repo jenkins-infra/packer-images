@@ -46,7 +46,7 @@ windows:
       checksum_value: 5695bd8fed700acb74e0c13945fc6d7564441a31d345c100b82ee1aac553a6b7
     jdk17:
       installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20%2B8/OpenJDK17U-jdk_x64_windows_hotspot_17.0.20_8.zip
-      checksum_value: b5b235c48adf6a081874b812c630b9f4b5f637b7a5ed18b9174d08a41ec4c235
+      checksum_value: 418497be5cf585bdd2203d6486a565d66d3f5e992d5630d45104cb873fab8122
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.11%2B10/OpenJDK21U-jdk_x64_windows_hotspot_21.0.11_10.zip
       checksum_value: d3625e7cadf23787ea540229544b6e2ab494b3b54da1801879e583e1dfee0a64
