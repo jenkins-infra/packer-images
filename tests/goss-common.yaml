@@ -6,7 +6,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.36.19
+      - 2.36.24
   azurecli:
     exec: az --version
     exit-status: 0
