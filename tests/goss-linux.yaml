@@ -50,7 +50,7 @@ command:
     exec: helm version
     exit-status: 0
     stdout:
-      - 4.2.3
+      - 4.2.4
   helmfile:
     exec: helmfile --version
     exit-status: 0
