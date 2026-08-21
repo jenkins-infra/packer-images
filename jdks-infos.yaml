@@ -15,9 +15,9 @@ ubuntu:
       checksum_value: e4446ff06a276155697597cc0f1b15da004ff083f4964a35271ecee567177370
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.4%2B7/OpenJDK25U-jdk_x64_linux_hotspot_25.0.4_7.tar.gz
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.4.1%2B1/OpenJDK25U-jdk_x64_linux_hotspot_25.0.4.1_1.tar.gz
       #TODO track with updatecli
-      checksum_value: e58fcdcd637b25c03ca84cbbcefc70d11efb8f4b4cbd05decc9f661769d77f94
+      checksum_value: dbb698396d478e7fa2b1e50f4103324b2a99b90569ee27c33f2261f9215cf41e
   arm64:
     jdk8:
       installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u502-b07/OpenJDK8U-jdk_aarch64_linux_hotspot_8u502b07.tar.gz
@@ -33,9 +33,9 @@ ubuntu:
       checksum_value: eba38e871b02d407897bfe017ea35352dfc1420ef6d2112425b0c67325ca509d
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.4%2B7/OpenJDK25U-jdk_aarch64_linux_hotspot_25.0.4_7.tar.gz
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.4.1%2B1/OpenJDK25U-jdk_aarch64_linux_hotspot_25.0.4.1_1.tar.gz
       #TODO track with updatecli
-      checksum_value: 621f7196f0b682fb557da58bec89bd7dfe5419811fe1c0ba75c9cc8432f084c7
+      checksum_value: 69df11a02cfa3ef7d7ca645e03edce6778ec090e100f6ae2b42097865730ac52
 windows:
   amd64:
     jdk8:
@@ -52,6 +52,6 @@ windows:
       checksum_value: 9ba963ee2371874a74185d18bc7bb2ab9407df7683300855ed7606e0662321d0
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.4%2B7/OpenJDK25U-jdk_x64_windows_hotspot_25.0.4_7.zip
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.4.1%2B1/OpenJDK25U-jdk_x64_windows_hotspot_25.0.4.1_1.zip
       #TODO track with updatecli
-      checksum_value: 7caab7db43bf4b94a2e6252c699e70d90084f9aa7c943cd3414761fd540937ae
+      checksum_value: 00c847d804f4a78e9f04f2683faf14fed898535b177b7fc704486cb0284e9283
