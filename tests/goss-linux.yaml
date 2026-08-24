@@ -77,7 +77,7 @@ command:
     exec: /opt/jdk-21/bin/java --version
     exit-status: 0
     stdout:
-      - 21.0.12+8
+      - 21.0.12.1+1
   jdk25:
     exec: /opt/jdk-25/bin/java --version
     exit-status: 0
