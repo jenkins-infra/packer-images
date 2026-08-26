@@ -39,7 +39,7 @@ ubuntu:
 windows:
   amd64:
     jdk8:
-      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u502-b07/OpenJDK8U-jdk_x64_windows_hotspot_8u502b07.zip
+      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u504-b01/OpenJDK8U-jdk_x64_windows_hotspot_8u504b01.zip
       checksum_value: ea43d46ede95b51e44a12c66711706cddc762e0a766c54bccea18954e902b2aa
     jdk11:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.32%2B9/OpenJDK11U-jdk_x64_windows_hotspot_11.0.32_9.zip
