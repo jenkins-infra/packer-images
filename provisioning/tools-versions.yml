@@ -9,7 +9,7 @@ compose_version: 5.5.0
 cst_version: 1.22.1
 docker_buildx_version: 0.36.1
 docker_version: 29.7.2
-doctl_version: 1.167.0
+doctl_version: 1.168.0
 gh_version: 2.98.0
 git_lfs_version: 3.8.0
 git_linux_version: 2.55.0
