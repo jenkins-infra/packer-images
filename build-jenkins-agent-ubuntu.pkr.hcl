@@ -46,6 +46,27 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
+  # ubuntu-provision.sh ends with cleanup() (L689) which runs `rm -rf /tmp/*`,
+  # so /tmp/gpg-keys is gone by the time any later provisioner runs. Stage the
+  # keyrings again for the Ansible roles that verify a signature.
+  provisioner "file" {
+    source      = "./gpg-keys"
+    destination = "/tmp/gpg-keys"
+  }
+
+  # Provisioning being migrated from provisioning/ubuntu-provision.sh to Ansible
+  # roles, one function at a time. Tool versions come from the playbook's own
+  # vars file (updatecli tracked); only build-time values are passed here.
+  provisioner "ansible" {
+    playbook_file = "./provisioning/ansible/provision.yml"
+    extra_arguments = [
+      "--extra-vars", "architecture=${var.architecture}",
+    ]
+    # The docker builder exposes no IP, so the plugin proxies through a local SSH
+    # adapter: pipelining avoids the sftp/scp fallback warning on that adapter.
+    ansible_env_vars = ["ANSIBLE_PIPELINING=true"]
+  }
+
   provisioner "file" {
     source      = "./tests/goss-linux.yaml"
     destination = "/tmp/goss-linux.yaml"

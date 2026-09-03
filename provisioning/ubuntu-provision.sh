@@ -230,35 +230,6 @@ function install_golangcilint(){
     tar --extract --gunzip --strip-components=1 --directory="/usr/local/bin/" "golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}/golangci-lint"
 }
 
-## Install jq from the official GitHub release (single source, OS-independent)
-function install_jq(){
-  local keyring_file jq_temp_download_dir jq_binary_file jq_sig_file
-
-  keyring_file="/tmp/gpg-keys/jq-keyring.kbx"
-  jq_temp_download_dir="$(mktemp -d)"
-
-  # Relative paths (assuming we're working from inside the temp dir)
-  jq_binary_file="jq-linux-${ARCHITECTURE}"
-  jq_sig_file="${jq_binary_file}.asc"
-
-  pushd "${jq_temp_download_dir}"
-  # JQ_VERSION is an env var provided outside of the script
-  # shellcheck disable=SC2153
-  curl --fail --silent --show-error --location --output "${jq_binary_file}" \
-    "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/${jq_binary_file}"
-  # The detached signature is published in the jq repository's sig/ tree (not as a release asset)
-  curl --fail --silent --show-error --location --output "${jq_sig_file}" \
-    "https://raw.githubusercontent.com/jqlang/jq/master/sig/v${JQ_VERSION}/${jq_sig_file}"
-
-  gpgv --keyring="${keyring_file}" "${jq_sig_file}" "${jq_binary_file}"
-
-  cp "${jq_binary_file}" /usr/local/bin/jq
-  chmod a+x /usr/local/bin/jq
-
-  popd
-  rm -rf "${jq_temp_download_dir}"
-}
-
 ## Ensure that the Jenkins Agent commons requirements are installed
 function install_JA_requirements(){
   apt-get update --quiet
@@ -778,7 +749,6 @@ function main() {
   install_azurecli
   install_gh
   install_golang
-  install_jq
   install_golangcilint # must come after golang
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"

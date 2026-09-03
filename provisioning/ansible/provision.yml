@@ -1,0 +1,15 @@
+---
+# Single entrypoint playbook for the Ansible-based provisioning of Linux agents.
+# Each unit of work is a role, so roles can be reused and added one at a time as
+# functions are migrated out of provisioning/ubuntu-provision.sh.
+- name: Provision Jenkins agent
+  hosts: all
+  become: true
+  gather_facts: false
+
+  # Tool versions live in a dedicated file so updatecli can track them.
+  vars_files:
+    - vars/tools-versions.yml
+
+  roles:
+    - install_jq

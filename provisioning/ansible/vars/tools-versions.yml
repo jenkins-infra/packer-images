@@ -1,0 +1,9 @@
+---
+# Tool versions for the Ansible provisioning roles.
+# Dedicated file so `updatecli` can track each value on its own key, the same way
+# it already tracks provisioning/tools-versions.yml.
+# Only the values consumed by a migrated role belong here; add one per migration.
+#
+# Tracked by 'updatecli' from the following source:
+#   https://github.com/jqlang/jq/releases (updatecli/updatecli.d/jq.yml)
+jq_version: 1.8.2

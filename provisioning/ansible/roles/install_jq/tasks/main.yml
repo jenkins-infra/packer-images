@@ -1,0 +1,49 @@
+---
+# Installs jq from the official GitHub release, verifying the detached signature.
+# Replaces the install_jq() function of provisioning/ubuntu-provision.sh.
+#
+# jq_version comes from provisioning/ansible/vars/tools-versions.yml (updatecli tracked).
+# architecture is provided by the Packer template with --extra-vars, since it is a
+# build-time value (var.architecture) and not a tracked tool version.
+- name: Check that the required variables are defined
+  ansible.builtin.assert:
+    that:
+      - jq_version is defined and jq_version | length > 0
+      - architecture is defined and architecture | length > 0
+    fail_msg: jq_version must come from vars/tools-versions.yml and architecture from --extra-vars
+
+- name: Create a temporary download directory
+  ansible.builtin.tempfile:
+    state: directory
+  register: jq_temp_download_dir
+
+- name: Download jq and its detached signature
+  ansible.builtin.get_url:
+    # The detached signature is published in the jq repository's sig/ tree (not as a release asset)
+    url: "{{ item.url }}"
+    dest: "{{ jq_temp_download_dir.path }}/{{ item.dest }}"
+    mode: "0644"
+  loop:
+    - url: "https://github.com/jqlang/jq/releases/download/jq-{{ jq_version }}/{{ jq_binary_file }}"
+      dest: "{{ jq_binary_file }}"
+    - url: "https://raw.githubusercontent.com/jqlang/jq/master/sig/v{{ jq_version }}/{{ jq_binary_file }}.asc"
+      dest: "{{ jq_binary_file }}.asc"
+
+- name: Verify the jq signature
+  # No ignore_errors or failed_when: a bad signature must fail the build
+  ansible.builtin.command:
+    cmd: gpgv --keyring={{ jq_keyring_file }} {{ jq_binary_file }}.asc {{ jq_binary_file }}
+    chdir: "{{ jq_temp_download_dir.path }}"
+  changed_when: false
+
+- name: Install jq
+  ansible.builtin.copy:
+    src: "{{ jq_temp_download_dir.path }}/{{ jq_binary_file }}"
+    dest: /usr/local/bin/jq
+    mode: a+x
+    remote_src: true
+
+- name: Remove the temporary download directory
+  ansible.builtin.file:
+    path: "{{ jq_temp_download_dir.path }}"
+    state: absent
