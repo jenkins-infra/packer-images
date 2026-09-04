@@ -237,7 +237,7 @@ node('linux-arm64-docker') {
       if (env.TAG_NAME != null) {
         stage('Build Docker Manifest') {
           withEnv(['agent_type=ubuntu-22.04']) {
-            infra.withDockerPushCredentials {
+            infra.withContainerRegistry {
               sh 'docker manifest create \
                   jenkinsciinfra/jenkins-agent-${agent_type}:latest \
                   --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \
