@@ -2,20 +2,26 @@
 # Installs jq from the official GitHub release, verifying the detached signature.
 # Replaces the install_jq() function of provisioning/ubuntu-provision.sh.
 #
-# jq_version comes from provisioning/ansible/vars/tools-versions.yml (updatecli tracked).
-# architecture is provided by the Packer template with --extra-vars, since it is a
-# build-time value (var.architecture) and not a tracked tool version.
+# Both variables come from the Packer template as extra-vars: jq_version from the
+# tools-versions.yml file already tracked by updatecli, architecture from var.architecture.
 - name: Check that the required variables are defined
   ansible.builtin.assert:
     that:
       - jq_version is defined and jq_version | length > 0
       - architecture is defined and architecture | length > 0
-    fail_msg: jq_version must come from vars/tools-versions.yml and architecture from --extra-vars
+    fail_msg: jq_version and architecture must be passed as extra-vars by the Packer template
 
 - name: Create a temporary download directory
   ansible.builtin.tempfile:
     state: directory
   register: jq_temp_download_dir
+
+- name: Copy the jq release keyring
+  # Shipped with the role: /tmp is wiped by ubuntu-provision.sh's cleanup()
+  ansible.builtin.copy:
+    src: jq-keyring.kbx
+    dest: "{{ jq_temp_download_dir.path }}/jq-keyring.kbx"
+    mode: "0644"
 
 - name: Download jq and its detached signature
   ansible.builtin.get_url:
@@ -32,7 +38,7 @@
 - name: Verify the jq signature
   # No ignore_errors or failed_when: a bad signature must fail the build
   ansible.builtin.command:
-    cmd: gpgv --keyring={{ jq_keyring_file }} {{ jq_binary_file }}.asc {{ jq_binary_file }}
+    cmd: gpgv --keyring=jq-keyring.kbx {{ jq_binary_file }}.asc {{ jq_binary_file }}
     chdir: "{{ jq_temp_download_dir.path }}"
   changed_when: false
 

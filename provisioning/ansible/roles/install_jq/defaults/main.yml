@@ -1,4 +1,2 @@
 ---
 jq_binary_file: "jq-linux-{{ architecture }}"
-# Staged by the Packer template: ubuntu-provision.sh's cleanup() wipes /tmp
-jq_keyring_file: /tmp/gpg-keys/jq-keyring.kbx
