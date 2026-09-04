@@ -46,6 +46,28 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
+  # Provisioning being migrated from provisioning/ubuntu-provision.sh to Ansible
+  # roles, one function at a time. Tool versions are read from the same
+  # tools-versions.yml that the shell provisioning uses, so updatecli keeps
+  # tracking a single file.
+  provisioner "ansible" {
+    playbook_file = "./provisioning/ansible/provision.yml"
+    extra_arguments = [
+      "--extra-vars", "@${var.provision_env_file}",
+      "--extra-vars", "architecture=${var.architecture}",
+    ]
+    ansible_env_vars = [
+      # The docker builder exposes no IP, so the plugin proxies through a local SSH
+      # adapter: pipelining avoids the sftp/scp fallback warning on that adapter.
+      "ANSIBLE_PIPELINING=true",
+      # Ansible defaults its remote temporary directory to ~/.ansible/tmp. The
+      # playbook runs as root, so that would leave a root owned directory in the
+      # jenkins user's home and break `ansible --version` for that user (the goss
+      # test harness runs it). Keep it out of the home directory instead.
+      "ANSIBLE_REMOTE_TEMP=/tmp/.ansible-remote-tmp",
+    ]
+  }
+
   provisioner "file" {
     source      = "./tests/goss-linux.yaml"
     destination = "/tmp/goss-linux.yaml"

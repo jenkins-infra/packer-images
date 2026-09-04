@@ -1,0 +1,14 @@
+---
+# Single entrypoint playbook for the Ansible-based provisioning of Linux agents.
+# Each unit of work is a role, so roles can be reused and added one at a time as
+# functions are migrated out of provisioning/ubuntu-provision.sh.
+#
+# Tool versions and build-time values are passed as extra-vars by the Packer
+# template: see the "ansible" provisioner of build-jenkins-agent-ubuntu.pkr.hcl.
+- name: Provision Jenkins agent
+  hosts: all
+  become: true
+  gather_facts: false
+
+  roles:
+    - install_jq
