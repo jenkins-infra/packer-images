@@ -38,7 +38,8 @@
 - name: Verify the jq signature
   # No ignore_errors or failed_when: a bad signature must fail the build
   ansible.builtin.command:
-    cmd: gpgv --keyring=jq-keyring.kbx {{ jq_binary_file }}.asc {{ jq_binary_file }}
+    # gpgv resolves a relative --keyring against ~/.gnupg, so pass the full path
+    cmd: gpgv --keyring={{ jq_temp_download_dir.path }}/jq-keyring.kbx {{ jq_binary_file }}.asc {{ jq_binary_file }}
     chdir: "{{ jq_temp_download_dir.path }}"
   changed_when: false
 
