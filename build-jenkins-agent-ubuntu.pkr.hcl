@@ -56,9 +56,16 @@ build {
       "--extra-vars", "@${var.provision_env_file}",
       "--extra-vars", "architecture=${var.architecture}",
     ]
-    # The docker builder exposes no IP, so the plugin proxies through a local SSH
-    # adapter: pipelining avoids the sftp/scp fallback warning on that adapter.
-    ansible_env_vars = ["ANSIBLE_PIPELINING=true"]
+    ansible_env_vars = [
+      # The docker builder exposes no IP, so the plugin proxies through a local SSH
+      # adapter: pipelining avoids the sftp/scp fallback warning on that adapter.
+      "ANSIBLE_PIPELINING=true",
+      # Ansible defaults its remote temporary directory to ~/.ansible/tmp. The
+      # playbook runs as root, so that would leave a root owned directory in the
+      # jenkins user's home and break `ansible --version` for that user (the goss
+      # test harness runs it). Keep it out of the home directory instead.
+      "ANSIBLE_REMOTE_TEMP=/tmp/.ansible-remote-tmp",
+    ]
   }
 
   provisioner "file" {
