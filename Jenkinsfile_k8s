@@ -67,7 +67,7 @@ node('linux-arm64-docker') {
       def agentTypes = []
       def agentTypeFamilies = [
         'linux': ['ubuntu-22.04'],
-        'windows': ['windows-2019', 'windows-2022', 'windows-2025'],
+        'windows': ['windows-2022', 'windows-2025'],
       ]
       def computeTypes = []
       def allPackerProviders = ['amazon-ebs', 'azure-arm', 'docker']
@@ -145,9 +145,6 @@ node('linux-arm64-docker') {
             // Decrease cloud costs: only build a few cells of the matrix if the build is marked as "lightweight"
             if (env.CHANGE_ID && lightweightMatrix) {
               if (compute_type == 'amazon-ebs') {
-                if (agent_type == 'windows-2019') {
-                  return
-                }
                 if (agent_type == 'windows-2022') {
                   return
                 }

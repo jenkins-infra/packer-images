@@ -51,7 +51,7 @@ build {
   }
 
   provisioner "windows-update" {
-    only         = local.skip_on_pr_except_for_2019 ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
+    only         = local.skip_on_pr ? ["skipped-on-pr"] : ["amazon-ebs.windows", "azure-arm.windows"]
     filters = [
       # exclude KB5007651:
       #   Update for Windows Security platform - KB5007651 (Version 10.0.29510.1001)
@@ -118,11 +118,6 @@ build {
     # Previous provisioner might restart
     pause_before = "1m"
   }
-
-  #provisioner "file" {
-  #  source      = "./tests/goss-windows-2019.yaml"
-  #  destination = "C:/goss-windows-2019.yaml"
-  #}
 
   #provisioner "file" {
   #  source      = "./tests/goss-windows.yaml"
