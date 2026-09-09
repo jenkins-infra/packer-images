@@ -72,7 +72,7 @@ node('linux-arm64-docker') {
       def agentTypes = []
       def agentTypeFamilies = [
         'linux': ['ubuntu-22.04'],
-        'windows': ['windows-2019', 'windows-2022', 'windows-2025'],
+        'windows': ['windows-2022', 'windows-2025'],
       ]
       def computeTypes = []
       def allPackerProviders = ['amazon-ebs', 'azure-arm', 'docker']
@@ -150,9 +150,6 @@ node('linux-arm64-docker') {
             // Decrease cloud costs: only build a few cells of the matrix if the build is marked as "lightweight"
             if (env.CHANGE_ID && lightweightMatrix) {
               if (compute_type == 'amazon-ebs') {
-                if (agent_type == 'windows-2019') {
-                  return
-                }
                 if (agent_type == 'windows-2022') {
                   return
                 }
@@ -222,7 +219,7 @@ node('linux-arm64-docker') {
                       // else we would loose the docker image
                       if (pkr_var_image_type == 'docker' && pkr_var_tag_name != null) {
                         stage('Publish all tags for Docker image') {
-                          infra.withDockerPushCredentials {
+                          infra.withContainerRegistry {
                             sh 'docker push --all-tags jenkinsciinfra/jenkins-agent-${PKR_VAR_agent_os_type}-${PKR_VAR_agent_os_version}'
                           }
                         }
@@ -242,7 +239,7 @@ node('linux-arm64-docker') {
       if (env.TAG_NAME != null) {
         stage('Build Docker Manifest') {
           withEnv(['agent_type=ubuntu-22.04']) {
-            infra.withDockerPushCredentials {
+            infra.withContainerRegistry {
               sh 'docker manifest create \
                   jenkinsciinfra/jenkins-agent-${agent_type}:latest \
                   --amend jenkinsciinfra/jenkins-agent-${agent_type}:arm64 \

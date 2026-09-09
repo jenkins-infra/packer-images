@@ -1,16 +1,16 @@
 # if manually change, please update the goss file accordingly
 ansible_core_version: 2.21.0 # TODO track with updatecli
 asdf_version: 0.15.0
-awscli_version: 2.36.37
+awscli_version: 2.36.40
 azcopy_version: 10.32.8
 azurecli_version: 2.90.0
 chocolatey_version: 1.4.0
-compose_version: 5.5.0
+compose_version: 5.5.1
 cst_version: 1.22.1
-docker_buildx_version: 0.36.1
-docker_version: 29.7.2
+docker_buildx_version: 0.37.0
+docker_version: 29.8.0
 doctl_version: 1.168.0
-gh_version: 2.99.0
+gh_version: 2.100.0
 git_lfs_version: 3.8.0
 git_linux_version: 2.55.0
 git_windows_version: 2.55.0
@@ -27,7 +27,7 @@ jenkins_remoting_version: 3391.va_37fa_a_305d6d
 jq_version: 1.8.2
 jxreleaseversion_version: 2.10.7
 kubectl_version: 1.34.11
-launchable_version: 1.124.6
+launchable_version: 1.125.0
 maven_version: 3.9.16
 netlifydeploy_version: 0.1.8
 nodejs_linux_version: 24.20.0
