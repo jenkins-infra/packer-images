@@ -53,8 +53,6 @@ build {
       "--extra-vars", "architecture=${var.architecture}",
     ]
     ansible_env_vars = [
-      # The docker builder has no IP: the plugin proxies through a local SSH adapter,
-      # and pipelining avoids the sftp/scp fallback warning on it
       "ANSIBLE_PIPELINING=true",
       # Default is ~/.ansible/tmp. The play runs as root, which would leave a root
       # owned directory in the jenkins home and break `ansible --version` for that

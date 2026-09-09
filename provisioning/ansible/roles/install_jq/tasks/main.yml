@@ -6,7 +6,6 @@
   register: jq_temp_download_dir
 
 - name: Copy the jq release keyring
-  # Shipped with the role: ubuntu-provision.sh's cleanup() wipes /tmp
   ansible.builtin.copy:
     src: jq-keyring.kbx
     dest: "{{ jq_temp_download_dir.path }}/jq-keyring.kbx"
@@ -14,7 +13,6 @@
 
 - name: Download jq and its detached signature
   ansible.builtin.get_url:
-    # The signature is published in the jq repository's sig/ tree, not as a release asset
     url: "{{ item.url }}"
     dest: "{{ jq_temp_download_dir.path }}/{{ item.dest }}"
     mode: "0644"
@@ -26,7 +24,6 @@
 
 - name: Verify the jq signature
   ansible.builtin.command:
-    # gpgv looks up a relative --keyring under ~/.gnupg, so pass the full path
     cmd: gpgv --keyring={{ jq_temp_download_dir.path }}/jq-keyring.kbx {{ jq_binary_file }}.asc {{ jq_binary_file }}
     chdir: "{{ jq_temp_download_dir.path }}"
   changed_when: false
