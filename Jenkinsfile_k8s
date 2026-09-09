@@ -38,7 +38,7 @@ def withPackerNode(String packer_template, String compute_type, String cpu_archi
   // Build ARM64 CPU Docker images on a native machine (faster than using the local qemu)
   if (cpu_architecture == 'amd64' && compute_type == 'docker') {
     node('linux-amd64-docker') {
-      // This node is allocated outside the top-level withEnv, so it needs the same PATH
+      // Allocated outside the top-level withEnv, so it needs the same PATH
       withEnv(["PATH=${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin:/usr/local/ansible-venv/bin"]) {
         // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)
         def GIT_COMMIT = checkout(scm).GIT_COMMIT
@@ -57,8 +57,8 @@ def withPackerNode(String packer_template, String compute_type, String cpu_archi
 
 
 node('linux-arm64-docker') {
-  // /usr/local/ansible-venv/bin holds ansible-playbook: the `ansible` provisioner runs it
-  // on the agent, and `packer validate` shells out to it, so it must be on the PATH.
+  // The `ansible` provisioner runs ansible-playbook on the agent, and `packer validate`
+  // shells out to it too, so /usr/local/ansible-venv/bin has to be on the PATH.
   withEnv(["PATH=${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin:/usr/local/ansible-venv/bin"]) {
     timeout(time: 150, unit: 'MINUTES') {
       // New agent workspace specified as scripted requires an explicit checkout (compared to declarative)

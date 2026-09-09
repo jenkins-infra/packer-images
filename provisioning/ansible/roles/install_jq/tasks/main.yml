@@ -1,23 +1,12 @@
 ---
-# Installs jq from the official GitHub release, verifying the detached signature.
 # Replaces the install_jq() function of provisioning/ubuntu-provision.sh.
-#
-# Both variables come from the Packer template as extra-vars: jq_version from the
-# tools-versions.yml file already tracked by updatecli, architecture from var.architecture.
-- name: Check that the required variables are defined
-  ansible.builtin.assert:
-    that:
-      - jq_version is defined and jq_version | length > 0
-      - architecture is defined and architecture | length > 0
-    fail_msg: jq_version and architecture must be passed as extra-vars by the Packer template
-
 - name: Create a temporary download directory
   ansible.builtin.tempfile:
     state: directory
   register: jq_temp_download_dir
 
 - name: Copy the jq release keyring
-  # Shipped with the role: /tmp is wiped by ubuntu-provision.sh's cleanup()
+  # Shipped with the role: ubuntu-provision.sh's cleanup() wipes /tmp
   ansible.builtin.copy:
     src: jq-keyring.kbx
     dest: "{{ jq_temp_download_dir.path }}/jq-keyring.kbx"
@@ -25,7 +14,7 @@
 
 - name: Download jq and its detached signature
   ansible.builtin.get_url:
-    # The detached signature is published in the jq repository's sig/ tree (not as a release asset)
+    # The signature is published in the jq repository's sig/ tree, not as a release asset
     url: "{{ item.url }}"
     dest: "{{ jq_temp_download_dir.path }}/{{ item.dest }}"
     mode: "0644"
@@ -36,9 +25,8 @@
       dest: "{{ jq_binary_file }}.asc"
 
 - name: Verify the jq signature
-  # No ignore_errors or failed_when: a bad signature must fail the build
   ansible.builtin.command:
-    # gpgv resolves a relative --keyring against ~/.gnupg, so pass the full path
+    # gpgv looks up a relative --keyring under ~/.gnupg, so pass the full path
     cmd: gpgv --keyring={{ jq_temp_download_dir.path }}/jq-keyring.kbx {{ jq_binary_file }}.asc {{ jq_binary_file }}
     chdir: "{{ jq_temp_download_dir.path }}"
   changed_when: false
