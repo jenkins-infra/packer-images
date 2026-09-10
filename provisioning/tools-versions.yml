@@ -21,7 +21,7 @@ hadolint_version: 2.15.1
 helm_diff_version: 3.15.12
 helm_git_version: 1.5.2
 helm_secrets_version: 4.7.7
-helm_version: 4.2.4
+helm_version: 4.3.0
 helmfile_version: 1.7.4
 jenkins_remoting_version: 3391.va_37fa_a_305d6d
 jq_version: 1.8.2
