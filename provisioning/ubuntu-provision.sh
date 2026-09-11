@@ -677,12 +677,7 @@ function install_playwright() {
   su - "${username}" -c "playwright install --only-shell chromium"
 
   # Symlink chrome binary
-  chrome_binary_search_pattern='chrome*headless*shell'
-  if [ "${ARCHITECTURE}" == "arm64" ]
-  then
-    chrome_binary_search_pattern='headless*shell'
-  fi
-  chrome_binary="$(su - "${username}" -c "find ~/.cache/ms-playwright -type f -name ${chrome_binary_search_pattern}")"
+  chrome_binary="$(su - "${username}" -c "find ~/.cache/ms-playwright -type f -name 'chrome*headless*shell'")"
   ln -s "${chrome_binary}" /usr/local/bin/chromium
 
   # Sanity checks

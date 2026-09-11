@@ -100,7 +100,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.62.1
+      - 1.63.0
   playwright-chromium-cache:
     exec: playwright install --list
     exit-status: 0
