@@ -52,13 +52,6 @@ build {
       "--extra-vars", "@${var.provision_env_file}",
       "--extra-vars", "architecture=${var.architecture}",
     ]
-    ansible_env_vars = [
-      "ANSIBLE_PIPELINING=true",
-      # Default is ~/.ansible/tmp. The play runs as root, which would leave a root
-      # owned directory in the jenkins home and break `ansible --version` for that
-      # user, which the goss harness runs
-      "ANSIBLE_REMOTE_TEMP=/tmp/.ansible-remote-tmp",
-    ]
   }
 
   provisioner "file" {
