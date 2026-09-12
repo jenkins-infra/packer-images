@@ -46,6 +46,20 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
+  provisioner "ansible" {
+    playbook_file = "./provisioning/ansible/provision.yml"
+    extra_arguments = [
+      "--extra-vars", "@${var.provision_env_file}",
+      "--extra-vars", "architecture=${var.architecture}",
+    ]
+    ansible_env_vars = [
+      # The play runs as root but `~` resolves to /home/jenkins here, so the default
+      # remote_tmp lands there root owned and breaks the goss `ansible --version`
+      # check, which runs as jenkins. Pin it where a root run would put it anyway.
+      "ANSIBLE_REMOTE_TEMP=/root/.ansible/tmp",
+    ]
+  }
+
   provisioner "file" {
     source      = "./tests/goss-linux.yaml"
     destination = "/tmp/goss-linux.yaml"
