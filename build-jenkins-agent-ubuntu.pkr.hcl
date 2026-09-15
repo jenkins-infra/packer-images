@@ -52,16 +52,15 @@ build {
       "--extra-vars", "@${var.provision_env_file}",
       "--extra-vars", "architecture=${var.architecture}",
     ]
-    # Rooted in /tmp so it does not depend on which user Ansible connects as, then
-    # removed by the next provisioner so nothing is left in the image.
-    ansible_env_vars = [
-      "ANSIBLE_REMOTE_TEMP=${local.ansible_remote_temp}",
-    ]
   }
 
+  # The provisioner logs in as the user running packer rather than the builder's ssh
+  # user, so Ansible expands its default `~/.ansible` to that user's home while
+  # `become` has root create it. Left there, it breaks `ansible --version` for the
+  # jenkins user, which the goss suite runs.
   provisioner "shell" {
     execute_command = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
-    inline          = ["rm -rf ${local.ansible_remote_temp}"]
+    inline          = ["rm -rf /home/jenkins/.ansible"]
   }
 
   provisioner "file" {

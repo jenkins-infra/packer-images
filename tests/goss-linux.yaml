@@ -157,9 +157,6 @@ command:
     exec: zip -v
     exit-status: 0
 file:
-  # Ansible's remote temporary directory must not survive provisioning
-  /tmp/.ansible-remote-tmp:
-    exists: false
   /home/jenkins:
     contains: []
     exists: true
