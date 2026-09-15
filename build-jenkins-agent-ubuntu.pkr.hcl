@@ -52,12 +52,16 @@ build {
       "--extra-vars", "@${var.provision_env_file}",
       "--extra-vars", "architecture=${var.architecture}",
     ]
+    # Rooted in /tmp so it does not depend on which user Ansible connects as, then
+    # removed by the next provisioner so nothing is left in the image.
     ansible_env_vars = [
-      # The play runs as root but `~` resolves to /home/jenkins here, so the default
-      # remote_tmp lands there root owned and breaks the goss `ansible --version`
-      # check, which runs as jenkins. Pin it where a root run would put it anyway.
-      "ANSIBLE_REMOTE_TEMP=/root/.ansible/tmp",
+      "ANSIBLE_REMOTE_TEMP=${local.ansible_remote_temp}",
     ]
+  }
+
+  provisioner "shell" {
+    execute_command = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
+    inline          = ["rm -rf ${local.ansible_remote_temp}"]
   }
 
   provisioner "file" {

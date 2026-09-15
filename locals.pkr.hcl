@@ -48,6 +48,9 @@ locals {
     for jdk_version in keys(local.jdk_infos[var.agent_os_type][var.architecture]) :
     replace(jdk_version, "jdk", "")
   ])
+  # Ansible's scratch directory on the target, removed once the play is done
+  ansible_remote_temp = "/tmp/.ansible-remote-tmp"
+
   provisioning_env_vars = concat(
     [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"],
     [
