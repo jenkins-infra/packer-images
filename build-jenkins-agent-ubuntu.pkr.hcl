@@ -46,45 +46,19 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
-  # TEMPORARY DEBUGGING, to be removed before merge: which user does the communicator
-  # connect as on each builder, can that user sudo, and what does /home/jenkins look
-  # like before Ansible runs. No execute_command override, so this runs as the
-  # communicator user rather than root.
-  provisioner "shell" {
-    inline = [
-      "echo '===== communicator user ====='",
-      "id",
-      "printenv HOME",
-      "echo '===== sudo ====='",
-      "sudo -n true && echo 'passwordless sudo: yes' || echo 'passwordless sudo: no'",
-      "echo '===== /home/jenkins ====='",
-      "ls -ld /home/jenkins || true",
-      "ls -la /home/jenkins || true",
-      "ls -la /home/jenkins/.ansible || echo 'no /home/jenkins/.ansible yet'",
-      "echo '===== jenkins passwd entry ====='",
-      "getent passwd jenkins || true",
-      "echo '===== end debug ====='",
-    ]
-  }
-
   provisioner "ansible" {
     playbook_file = "./provisioning/ansible/provision.yml"
     extra_arguments = [
       "--extra-vars", "@${var.provision_env_file}",
       "--extra-vars", "architecture=${var.architecture}",
-      # TEMPORARY DEBUGGING, to be removed before merge: shows the resolved
-      # ansible_user and the generated inventory
-      "-vvv",
     ]
+    user = local.ansible_user[var.image_type]
   }
 
-  # The provisioner logs in as the user running packer rather than the builder's ssh
-  # user, so Ansible expands its default `~/.ansible` to that user's home while
-  # `become` has root create it. Left there, it breaks `ansible --version` for the
-  # jenkins user, which the goss suite runs.
+  # Ansible leaves its scratch directory in the connection user's home
   provisioner "shell" {
     execute_command = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
-    inline          = ["rm -rf /home/jenkins/.ansible"]
+    inline          = ["rm -rf ~${local.ansible_user[var.image_type]}/.ansible"]
   }
 
   provisioner "file" {

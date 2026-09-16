@@ -48,6 +48,15 @@ locals {
     for jdk_version in keys(local.jdk_infos[var.agent_os_type][var.architecture]) :
     replace(jdk_version, "jdk", "")
   ])
+  # The ansible provisioner defaults its user to the one running packer, not the one
+  # the communicator connects with, so paths like the remote temporary directory get
+  # computed for a user the commands do not actually run as. Set it per builder.
+  ansible_user = {
+    "docker"     = "root"
+    "amazon-ebs" = "ubuntu"
+    "azure-arm"  = "packer"
+  }
+
   provisioning_env_vars = concat(
     [for key, value in yamldecode(file(var.provision_env_file)) : "${upper(key)}=${value}"],
     [
