@@ -1,15 +1,17 @@
 build {
   source "docker.base" {
-    name = "ubuntu"
+    name      = "ubuntu"
+    exec_user = local.ubuntu_ssh_user[var.image_type]
   }
 
   source "amazon-ebs.base" {
     name         = "ubuntu"
-    ssh_username = "ubuntu"
+    ssh_username = local.ubuntu_ssh_user[var.image_type]
   }
 
   source "azure-arm.base" {
-    name = "ubuntu"
+    name         = "ubuntu"
+    ssh_username = local.ubuntu_ssh_user[var.image_type]
     # List available offers and publishers with the command `az vm image list --output table`
     image_offer     = "0001-com-ubuntu-server-jammy"
     image_publisher = "canonical"
@@ -44,6 +46,21 @@ build {
     environment_vars = local.provisioning_env_vars
     execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
     script           = "./provisioning/ubuntu-provision.sh"
+  }
+
+  provisioner "ansible" {
+    playbook_file = "./provisioning/ansible/provision.yml"
+    extra_arguments = [
+      "--extra-vars", "@${var.provision_env_file}",
+      "--extra-vars", "architecture=${var.architecture}",
+    ]
+    user = local.ubuntu_ssh_user[var.image_type]
+  }
+
+  # Ansible leaves its scratch directory in the connection user's home
+  provisioner "shell" {
+    execute_command = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
+    inline          = ["rm -rf ~${local.ubuntu_ssh_user[var.image_type]}/.ansible"]
   }
 
   provisioner "file" {
