@@ -58,10 +58,6 @@ build {
   }
 
   # Ansible leaves its scratch directory in the connection user's home
-  provisioner "shell" {
-    execute_command = "{{ .Vars }} sudo -E bash '{{ .Path }}'"
-    inline          = ["rm -rf ~${local.ubuntu_ssh_user[var.image_type]}/.ansible"]
-  }
 
   provisioner "file" {
     source      = "./tests/goss-linux.yaml"
