@@ -1,0 +1,10 @@
+---
+# Entrypoint for the Ansible provisioning of Linux agents. One role per unit of
+# work, added as functions move out of provisioning/ubuntu-provision.sh.
+- name: Provision Jenkins agent
+  hosts: all
+  become: true
+  gather_facts: false
+
+  roles:
+    - install_jq

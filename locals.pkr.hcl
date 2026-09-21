@@ -23,6 +23,11 @@ locals {
     "docker"     = "packer"
     "amazon-ebs" = "Administrator" # In AWS EC2, WinRM super admin must be the "Administrator" account
   }
+  ubuntu_ssh_user = {
+    "azure-arm"  = "packer"
+    "docker"     = "root"   # The docker builder execs in the container instead of using SSH
+    "amazon-ebs" = "ubuntu" # Canonical's AMIs only allow this account to log in
+  }
 
   images_versions = yamldecode(file("./images-versions.yaml"))
 
