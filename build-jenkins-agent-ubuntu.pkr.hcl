@@ -51,13 +51,17 @@ build {
   provisioner "ansible" {
     playbook_file = "./provisioning/ansible/provision.yml"
     extra_arguments = [
+      # The `@` prefix makes Ansible read the variables from a file instead of the
+      # command line, so the whole tools-versions.yml is loaded as playbook variables.
+      # Ref. https://developer.hashicorp.com/packer/integrations/hashicorp/ansible/latest/components/provisioner/ansible#extra_arguments
       "--extra-vars", "@${var.provision_env_file}",
       "--extra-vars", "architecture=${var.architecture}",
     ]
+    # The provisioner defaults this to the user running packer rather than the one the
+    # communicator connects with, which does not exist on every builder.
+    # Ref. https://developer.hashicorp.com/packer/integrations/hashicorp/ansible/latest/components/provisioner/ansible#user
     user = local.ubuntu_ssh_user[var.image_type]
   }
-
-  # Ansible leaves its scratch directory in the connection user's home
 
   provisioner "file" {
     source      = "./tests/goss-linux.yaml"

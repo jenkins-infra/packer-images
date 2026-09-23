@@ -2,6 +2,9 @@
 # Entrypoint for the Ansible provisioning of Linux agents. One role per unit of
 # work, added as functions move out of provisioning/ubuntu-provision.sh.
 - name: Provision Jenkins agent
+  # The packer provisioner generates a one host inventory and connects through an SSH
+  # proxy adapter, so `all` is that single build machine.
+  # Ref. https://developer.hashicorp.com/packer/integrations/hashicorp/ansible/latest/components/provisioner/ansible
   hosts: all
   become: true
   gather_facts: false
