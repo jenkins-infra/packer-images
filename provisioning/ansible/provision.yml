@@ -11,3 +11,4 @@
 
   roles:
     - install_jq
+    - install_jenkins_agent_requirements
