@@ -1,8 +1,6 @@
 ---
 azure:
   windows:
-    "2022":
-      amd64: "20348.5622.260906"
     "2025":
       amd64: "26100.33438.260905"
   ubuntu:
@@ -20,7 +18,5 @@ aws:
       amd64: ami-05b2e9c1e4d422698
       arm64: ami-08619b296a370e7fb
   windows:
-    "2022":
-      amd64: ami-0ff797777f713080d
     "2025":
       amd64: ami-05ac15cc17125795b
