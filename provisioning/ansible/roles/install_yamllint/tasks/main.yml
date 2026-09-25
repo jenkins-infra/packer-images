@@ -1,0 +1,8 @@
+---
+# Replaces the install_yamllint() function of provisioning/ubuntu-provision.sh.
+- name: Install yamllint
+  ansible.builtin.apt:
+    name: yamllint
+    state: present
+    install_recommends: false
+    update_cache: true
