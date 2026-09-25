@@ -11,3 +11,6 @@
 
   roles:
     - install_jq
+    - install_yamllint
+    - install_xmllint
+    - install_bc
