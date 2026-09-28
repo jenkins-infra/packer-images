@@ -18,7 +18,7 @@ golang_version: 1.27.1
 golangcilint_version: 2.14.0
 goss_version: 0.4.10
 hadolint_version: 2.15.1
-helm_diff_version: 3.15.13
+helm_diff_version: 3.15.15
 helm_git_version: 1.5.2
 helm_secrets_version: 4.7.8
 helm_version: 4.3.0
@@ -42,7 +42,7 @@ ruby_version: 3.4.8
 sops_version: 3.13.3
 terraform_version: 1.15.9
 typos_version: 1.33.1 # TODO track with updatecli
-updatecli_version: 0.121.0
+updatecli_version: 0.122.0
 vs_buildtools_version_legacy: 16
 vs_buildtools_version: stable
 windows_pwsh_version: 7.6.4
