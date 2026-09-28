@@ -1,5 +1,4 @@
 ---
-# Replaces the install_bc() function of provisioning/ubuntu-provision.sh.
 - name: Install bc
   ansible.builtin.apt:
     name: bc
