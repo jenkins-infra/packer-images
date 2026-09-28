@@ -1,0 +1,11 @@
+---
+- name: Install the Jenkins agent common requirements
+  ansible.builtin.apt:
+    name:
+      - make
+      - unzip
+      - zip
+      - parallel
+    state: present
+    install_recommends: false
+    update_cache: true

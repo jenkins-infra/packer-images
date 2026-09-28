@@ -230,16 +230,6 @@ function install_golangcilint(){
     tar --extract --gunzip --strip-components=1 --directory="/usr/local/bin/" "golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}/golangci-lint"
 }
 
-## Ensure that the Jenkins Agent commons requirements are installed
-function install_JA_requirements(){
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends \
-    make \
-    unzip \
-    zip \
-    parallel
-}
-
 ## setup qemu
 function install_qemu() {
   apt-get update --quiet
@@ -730,7 +720,6 @@ function main() {
   install_docker # needed by the pipeline
   install_jdks # needed by the pipeline
   install_datadog
-  install_JA_requirements
   install_qemu
   install_azcopy
   install_doctl
