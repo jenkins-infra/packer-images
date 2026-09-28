@@ -1,0 +1,6 @@
+---
+- name: Install container-structure-test
+  ansible.builtin.get_url:
+    url: "https://github.com/GoogleContainerTools/container-structure-test/releases/download/v{{ cst_version }}/container-structure-test-linux-{{ architecture }}"
+    dest: /usr/local/bin/container-structure-test
+    mode: a+x

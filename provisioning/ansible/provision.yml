@@ -11,3 +11,7 @@
 
   roles:
     - install_jq
+    - install_sops
+    - install_cst
+    - install_yq
+    - install_kubectl
