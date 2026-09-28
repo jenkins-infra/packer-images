@@ -1,0 +1,6 @@
+---
+- name: Install sops
+  ansible.builtin.get_url:
+    url: "https://github.com/mozilla/sops/releases/download/v{{ sops_version }}/sops-v{{ sops_version }}.linux.{{ architecture }}"
+    dest: /usr/local/bin/sops
+    mode: a+x
