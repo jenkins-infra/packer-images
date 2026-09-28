@@ -1,5 +1,4 @@
 ---
-# Replaces the install_JA_requirements() function of provisioning/ubuntu-provision.sh.
 - name: Install the Jenkins agent common requirements
   ansible.builtin.apt:
     name:
