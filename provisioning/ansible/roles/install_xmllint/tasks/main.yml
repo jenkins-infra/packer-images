@@ -1,0 +1,9 @@
+---
+# Replaces the install_xmllint() function of provisioning/ubuntu-provision.sh.
+# The xmllint binary is provided by the libxml2-utils package.
+- name: Install xmllint
+  ansible.builtin.apt:
+    name: libxml2-utils
+    state: present
+    install_recommends: false
+    update_cache: true

@@ -1,0 +1,7 @@
+---
+- name: Install bc
+  ansible.builtin.apt:
+    name: bc
+    state: present
+    install_recommends: false
+    update_cache: true

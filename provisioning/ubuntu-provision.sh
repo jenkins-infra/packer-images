@@ -673,13 +673,6 @@ function install_ansible() {
   deactivate
 }
 
-## ensure yamllint is installed
-function install_yamllint() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends \
-    yamllint
-}
-
 ## Ensure that the VM is cleaned up of provision artifacts
 function cleanup() {
   export HISTSIZE=0
@@ -704,16 +697,6 @@ function install_typos() {
   tar xvfz /tmp/typos.tar.gz -C /usr/local/bin ./typos
   chmod a+x /usr/local/bin/typos
   rm -rf /tmp/typos.tar.gz
-}
-
-function install_xmllint() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends libxml2-utils
-}
-
-function install_bc() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends bc
 }
 
 function main() {
@@ -761,11 +744,8 @@ function main() {
   install_helm
   install_helmfile
   install_sops
-  install_yamllint
   install_rngd
   install_typos
-  install_xmllint
-  install_bc
 
   echo "== Installed packages:"
   dpkg -l
