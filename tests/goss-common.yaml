@@ -112,7 +112,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 1.16.4
+      - 1.16.5
   updatecli:
     exec: updatecli version
     exit-status: 0
