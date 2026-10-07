@@ -11,6 +11,4 @@
 
   roles:
     - install_jq
-    - install_yamllint
-    - install_xmllint
-    - install_bc
+    - install_jenkins_agent_requirements

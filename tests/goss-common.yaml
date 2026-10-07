@@ -6,13 +6,13 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.36.49
+      - 2.37.9
   azurecli:
     exec: az --version
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.90.0
+      - 2.91.0
   bundle:
     exec: bundle -v
     exit-status: 0
@@ -25,7 +25,7 @@ command:
     exec: docker -v
     exit-status: 0
     stdout:
-      - 29.8.1
+      - 29.8.2
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
@@ -37,12 +37,12 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 5.5.1
+      - 5.6.0
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.101.0
+      - 2.102.0
   git_lfs:
     exec: git-lfs --version
     exit-status: 0
@@ -73,12 +73,12 @@ command:
     exec: kubectl version --client
     exit-status: 0
     stdout:
-      - 1.34.11
+      - 1.34.12
   launchable:
     exec: launchable --version
     exit-status: 0
     stdout:
-      - 1.125.0
+      - 1.125.1
   make:
     exec: make --version
     exit-status: 0
@@ -117,9 +117,9 @@ command:
     exec: updatecli version
     exit-status: 0
     stdout:
-      - 0.121.0
+      - 0.122.1
   yq:
     exec: yq --version
     exit-status: 0
     stdout:
-      - 4.53.6
+      - 4.54.1

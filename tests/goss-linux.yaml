@@ -30,7 +30,7 @@ command:
     exec: doctl version
     exit-status: 0
     stdout:
-      - 1.169.0
+      - 1.178.0
   git:
     exec: git --version
     exit-status: 0
@@ -45,7 +45,7 @@ command:
     exec: golangci-lint --version
     exit-status: 0
     stdout:
-      - 2.13.2
+      - 2.14.0
   helm:
     exec: helm version
     exit-status: 0
@@ -55,14 +55,14 @@ command:
     exec: helmfile --version
     exit-status: 0
     stdout:
-      - 1.8.0
+      - 1.8.1
   helmplugins:
     exec: helm plugin list
     exit-status: 0
     stdout:
-      - /diff.*3.15.13/
+      - /diff.*3.15.15/
       - /helm-git.*1.5.2/
-      - /secrets.*4.7.7/
+      - /secrets.*4.7.8/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
@@ -113,7 +113,7 @@ command:
     exec: /usr/local/bin/python3.14 --version
     exit-status: 0
     stdout:
-      - 3.14.7
+      - 3.14.8
   rsync:
     exec: rsync --version
     exit-status: 0
