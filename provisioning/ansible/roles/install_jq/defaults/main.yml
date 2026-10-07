@@ -1,2 +1,2 @@
 ---
-jq_binary_file: "jq-linux-{{ architecture }}"
+jq_binary_file: "jq-linux-{{ debian_architecture }}"

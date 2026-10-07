@@ -7,7 +7,11 @@
   # Ref. https://developer.hashicorp.com/packer/integrations/hashicorp/ansible/latest/components/provisioner/ansible
   hosts: all
   become: true
-  gather_facts: false
+  # Only the minimal subset, which is enough for ansible_architecture.
+  # Ref. https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/setup_module.html
+  gather_facts: true
+  gather_subset:
+    - "!all"
 
   roles:
     - install_jq
