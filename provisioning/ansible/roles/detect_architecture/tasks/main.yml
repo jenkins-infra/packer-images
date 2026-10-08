@@ -1,0 +1,4 @@
+---
+- name: Register the Debian architecture name of the host
+  ansible.builtin.set_fact:
+    debian_architecture: "{{ debian_architecture_names[ansible_architecture] }}"
