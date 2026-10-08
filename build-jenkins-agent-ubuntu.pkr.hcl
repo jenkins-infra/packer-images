@@ -55,7 +55,6 @@ build {
       # command line, so the whole tools-versions.yml is loaded as playbook variables.
       # Ref. https://developer.hashicorp.com/packer/integrations/hashicorp/ansible/latest/components/provisioner/ansible#extra_arguments
       "--extra-vars", "@${var.provision_env_file}",
-      "--extra-vars", "architecture=${var.architecture}",
     ]
     # The provisioner defaults this to the user running packer rather than the one the
     # communicator connects with, which does not exist on every builder.
