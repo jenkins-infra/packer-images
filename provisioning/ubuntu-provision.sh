@@ -281,8 +281,8 @@ function install_python() {
 	inetutils-inetd
 }
 
-## Install git and git-lfs
-function install_git_gitlfs() {
+## Install git
+function install_git() {
   if [ -n "${GIT_LINUX_VERSION}" ]
   then
     ## a specific git version is required: search it on the official git PPA repositories
@@ -292,16 +292,6 @@ function install_git_gitlfs() {
     ## No git version: install the latest git available in the default repos
     apt-get install --yes --no-install-recommends git
   fi
-
-  ## Install git-lfs (after git)
-  git_lfs_archive="git-lfs-linux-${ARCHITECTURE}-v${GIT_LFS_VERSION}.tar.gz"
-  git_lfs_release_url="https://github.com/git-lfs/git-lfs/releases/download/v${GIT_LFS_VERSION}/${git_lfs_archive}"
-
-  curl --fail --silent --location --show-error --output "/tmp/${git_lfs_archive}" "${git_lfs_release_url}"
-  mkdir -p /tmp/git-lfs
-  tar --extract --directory=/tmp/git-lfs --gzip --verbose --file="/tmp/${git_lfs_archive}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name, since git-lfs 3.2.0.
-  bash -x /tmp/git-lfs/install.sh # Execute in debug mode in case something goes wrong
-  rm -rf /tmp/git-lfs*
 }
 
 ## install the jdks major versions for the current os and platform
@@ -713,7 +703,7 @@ function main() {
   clean_apt
   install_common_requirements
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
-  install_git_gitlfs
+  install_git
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   install_asdf # Before all the others but after the jenkins home is created
   install_goss # needed by the pipeline

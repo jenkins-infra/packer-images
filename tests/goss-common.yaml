@@ -43,11 +43,6 @@ command:
     exit-status: 0
     stdout:
       - 2.102.0
-  git_lfs:
-    exec: git-lfs --version
-    exit-status: 0
-    stdout:
-      - 3.8.0
   goss:
     exec: goss --version
     exit-status: 0
