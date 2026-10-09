@@ -6,7 +6,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.37.9
+      - 2.37.10
   azurecli:
     exec: az --version
     exit-status: 0
@@ -43,11 +43,6 @@ command:
     exit-status: 0
     stdout:
       - 2.102.0
-  git_lfs:
-    exec: git-lfs --version
-    exit-status: 0
-    stdout:
-      - 3.8.0
   goss:
     exec: goss --version
     exit-status: 0
@@ -100,7 +95,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.63.0
+      - 1.64.0
   playwright-chromium-cache:
     exec: playwright install --list
     exit-status: 0

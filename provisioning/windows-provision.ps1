@@ -203,19 +203,6 @@ $downloads['git'] = @{
     'path' = "$baseDir\git\cmd;$baseDir\git\usr\bin";
     'cleanupLocal' = 'true';
 };
-$downloads['gitlfs'] = @{
-    'url' = 'https://github.com/git-lfs/git-lfs/releases/download/v{0}/git-lfs-windows-amd64-v{0}.zip' -f $env:GIT_LFS_VERSION;
-    'local' = "$baseDir\GitLfs.zip";
-    'expandTo' = "$baseDir";
-    'postExpand' = {
-        #There is a 1st-level directory in the archive since git-lfs 3.2.0
-        & Move-Item -Path "$baseDir\git-lfs-$env:GIT_LFS_VERSION\*" -Destination "$baseDir\git\mingw64\bin";
-        & Remove-Item -Force -Recurse "$baseDir\git-lfs-$env:GIT_LFS_VERSION";
-        & "$baseDir\git\cmd\git.exe" lfs install;
-    };
-    'path' = "$baseDir\git\mingw64\bin";
-    'cleanupLocal' = 'true';
-};
 $downloads['dockercompose'] = @{
     'url' = 'https://github.com/docker/compose/releases/download/v{0}/docker-compose-Windows-x86_64.exe' -f $env:COMPOSE_VERSION;
     'local' = "$baseDir\docker-compose.exe"

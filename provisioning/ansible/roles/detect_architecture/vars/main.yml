@@ -1,0 +1,6 @@
+---
+# Most upstream release assets are named after the Debian architectures, while the
+# ansible_architecture fact holds the kernel ones (`uname -m`).
+debian_architecture_names:
+  x86_64: amd64
+  aarch64: arm64
