@@ -6,6 +6,10 @@
       - unzip
       - zip
       - parallel
+      - yamllint
+      # Provides the xmllint binary
+      - libxml2-utils
+      - bc
     state: present
     install_recommends: false
     update_cache: true
