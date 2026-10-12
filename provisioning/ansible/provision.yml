@@ -16,3 +16,8 @@
   roles:
     - install_jq
     - install_jenkins_agent_requirements
+    - install_doctl
+    - install_xq
+    - install_helmfile
+    - install_jx_release_version
+    - install_gh
