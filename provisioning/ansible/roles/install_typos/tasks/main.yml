@@ -1,0 +1,13 @@
+---
+# The archive is named after the kernel architecture, which is what
+# ansible_architecture already holds.
+- name: Install typos
+  ansible.builtin.unarchive:
+    src: "https://github.com/crate-ci/typos/releases/download/v{{ typos_version }}/typos-v{{ typos_version }}-{{ ansible_architecture }}-unknown-linux-musl.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - ./typos
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true
