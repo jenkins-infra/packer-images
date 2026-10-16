@@ -16,6 +16,10 @@
   roles:
     - install_jq
     - install_jenkins_agent_requirements
+    - install_sops
+    - install_container_structure_test
+    - install_yq
+    - install_kubectl
     - install_doctl
     - install_xq
     - install_helmfile

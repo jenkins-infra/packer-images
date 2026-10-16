@@ -336,13 +336,6 @@ function install_helm(){
   su - "${username}" -c "helm plugin install https://github.com/aslafy-z/helm-git.git --version v${HELM_GIT_VERSION} --verify=false"
 }
 
-## Ensure that`sops` is installed
-function install_sops(){
-  curl --fail --silent --location --show-error --output "${install_dir}"/sops \
-    "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${ARCHITECTURE}"
-  chmod +x "${install_dir}"/sops
-}
-
 ## Ensure that maven is installed and configured (version from environment)
 function install_maven() {
   # If the Apache mirrors responds an error, we usually fallback to their "archives" system as it hosts older Maven versions
@@ -365,13 +358,6 @@ function install_hadolint() {
   curl --fail --silent --location --show-error --output /usr/local/bin/hadolint \
     "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-${hadolint_arch_suffix}"
   chmod a+x /usr/local/bin/hadolint
-}
-
-## Ensure that google container-structure-test is installed
-function install_cst() {
-  curl --fail --silent --location --show-error --output /usr/local/bin/container-structure-test \
-    "https://github.com/GoogleContainerTools/container-structure-test/releases/download/v${CST_VERSION}/container-structure-test-linux-${ARCHITECTURE}"
-  chmod a+x /usr/local/bin/container-structure-test
 }
 
 ## Ensure that azure-cli is installed
@@ -415,13 +401,6 @@ function install_ruby() {
   # Install Ruby with ASDF and set it as default installation
   install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
   install_asdf_package ruby "${versionToInstall}"
-}
-
-## Install Yq with asdf
-function install_yq() {
-  curl --fail --silent --show-error --output "${install_dir}/yq" --location \
-    "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCHITECTURE}"
-  chmod a+x "${install_dir}/yq"
 }
 
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
@@ -509,14 +488,6 @@ function install_terraform(){
   curl --silent --show-error --location --output "${archive_path}" "${download_url}"
   unzip "${archive_path}" -d /usr/local/bin
   rm -f "${archive_path}"
-}
-
-function install_kubectl() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
-
-  curl --silent --location --show-error "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${ARCHITECTURE}/kubectl" --output /usr/local/bin/kubectl
-  chmod a+x /usr/local/bin/kubectl
 }
 
 ## Ensure Goss is installed
@@ -663,24 +634,20 @@ function main() {
   install_docker_compose
   install_maven
   install_hadolint
-  install_cst
   install_azurecli
   install_golang
   install_golangcilint # must come after golang
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"
-  install_yq
   install_packer
   install_updatecli
   install_awscli
   install_netlifydeploy
   install_terraform
-  install_kubectl
   install_nodejs
   install_playwright
   install_launchable
   install_helm
-  install_sops
   install_rngd
   install_typos
 
