@@ -6,7 +6,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.37.12
+      - 2.38.1
   azurecli:
     exec: az --version
     exit-status: 0
@@ -73,7 +73,7 @@ command:
     exec: launchable --version
     exit-status: 0
     stdout:
-      - 1.125.1
+      - 1.125.2
   make:
     exec: make --version
     exit-status: 0
@@ -95,7 +95,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.64.0
+      - 1.64.1
   playwright-chromium-cache:
     exec: playwright install --list
     exit-status: 0

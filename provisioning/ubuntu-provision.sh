@@ -349,13 +349,6 @@ function install_helmfile(){
     tar --extract --gunzip --directory="${install_dir}"/  helmfile
 }
 
-## Ensure that`sops` is installed
-function install_sops(){
-  curl --fail --silent --location --show-error --output "${install_dir}"/sops \
-    "https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${ARCHITECTURE}"
-  chmod +x "${install_dir}"/sops
-}
-
 ## Ensure that maven is installed and configured (version from environment)
 function install_maven() {
   # If the Apache mirrors responds an error, we usually fallback to their "archives" system as it hosts older Maven versions
@@ -367,13 +360,6 @@ function install_maven() {
   tar --extract --gunzip --file="/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" --directory=/usr/share/
   ln -s "/usr/share/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/bin/mvn
   rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
-}
-
-## Ensure that google container-structure-test is installed
-function install_cst() {
-  curl --fail --silent --location --show-error --output /usr/local/bin/container-structure-test \
-    "https://github.com/GoogleContainerTools/container-structure-test/releases/download/v${CST_VERSION}/container-structure-test-linux-${ARCHITECTURE}"
-  chmod a+x /usr/local/bin/container-structure-test
 }
 
 ## Ensure that jx-release-version is installed
@@ -443,13 +429,6 @@ function install_xq() {
     "https://github.com/sibprogrammer/xq/releases/download/v${XQ_VERSION}/xq_${XQ_VERSION}_linux_${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ xq
 }
 
-## Install Yq with asdf
-function install_yq() {
-  curl --fail --silent --show-error --output "${install_dir}/yq" --location \
-    "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCHITECTURE}"
-  chmod a+x "${install_dir}/yq"
-}
-
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
 function install_packer() {
   apt-get update --quiet
@@ -502,14 +481,6 @@ function install_awscli() {
   unzip "${archive_path}" -d /tmp
   bash /tmp/aws/install
   rm -rf /tmp/aws*
-}
-
-function install_kubectl() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
-
-  curl --silent --location --show-error "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${ARCHITECTURE}/kubectl" --output /usr/local/bin/kubectl
-  chmod a+x /usr/local/bin/kubectl
 }
 
 ## Ensure Goss is installed
@@ -645,7 +616,6 @@ function main() {
   install_ansible
   install_docker_compose
   install_maven
-  install_cst
   install_jxreleaseversion
   install_azurecli
   install_gh
@@ -654,16 +624,13 @@ function main() {
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"
   install_xq
-  install_yq
   install_packer
   install_awscli
-  install_kubectl
   install_nodejs
   install_playwright
   install_launchable
   install_helm
   install_helmfile
-  install_sops
   install_rngd
 
   echo "== Installed packages:"

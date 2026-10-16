@@ -30,7 +30,7 @@ command:
     exec: doctl version
     exit-status: 0
     stdout:
-      - 1.182.0
+      - 2.0.0
   git:
     exec: git --version
     exit-status: 0
@@ -97,7 +97,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 24.21.0
+      - 24.22.0
       - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version
