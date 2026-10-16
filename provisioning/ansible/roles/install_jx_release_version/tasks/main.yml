@@ -1,0 +1,11 @@
+---
+- name: Install jx-release-version
+  ansible.builtin.unarchive:
+    src: "https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v{{ jxreleaseversion_version }}/jx-release-version-linux-{{ debian_architecture }}.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - jx-release-version
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true

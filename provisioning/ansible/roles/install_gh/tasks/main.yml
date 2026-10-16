@@ -1,0 +1,25 @@
+---
+# Unlike the other archives, this one holds the binary under a versioned directory
+# next to the manpages and completions, so it is extracted and then picked out.
+- name: Create a temporary download directory
+  ansible.builtin.tempfile:
+    state: directory
+  register: gh_temp_download_dir
+
+- name: Download and extract the gh archive
+  ansible.builtin.unarchive:
+    src: "https://github.com/cli/cli/releases/download/v{{ gh_version }}/gh_{{ gh_version }}_linux_{{ debian_architecture }}.tar.gz"
+    dest: "{{ gh_temp_download_dir.path }}"
+    remote_src: true
+
+- name: Install gh
+  ansible.builtin.copy:
+    src: "{{ gh_temp_download_dir.path }}/gh_{{ gh_version }}_linux_{{ debian_architecture }}/bin/gh"
+    dest: /usr/local/bin/gh
+    mode: a+x
+    remote_src: true
+
+- name: Remove the temporary download directory
+  ansible.builtin.file:
+    path: "{{ gh_temp_download_dir.path }}"
+    state: absent
