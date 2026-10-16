@@ -20,3 +20,8 @@
     - install_container_structure_test
     - install_yq
     - install_kubectl
+    - install_updatecli
+    - install_terraform
+    - install_hadolint
+    - install_typos
+    - install_netlify_deploy

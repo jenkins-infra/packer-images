@@ -362,17 +362,6 @@ function install_maven() {
   rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 }
 
-## Ensure that hadolint is installed
-function install_hadolint() {
-  hadolint_arch_suffix="${ARCHITECTURE}"
-  if [ "${hadolint_arch_suffix}" == "amd64" ]; then
-    hadolint_arch_suffix="x86_64"
-  fi
-  curl --fail --silent --location --show-error --output /usr/local/bin/hadolint \
-    "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-${hadolint_arch_suffix}"
-  chmod a+x /usr/local/bin/hadolint
-}
-
 ## Ensure that jx-release-version is installed
 function install_jxreleaseversion() {
   curl --fail --silent --location --show-error --output /tmp/jx-release-version.tgz \
@@ -479,13 +468,6 @@ function install_datadog() {
   systemctl disable datadog-agent
 }
 
-function install_updatecli() {
-  local archive_path=/var/cache/apt/archives/updatecli.deb
-  curl --silent --location --show-error "https://github.com/updatecli/updatecli/releases/download/v${UPDATECLI_VERSION}/updatecli_${ARCHITECTURE}.deb" --output "${archive_path}"
-  dpkg -i "${archive_path}"
-  rm -f "${archive_path}"
-}
-
 # https://docs.aws.amazon.com/cli/latest/userguide/getting-started-version.html
 function install_awscli() {
   local archive_path download_url
@@ -499,32 +481,6 @@ function install_awscli() {
   unzip "${archive_path}" -d /tmp
   bash /tmp/aws/install
   rm -rf /tmp/aws*
-}
-
-function install_netlifydeploy() {
-  local archive_path download_url
-  archive_path=/tmp/netlifydeploy.tgz
-  download_url="https://github.com/halkeye/netlify-golang-deploy/releases/download/v${NETLIFYDEPLOY_VERSION}/netlify-golang-deploy_${NETLIFYDEPLOY_VERSION}_Linux_x86_64.tar.gz"
-  if test "${ARCHITECTURE}" == "arm64"
-  then
-    download_url="https://github.com/halkeye/netlify-golang-deploy/releases/download/v${NETLIFYDEPLOY_VERSION}/netlify-golang-deploy_${NETLIFYDEPLOY_VERSION}_Linux_arm64.tar.gz"
-  fi
-  curl --silent --location --show-error "${download_url}" --output "${archive_path}"
-  tar --extract --gunzip --file="${archive_path}" --directory=/tmp
-  mv /tmp/netlify-golang-deploy /usr/local/bin/netlify-deploy
-  rm -rf /tmp/netlify*
-}
-
-function install_terraform(){
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends curl unzip # Should already be there but this function should be autonomous
-
-  local archive_path download_url
-  archive_path=/tmp/terraform.zip
-  download_url="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${ARCHITECTURE}.zip"
-  curl --silent --show-error --location --output "${archive_path}" "${download_url}"
-  unzip "${archive_path}" -d /usr/local/bin
-  rm -f "${archive_path}"
 }
 
 ## Ensure Goss is installed
@@ -639,17 +595,6 @@ function install_rngd() {
   systemctl start rngd || true
 }
 
-## Install Typos
-function install_typos() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends curl # Should already be there but this function should be autonomous
-
-  curl --silent --show-error --location --output /tmp/typos.tar.gz "https://github.com/crate-ci/typos/releases/download/v${TYPOS_VERSION}/typos-v${TYPOS_VERSION}-$(uname -m)-unknown-linux-musl.tar.gz"
-  tar xvfz /tmp/typos.tar.gz -C /usr/local/bin ./typos
-  chmod a+x /usr/local/bin/typos
-  rm -rf /tmp/typos.tar.gz
-}
-
 function main() {
   check_commands
   copy_custom_scripts
@@ -671,7 +616,6 @@ function main() {
   install_ansible
   install_docker_compose
   install_maven
-  install_hadolint
   install_jxreleaseversion
   install_azurecli
   install_gh
@@ -681,17 +625,13 @@ function main() {
   install_ruby "${RUBY_VERSION}"
   install_xq
   install_packer
-  install_updatecli
   install_awscli
-  install_netlifydeploy
-  install_terraform
   install_nodejs
   install_playwright
   install_launchable
   install_helm
   install_helmfile
   install_rngd
-  install_typos
 
   echo "== Installed packages:"
   dpkg -l

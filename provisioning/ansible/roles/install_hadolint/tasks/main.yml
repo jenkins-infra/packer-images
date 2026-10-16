@@ -1,0 +1,6 @@
+---
+- name: Install hadolint
+  ansible.builtin.get_url:
+    url: "https://github.com/hadolint/hadolint/releases/download/v{{ hadolint_version }}/hadolint-Linux-{{ hadolint_architecture_names[ansible_architecture] }}"
+    dest: /usr/local/bin/hadolint
+    mode: a+x

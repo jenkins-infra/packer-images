@@ -1,0 +1,11 @@
+---
+- name: Install terraform
+  ansible.builtin.unarchive:
+    src: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_{{ debian_architecture }}.zip"
+    dest: /usr/local/bin
+    include:
+      - terraform
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true
