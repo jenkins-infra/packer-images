@@ -16,7 +16,7 @@ aws:
   ubuntu:
     "22.04":
       amd64: ami-0d966c673c03a734a
-      arm64: ami-05f65648d73f8b67e
+      arm64: ami-031b51870593a0b51
   windows:
     "2025":
       amd64: ami-0ea8d88277ae01b73
