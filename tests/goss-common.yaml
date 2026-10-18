@@ -7,6 +7,11 @@ command:
     timeout: 20000
     stdout:
       - 2.38.1
+  azcopy:
+    exec: azcopy --version
+    exit-status: 0
+    stdout:
+      - 10.32.8
   azurecli:
     exec: az --version
     exit-status: 0
