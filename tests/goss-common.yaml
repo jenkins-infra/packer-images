@@ -7,6 +7,11 @@ command:
     timeout: 20000
     stdout:
       - 2.38.1
+  azcopy:
+    exec: azcopy --version
+    exit-status: 0
+    stdout:
+      - 10.32.8
   azurecli:
     exec: az --version
     exit-status: 0
@@ -25,7 +30,7 @@ command:
     exec: docker -v
     exit-status: 0
     stdout:
-      - 29.9.0
+      - 29.9.1
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
