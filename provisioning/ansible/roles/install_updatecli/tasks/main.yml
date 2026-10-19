@@ -1,20 +1,4 @@
 ---
-- name: Create a temporary download directory
-  ansible.builtin.tempfile:
-    state: directory
-  register: updatecli_temp_download_dir
-
-- name: Download the updatecli package
-  ansible.builtin.get_url:
-    url: "https://github.com/updatecli/updatecli/releases/download/v{{ updatecli_version }}/updatecli_{{ debian_architecture }}.deb"
-    dest: "{{ updatecli_temp_download_dir.path }}/updatecli.deb"
-    mode: "0644"
-
 - name: Install updatecli
   ansible.builtin.apt:
-    deb: "{{ updatecli_temp_download_dir.path }}/updatecli.deb"
-
-- name: Remove the temporary download directory
-  ansible.builtin.file:
-    path: "{{ updatecli_temp_download_dir.path }}"
-    state: absent
+    deb: "https://github.com/updatecli/updatecli/releases/download/v{{ updatecli_version }}/updatecli_{{ debian_architecture }}.deb"
