@@ -11,11 +11,6 @@ command:
     exit-status: 0
     stdout:
       - v0.15.0
-  azcopy:
-    exec: azcopy --version
-    exit-status: 0
-    stdout:
-      - 10.32.8
   bc:
     exec: bc --version
     exit-status: 0
@@ -45,7 +40,7 @@ command:
     exec: golangci-lint --version
     exit-status: 0
     stdout:
-      - 2.14.0
+      - 2.15.0
   helm:
     exec: helm version
     exit-status: 0
@@ -55,7 +50,7 @@ command:
     exec: helmfile --version
     exit-status: 0
     stdout:
-      - 1.8.1
+      - 1.8.2
   helmplugins:
     exec: helm plugin list
     exit-status: 0
