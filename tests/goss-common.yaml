@@ -6,7 +6,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.38.1
+      - 2.38.3
   azcopy:
     exec: azcopy --version
     exit-status: 0
