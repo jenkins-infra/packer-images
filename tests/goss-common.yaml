@@ -30,7 +30,7 @@ command:
     exec: docker -v
     exit-status: 0
     stdout:
-      - 29.9.1
+      - 29.9.2
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
