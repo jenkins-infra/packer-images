@@ -1,0 +1,11 @@
+---
+- name: Install helmfile
+  ansible.builtin.unarchive:
+    src: "https://github.com/helmfile/helmfile/releases/download/v{{ helmfile_version }}/helmfile_{{ helmfile_version }}_linux_{{ debian_architecture }}.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - helmfile
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true

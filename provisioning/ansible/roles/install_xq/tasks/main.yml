@@ -1,0 +1,11 @@
+---
+- name: Install xq
+  ansible.builtin.unarchive:
+    src: "https://github.com/sibprogrammer/xq/releases/download/v{{ xq_version }}/xq_{{ xq_version }}_linux_{{ debian_architecture }}.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - xq
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true
