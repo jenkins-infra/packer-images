@@ -2,7 +2,7 @@
 ansible_core_version: 2.21.0 # TODO track with updatecli
 asdf_version: 0.15.0
 awscli_version: 2.38.1
-azcopy_version: 10.32.8
+azcopy_version: 10.34.0
 azurecli_version: 2.91.0
 chocolatey_version: 1.4.0
 compose_version: 5.6.0
