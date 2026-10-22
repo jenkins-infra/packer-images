@@ -25,3 +25,8 @@
     - install_helmfile
     - install_jx_release_version
     - install_gh
+    - install_updatecli
+    - install_terraform
+    - install_hadolint
+    - install_typos
+    - install_netlify_deploy

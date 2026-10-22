@@ -1,0 +1,4 @@
+---
+- name: Install updatecli
+  ansible.builtin.apt:
+    deb: "https://github.com/updatecli/updatecli/releases/download/v{{ updatecli_version }}/updatecli_{{ debian_architecture }}.deb"

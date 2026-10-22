@@ -1,0 +1,13 @@
+---
+- name: Install netlify-deploy
+  ansible.builtin.unarchive:
+    src: "https://github.com/halkeye/netlify-golang-deploy/releases/download/v{{ netlifydeploy_version }}/netlify-golang-deploy_{{ netlifydeploy_version }}_Linux_{{ netlify_deploy_architecture_names[ansible_architecture] }}.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - netlify-golang-deploy
+    extra_opts:
+      - --transform=s/netlify-golang-deploy/netlify-deploy/
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true

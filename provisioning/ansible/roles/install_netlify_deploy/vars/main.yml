@@ -1,0 +1,6 @@
+---
+# Same naming as the hadolint release: the kernel name on amd64, the Debian one
+# on arm64.
+netlify_deploy_architecture_names:
+  x86_64: x86_64
+  aarch64: arm64
