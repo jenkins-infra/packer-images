@@ -321,12 +321,6 @@ function install_docker_compose(){
   chmod a+x /usr/local/bin/docker-compose
 }
 
-## Ensure that DOCTL is installed
-function install_doctl(){
-  curl --fail --silent --location --show-error \
-    "https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ doctl
-}
-
 ## Ensure that`helm` and its plugins are installed
 function install_helm(){
   curl --fail --silent --location --show-error \
@@ -342,13 +336,6 @@ function install_helm(){
   su - "${username}" -c "helm plugin install https://github.com/aslafy-z/helm-git.git --version v${HELM_GIT_VERSION} --verify=false"
 }
 
-## Ensure that`helmfile` is installed
-function install_helmfile(){
-  curl --fail --silent --location --show-error \
-    "https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_${ARCHITECTURE}.tar.gz" | \
-    tar --extract --gunzip --directory="${install_dir}"/  helmfile
-}
-
 ## Ensure that maven is installed and configured (version from environment)
 function install_maven() {
   # If the Apache mirrors responds an error, we usually fallback to their "archives" system as it hosts older Maven versions
@@ -360,15 +347,6 @@ function install_maven() {
   tar --extract --gunzip --file="/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" --directory=/usr/share/
   ln -s "/usr/share/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/bin/mvn
   rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
-}
-
-## Ensure that jx-release-version is installed
-function install_jxreleaseversion() {
-  curl --fail --silent --location --show-error --output /tmp/jx-release-version.tgz \
-    "https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v${JXRELEASEVERSION_VERSION}/jx-release-version-linux-${ARCHITECTURE}.tar.gz"
-  tar --extract --gunzip --file=/tmp/jx-release-version.tgz --directory=/tmp
-  cp /tmp/jx-release-version /usr/local/bin/jx-release-version
-  rm -rf /tmp/jx*
 }
 
 ## Ensure that azure-cli is installed
@@ -401,15 +379,6 @@ function install_azcopy() {
   rm -f "${azcopy_pkg}"
 }
 
-## Ensure that the GitHub command line (`gh`) is installed
-function install_gh() {
-  curl --silent --show-error --location --output /tmp/gh.tar.gz \
-    "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${ARCHITECTURE}.tar.gz"
-  tar --extract --gunzip --file=/tmp/gh.tar.gz --directory=/tmp
-  cp "/tmp/gh_${GH_VERSION}_linux_${ARCHITECTURE}/bin/gh" /usr/local/bin/gh
-  rm -rf /tmp/gh*
-}
-
 ## Install Ruby with asdf
 function install_ruby() {
   versionToInstall="${1:-$RUBY_VERSION}"
@@ -421,12 +390,6 @@ function install_ruby() {
   # Install Ruby with ASDF and set it as default installation
   install_asdf_plugin ruby https://github.com/asdf-vm/asdf-ruby.git
   install_asdf_package ruby "${versionToInstall}"
-}
-
-## Install Xq
-function install_xq() {
-  curl --fail --silent --location --show-error \
-    "https://github.com/sibprogrammer/xq/releases/download/v${XQ_VERSION}/xq_${XQ_VERSION}_linux_${ARCHITECTURE}.tar.gz" | tar --extract --gunzip --directory="${install_dir}"/ xq
 }
 
 ## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
@@ -611,26 +574,21 @@ function main() {
   install_datadog
   install_qemu
   install_azcopy
-  install_doctl
   install_python
   install_ansible
   install_docker_compose
   install_maven
-  install_jxreleaseversion
   install_azurecli
-  install_gh
   install_golang
   install_golangcilint # must come after golang
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"
-  install_xq
   install_packer
   install_awscli
   install_nodejs
   install_playwright
   install_launchable
   install_helm
-  install_helmfile
   install_rngd
 
   echo "== Installed packages:"

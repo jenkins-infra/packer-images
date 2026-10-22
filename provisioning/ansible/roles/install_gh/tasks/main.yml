@@ -1,0 +1,15 @@
+---
+# The archive holds the binary under a versioned directory next to the manpages and
+# completions, so the stored path is matched and its two leading components stripped.
+- name: Install gh
+  ansible.builtin.unarchive:
+    src: "https://github.com/cli/cli/releases/download/v{{ gh_version }}/gh_{{ gh_version }}_linux_{{ debian_architecture }}.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - "gh_{{ gh_version }}_linux_{{ debian_architecture }}/bin/gh"
+    extra_opts:
+      - --strip-components=2
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true

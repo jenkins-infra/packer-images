@@ -35,7 +35,7 @@ command:
     exec: go version
     exit-status: 0
     stdout:
-      - 1.27.2
+      - 1.27.3
   golangci-lint:
     exec: golangci-lint --version
     exit-status: 0
@@ -92,7 +92,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 24.22.0
+      - 24.22.1
       - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version

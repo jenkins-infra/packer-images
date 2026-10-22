@@ -20,6 +20,11 @@
     - install_container_structure_test
     - install_yq
     - install_kubectl
+    - install_doctl
+    - install_xq
+    - install_helmfile
+    - install_jx_release_version
+    - install_gh
     - install_updatecli
     - install_terraform
     - install_hadolint

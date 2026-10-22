@@ -6,12 +6,12 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.38.1
+      - 2.38.3
   azcopy:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.32.8
+      - 10.34.1
   azurecli:
     exec: az --version
     exit-status: 0
@@ -30,7 +30,7 @@ command:
     exec: docker -v
     exit-status: 0
     stdout:
-      - 29.9.1
+      - 29.9.2
   docker_buildx:
     exec: docker buildx version
     exit-status: 0
@@ -42,12 +42,12 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 5.6.0
+      - 5.6.1
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.102.0
+      - 2.103.0
   goss:
     exec: goss --version
     exit-status: 0
@@ -68,7 +68,7 @@ command:
     exec: jx-release-version -version
     exit-status: 0
     stdout:
-      - 2.10.7
+      - 2.10.8
   kubectl:
     exec: kubectl version --client
     exit-status: 0
@@ -117,7 +117,7 @@ command:
     exec: updatecli version
     exit-status: 0
     stdout:
-      - 0.122.1
+      - 0.123.0
   yq:
     exec: yq --version
     exit-status: 0

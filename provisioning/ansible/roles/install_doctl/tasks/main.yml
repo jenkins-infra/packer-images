@@ -1,0 +1,11 @@
+---
+- name: Install doctl
+  ansible.builtin.unarchive:
+    src: "https://github.com/digitalocean/doctl/releases/download/v{{ doctl_version }}/doctl-{{ doctl_version }}-linux-{{ debian_architecture }}.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - doctl
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true

@@ -1,19 +1,19 @@
 # if manually change, please update the goss file accordingly
 ansible_core_version: 2.21.0 # TODO track with updatecli
 asdf_version: 0.15.0
-awscli_version: 2.38.1
-azcopy_version: 10.32.8
+awscli_version: 2.38.3
+azcopy_version: 10.34.1
 azurecli_version: 2.91.0
 chocolatey_version: 1.4.0
-compose_version: 5.6.0
+compose_version: 5.6.1
 cst_version: 1.22.1
-docker_buildx_version: 0.38.0
-docker_version: 29.9.1
+docker_buildx_version: 0.38.1
+docker_version: 29.9.2
 doctl_version: 2.0.0
-gh_version: 2.102.0
+gh_version: 2.103.0
 git_linux_version: 2.55.0
 git_windows_version: 2.55.0
-golang_version: 1.27.2
+golang_version: 1.27.3
 golangcilint_version: 2.15.0
 goss_version: 0.4.10
 hadolint_version: 2.15.1
@@ -24,12 +24,12 @@ helm_version: 4.3.1
 helmfile_version: 1.8.2
 jenkins_remoting_version: 3391.va_37fa_a_305d6d
 jq_version: 1.8.2
-jxreleaseversion_version: 2.10.7
+jxreleaseversion_version: 2.10.8
 kubectl_version: 1.34.12
 launchable_version: 1.125.2
 maven_version: 3.10.0
 netlifydeploy_version: 0.2.2
-nodejs_linux_version: 24.22.0
+nodejs_linux_version: 24.22.1
 nodejs_windows_version: 24.22.0
 nuget_version: 7.9.0
 openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys
@@ -41,7 +41,7 @@ ruby_version: 3.4.8
 sops_version: 3.13.3
 terraform_version: 1.15.9
 typos_version: 1.33.1 # TODO track with updatecli
-updatecli_version: 0.122.1
+updatecli_version: 0.123.0
 vs_buildtools_version_legacy: 16
 vs_buildtools_version: stable
 windows_pwsh_version: 7.6.4
