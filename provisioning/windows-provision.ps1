@@ -193,7 +193,7 @@ $downloads['maven'] = @{
 };
 $gitUrl = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.1/MinGit-{0}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION
 if ($env:GIT_WINDOWS_PATCH_VERSION -gt 1) {
-    $gitUrl = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.{1}/MinGit-{0}.{1}-64-bit.zip' -f $env:GIT_VERSION, $env:GIT_PATCH_VERSION
+    $gitUrl = 'https://github.com/git-for-windows/git/releases/download/v{0}.windows.{1}/MinGit-{0}.{1}-64-bit.zip' -f $env:GIT_WINDOWS_VERSION, $env:GIT_WINDOWS_PATCH_VERSION
 }
 $downloads['git'] = @{
     'url' = $gitUrl;
