@@ -55,6 +55,21 @@ targets:
         - tests/goss-windows.yaml
       key: $.command.python3.stdout[0]
     scmid: default
+  updatePythonExecInGoss:
+    name: Update Python executable version in Goss tests
+    kind: yaml
+    sourceid: lastReleaseVersion
+    transformers:
+      - findsubmatch:
+          pattern: '(\d+\.\d+)\.\d+'
+          capturepattern: '/usr/local/bin/python\1 --version'
+    spec:
+      engine: yamlpath
+      # TODO: update Windows tests too when they'll specify a specific minor version
+      files:
+        - tests/goss-linux.yaml
+      key: $.command.python3.exec
+    scmid: default
 
 actions:
   default:
