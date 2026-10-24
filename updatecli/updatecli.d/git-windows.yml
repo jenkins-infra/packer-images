@@ -24,19 +24,33 @@ sources:
       username: "{{ .github.username }}"
       versionfilter:
         kind: regex
-        ## Latest stable v{x.y.z}.windows.1
-        pattern: 'v(\d*)\.(\d*)\.(\d*)\.windows\.1$'
+        ## Latest stable v{x.y.z}.windows.<patch>
+        pattern: 'v(\d*)\.(\d*)\.(\d*)\.windows\.(\d*)$'
     transformers:
       - trimprefix: "v"
-      - trimsuffix: ".windows.1"
 
 targets:
   updateGitVersion:
     name: Update the Git Windows version in the Packer default values
     kind: yaml
+    transformers:
+      - findsubmatch:
+          pattern: '(.*).windows\.(\d*)$'
+          captureindex: 1
     spec:
       file: "provisioning/tools-versions.yml"
       key: "git_windows_version"
+    scmid: default
+  updateGitPatchVersion:
+    name: Update the Git Package Windows patch in the Packer default values
+    kind: yaml
+    transformers:
+      - findsubmatch:
+          pattern: '(.*).windows\.(\d*)$'
+          captureindex: 2
+    spec:
+      file: "provisioning/tools-versions.yml"
+      key: "git_windows_patch_version"
     scmid: default
 
 actions:
