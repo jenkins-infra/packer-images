@@ -11,7 +11,7 @@ docker_buildx_version: 0.38.1
 docker_version: 29.9.2
 doctl_version: 2.0.0
 gh_version: 2.103.0
-git_linux_version: 2.55.0
+git_linux_version: 2.56.0
 git_windows_version: 2.55.0
 git_windows_patch_version: 1
 golang_version: 1.27.3
