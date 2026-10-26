@@ -96,7 +96,7 @@ targets:
 actions:
   patchBumps:
     kind: github/pullrequest
-    title: 'feat: bump `python3` version to `{{ source "lastVersion" }}`'
+    title: 'feat: bump `python3` ({{ lower $type }}) version to `{{ source "lastVersion" }}`'
     scmid: default
     spec:
       labels:
