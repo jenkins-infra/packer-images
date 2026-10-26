@@ -41,9 +41,26 @@ sources:
       file: https://endoflife.date/api/python.json
       engine: dasel/v3
       key: 'map(latest)[0]'
+  strippedLastVersion:
+    kind: shell
+    name: Get the latest python3 "stripped" (major.minor) version
+    spec:
+      command: echo {{ source "lastVersion" }}
+    transformers:
+      - findsubmatch:
+          pattern: '^(\d*)\.(\d*).*'
+          capturepattern: '\1.\2'
   {{ end }}
 
 conditions:
+  {{ if ne (lower $type) "patch" }}
+  checkLastVersionIsNotCurrentLine:
+    kind: shell
+    name: Check if {{ source "strippedLastVersion" }} is not the last version (patch manifest already takes care of this)
+    disablesourceinput: true  # Do not pass source as argument to the command line
+    spec:
+      command: '[[ "{{ source "currentLine" }}" != "{{ source "strippedLastVersion" }}" ]] || { echo "Same minor version: nothing to do." && exit 1; }'
+  {{ end }}
   checkChocolateyPackage:
     kind: file
     name: Check if {{ source "lastVersion" }} is available as a Chocolatey package
@@ -81,11 +98,10 @@ targets:
   updatePythonExecInGoss:
     name:  Bump `python3` (stripped) version in Goss tests exec
     kind: yaml
-    sourceid: lastVersion
+    sourceid: {{ if eq (lower $type) "patch" }}currentLine{{ else }}strippedLastVersion{{ end }}
     transformers:
-      - findsubmatch:
-          pattern: '(\d+\.\d+)\.\d+'
-          capturepattern: '/usr/local/bin/python\1 --version'
+      - addprefix: '/usr/local/bin/python'
+      - addsuffix: ' --version'
     spec:
       # TODO: update Windows tests too when they'll specify a specific minor version
       files:
