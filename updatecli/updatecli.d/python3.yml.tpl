@@ -35,19 +35,22 @@ sources:
       key: 'filter(cycle=="{{ source "currentLine" }}").map(latest)[0]'
   {{ else }}
   lastVersion:
-    kind: shell
+    kind: json
     name: Get the latest python3 version
     spec:
-      command: curl https://endoflife.date/api/python.json --silent --show-error | jq -r '.[0].latest'
+      file: https://endoflife.date/api/python.json
+      engine: dasel/v3
+      key: 'map(latest)[0]'
   {{ end }}
 
 conditions:
   checkChocolateyPackage:
-    kind: shell
+    kind: file
     name: Check if {{ source "lastVersion" }} is available as a Chocolatey package
     disablesourceinput: true  # Do not pass source as argument to the command line
     spec:
-      command: curl https://community.chocolatey.org/packages/python3/{{ source "lastVersion" }} --silent --show-error --location --fail | grep 'Package Approved'
+      file: https://community.chocolatey.org/packages/python3/{{ source "lastVersion" }}
+      matchpattern: 'Package Approved'
   checkPythonSourceAvailable:
     kind: shell
     name: Check if {{ source "lastVersion" }} exists as a source tarball on python.org
