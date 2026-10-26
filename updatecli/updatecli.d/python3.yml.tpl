@@ -15,7 +15,6 @@ scms:
       branch: "{{ $.github.branch }}"
 
 sources:
-  {{ if eq (lower $type) "patch" }}
   currentLine:
     kind: yaml
     name: Retrieve the current Python3 line (3.x without patch)
@@ -26,6 +25,7 @@ sources:
       - findsubmatch:
           pattern: '^(\d*)\.(\d*).*'
           capturepattern: '\1.\2'
+  {{ if eq (lower $type) "patch" }}
   lastVersion:
     kind: json
     name: Get the latest patch version for the current python3 line ({{ source "currentLine" }})
@@ -104,5 +104,6 @@ actions:
         - python3
         - linux
         - windows
+        - {{ (lower $type) }}-bump
 ...
 {{ end }}
