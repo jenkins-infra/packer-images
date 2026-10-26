@@ -105,7 +105,7 @@ command:
       - "3.10"
   # Python3 installed from source
   python3:
-    exec: /usr/local/bin/python3.14 --version
+    exec: /usr/local/bin/python3.15 --version
     exit-status: 0
     stdout:
       - 3.15.2
