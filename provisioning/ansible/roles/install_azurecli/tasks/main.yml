@@ -1,0 +1,19 @@
+---
+- name: Add the Azure CLI APT repository
+  ansible.builtin.deb822_repository:
+    name: azure-cli
+    types: [deb]
+    uris: https://packages.microsoft.com/repos/azure-cli/
+    suites: "{{ ansible_distribution_release }}"
+    components: [main]
+    architectures: "{{ debian_architecture }}"
+    signed_by: https://packages.microsoft.com/keys/microsoft.asc
+    # The module needs the python3-debian library and does not assume it is present.
+    install_python_debian: true
+
+- name: Install azure-cli
+  ansible.builtin.apt:
+    name: "azure-cli={{ azurecli_version }}*"
+    state: present
+    install_recommends: false
+    update_cache: true

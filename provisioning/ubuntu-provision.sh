@@ -349,23 +349,6 @@ function install_maven() {
   rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 }
 
-## Ensure that azure-cli is installed
-function install_azurecli() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends \
-    gpg \
-    lsb-release
-  # Download and install the Microsoft signing key
-  mkdir -p /etc/apt/keyrings
-  curl -sLS https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/keyrings/microsoft.gpg > /dev/null
-  chmod go+r /etc/apt/keyrings/microsoft.gpg
-  # Add the Azure CLI software repository
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/azure-cli.list
-  # Update repository information and install the azure-cli package
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends azure-cli="${AZURECLI_VERSION}*"
-}
-
 ## Ensure that azcopy is installed
 function install_azcopy() {
   azcopy_arch="$(uname -m)"
@@ -578,7 +561,6 @@ function main() {
   install_ansible
   install_docker_compose
   install_maven
-  install_azurecli
   install_golang
   install_golangcilint # must come after golang
   install_ruby "${RUBY_PUPPET_VERSION}"
