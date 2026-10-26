@@ -13,7 +13,7 @@ doctl_version: 2.0.0
 gh_version: 2.103.2
 git_linux_version: 2.56.0
 git_windows_version: 2.56.0
-git_windows_patch_version: "3"
+git_windows_patch_version: "4"
 golang_version: 1.27.3
 golangcilint_version: 2.15.0
 goss_version: 0.4.10
@@ -23,7 +23,7 @@ helm_git_version: 1.5.2
 helm_secrets_version: 4.7.10
 helm_version: 4.3.1
 helmfile_version: 1.8.2
-jenkins_remoting_version: 3391.va_37fa_a_305d6d
+jenkins_remoting_version: 3395.v6e5377b_0fb_3c
 jq_version: 1.8.2
 jxreleaseversion_version: 2.10.8
 kubectl_version: 1.34.12
