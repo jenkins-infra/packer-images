@@ -108,7 +108,7 @@ command:
     exec: /usr/local/bin/python3.14 --version
     exit-status: 0
     stdout:
-      - 3.14.8
+      - 3.14.10
   rsync:
     exec: rsync --version
     exit-status: 0
