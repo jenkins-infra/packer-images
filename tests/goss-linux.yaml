@@ -5,7 +5,7 @@ command:
     exec: . /usr/local/ansible-venv/bin/activate && ansible --version
     exit-status: 0
     stdout:
-      - core 2.21.0
+      - core 2.21.5
   asdf:
     exec: asdf version
     exit-status: 0
