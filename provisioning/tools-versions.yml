@@ -1,6 +1,6 @@
 ansible_core_version: 2.21.5
 asdf_version: 0.15.0
-awscli_version: 2.38.5
+awscli_version: 2.38.6
 azcopy_version: 10.34.1
 azurecli_version: 2.91.0
 chocolatey_version: 1.4.0
@@ -8,8 +8,8 @@ compose_version: 5.6.1
 cst_version: 1.22.1
 docker_buildx_version: 0.38.1
 docker_version: 29.9.2
-doctl_version: 2.0.0
-gh_version: 2.103.2
+doctl_version: 2.0.1
+gh_version: 2.103.3
 git_linux_version: 2.56.0
 git_windows_version: 2.56.0
 git_windows_patch_version: "4"
