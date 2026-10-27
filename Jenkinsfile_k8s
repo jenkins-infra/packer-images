@@ -80,6 +80,7 @@ node('linux-arm64-docker') {
       if (env.CHANGE_ID) {
         boolean noOSLabel = true
         boolean noPackerProviderLabel = true
+        boolean hasUpdatecliLabel = false
 
         pullRequest.labels.each {
           if (it.startsWith('ubuntu-') || it.startsWith('windows-')) {
@@ -97,12 +98,21 @@ node('linux-arm64-docker') {
               noPackerProviderLabel = false
             }
           }
+          if (it == 'updatecli') {
+            hasUpdatecliLabel = true
+          }
         }
-        // Mark the build as unstable and exit early if the pull request doesn't have any label
         if (noOSLabel) {
-          echo 'ERROR: At least one Operating System label required on pull requests'
-          currentBuild.result = 'UNSTABLE'
-          return
+          if (hasUpdatecliLabel) {
+            // Continue if there is an "updatecli" label but no OS one
+            echo 'INFO: "updatecli" label only'
+            return
+          } else {
+            // Mark the build as unstable and exit early if the pull request doesn't have any OS label
+            echo 'ERROR: At least one Operating System label required on pull requests'
+            currentBuild.result = 'UNSTABLE'
+            return
+          }
         }
         // Slightly different than OSes: if no provider is specified then we build them all
         if(noPackerProviderLabel) {
