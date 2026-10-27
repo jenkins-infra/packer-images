@@ -1,7 +1,6 @@
-# if manually change, please update the goss file accordingly
-ansible_core_version: 2.21.0 # TODO track with updatecli
+ansible_core_version: 2.21.5
 asdf_version: 0.15.0
-awscli_version: 2.38.5
+awscli_version: 2.38.6
 azcopy_version: 10.34.1
 azurecli_version: 2.91.0
 chocolatey_version: 1.4.0
@@ -9,8 +8,8 @@ compose_version: 5.6.1
 cst_version: 1.22.1
 docker_buildx_version: 0.38.1
 docker_version: 29.9.2
-doctl_version: 2.0.0
-gh_version: 2.103.2
+doctl_version: 2.0.1
+gh_version: 2.103.3
 git_linux_version: 2.56.0
 git_windows_version: 2.56.0
 git_windows_patch_version: "4"
@@ -27,7 +26,7 @@ jenkins_remoting_version: 3395.v6e5377b_0fb_3c
 jq_version: 1.8.2
 jxreleaseversion_version: 2.10.8
 kubectl_version: 1.34.12
-launchable_version: 1.125.2
+launchable_version: 1.125.3
 maven_version: 3.10.0
 netlifydeploy_version: 0.2.2
 nodejs_linux_version: 24.22.1
@@ -36,7 +35,7 @@ nuget_version: 7.9.0
 openssh_authorized_keys_url: https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys
 packer_version: 1.16.2
 playwright_version: 1.64.1
-python3_version: 3.14.8
+python3_version: 3.14.10
 ruby_puppet_version: 2.6.10
 ruby_version: 3.4.8
 sops_version: 3.13.3
