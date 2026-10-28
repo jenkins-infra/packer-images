@@ -25,7 +25,7 @@ command:
     exec: doctl version
     exit-status: 0
     stdout:
-      - 2.0.1
+      - 2.1.0
   git:
     exec: git --version
     exit-status: 0
