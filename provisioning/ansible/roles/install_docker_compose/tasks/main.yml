@@ -1,0 +1,8 @@
+---
+# The binary is named after the kernel architecture, which is what
+# ansible_architecture already holds.
+- name: Install docker-compose
+  ansible.builtin.get_url:
+    url: "https://github.com/docker/compose/releases/download/v{{ compose_version }}/docker-compose-linux-{{ ansible_architecture }}"
+    dest: /usr/local/bin/docker-compose
+    mode: a+x

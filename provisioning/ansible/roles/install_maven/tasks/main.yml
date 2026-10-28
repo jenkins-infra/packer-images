@@ -1,0 +1,27 @@
+---
+- name: Install maven
+  block:
+    # The mirror only carries current releases, so older ones need the archive.
+    - name: Extract maven from the Apache mirror
+      ansible.builtin.unarchive:
+        src: "https://dlcdn.apache.org/maven/maven-3/{{ maven_version }}/binaries/apache-maven-{{ maven_version }}-bin.tar.gz"
+        dest: /usr/share
+        creates: "/usr/share/apache-maven-{{ maven_version }}"
+        owner: root
+        group: root
+        remote_src: true
+  rescue:
+    - name: Extract maven from the Apache archive
+      ansible.builtin.unarchive:
+        src: "https://archive.apache.org/dist/maven/maven-3/{{ maven_version }}/binaries/apache-maven-{{ maven_version }}-bin.tar.gz"
+        dest: /usr/share
+        creates: "/usr/share/apache-maven-{{ maven_version }}"
+        owner: root
+        group: root
+        remote_src: true
+
+- name: Link mvn into the PATH
+  ansible.builtin.file:
+    src: "/usr/share/apache-maven-{{ maven_version }}/bin/mvn"
+    dest: /usr/bin/mvn
+    state: link
