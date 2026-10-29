@@ -222,14 +222,6 @@ function install_golang(){
   chown jenkins:jenkins "${userhome}/go"
 }
 
-## Ensure GolangCIlint is installed
-function install_golangcilint(){
-  ## will be installed in /usr/local/bin
-  golangcilint_download_url="https://www.github.com/golangci/golangci-lint/releases/download/v${GOLANGCILINT_VERSION}/golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}.tar.gz"
-  curl --fail --silent --show-error --location "${golangcilint_download_url}" | \
-    tar --extract --gunzip --strip-components=1 --directory="/usr/local/bin/" "golangci-lint-${GOLANGCILINT_VERSION}-linux-${ARCHITECTURE}/golangci-lint"
-}
-
 ## setup qemu
 function install_qemu() {
   apt-get update --quiet
@@ -314,13 +306,6 @@ function install_jdks(){
   done
 }
 
-## Ensure that docker-compose is installed (version from environment)
-function install_docker_compose(){
-  curl --fail --silent --location --show-error --output /usr/local/bin/docker-compose \
-    "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-Linux-$(uname -m)"
-  chmod a+x /usr/local/bin/docker-compose
-}
-
 ## Ensure that`helm` and its plugins are installed
 function install_helm(){
   curl --fail --silent --location --show-error \
@@ -334,19 +319,6 @@ function install_helm(){
   su - "${username}" -c "helm plugin install https://github.com/jkroepke/helm-secrets/releases/download/v${HELM_SECRETS_VERSION}/secrets-getter-${HELM_SECRETS_VERSION}.tgz --verify=false"
   su - "${username}" -c "helm plugin install https://github.com/jkroepke/helm-secrets/releases/download/v${HELM_SECRETS_VERSION}/secrets-post-renderer-${HELM_SECRETS_VERSION}.tgz --verify=false"
   su - "${username}" -c "helm plugin install https://github.com/aslafy-z/helm-git.git --version v${HELM_GIT_VERSION} --verify=false"
-}
-
-## Ensure that maven is installed and configured (version from environment)
-function install_maven() {
-  # If the Apache mirrors responds an error, we usually fallback to their "archives" system as it hosts older Maven versions
-  curl --fail --silent --location --show-error --output "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
-    "https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
-  || curl --fail --silent --location --show-error --output "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
-    "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
-
-  tar --extract --gunzip --file="/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" --directory=/usr/share/
-  ln -s "/usr/share/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/bin/mvn
-  rm -f "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
 }
 
 ## Ensure that azure-cli is installed
@@ -364,19 +336,6 @@ function install_azurecli() {
   # Update repository information and install the azure-cli package
   apt-get update --quiet
   apt-get install --yes --no-install-recommends azure-cli="${AZURECLI_VERSION}*"
-}
-
-## Ensure that azcopy is installed
-function install_azcopy() {
-  azcopy_arch="$(uname -m)"
-  if [ "${azcopy_arch}" == "aarch64" ]
-  then
-    azcopy_arch="arm64"
-  fi
-  azcopy_pkg="$(mktemp)"
-  curl --silent --show-error --location --output "${azcopy_pkg}" "https://github.com/Azure/azure-storage-azcopy/releases/download/v${AZCOPY_VERSION}/azcopy-${AZCOPY_VERSION}.${azcopy_arch}.deb"
-  dpkg --install "${azcopy_pkg}"
-  rm -f "${azcopy_pkg}"
 }
 
 ## Install Ruby with asdf
@@ -444,24 +403,6 @@ function install_awscli() {
   unzip "${archive_path}" -d /tmp
   bash /tmp/aws/install
   rm -rf /tmp/aws*
-}
-
-## Ensure Goss is installed
-function install_goss() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends ca-certificates curl tar # Should already be there but this function should be autonomous
-
-  local archive_path
-  archive_path="$(mktemp -d)/goss.tgz"
-  goss_architecture="x86_64"
-  if [ "${ARCHITECTURE}" == "arm64" ]
-  then
-    goss_architecture="arm64"
-  fi
-  curl --silent --location --show-error "https://github.com/goss-org/goss/releases/download/v${GOSS_VERSION}/goss_${GOSS_VERSION}_linux_${goss_architecture}.tar.gz"  --output "$archive_path"
-  tar xzf "$archive_path" -C /usr/local/bin/ goss 
-  /usr/local/bin/goss --version # Sanity check to fail fast if "Not Found"
-  rm -rf "$(dirname "$archive_path")"
 }
 
 ## Install Nodejs from prebuilt binaries
@@ -568,19 +509,14 @@ function main() {
   install_git
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   install_asdf # Before all the others but after the jenkins home is created
-  install_goss # needed by the pipeline
   install_docker # needed by the pipeline
   install_jdks # needed by the pipeline
   install_datadog
   install_qemu
-  install_azcopy
   install_python
   install_ansible
-  install_docker_compose
-  install_maven
   install_azurecli
   install_golang
-  install_golangcilint # must come after golang
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"
   install_packer
