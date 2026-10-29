@@ -19,4 +19,4 @@ aws:
       arm64: ami-0402be23b0dae9187
   windows:
     "2025":
-      amd64: ami-0ea8d88277ae01b73
+      amd64: ami-02c676dbf9ed29669
