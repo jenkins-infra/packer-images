@@ -29,7 +29,7 @@ ubuntu:
       installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.20.1_1.tar.gz
       checksum_value: 457b57af8f9c93ec39080bb8c764f559dc8c89a6da1a39d718a400b7890d3e41
     jdk21:
-      installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.12.1_1.tar.gz
+      installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.13_9.tar.gz
       checksum_value: 23e37e026f12f3e706f18938ff611db3032d075b09d0879a25d06718c773e223
     jdk25:
       #TODO track with updatecli
