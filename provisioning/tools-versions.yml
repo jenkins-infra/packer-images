@@ -1,5 +1,5 @@
 ansible_core_version: 2.21.5
-asdf_version: 0.15.0
+asdf_version: 0.20.2
 awscli_version: 2.39.0
 azcopy_version: 10.34.1
 azurecli_version: 2.91.0
