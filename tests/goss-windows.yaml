@@ -24,7 +24,7 @@ command:
     exec: C:\tools\jdk-21\bin\java --version
     exit-status: 0
     stdout:
-      - 21.0.12.1+1
+      - 21.0.13+9
   jdk25:
     exec: C:\tools\jdk-25\bin\java --version
     exit-status: 0
@@ -49,7 +49,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 24.22.1
+      - 24.22.2
       - '!Please install a version by running one of the following'
   nuget:
     exec: nuget help
