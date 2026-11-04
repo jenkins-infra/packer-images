@@ -1,0 +1,4 @@
+---
+- name: Install azcopy
+  ansible.builtin.apt:
+    deb: "https://github.com/Azure/azure-storage-azcopy/releases/download/v{{ azcopy_version }}/azcopy-{{ azcopy_version }}.{{ azcopy_architecture_names[ansible_architecture] }}.deb"

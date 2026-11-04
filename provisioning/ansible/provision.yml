@@ -30,3 +30,8 @@
     - install_hadolint
     - install_typos
     - install_netlify_deploy
+    - install_azcopy
+    - install_docker_compose
+    - install_goss
+    - install_golangcilint
+    - install_maven

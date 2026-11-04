@@ -1,0 +1,11 @@
+---
+- name: Install goss
+  ansible.builtin.unarchive:
+    src: "https://github.com/goss-org/goss/releases/download/v{{ goss_version }}/goss_{{ goss_version }}_linux_{{ goss_architecture_names[ansible_architecture] }}.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - goss
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true
