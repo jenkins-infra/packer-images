@@ -4,7 +4,7 @@
     name: azure-cli
     types: [deb]
     uris: https://packages.microsoft.com/repos/azure-cli/
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components: [main]
     architectures: "{{ debian_architecture }}"
     signed_by: https://packages.microsoft.com/keys/microsoft.asc
