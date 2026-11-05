@@ -151,6 +151,9 @@ command:
   zip:
     exec: zip -v
     exit-status: 0
+  zstd:
+    exec: zstd --version
+    exit-status: 0
 file:
   /home/jenkins:
     contains: []
