@@ -108,7 +108,7 @@ function install_common_requirements() {
     sudo `# We want admin permissions` \
     software-properties-common `# Provides a LOT of APT utilities` \
     tar `# To archive and unarchive stuff` \
-    xz-utils `# To archive and unarchive MORE stuff`
+    xz-utils `# To archive and unarchive MORE stuff` \
     zstd `# To archive and unarchive even MORE stuff`
 }
 
