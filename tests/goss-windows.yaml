@@ -80,6 +80,11 @@ command:
     exit-status: 0
     stdout:
       - 'True'
+  zstd:
+    exec: tar --version
+    exit-status: 0
+    stdout:
+      - /libzstd/
 file:
   C:\Program Files\Datadog\Datadog agent\bin\:
     exists: true
