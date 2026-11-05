@@ -94,6 +94,24 @@ function clean_apt() {
   apt-get upgrade -y
 }
 
+# TODO: remove after https://github.com/jenkins-infra/packer-images/pull/3226 release and deployment
+function install_common_requirements() {
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends \
+    apt-transport-https \
+    ca-certificates `# Adds certificate authority for proper use of TLS` \
+    curl `# A nice HTTP client` \
+    dnsutils `# Provides dig(1)` \
+    locales `# to generate with the correct environment variables` \
+    lsb-release `# Provides CLI for distribution detction` \
+    gpg-agent `# Required for GPG management` \
+    rsync `# Differential copy is quite useful` \
+    sudo `# We want admin permissions` \
+    software-properties-common `# Provides a LOT of APT utilities` \
+    tar `# To unarchive stuff` \
+    xz-utils `# To unarchive MORE stuff`
+}
+
 function install_ssh_requirements() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends openssh-client
@@ -529,6 +547,7 @@ function main() {
   copy_custom_scripts
   set_locale # Define the locale
   clean_apt
+  install_common_requirements # TODO: remove after https://github.com/jenkins-infra/packer-images/pull/3226 release and deployment
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
   install_git
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
