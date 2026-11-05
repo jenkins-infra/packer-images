@@ -1,0 +1,32 @@
+---
+- name: Install common requirements
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      # Adds certificate authority for proper use of TLS
+      - ca-certificates
+      # A nice HTTP client
+      - curl
+      # Provides dig(1)
+      - dnsutils
+      # to generate with the correct environment variables
+      - locales
+      # Provides CLI for distribution detction
+      - lsb-release
+      # Required for GPG management
+      - gpg-agent
+      # Differential copy is quite useful
+      - rsync
+      # We want admin permissions
+      - sudo
+      # Provides a LOT of APT utilities
+      - software-properties-common
+      # To archive and unarchive stuff
+      - tar
+      # To archive and unarchive MORE stuff
+      - xz-utils
+      # To archive and unarchive even MORE stuff
+      - zstd
+    state: present
+    install_recommends: false
+    update_cache: true
