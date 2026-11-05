@@ -434,7 +434,7 @@ Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name
 
 ## Add a set of pre-defined SSH keys to allow faster agent startups
 $temp_authorized_keys_file = 'C:\custom_auth_keys'
-DownloadFile "$env:OPENSSH_AUTHORIZED_KEYS_URL" "$temp_authorized_keys_file"
+DownloadFile "https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys" "$temp_authorized_keys_file"
 foreach($line in Get-Content "$temp_authorized_keys_file") {
     C:\addSSHPubKey.ps1 "$line"
 }

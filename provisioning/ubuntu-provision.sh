@@ -130,7 +130,7 @@ function setuser() {
 
   # Add authorized keys to jenkins user
   mkdir -p "${userhome}/.ssh"
-  curl --fail --silent --location --show-error "${OPENSSH_AUTHORIZED_KEYS_URL}" --output "${userhome}/.ssh/authorized_keys"
+  curl --fail --silent --location --show-error "https://raw.githubusercontent.com/jenkins-infra/aws/main/ec2_agents_authorized_keys" --output "${userhome}/.ssh/authorized_keys"
   chmod 0700 "${userhome}/.ssh"
   chmod 0600 "${userhome}/.ssh/authorized_keys"
   chown -R "${username}:${groupname}" "${userhome}/.ssh"
