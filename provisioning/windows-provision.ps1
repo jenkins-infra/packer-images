@@ -376,6 +376,16 @@ $downloads['azcopy'] = @{
     'cleanupLocal' = 'true';
 };
 
+$downloads['zstd'] = @{
+    'url'          = ' https://github.com/meta/zstd/releases/download/v{0}/zstd-v{0}-win64.zip' -f $env:ZSTD_VERSION;
+    'local'        = "$baseDir\zstd.zip"
+    'postExpand'   = {
+        # Extract only zstd.exe from the specific subfolder inside the ZIP into $baseDir
+        tar -xf "$baseDir\zstd.zip" zstd.exe -C $baseDir
+    };
+    'cleanupLocal' = 'true';
+};
+
 ## Add tools folder to PATH so we can sanity check them as soon as they are installed
 AddToPathEnv -path $baseDir
 

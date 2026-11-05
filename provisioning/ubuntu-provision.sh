@@ -107,8 +107,9 @@ function install_common_requirements() {
     rsync `# Differential copy is quite useful` \
     sudo `# We want admin permissions` \
     software-properties-common `# Provides a LOT of APT utilities` \
-    tar `# To unarchive stuff` \
-    xz-utils `# To unarchive MORE stuff`
+    tar `# To archive and unarchive stuff` \
+    xz-utils `# To archive and unarchive MORE stuff`
+    zstd `# To archive and unarchive even MORE stuff`
 }
 
 function install_ssh_requirements() {
