@@ -30,3 +30,4 @@
     - install_hadolint
     - install_typos
     - install_netlify_deploy
+    - install_azurecli
