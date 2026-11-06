@@ -21,7 +21,7 @@ ubuntu:
   arm64:
     jdk8:
       installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u512-b09/OpenJDK8U-jdk_aarch64_linux_hotspot_8u512b09.tar.gz
-      checksum_value: 57b7ed8af9d48542bb49ff7894448040b17bea0a48b41677d11ecaec6129768d
+      checksum_value: 01263df22c4553f63146bbae807e70cd4628dd0d9ec7582f01cb2453f7c69aaa
     jdk11:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.32.1%2B1/OpenJDK11U-jdk_aarch64_linux_hotspot_11.0.32.1_1.tar.gz
       checksum_value: f27033e6f7523c1b0b2565a78e9c0e0abe5596a854ce00ca04ec1b06ece7a935
