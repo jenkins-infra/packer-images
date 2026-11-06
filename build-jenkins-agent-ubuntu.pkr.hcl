@@ -42,12 +42,6 @@ build {
     destination = "/tmp/gpg-keys"
   }
 
-  provisioner "shell" {
-    environment_vars = local.provisioning_env_vars
-    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
-    script           = "./provisioning/ubuntu-provision.sh"
-  }
-
   provisioner "ansible" {
     playbook_file = "./provisioning/ansible/provision.yml"
     extra_arguments = [
@@ -60,6 +54,12 @@ build {
     # communicator connects with, which does not exist on every builder.
     # Ref. https://developer.hashicorp.com/packer/integrations/hashicorp/ansible/latest/components/provisioner/ansible#user
     user = local.ubuntu_ssh_user[var.image_type]
+  }
+
+  provisioner "shell" {
+    environment_vars = local.provisioning_env_vars
+    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+    script           = "./provisioning/ubuntu-provision.sh"
   }
 
   provisioner "file" {
