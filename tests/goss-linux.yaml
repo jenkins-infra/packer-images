@@ -30,7 +30,7 @@ command:
     exec: git --version
     exit-status: 0
     stdout:
-      - 2.56.0
+      - 2.56.1
   golang:
     exec: go version
     exit-status: 0
@@ -57,7 +57,7 @@ command:
     stdout:
       - /diff.*3.15.15/
       - /helm-git.*1.5.2/
-      - /secrets.*4.7.10/
+      - /secrets.*4.7.11/
   jdk11:
     exec: /opt/jdk-11/bin/java --version
     exit-status: 0
@@ -92,7 +92,7 @@ command:
     exec: node --version
     exit-status: 0
     stdout:
-      - 24.22.2
+      - 24.22.3
       - '!Please install a version by running one of the following'
   parallel:
     exec: parallel --version
