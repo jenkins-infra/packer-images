@@ -26,7 +26,7 @@ targets:
     scmid: default
     kind: file
     spec:
-      file: provisioning/ansible/roles/install_datadog/files/datadog.gpg
+      file: gpg-keys/datadog.gpg
 
 actions:
   default:

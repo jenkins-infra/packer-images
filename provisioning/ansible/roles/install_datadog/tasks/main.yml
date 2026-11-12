@@ -6,9 +6,7 @@
     uris: https://apt.datadoghq.com/
     suites: [stable]
     components: ["7"]
-    # The repository key is committed in this repository rather than fetched over the
-    # network, so it is passed as an armored block instead of a URL.
-    signed_by: "{{ lookup('ansible.builtin.file', 'datadog.gpg') }}"
+    signed_by: https://keys.datadoghq.com/DATADOG_APT_KEY_CURRENT.public
     # The module needs the python3-debian library and does not assume it is present.
     install_python_debian: true
 
@@ -21,8 +19,7 @@
     install_recommends: false
     update_cache: true
 
-# The VM spinning up through cloud-init provides the Datadog parameters, so the agent must
-# not start before them or it logs errors on every boot.
+# Disabled at startup to avoid error logs before cloud-init provides the datadog parameters.
 - name: Disable the Datadog agent service
   ansible.builtin.systemd_service:
     name: datadog-agent
