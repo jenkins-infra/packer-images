@@ -1,0 +1,11 @@
+---
+- name: Add the git-core PPA
+  ansible.builtin.apt_repository:
+    repo: ppa:git-core/ppa
+
+- name: Install git
+  ansible.builtin.apt:
+    name: "git=1:{{ git_linux_version }}*"
+    state: present
+    install_recommends: false
+    update_cache: true

@@ -264,19 +264,6 @@ function install_python() {
 	inetutils-inetd
 }
 
-## Install git
-function install_git() {
-  if [ -n "${GIT_LINUX_VERSION}" ]
-  then
-    ## a specific git version is required: search it on the official git PPA repositories
-    add-apt-repository -y ppa:git-core/ppa
-    install_package_version git "${GIT_LINUX_VERSION}"
-  else
-    ## No git version: install the latest git available in the default repos
-    apt-get install --yes --no-install-recommends git
-  fi
-}
-
 ## install the jdks major versions for the current os and platform
 function install_jdks(){
   for major_jdk_version in ${JDKS}; do
@@ -530,7 +517,6 @@ function main() {
   set_locale # Define the locale
   clean_apt
   setuser # Define user Jenkins before all (to allow installing stuff in its home dir)
-  install_git
   install_ssh_requirements # Ensure that OpenSSH CLI and SSH agent are installed
   install_asdf # Before all the others but after the jenkins home is created
   install_goss # needed by the pipeline
