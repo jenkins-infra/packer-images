@@ -4,15 +4,9 @@ build {
     name = "local"
   }
 
-  provisioner "shell" {
-    inline = [
-      "mkdir -p /tmp/packer-tests/tests /tmp/packer-tests/provisioning"
-    ]
-  }
-
   provisioner "file" {
-    source      = "tests/ansible/"
-    destination = "/tmp/ansible-tests/"
+    source      = "tests/ansible"
+    destination = "/tmp/ansible-tests"
   }
 
   provisioner "breakpoint" {

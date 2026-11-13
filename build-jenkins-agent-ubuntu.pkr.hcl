@@ -63,8 +63,8 @@ build {
   }
 
   provisioner "file" {
-    source      = "tests/ansible/"
-    destination = "/tmp/ansible-tests/"
+    source      = "tests/ansible"
+    destination = "/tmp/ansible-tests"
   }
 
   provisioner "breakpoint" {
