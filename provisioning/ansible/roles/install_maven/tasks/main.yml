@@ -5,7 +5,7 @@
   ansible.builtin.uri:
     url: "{{ maven_mirror_url }}"
     method: HEAD
-    status_code: [200, 404]
+    status_code: [200, 301, 302, 307, 308, 404]
   register: maven_mirror
 
 - name: Select the maven download URL
