@@ -117,6 +117,6 @@ source "docker" "test" {
   commit = false
   discard = true
 
-  # Run as root so ansible's become: true / become_user: jenkins can sudo without requiring jenkins in sudoers
+  # Run as root so ansible's `become: true` and `become_user: jenkins` can sudo without requiring jenkins in sudoers
   run_command = ["-d", "-i", "-t", "-u", "root", "--entrypoint=/bin/sh", "--", "{{.Image}}"]
 }
