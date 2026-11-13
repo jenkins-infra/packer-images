@@ -6,7 +6,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.40.0
+      - 2.40.1
   azcopy:
     exec: azcopy --version
     exit-status: 0
@@ -47,7 +47,7 @@ command:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.103.3
+      - 2.104.0
   goss:
     exec: goss --version
     exit-status: 0
@@ -78,7 +78,7 @@ command:
     exec: launchable --version
     exit-status: 0
     stdout:
-      - 1.125.4
+      - 1.126.0
   make:
     exec: make --version
     exit-status: 0
