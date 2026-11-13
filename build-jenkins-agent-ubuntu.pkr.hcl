@@ -63,29 +63,19 @@ build {
   }
 
   provisioner "file" {
-    source      = "./tests/goss-linux.yaml"
-    destination = "/tmp/goss-linux.yaml"
-  }
-
-  provisioner "file" {
-    source      = "./tests/goss-common.yaml"
-    destination = "/tmp/goss-common.yaml"
+    source      = "tests/ansible"
+    destination = "/tmp/ansible-tests"
   }
 
   provisioner "breakpoint" {
-    note    = "Enable this breakpoint to pause before trying to run goss tests"
+    note    = "Enable this breakpoint to pause before trying to run tests"
     disable = true
   }
 
   provisioner "shell" {
-    execute_command  = "{{ .Vars }} sudo -E su - jenkins -c \"bash -eu '{{ .Path }}'\""
-    environment_vars = local.provisioning_env_vars
     inline = [
-      "source /home/jenkins/.asdf/asdf.sh", # Required as this is a non-interactive and non-login `bash`
-      "source /etc/environment",            # Required as this is a non-interactive and non-login `bash`
-      "goss --version",
-      "goss --gossfile /tmp/goss-linux.yaml --loglevel DEBUG validate",
-      "goss --gossfile /tmp/goss-common.yaml --loglevel DEBUG validate",
+      "cd /tmp/ansible-tests",
+      "sudo -u jenkins /usr/local/ansible-venv/bin/ansible-playbook playbook-linux.yml --inventory 'localhost,' --connection local"
     ]
   }
 

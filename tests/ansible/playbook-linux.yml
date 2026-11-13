@@ -1,0 +1,20 @@
+---
+- name: Linux tests
+  hosts: localhost
+  gather_facts: true
+  vars_files:
+    - expected-values.yml
+  vars:
+    # TODO: track with updatecli
+    ansible_python_interpreter: /usr/local/bin/python3.15
+
+  environment:
+    # TODO: check if it can be removed when ansible provisioning is completed
+    PATH: "/home/jenkins/.asdf/bin:/home/jenkins/.asdf/shims:/usr/local/go/bin:/opt/nodejs/bin:/usr/local/bin:/usr/bin:/bin"
+
+  tasks:
+    - name: Import common tests
+      ansible.builtin.import_tasks: tasks/tests_common.yml
+
+    - name: Import Linux tests
+      ansible.builtin.import_tasks: tasks/tests_linux.yml
