@@ -34,6 +34,5 @@
     - install_common_requirements
     - install_azcopy
     - install_docker_compose
-    - install_goss
     - install_golangcilint
     - install_maven
