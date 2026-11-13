@@ -1,0 +1,19 @@
+---
+- name: Add the git-core PPA
+  ansible.builtin.deb822_repository:
+    name: git-core
+    types: [deb]
+    # Both the URL and the key below are what add-apt-repository resolves ppa:git-core/ppa to.
+    uris: https://ppa.launchpadcontent.net/git-core/ppa/ubuntu/
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: [main]
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF911AB184317630C59970973E363C90F8F1B6217
+    # The module needs the python3-debian library and does not assume it is present.
+    install_python_debian: true
+
+- name: Install git
+  ansible.builtin.apt:
+    name: "git=1:{{ git_linux_version }}*"
+    state: present
+    install_recommends: false
+    update_cache: true
