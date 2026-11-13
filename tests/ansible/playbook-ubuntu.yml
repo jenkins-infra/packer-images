@@ -5,8 +5,7 @@
   become_user: jenkins
   gather_facts: true
   vars_files:
-    - ../../provisioning/tools-versions.yml
-    - ../../jdks-infos.yaml
+    - expected-values.yml
   vars:
     # TODO: track with updatecli
     ansible_python_interpreter: /usr/local/bin/python3.15

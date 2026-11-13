@@ -4,11 +4,6 @@ build {
     name = "local"
   }
 
-  provisioner "breakpoint" {
-    note    = "Enable this breakpoint to pause before trying to run tests"
-    disable = true
-  }
-
   provisioner "shell" {
     inline = [
       "mkdir -p /tmp/packer-tests/tests /tmp/packer-tests/provisioning"
@@ -20,14 +15,9 @@ build {
     destination = "/tmp/packer-tests/tests/ansible/"
   }
 
-  provisioner "file" {
-    source      = "provisioning/tools-versions.yml"
-    destination = "/tmp/packer-tests/provisioning/tools-versions.yml"
-  }
-
-  provisioner "file" {
-    source      = "jdks-infos.yaml"
-    destination = "/tmp/packer-tests/jdks-infos.yaml"
+  provisioner "breakpoint" {
+    note    = "Enable this breakpoint to pause before trying to run tests"
+    disable = true
   }
 
   provisioner "shell" {

@@ -72,6 +72,50 @@
   failed_when: "helmfile_version not in helmfile_version_output.stdout"
   ignore_errors: true
 
+- name: Check JDK 8 version
+  ansible.builtin.command: /opt/jdk-8/bin/java -version
+  register: jdk8_version_output
+  changed_when: false
+  failed_when: "jdk8_version not in jdk8_version_output.stderr"
+  ignore_errors: true
+
+- name: Check JDK 11 version
+  ansible.builtin.command: /opt/jdk-11/bin/java --version
+  register: jdk11_version_output
+  changed_when: false
+  failed_when: "jdk11_version not in jdk11_version_output.stdout"
+  ignore_errors: true
+
+- name: Check JDK 17 version
+  ansible.builtin.command: /opt/jdk-17/bin/java --version
+  register: jdk17_version_output
+  changed_when: false
+  failed_when: "jdk17_version not in jdk17_version_output.stdout"
+  ignore_errors: true
+
+- name: Check JDK 21 version
+  ansible.builtin.command: /opt/jdk-21/bin/java --version
+  register: jdk21_version_output
+  changed_when: false
+  failed_when: "jdk21_version not in jdk21_version_output.stdout"
+  ignore_errors: true
+
+- name: Check JDK 25 version
+  ansible.builtin.command: /opt/jdk-25/bin/java --version
+  register: jdk25_version_output
+  changed_when: false
+  failed_when: "jdk25_version not in jdk25_version_output.stdout"
+  ignore_errors: true
+
+- name: Check Maven with JDK 21 (environment variable)
+  ansible.builtin.command: mvn -v
+  environment:
+    JAVA_HOME: /opt/jdk-21
+  register: maven_version_output
+  changed_when: false
+  failed_when: "maven_version not in maven_version_output.stdout"
+  ignore_errors: true
+
 - name: Check Node.js version (with negation check)
   ansible.builtin.command: node --version
   register: nodejs_version_output
@@ -164,60 +208,6 @@
   register: zip_version
   changed_when: false
   failed_when: zip_version.rc != 0
-  ignore_errors: true
-
-- name: Extract JDK versions from installer URLs
-  ansible.builtin.set_fact:
-    jdk8_version: "1.8.0_{{ ubuntu.amd64.jdk8.installer_url | regex_search('8u(\\d+)b', '\\1') | first }}"
-    jdk11_version: "{{ ubuntu.amd64.jdk11.installer_url | regex_search('hotspot_(\\d+\\.\\d+\\.\\d+)_(\\d+)', '\\1', '\\2') | join('+') }}"
-    jdk17_version: "{{ ubuntu.amd64.jdk17.installer_url | regex_search('hotspot_(\\d+\\.\\d+\\.\\d+)_(\\d+)', '\\1', '\\2') | join('+') }}"
-    jdk21_version: "{{ ubuntu.amd64.jdk21.installer_url | regex_search('hotspot_(\\d+\\.\\d+\\.\\d+)_(\\d+)', '\\1', '\\2') | join('+') }}"
-    jdk25_version: "{{ ubuntu.amd64.jdk25.installer_url | regex_search('hotspot_(\\d+\\.\\d+\\.\\d+)_(\\d+)', '\\1', '\\2') | join('+') }}"
-  changed_when: false
-  ignore_errors: true
-
-- name: Check JDK 8 version
-  ansible.builtin.command: /opt/jdk-8/bin/java -version
-  register: jdk8_version_output
-  changed_when: false
-  failed_when: "jdk8_version not in jdk8_version_output.stderr"
-  ignore_errors: true
-
-- name: Check JDK 11 version
-  ansible.builtin.command: /opt/jdk-11/bin/java --version
-  register: jdk11_version_output
-  changed_when: false
-  failed_when: "jdk11_version not in jdk11_version_output.stdout"
-  ignore_errors: true
-
-- name: Check JDK 17 version
-  ansible.builtin.command: /opt/jdk-17/bin/java --version
-  register: jdk17_version_output
-  changed_when: false
-  failed_when: "jdk17_version not in jdk17_version_output.stdout"
-  ignore_errors: true
-
-- name: Check JDK 21 version
-  ansible.builtin.command: /opt/jdk-21/bin/java --version
-  register: jdk21_version_output
-  changed_when: false
-  failed_when: "jdk21_version not in jdk21_version_output.stdout"
-  ignore_errors: true
-
-- name: Check JDK 25 version
-  ansible.builtin.command: /opt/jdk-25/bin/java --version
-  register: jdk25_version_output
-  changed_when: false
-  failed_when: "jdk25_version not in jdk25_version_output.stdout"
-  ignore_errors: true
-
-- name: Check Maven with JDK 21 (environment variable)
-  ansible.builtin.command: mvn -v
-  environment:
-    JAVA_HOME: /opt/jdk-21
-  register: maven_version_output
-  changed_when: false
-  failed_when: "maven_version not in maven_version_output.stdout"
   ignore_errors: true
 
 - name: Check rng-tools package

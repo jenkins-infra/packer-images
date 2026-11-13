@@ -62,24 +62,14 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
-  provisioner "breakpoint" {
-    note    = "Enable this breakpoint to pause before trying to run tests"
-    disable = true
-  }
-
   provisioner "file" {
     source      = "tests/ansible/"
     destination = "/tmp/packer-tests/tests/ansible/"
   }
 
-  provisioner "file" {
-    source      = "provisioning/tools-versions.yml"
-    destination = "/tmp/packer-tests/provisioning/tools-versions.yml"
-  }
-
-  provisioner "file" {
-    source      = "jdks-infos.yaml"
-    destination = "/tmp/packer-tests/jdks-infos.yaml"
+  provisioner "breakpoint" {
+    note    = "Enable this breakpoint to pause before trying to run tests"
+    disable = true
   }
 
   provisioner "shell" {
