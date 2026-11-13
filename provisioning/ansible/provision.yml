@@ -32,3 +32,4 @@
     - install_netlify_deploy
     - install_azurecli
     - install_common_requirements
+    - install_datadog

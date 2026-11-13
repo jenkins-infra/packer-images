@@ -1,0 +1,26 @@
+---
+- name: Add the Datadog APT repository
+  ansible.builtin.deb822_repository:
+    name: datadog
+    types: [deb]
+    uris: https://apt.datadoghq.com/
+    suites: [stable]
+    components: ["7"]
+    signed_by: https://keys.datadoghq.com/DATADOG_APT_KEY_CURRENT.public
+    # The module needs the python3-debian library and does not assume it is present.
+    install_python_debian: true
+
+- name: Install the Datadog agent
+  ansible.builtin.apt:
+    name:
+      - datadog-agent
+      - datadog-signing-keys
+    state: present
+    install_recommends: false
+    update_cache: true
+
+# Disabled at startup to avoid error logs before cloud-init provides the datadog parameters.
+- name: Disable the Datadog agent service
+  ansible.builtin.systemd_service:
+    name: datadog-agent
+    enabled: false
