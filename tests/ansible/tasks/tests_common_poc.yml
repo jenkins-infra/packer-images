@@ -1,0 +1,7 @@
+---
+- name: Check azurecli
+  ansible.builtin.command: az --version
+  register: azurecli_version_output
+  changed_when: false
+  failed_when: "azurecli_version not in azurecli_version_output.stdout"
+  ignore_errors: true

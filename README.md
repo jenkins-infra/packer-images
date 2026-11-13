@@ -62,10 +62,17 @@ With the requirements verified locally, execute the following command:
 * Define the target to build:
 
 ```bash
-# Means: "Build the ubuntu-22.04 agent for Docker
+# Means: "Build the ubuntu-22.04 agent for Docker for the architecture corresponding to my host (here if you're on a recent Mac)
 export PKR_VAR_image_type=docker
 export PKR_VAR_agent_os_type=ubuntu
 export PKR_VAR_agent_os_version=22.04
+export PKR_VAR_architecture=arm64
+```
+
+* Initialise packer on first run
+
+```bash
+packer init .
 ```
 
 * Validate the template:
@@ -78,6 +85,12 @@ packer validate ./
 
 ```bash
 packer build -timestamp-ui -force -only="docker.ubuntu" ./
+```
+
+* To run only Ansible tests without rebuilding the image (Docker Ubuntu only):
+
+```bash
+packer build -timestamp-ui -force -only="docker.local" ./
 ```
 
 ### Azure

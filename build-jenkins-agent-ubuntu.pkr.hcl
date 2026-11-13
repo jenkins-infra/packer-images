@@ -62,30 +62,30 @@ build {
     script           = "./provisioning/ubuntu-provision.sh"
   }
 
-  provisioner "file" {
-    source      = "./tests/goss-linux.yaml"
-    destination = "/tmp/goss-linux.yaml"
-  }
-
-  provisioner "file" {
-    source      = "./tests/goss-common.yaml"
-    destination = "/tmp/goss-common.yaml"
-  }
-
   provisioner "breakpoint" {
-    note    = "Enable this breakpoint to pause before trying to run goss tests"
+    note    = "Enable this breakpoint to pause before trying to run tests"
     disable = true
   }
 
+  provisioner "file" {
+    source      = "tests/ansible/"
+    destination = "/tmp/packer-tests/tests/ansible/"
+  }
+
+  provisioner "file" {
+    source      = "provisioning/tools-versions.yml"
+    destination = "/tmp/packer-tests/provisioning/tools-versions.yml"
+  }
+
+  provisioner "file" {
+    source      = "jdks-infos.yaml"
+    destination = "/tmp/packer-tests/jdks-infos.yaml"
+  }
+
   provisioner "shell" {
-    execute_command  = "{{ .Vars }} sudo -E su - jenkins -c \"bash -eu '{{ .Path }}'\""
-    environment_vars = local.provisioning_env_vars
     inline = [
-      "source /home/jenkins/.asdf/asdf.sh", # Required as this is a non-interactive and non-login `bash`
-      "source /etc/environment",            # Required as this is a non-interactive and non-login `bash`
-      "goss --version",
-      "goss --gossfile /tmp/goss-linux.yaml --loglevel DEBUG validate",
-      "goss --gossfile /tmp/goss-common.yaml --loglevel DEBUG validate",
+      "cd /tmp/packer-tests/tests/ansible",
+      "/usr/local/ansible-venv/bin/ansible-playbook playbook-ubuntu.yml --inventory 'localhost,' --connection local --skip-tags windows_only"
     ]
   }
 
