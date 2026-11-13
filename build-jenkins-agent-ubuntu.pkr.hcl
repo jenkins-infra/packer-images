@@ -75,7 +75,7 @@ build {
   provisioner "shell" {
     inline = [
       "cd /tmp/ansible-tests",
-      "/usr/local/ansible-venv/bin/ansible-playbook playbook-linux.yml --inventory 'localhost,' --connection local"
+      "sudo -u jenkins /usr/local/ansible-venv/bin/ansible-playbook playbook-linux.yml --inventory 'localhost,' --connection local"
     ]
   }
 
