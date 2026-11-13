@@ -1,0 +1,32 @@
+---
+# The mirror network only carries current releases, so a 404 there means this version has
+# been moved to the archive. Any other response is a real mirror error and must fail.
+- name: Check whether maven is available on the Apache mirror
+  ansible.builtin.uri:
+    url: "{{ maven_mirror_url }}"
+    method: HEAD
+    status_code: [200, 301, 302, 307, 308, 404]
+  register: maven_mirror
+
+- name: Select the maven download URL
+  ansible.builtin.set_fact:
+    maven_url: "{{ maven_mirror_url if maven_mirror.status == 200 else maven_archive_url }}"
+
+- name: Show the maven download URL
+  ansible.builtin.debug:
+    var: maven_url
+
+- name: Extract maven
+  ansible.builtin.unarchive:
+    src: "{{ maven_url }}"
+    dest: /usr/share
+    creates: "/usr/share/apache-maven-{{ maven_version }}"
+    owner: root
+    group: root
+    remote_src: true
+
+- name: Link mvn into the PATH
+  ansible.builtin.file:
+    src: "/usr/share/apache-maven-{{ maven_version }}/bin/mvn"
+    dest: /usr/bin/mvn
+    state: link
