@@ -1,7 +1,7 @@
 ansible_core_version: 2.22.0
 asdf_version: 0.15.0
 awscli_version: 2.40.3
-azcopy_version: 10.34.1
+azcopy_version: 10.34.2
 azurecli_version: 2.93.0
 chocolatey_version: 1.4.0
 compose_version: 5.7.1
