@@ -1,0 +1,13 @@
+---
+- name: Install golangci-lint
+  ansible.builtin.unarchive:
+    src: "https://github.com/golangci/golangci-lint/releases/download/v{{ golangcilint_version }}/golangci-lint-{{ golangcilint_version }}-linux-{{ debian_architecture }}.tar.gz"
+    dest: /usr/local/bin
+    include:
+      - "golangci-lint-{{ golangcilint_version }}-linux-{{ debian_architecture }}/golangci-lint"
+    extra_opts:
+      - --strip-components=1
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true
