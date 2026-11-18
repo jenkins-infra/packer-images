@@ -47,7 +47,7 @@ command:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.104.0
+      - 2.105.0
   goss:
     exec: goss --version
     exit-status: 0
