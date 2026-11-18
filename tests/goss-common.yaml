@@ -6,7 +6,7 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.40.3
+      - 2.40.4
   azcopy:
     exec: azcopy --version
     exit-status: 0
@@ -42,12 +42,12 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 5.7.1
+      - 5.8.0
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.104.0
+      - 2.105.0
   goss:
     exec: goss --version
     exit-status: 0
