@@ -6,18 +6,18 @@ command:
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.40.0
+      - 2.40.4
   azcopy:
     exec: azcopy --version
     exit-status: 0
     stdout:
-      - 10.34.1
+      - 10.34.2
   azurecli:
     exec: az --version
     exit-status: 0
     timeout: 20000
     stdout:
-      - 2.92.0
+      - 2.93.0
   bundle:
     exec: bundle -v
     exit-status: 0
@@ -42,12 +42,12 @@ command:
     exec: docker-compose -v
     exit-status: 0
     stdout:
-      - 5.7.1
+      - 5.8.0
   gh_cli:
     exec: gh --version
     exit-status: 0
     stdout:
-      - 2.103.3
+      - 2.105.0
   goss:
     exec: goss --version
     exit-status: 0
@@ -78,7 +78,7 @@ command:
     exec: launchable --version
     exit-status: 0
     stdout:
-      - 1.125.4
+      - 1.126.0
   make:
     exec: make --version
     exit-status: 0
@@ -100,7 +100,7 @@ command:
     exec: playwright --version
     exit-status: 0
     stdout:
-      - 1.65.0
+      - 1.65.1
   playwright-chromium-cache:
     exec: playwright install --list
     exit-status: 0

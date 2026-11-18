@@ -1,0 +1,6 @@
+---
+# The archive keeps the kernel name on amd64 but uses the Debian one on arm64,
+# so neither the ansible_architecture fact nor debian_architecture fits on its own.
+goss_architecture_names:
+  x86_64: x86_64
+  aarch64: arm64
