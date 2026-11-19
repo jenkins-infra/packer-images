@@ -1,4 +1,14 @@
 ---
+- name: Install the Datadog APT keyring from the local GPG key
+  ansible.builtin.command:
+    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/datadog-keyring.gpg /tmp/gpg-keys/datadog.gpg
+    creates: /usr/share/keyrings/datadog-keyring.gpg
+
+- name: Make the Datadog APT keyring readable by every user
+  ansible.builtin.file:
+    path: /usr/share/keyrings/datadog-keyring.gpg
+    mode: "0644"
+
 - name: Add the Datadog APT repository
   ansible.builtin.deb822_repository:
     name: datadog
@@ -6,7 +16,7 @@
     uris: https://apt.datadoghq.com/
     suites: [stable]
     components: ["7"]
-    signed_by: https://keys.datadoghq.com/DATADOG_APT_KEY_CURRENT.public
+    signed_by: /usr/share/keyrings/datadog-keyring.gpg
     # The module needs the python3-debian library and does not assume it is present.
     install_python_debian: true
 
