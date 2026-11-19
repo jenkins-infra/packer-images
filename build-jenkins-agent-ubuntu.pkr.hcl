@@ -13,10 +13,10 @@ build {
     name         = "ubuntu"
     ssh_username = local.ubuntu_ssh_user[var.image_type]
     # List available offers and publishers with the command `az vm image list --output table`
-    image_offer     = local.az_instance_image_offer[var.agent_os_version]
+    image_offer     = "0001-com-ubuntu-server-jammy"
     image_publisher = "canonical"
-    # SKU names differ per release: see `local.az_instance_image_sku` in locals.pkr.hcl
-    image_sku     = local.az_instance_image_sku[var.agent_os_version][var.architecture]
+    # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
+    image_sku     = local.az_instance_image_sku[var.architecture]
     image_version = try(local.images_versions["azure"][var.agent_os_type][var.agent_os_version][var.architecture], "N/A")
     os_type       = "Linux"
   }
