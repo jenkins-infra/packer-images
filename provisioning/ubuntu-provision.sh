@@ -208,10 +208,12 @@ function install_golang(){
 ## setup qemu
 function install_qemu() {
   apt-get update --quiet
-  # The `qemu` metapackage is a transitional dummy on 22.04 and no longer exists from 24.04 onwards.
+  # `qemu` was a transitional dummy on 22.04 and no longer exists from 24.04 onwards.
+  # `qemu-user-static` is a real package on 22.04 but only a virtual one from 26.04, provided by
+  # `qemu-user-binfmt`, so apt refuses to install it there. `qemu-user-binfmt` exists on both.
   apt-get install --yes --no-install-recommends \
     binfmt-support \
-    qemu-user-static
+    qemu-user-binfmt
 
   if [ "$(uname -m)" = "x86_64" ]; then
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true # Never fail
