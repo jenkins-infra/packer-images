@@ -208,8 +208,8 @@ function install_golang(){
 ## setup qemu
 function install_qemu() {
   apt-get update --quiet
+  # The `qemu` metapackage is a transitional dummy on 22.04 and no longer exists from 24.04 onwards.
   apt-get install --yes --no-install-recommends \
-    qemu \
     binfmt-support \
     qemu-user-static
 
