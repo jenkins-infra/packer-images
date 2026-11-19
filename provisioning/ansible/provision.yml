@@ -37,4 +37,5 @@
     - install_goss
     - install_golangcilint
     - install_maven
+    - install_git
     - install_datadog

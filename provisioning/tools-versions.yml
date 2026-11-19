@@ -22,7 +22,7 @@ helm_git_version: 1.5.2
 helm_secrets_version: 4.7.11
 helm_version: 4.3.2
 helmfile_version: 1.8.4
-jenkins_remoting_version: 3395.v6e5377b_0fb_3c
+jenkins_remoting_version: 3396.ve02b_5cde31b_2
 jq_version: 1.8.2
 jxreleaseversion_version: 2.10.8
 kubectl_version: 1.35.10
@@ -40,8 +40,8 @@ ruby_puppet_version: 2.6.10
 ruby_version: 3.4.8
 sops_version: 3.13.3
 terraform_version: 1.15.9
-typos_version: 1.33.1 # TODO track with updatecli
-updatecli_version: 0.123.0
+typos_version: 1.33.1
+updatecli_version: 0.124.0
 vs_buildtools_version_legacy: 16
 vs_buildtools_version: stable
 windows_pwsh_version: 7.6.4

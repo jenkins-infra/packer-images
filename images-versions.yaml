@@ -7,16 +7,25 @@ azure:
     "22.04":
       amd64: 22.04.202611110
       arm64: 22.04.202611110
+    "26.04":
+      amd64: 26.04.202611100
+      arm64: 26.04.202611100
 docker:
   ubuntu:
     "22.04":
       amd64: sha256:45e9ddc6895604674618a409ca9f73d301da8fdb75fe330e8e9a27b3b219e4ad
       arm64: sha256:0904b10431fdf0800b659e0039e484e3af097f7d81539dc55dd65d23729d7735
+    "26.04":
+      amd64: sha256:0d5255be560e2d2ddcfbfda88549e9e815ef29e7cd7fc62183d5709e6e2963c6
+      arm64: sha256:7e7957462d7b6db141de67623f46135d82a6bc131bc2ff369aedfccfa91c0a1b
 aws:
   ubuntu:
     "22.04":
       amd64: ami-0451fa70c8ca29175
       arm64: ami-01e45d5c1aae53b76
+    "26.04":
+      amd64: ami-0b064c912c726f739
+      arm64: ami-07b45131b6d42164e
   windows:
     "2025":
       amd64: ami-0dbe8007044a4895b

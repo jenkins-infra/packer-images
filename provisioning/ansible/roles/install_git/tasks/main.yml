@@ -1,0 +1,29 @@
+---
+- name: Install the git-core PPA APT keyring from the local GPG key
+  ansible.builtin.command:
+    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/git-core-keyring.gpg /tmp/gpg-keys/git-core.gpg
+    creates: /usr/share/keyrings/git-core-keyring.gpg
+
+- name: Make the git-core PPA APT keyring readable by every user
+  ansible.builtin.file:
+    path: /usr/share/keyrings/git-core-keyring.gpg
+    mode: "0644"
+
+- name: Add the git-core PPA
+  ansible.builtin.deb822_repository:
+    name: git-core
+    types: [deb]
+    # The URL below is what add-apt-repository resolves ppa:git-core/ppa to.
+    uris: https://ppa.launchpadcontent.net/git-core/ppa/ubuntu/
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: [main]
+    signed_by: /usr/share/keyrings/git-core-keyring.gpg
+    # The module needs the python3-debian library and does not assume it is present.
+    install_python_debian: true
+
+- name: Install git
+  ansible.builtin.apt:
+    name: "git=1:{{ git_linux_version }}*"
+    state: present
+    install_recommends: false
+    update_cache: true
