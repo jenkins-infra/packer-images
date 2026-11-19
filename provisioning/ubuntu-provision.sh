@@ -209,9 +209,8 @@ function install_golang(){
 function install_qemu() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
-    qemu \
     binfmt-support \
-    qemu-user-static
+    qemu-user-binfmt
 
   if [ "$(uname -m)" = "x86_64" ]; then
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true # Never fail
@@ -328,19 +327,6 @@ function install_packer() {
   unzip "${archive_path}" -d /usr/local/bin packer
   popd
   rm -rf "${download_dir}"
-}
-
-## Install Datadog agent but not starting it and not enabling it (that will be the role of the system spinning up VM through cloud-init usually)
-function install_datadog() {
-  keyring_file=/usr/share/keyrings/datadog-keyring.gpg
-  gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/datadog.gpg
-  chmod a+r "${keyring_file}"
-  echo "deb [signed-by=${keyring_file}] https://apt.datadoghq.com/ stable 7" > /etc/apt/sources.list.d/datadog.list
-
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends datadog-agent datadog-signing-keys
-  # Disabling service at startup to avoid error log before cloud-init providing the datadog parameters
-  systemctl disable datadog-agent
 }
 
 # https://docs.aws.amazon.com/cli/latest/userguide/getting-started-version.html
@@ -462,7 +448,6 @@ function main() {
   install_asdf # Before all the others but after the jenkins home is created
   install_docker # needed by the pipeline
   install_jdks # needed by the pipeline
-  install_datadog
   install_qemu
   install_python
   install_ansible
