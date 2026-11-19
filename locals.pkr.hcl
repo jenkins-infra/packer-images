@@ -13,10 +13,23 @@ locals {
     "arm64" = ["t4g.xlarge", "m7g.xlarge"]
   }
 
-  # List available SKUs with the command `az vm image list-skus --offer 0001-com-ubuntu-server-jammy --location eastus --publisher canonical --output table`
+  # Canonical changed the naming with 26.04: the `0001-com-ubuntu-server-<codename>` offer and its
+  # `<version>-lts-gen2` SKUs became the `ubuntu-<version>-lts` offer with plain `server` SKUs.
+  # List available offers with the command `az vm image list --publisher canonical --output table`
+  az_instance_image_offer = {
+    "22.04" = "0001-com-ubuntu-server-jammy"
+    "26.04" = "ubuntu-26_04-lts"
+  }
+  # List available SKUs with the command `az vm image list-skus --offer ubuntu-26_04-lts --location eastus --publisher canonical --output table`
   az_instance_image_sku = {
-    "amd64" = "${local.agent_os_version_safe}-lts-gen2"
-    "arm64" = "${local.agent_os_version_safe}-lts-arm64"
+    "22.04" = {
+      "amd64" = "${local.agent_os_version_safe}-lts-gen2"
+      "arm64" = "${local.agent_os_version_safe}-lts-arm64"
+    }
+    "26.04" = {
+      "amd64" = "server"
+      "arm64" = "server-arm64"
+    }
   }
   windows_winrm_user = {
     "azure-arm"  = "packer"
