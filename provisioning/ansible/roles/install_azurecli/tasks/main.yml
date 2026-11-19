@@ -1,4 +1,14 @@
 ---
+- name: Install the Microsoft APT keyring from the local GPG key
+  ansible.builtin.command:
+    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/microsoft-keyring.gpg /tmp/gpg-keys/microsoft.gpg
+    creates: /usr/share/keyrings/microsoft-keyring.gpg
+
+- name: Make the Microsoft APT keyring readable by every user
+  ansible.builtin.file:
+    path: /usr/share/keyrings/microsoft-keyring.gpg
+    mode: "0644"
+
 - name: Add the Azure CLI APT repository
   ansible.builtin.deb822_repository:
     name: azure-cli
@@ -7,7 +17,7 @@
     suites: "{{ ansible_facts['distribution_release'] }}"
     components: [main]
     architectures: "{{ debian_architecture }}"
-    signed_by: https://packages.microsoft.com/keys/microsoft.asc
+    signed_by: /usr/share/keyrings/microsoft-keyring.gpg
     # The module needs the python3-debian library and does not assume it is present.
     install_python_debian: true
 
