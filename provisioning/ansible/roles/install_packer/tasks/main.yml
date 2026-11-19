@@ -1,0 +1,71 @@
+---
+# Replaces the install_packer() function of provisioning/ubuntu-provision.sh.
+- name: Install the packer archive requirements
+  ansible.builtin.apt:
+    name: unzip
+    state: present
+    install_recommends: false
+    update_cache: true
+
+- name: Create a temporary download directory
+  ansible.builtin.tempfile:
+    state: directory
+  register: packer_temp_download_dir
+
+- name: Copy the HashiCorp release key
+  ansible.builtin.copy:
+    src: hashicorp.gpg
+    dest: "{{ packer_temp_download_dir.path }}/hashicorp.asc"
+    mode: "0644"
+
+# gpgv needs a binary keyring, and the key is distributed ASCII armored.
+- name: Build a keyring from the HashiCorp release key
+  ansible.builtin.command:
+    cmd: gpg --batch --yes --dearmor -o hashicorp.gpg hashicorp.asc
+    chdir: "{{ packer_temp_download_dir.path }}"
+    creates: "{{ packer_temp_download_dir.path }}/hashicorp.gpg"
+
+- name: Download packer, its checksums and their signature
+  ansible.builtin.get_url:
+    url: "{{ packer_download_url }}/{{ item }}"
+    dest: "{{ packer_temp_download_dir.path }}/{{ item }}"
+    mode: "0644"
+  loop:
+    - "{{ packer_archive_file }}"
+    - "{{ packer_checksum_file }}"
+    - "{{ packer_checksum_file }}.sig"
+
+- name: Verify the packer checksums signature
+  ansible.builtin.command:
+    cmd: gpgv --keyring={{ packer_temp_download_dir.path }}/hashicorp.gpg
+      {{ packer_checksum_file }}.sig {{ packer_checksum_file }}
+    chdir: "{{ packer_temp_download_dir.path }}"
+  changed_when: false
+
+- name: Verify the packer archive checksum
+  ansible.builtin.shell:
+    cmd: set -o pipefail && grep {{ packer_archive_file }} {{ packer_checksum_file }} | sha256sum --check
+    chdir: "{{ packer_temp_download_dir.path }}"
+    executable: /bin/bash
+  changed_when: false
+
+- name: Extract packer
+  ansible.builtin.unarchive:
+    src: "{{ packer_temp_download_dir.path }}/{{ packer_archive_file }}"
+    dest: "{{ packer_temp_download_dir.path }}"
+    include: [packer]
+    remote_src: true
+
+- name: Install packer
+  ansible.builtin.copy:
+    src: "{{ packer_temp_download_dir.path }}/packer"
+    dest: /usr/local/bin/packer
+    mode: a+x
+    owner: root
+    group: root
+    remote_src: true
+
+- name: Remove the temporary download directory
+  ansible.builtin.file:
+    path: "{{ packer_temp_download_dir.path }}"
+    state: absent
