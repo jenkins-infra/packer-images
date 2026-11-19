@@ -71,7 +71,7 @@ node('linux-arm64-docker') {
       // If there is none of these labels or a mix or Windows and Linux/Ubuntu labels, build all
       def agentTypes = []
       def agentTypeFamilies = [
-        'linux': ['ubuntu-22.04'],
+        'linux': ['ubuntu-22.04', 'ubuntu-26.04'],
         'windows': ['windows-2025'],
       ]
       def computeTypes = []
@@ -148,7 +148,7 @@ node('linux-arm64-docker') {
 
             // Apply excludes logic
             // Only build arm64 VMs when OS is Ubuntu (notValues) as Windows Server arm64 does not exist anywhere
-            if (cpu_architecture == 'arm64' && agent_type != 'ubuntu-22.04') {
+            if (cpu_architecture == 'arm64' && !agent_type.startsWith('ubuntu-')) {
               return
             }
 
@@ -160,12 +160,12 @@ node('linux-arm64-docker') {
             // Decrease cloud costs: only build a few cells of the matrix if the build is marked as "lightweight"
             if (env.CHANGE_ID && lightweightMatrix) {
               if (compute_type == 'amazon-ebs') {
-                if (agent_type == 'ubuntu-22.04' && cpu_architecture == 'arm64') {
+                if (agent_type.startsWith('ubuntu-') && cpu_architecture == 'arm64') {
                   return
                 }
               }
               if (compute_type == 'azure-arm') {
-                if (agent_type == 'ubuntu-22.04' && cpu_architecture == 'amd64') {
+                if (agent_type.startsWith('ubuntu-') && cpu_architecture == 'amd64') {
                   return
                 }
               }
