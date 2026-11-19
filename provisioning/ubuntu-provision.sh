@@ -209,9 +209,8 @@ function install_golang(){
 function install_qemu() {
   apt-get update --quiet
   apt-get install --yes --no-install-recommends \
-    qemu \
     binfmt-support \
-    qemu-user-static
+    qemu-user-binfmt
 
   if [ "$(uname -m)" = "x86_64" ]; then
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true # Never fail
