@@ -1,0 +1,22 @@
+---
+# Replaces the install_rngd() function of provisioning/ubuntu-provision.sh.
+- name: Install rng-tools5
+  ansible.builtin.apt:
+    name: rng-tools5
+    state: present
+    install_recommends: false
+    update_cache: true
+
+# The shell used `|| true` because the docker builder has no systemd to talk to.
+- name: Enable and start rngd
+  ansible.builtin.systemd_service:
+    name: "{{ item.name }}"
+    enabled: "{{ item.enabled }}"
+    state: "{{ item.state | default(omit) }}"
+  loop:
+    - name: rng-tools5
+      enabled: true
+    - name: rngd
+      enabled: true
+      state: started
+  when: ansible_facts['service_mgr'] == 'systemd'
