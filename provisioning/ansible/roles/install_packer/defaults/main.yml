@@ -1,0 +1,4 @@
+---
+packer_archive_file: "packer_{{ packer_version }}_linux_{{ debian_architecture }}.zip"
+packer_checksum_file: "packer_{{ packer_version }}_SHA256SUMS"
+packer_download_url: "https://releases.hashicorp.com/packer/{{ packer_version }}"

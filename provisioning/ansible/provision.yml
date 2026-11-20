@@ -39,3 +39,5 @@
     - install_maven
     - install_git
     - install_datadog
+    - install_packer
+    - install_nodejs

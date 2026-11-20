@@ -303,31 +303,6 @@ function install_ruby() {
   install_asdf_package ruby "${versionToInstall}"
 }
 
-## Install Packer with ASDF (because it checks for integrity with the Hashicorp GPG key)
-function install_packer() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends curl ca-certificates unzip gpg gpg-agent # Should already be there but this function should be autonomous
-
-  local download_dir checksum_file archive_path
-  download_dir="$(mktemp -d)"
-  archive_path="packer_${PACKER_VERSION}_linux_${ARCHITECTURE}.zip"
-  checksum_file="packer_${PACKER_VERSION}_SHA256SUMS"
-  pushd "${download_dir}"
-  for url in \
-    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${archive_path}" \
-    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${checksum_file}" \
-    "https://releases.hashicorp.com/packer/${PACKER_VERSION}/${checksum_file}.sig"
-  do
-    curl --silent --show-error --location --remote-name "${url}"
-  done
-  gpg --import /tmp/gpg-keys/hashicorp.gpg
-  gpg --trust-model always --verify ./"${checksum_file}".sig
-  grep "${archive_path}" "${checksum_file}" | sha256sum --check
-
-  unzip "${archive_path}" -d /usr/local/bin packer
-  popd
-  rm -rf "${download_dir}"
-}
 
 # https://docs.aws.amazon.com/cli/latest/userguide/getting-started-version.html
 function install_awscli() {
@@ -344,46 +319,6 @@ function install_awscli() {
   rm -rf /tmp/aws*
 }
 
-## Install Nodejs from prebuilt binaries
-function install_nodejs() {
-  local keyring_file nodejs_download_url nodejs_temp_download_dir nodejs_archive_file nodejs_shasum_file nodejs_shasum_gpg_file nodejs_install_dir
-
-  keyring_file="/tmp/gpg-keys/nodejs-keyring.kbx"
-  nodejs_download_url="https://nodejs.org/dist/v${NODEJS_LINUX_VERSION}"
-  nodejs_temp_download_dir="$(mktemp -d)"
-  nodejs_install_dir="/opt/nodejs"
-
-  # Relative paths (assuming we're working from inside the temp dir)
-  nodejs_archive_file="node-v${NODEJS_LINUX_VERSION}-linux-$([ "${ARCHITECTURE}" = "arm64" ] && echo 'arm64' || echo 'x64').tar.xz"
-  nodejs_shasum_file="SHASUMS256.txt"
-  nodejs_shasum_gpg_file="SHASUMS256.txt.asc"
-
-  # Required to unarchive
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends xz-utils # Should already be there but this function should be autonomous
-
-  pushd "${nodejs_temp_download_dir}"
-  curl --fail --retry 3 --silent --location --show-error --output "${nodejs_archive_file}" \
-    "${nodejs_download_url}/${nodejs_archive_file}"
-  curl --fail --retry 3 --silent --location --show-error --output "${nodejs_shasum_gpg_file}" \
-    "${nodejs_download_url}/${nodejs_shasum_gpg_file}"
-  ls -ltrh # Debug when gpg fails
-  gpgv --keyring="${keyring_file}" --output "${nodejs_shasum_file}" < "${nodejs_shasum_gpg_file}"
-  ls -ltrh # Debug when gpg fails
-  sha256sum --check "${nodejs_shasum_file}" --ignore-missing | grep "${nodejs_archive_file}"
-
-  mkdir -p "${nodejs_install_dir}"
-  tar --extract --xz --file="${nodejs_archive_file}" --directory="${nodejs_install_dir}" --strip-components=1 #strip the 1st-level directory of the archive as it has a changing name
-
-  ## append to the system wide path variable, need to be seconded for docker in packer sources.pkr.hcl
-  sed -e '/^PATH/s/"$/:\/opt\/nodejs\/bin"/g' -i /etc/environment
-
-  popd
-  rm -rf "${nodejs_temp_download_dir}"
-
-  # Ensure we have the usual 3 package managers up to date
-  source /etc/environment && npm install -g npm yarn pnpm
-}
 
 function install_playwright() {
   source /etc/environment
@@ -454,9 +389,7 @@ function main() {
   install_golang
   install_ruby "${RUBY_PUPPET_VERSION}"
   install_ruby "${RUBY_VERSION}"
-  install_packer
   install_awscli
-  install_nodejs
   install_playwright
   install_launchable
   install_helm
