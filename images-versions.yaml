@@ -22,7 +22,7 @@ aws:
   ubuntu:
     "22.04":
       amd64: ami-0451fa70c8ca29175
-      arm64: ami-01e45d5c1aae53b76
+      arm64: ami-0f1b37f9a30780fa2
     "26.04":
       amd64: ami-0b064c912c726f739
       arm64: ami-07b45131b6d42164e
