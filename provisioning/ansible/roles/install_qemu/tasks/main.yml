@@ -1,0 +1,18 @@
+---
+# `qemu-user-static` is only a virtual package from 26.04, provided by `qemu-user-binfmt`.
+- name: Install the qemu user emulation packages
+  ansible.builtin.apt:
+    name:
+      - binfmt-support
+      - qemu-user-binfmt
+    state: present
+    install_recommends: false
+    update_cache: true
+
+# Tolerated because the docker builder has no usable docker daemon.
+- name: Register the qemu binfmt handlers
+  ansible.builtin.command:
+    cmd: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  when: ansible_facts['architecture'] == 'x86_64'
+  changed_when: false
+  failed_when: false

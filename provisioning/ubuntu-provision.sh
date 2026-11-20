@@ -206,16 +206,6 @@ function install_golang(){
 }
 
 ## setup qemu
-function install_qemu() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends \
-    binfmt-support \
-    qemu-user-binfmt
-
-  if [ "$(uname -m)" = "x86_64" ]; then
-    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || true # Never fail
-  fi
-}
 
 ## Install Python 3
 function install_python() {
@@ -366,12 +356,6 @@ function cleanup() {
 }
 
 ## Install rngd to increase VM entropy
-function install_rngd() {
-  apt-get update --quiet
-  apt-get install --yes --no-install-recommends rng-tools5
-  systemctl enable rng-tools5 || true # Uses logical operator '|| true' to prevent script from failing due to non-zero exit status in the case of docker containers
-  systemctl start rngd || true
-}
 
 function main() {
   check_commands
@@ -383,7 +367,6 @@ function main() {
   install_asdf # Before all the others but after the jenkins home is created
   install_docker # needed by the pipeline
   install_jdks # needed by the pipeline
-  install_qemu
   install_python
   install_ansible
   install_golang
@@ -393,7 +376,6 @@ function main() {
   install_playwright
   install_launchable
   install_helm
-  install_rngd
 
   echo "== Installed packages:"
   dpkg -l
