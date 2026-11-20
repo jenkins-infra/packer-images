@@ -41,3 +41,5 @@
     - install_datadog
     - install_rngd
     - install_qemu
+    - install_packer
+    - install_nodejs

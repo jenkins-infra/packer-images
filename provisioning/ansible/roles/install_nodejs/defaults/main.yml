@@ -1,0 +1,5 @@
+---
+# Node.js publishes x64 rather than the Debian amd64 name.
+nodejs_archive_file: "node-v{{ nodejs_linux_version }}-linux-{{ 'arm64' if debian_architecture == 'arm64' else 'x64' }}.tar.xz"
+nodejs_download_url: "https://nodejs.org/dist/v{{ nodejs_linux_version }}"
+nodejs_install_dir: /opt/nodejs
