@@ -13,8 +13,6 @@ locals {
     "arm64" = ["t4g.xlarge", "m7g.xlarge"]
   }
 
-  # Canonical changed the naming with 26.04: the `0001-com-ubuntu-server-<codename>` offer and its
-  # `<version>-lts-gen2` SKUs became the `ubuntu-<version>-lts` offer with plain `server` SKUs.
   # List available offers with the command `az vm image list --publisher canonical --output table`
   az_instance_image_offer = {
     "22.04" = "0001-com-ubuntu-server-jammy"
