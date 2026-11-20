@@ -231,7 +231,7 @@ function install_python() {
 	build-essential gdb lcov pkg-config \
 	libbz2-dev libffi-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
 	libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev \
-	lzma lzma-dev tk-dev uuid-dev zlib1g-dev libmpdec-dev libzstd-dev \
+	lzma tk-dev uuid-dev zlib1g-dev libmpdec-dev libzstd-dev \
 	inetutils-inetd
 
   python3 -m pip install --no-cache-dir pip --upgrade
@@ -251,7 +251,7 @@ function install_python() {
 	build-essential gdb lcov pkg-config \
 	libbz2-dev libffi-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
 	libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev \
-	lzma lzma-dev tk-dev uuid-dev zlib1g-dev libmpdec-dev libzstd-dev \
+	lzma tk-dev uuid-dev zlib1g-dev libmpdec-dev libzstd-dev \
 	inetutils-inetd
 }
 
