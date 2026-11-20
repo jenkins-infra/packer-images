@@ -15,7 +15,7 @@ ubuntu:
       checksum_value: d7f5d5cf865a2902b70ff549b97586a7d3f234e016f041ab447ea740c7d66d1c
     jdk25:
       #TODO track with updatecli
-      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.5%2B8/OpenJDK25U-jdk_x64_linux_hotspot_25.0.5_8.tar.gz
+      installer_url: https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.5.1%2B2/OpenJDK25U-jdk_x64_linux_hotspot_25.0.5.1_2.tar.gz
       #TODO track with updatecli
       checksum_value: 760f91b22c3efc9bd1b64ff950598231be82928cc807e30691a0e7a2995a62c0
   arm64:
