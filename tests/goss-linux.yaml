@@ -87,7 +87,7 @@ command:
     exec: JAVA_HOME=/opt/jdk-21 mvn -v
     exit-status: 0
     stdout:
-      - 3.10.0
+      - 3.10.1
   nodejs:
     exec: node --version
     exit-status: 0
