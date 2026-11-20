@@ -1,5 +1,4 @@
 ---
-# Replaces the install_packer() function of provisioning/ubuntu-provision.sh.
 - name: Install the packer archive requirements
   ansible.builtin.apt:
     name: unzip

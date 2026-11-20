@@ -1,5 +1,4 @@
 ---
-# Replaces the install_nodejs() function of provisioning/ubuntu-provision.sh.
 - name: Install the Node.js archive requirements
   ansible.builtin.apt:
     name: xz-utils
@@ -48,7 +47,6 @@
     state: directory
     mode: "0755"
 
-# The archive's first directory level carries the version, so it is stripped.
 - name: Extract Node.js
   ansible.builtin.unarchive:
     src: "{{ nodejs_temp_download_dir.path }}/{{ nodejs_archive_file }}"
@@ -62,7 +60,6 @@
     path: "{{ nodejs_temp_download_dir.path }}"
     state: absent
 
-# Appended to the system wide PATH, which the docker source in sources.pkr.hcl reads again.
 - name: Add Node.js to the system wide PATH
   ansible.builtin.replace:
     path: /etc/environment
