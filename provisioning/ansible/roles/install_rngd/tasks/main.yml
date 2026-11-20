@@ -1,5 +1,4 @@
 ---
-# Replaces the install_rngd() function of provisioning/ubuntu-provision.sh.
 - name: Install rng-tools5
   ansible.builtin.apt:
     name: rng-tools5
@@ -7,10 +6,7 @@
     install_recommends: false
     update_cache: true
 
-# The shell ran `systemctl enable rng-tools5 || true` then `systemctl start rngd || true`.
-# The package only ships rngd.service, there is no rng-tools5 unit, so that first call was
-# always failing into the `|| true`. goss only checks `rngd --version`, so the start stays
-# best effort here the same way it was in the shell.
+# The package ships no rng-tools5 unit, and the shell started rngd with `|| true`.
 - name: Enable and start rngd
   ansible.builtin.systemd:
     name: rngd
