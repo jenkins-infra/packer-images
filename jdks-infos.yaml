@@ -27,7 +27,7 @@ ubuntu:
       checksum_value: 60b0fb79bb678b6fae3e499c7b0a353e68633ed0ab69d1a6bafe6092ed1e59e4
     jdk17:
       installer_url: https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.21%2B9/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.21_9.tar.gz
-      checksum_value: 3e4eca7ead088f080af1476007decf010a240a1eb4e1e78c54fa32fbcc347084
+      checksum_value: 1d808f4b558e9de63d8ba3ead21ffc8b9de204894eff3c19d52c1480aa17cc58
     jdk21:
       installer_url: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.13_9.tar.gz
       checksum_value: e3522e707fc7dbe2a72c30746b1e7068301a0213ecd213d4491f35a14eb55578
