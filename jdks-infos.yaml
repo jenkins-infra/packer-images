@@ -42,7 +42,7 @@ windows:
       # Temporarily override as Temurin JDK is corrupted - https://github.com/jenkins-infra/packer-images/issues/3314
       installer_url: https://builds.reports.jenkins.io/.tmp/jdk8u512_b9.zip
       # Temporarily override as Temurin JDK is corrupted - https://github.com/jenkins-infra/packer-images/issues/3314
-      checksum_value: a423a711e6c5e0f223699dc41e58564ab9c544461ac431fd4d56ebd45869f362
+      checksum_value: 0ba65e73fcab68cc46d530aad0e7402d3aac9bf7a5d2996d8a356f960876da05
     jdk11:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.33%2B10/OpenJDK11U-jdk_x64_windows_hotspot_11.0.33_10.zip
       checksum_value: cff2e75657c96a718974732b4a7b2c81a245a0b2ea44e6d8ea08cd0248d8fa9d
