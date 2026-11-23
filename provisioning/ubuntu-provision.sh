@@ -224,7 +224,6 @@ function install_python() {
 	lzma tk-dev uuid-dev zlib1g-dev libmpdec-dev libzstd-dev \
 	inetutils-inetd
 
-  python3 -m pip install --no-cache-dir pip --upgrade
   mkdir python-src
   python3_source_download_url="https://www.python.org/ftp/python/${PYTHON3_VERSION}/Python-${PYTHON3_VERSION}.tgz"
   curl --fail --silent --show-error "${python3_source_download_url}" --output python-src.tgz
