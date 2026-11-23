@@ -80,7 +80,6 @@ locals {
       for jdk_version, jdk_data in local.jdk_infos[var.agent_os_type][var.architecture] :
       [
         "${upper(jdk_version)}_INSTALLER_URL=${jdk_data.installer_url}",
-        "${upper(jdk_version)}_CHECKSUM_VALUE=${jdk_data.checksum_value}"
       ]
     ])
   )

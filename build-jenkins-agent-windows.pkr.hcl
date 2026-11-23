@@ -100,6 +100,11 @@ build {
     destination = "C:/"
   }
 
+  provisioner "file" {
+    source      = "./gpg-keys"
+    destination = "C:/"
+  }
+
   provisioner "powershell" {
     environment_vars  = local.provisioning_env_vars
     elevated_user     = local.windows_winrm_user[var.image_type]
