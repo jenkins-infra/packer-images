@@ -40,7 +40,7 @@ windows:
   amd64:
     jdk8:
       # Temporarily override as Temurin JDK is corrupted - https://github.com/jenkins-infra/packer-images/issues/3314
-      installer_url: https://cacheeastus2.file.core.windows.net/cache-east-us-2/jdk8u512_b9.zip
+      installer_url: https://builds.reports.jenkins.io/.tmp/jdk8u512_b9.zip
       # Temporarily override as Temurin JDK is corrupted - https://github.com/jenkins-infra/packer-images/issues/3314
       checksum_value: a423a711e6c5e0f223699dc41e58564ab9c544461ac431fd4d56ebd45869f362
     jdk11:
