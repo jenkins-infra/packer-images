@@ -1,7 +1,13 @@
 ---
+- name: Copy the Datadog release key
+  ansible.builtin.copy:
+    src: datadog.gpg
+    dest: /tmp/datadog.gpg
+    mode: "0644"
+
 - name: Install the Datadog APT keyring from the local GPG key
   ansible.builtin.command:
-    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/datadog-keyring.gpg /tmp/gpg-keys/datadog.gpg
+    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/datadog-keyring.gpg /tmp/datadog.gpg
     creates: /usr/share/keyrings/datadog-keyring.gpg
 
 - name: Make the Datadog APT keyring readable by every user
