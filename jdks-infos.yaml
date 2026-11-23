@@ -39,8 +39,10 @@ ubuntu:
 windows:
   amd64:
     jdk8:
-      installer_url: https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u512-b09/OpenJDK8U-jdk_x64_windows_hotspot_8u512b09.zip
-      checksum_value: 20f248ddd600f900cd9b235d50d54cdb27e7b750f140d381176a7612c53663cd
+      # Temporarily override as Temurin JDK is corrupted - https://github.com/jenkins-infra/packer-images/issues/3314
+      installer_url: https://cacheeastus2.file.core.windows.net/cache-east-us-2/jdk8u512_b9.zip
+      # Temporarily override as Temurin JDK is corrupted - https://github.com/jenkins-infra/packer-images/issues/3314
+      checksum_value: a423a711e6c5e0f223699dc41e58564ab9c544461ac431fd4d56ebd45869f362
     jdk11:
       installer_url: https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.33%2B10/OpenJDK11U-jdk_x64_windows_hotspot_11.0.33_10.zip
       checksum_value: cff2e75657c96a718974732b4a7b2c81a245a0b2ea44e6d8ea08cd0248d8fa9d
