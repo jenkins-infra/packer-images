@@ -465,4 +465,4 @@ Write-Host "== Patch(s) installed"
 Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
 
 # Debug
-azcopy --version
+C:/tools/azcopy --version
