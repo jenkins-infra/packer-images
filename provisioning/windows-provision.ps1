@@ -371,12 +371,6 @@ $downloads['vs-build-tools'] = @{
 
 $downloads['azcopy'] = @{
     'url'      = 'https://github.com/Azure/azure-storage-azcopy/releases/download/v{0}/azcopy_windows_amd64_{0}.zip' -f $env:AZCOPY_VERSION;
-    'local'    = "$baseDir\azcopy.zip"
-    'expandTo' = "$baseDir";
-    'cleanupLocal' = 'true';
-};
-$downloads['azcopy'] = @{
-    'url'      = 'https://github.com/Azure/azure-storage-azcopy/releases/download/v{0}/azcopy_windows_amd64_{0}.zip' -f $env:AZCOPY_VERSION;
     'local'    = "$baseDir\azcopy.zip";
     'expandTo' = "$baseDir";
     'postExpand' = {
