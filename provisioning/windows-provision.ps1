@@ -402,7 +402,7 @@ foreach($k in $downloads.Keys) {
     }
 
     if($download.ContainsKey('expandTo')) {
-        Expand-Archive -Path $download['local'] -DestinationPath $download['expandTo']
+        Expand-Archive -Path $download['local'] -DestinationPath $download['expandTo'] -PassThru
     }
 
     if($download.ContainsKey('postExpand')) {
