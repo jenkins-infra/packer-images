@@ -463,3 +463,6 @@ Select-Object -Property DeviceID, DriveType, VolumeName,
 
 Write-Host "== Patch(s) installed"
 Get-HotFix | Format-Table -Property HotFixID, Description, InstalledOn
+
+# Debug
+azcopy --version
