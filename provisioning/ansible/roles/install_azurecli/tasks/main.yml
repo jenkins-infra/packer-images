@@ -1,7 +1,13 @@
 ---
+- name: Copy the Microsoft release key
+  ansible.builtin.copy:
+    src: microsoft.gpg
+    dest: /tmp/microsoft.gpg
+    mode: "0644"
+
 - name: Install the Microsoft APT keyring from the local GPG key
   ansible.builtin.command:
-    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/microsoft-keyring.gpg /tmp/gpg-keys/microsoft.gpg
+    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/microsoft-keyring.gpg /tmp/microsoft.gpg
     creates: /usr/share/keyrings/microsoft-keyring.gpg
 
 - name: Make the Microsoft APT keyring readable by every user

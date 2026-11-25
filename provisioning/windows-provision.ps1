@@ -371,8 +371,12 @@ $downloads['vs-build-tools'] = @{
 
 $downloads['azcopy'] = @{
     'url'      = 'https://github.com/Azure/azure-storage-azcopy/releases/download/v{0}/azcopy_windows_amd64_{0}.zip' -f $env:AZCOPY_VERSION;
-    'local'    = "$baseDir\azcopy.zip"
+    'local'    = "$baseDir\azcopy.zip";
     'expandTo' = "$baseDir";
+    'postExpand' = {
+        Move-Item -Path "$baseDir\azcopy_windows_amd64_$env:AZCOPY_VERSION\azcopy.exe" -Destination "$baseDir\azcopy.exe"
+        Remove-Item "$baseDir\azcopy_windows_amd64_$env:AZCOPY_VERSION" -Recurse -Force
+    };
     'cleanupLocal' = 'true';
 };
 
@@ -403,6 +407,8 @@ foreach($k in $downloads.Keys) {
 
     if($download.ContainsKey('expandTo')) {
         Expand-Archive -Path $download['local'] -DestinationPath $download['expandTo']
+        # Show only folder and immediate subfolder(s) content to avoid flooding logs
+        Get-ChildItem -Path $download['expandTo'] -Recurse -Depth 1
     }
 
     if($download.ContainsKey('postExpand')) {
