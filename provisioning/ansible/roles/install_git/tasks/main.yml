@@ -1,7 +1,13 @@
 ---
+- name: Copy the git-core PPA release key
+  ansible.builtin.copy:
+    src: git-core.gpg
+    dest: /tmp/git-core.gpg
+    mode: "0644"
+
 - name: Install the git-core PPA APT keyring from the local GPG key
   ansible.builtin.command:
-    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/git-core-keyring.gpg /tmp/gpg-keys/git-core.gpg
+    cmd: gpg --batch --yes --dearmor -o /usr/share/keyrings/git-core-keyring.gpg /tmp/git-core.gpg
     creates: /usr/share/keyrings/git-core-keyring.gpg
 
 - name: Make the git-core PPA APT keyring readable by every user

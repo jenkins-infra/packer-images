@@ -1,0 +1,16 @@
+---
+- name: Install rng-tools5
+  ansible.builtin.apt:
+    name: rng-tools5
+    state: present
+    install_recommends: false
+    update_cache: true
+
+# The package ships no rng-tools5 unit, and the shell started rngd with `|| true`.
+- name: Enable and start rngd
+  ansible.builtin.systemd:
+    name: rngd
+    enabled: true
+    state: started
+  when: ansible_facts['service_mgr'] == 'systemd'
+  failed_when: false

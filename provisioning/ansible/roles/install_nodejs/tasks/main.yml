@@ -1,0 +1,75 @@
+---
+- name: Install the Node.js archive requirements
+  ansible.builtin.apt:
+    name: xz-utils
+    state: present
+    install_recommends: false
+    update_cache: true
+
+- name: Create a temporary download directory
+  ansible.builtin.tempfile:
+    state: directory
+  register: nodejs_temp_download_dir
+
+- name: Copy the Node.js release keyring
+  ansible.builtin.copy:
+    src: nodejs-keyring.kbx
+    dest: "{{ nodejs_temp_download_dir.path }}/nodejs-keyring.kbx"
+    mode: "0644"
+
+- name: Download Node.js and its signed checksums
+  ansible.builtin.get_url:
+    url: "{{ nodejs_download_url }}/{{ item }}"
+    dest: "{{ nodejs_temp_download_dir.path }}/{{ item }}"
+    mode: "0644"
+  loop:
+    - "{{ nodejs_archive_file }}"
+    - SHASUMS256.txt.asc
+
+# The signature is clearsigned, so verifying it also produces the checksum file.
+- name: Verify the Node.js checksums signature
+  ansible.builtin.command:
+    cmd: gpgv --keyring={{ nodejs_temp_download_dir.path }}/nodejs-keyring.kbx
+      --output SHASUMS256.txt SHASUMS256.txt.asc
+    chdir: "{{ nodejs_temp_download_dir.path }}"
+    creates: "{{ nodejs_temp_download_dir.path }}/SHASUMS256.txt"
+
+- name: Verify the Node.js archive checksum
+  ansible.builtin.shell:
+    cmd: set -o pipefail && sha256sum --check SHASUMS256.txt --ignore-missing | grep {{ nodejs_archive_file }}
+    chdir: "{{ nodejs_temp_download_dir.path }}"
+    executable: /bin/bash
+  changed_when: false
+
+- name: Create the Node.js installation directory
+  ansible.builtin.file:
+    path: "{{ nodejs_install_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Extract Node.js
+  ansible.builtin.unarchive:
+    src: "{{ nodejs_temp_download_dir.path }}/{{ nodejs_archive_file }}"
+    dest: "{{ nodejs_install_dir }}"
+    extra_opts: [--strip-components=1]
+    creates: "{{ nodejs_install_dir }}/bin/node"
+    remote_src: true
+
+- name: Remove the temporary download directory
+  ansible.builtin.file:
+    path: "{{ nodejs_temp_download_dir.path }}"
+    state: absent
+
+- name: Add Node.js to the system wide PATH
+  ansible.builtin.replace:
+    path: /etc/environment
+    regexp: '^PATH="((?!.*{{ nodejs_install_dir }}/bin).*)"$'
+    replace: 'PATH="\1:{{ nodejs_install_dir }}/bin"'
+
+- name: Install the three usual package managers
+  ansible.builtin.command:
+    cmd: npm install -g npm yarn pnpm
+    chdir: "{{ nodejs_install_dir }}"
+    creates: "{{ nodejs_install_dir }}/bin/pnpm"
+  environment:
+    PATH: "{{ nodejs_install_dir }}/bin:{{ ansible_env.PATH }}"
