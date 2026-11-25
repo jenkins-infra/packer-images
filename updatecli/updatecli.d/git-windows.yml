@@ -39,7 +39,7 @@ targets:
           captureindex: 1
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "git_windows_version"
+      key: "$.git_windows_version"
     scmid: default
   updateGitPatchVersion:
     name: Update the Git Package Windows patch in the Packer default values
@@ -50,7 +50,7 @@ targets:
           captureindex: 2
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "git_windows_patch_version"
+      key: "$.git_windows_patch_version"
     scmid: default
 
 actions:

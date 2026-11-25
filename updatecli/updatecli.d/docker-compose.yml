@@ -33,7 +33,7 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "compose_version"
+      key: "$.compose_version"
     scmid: default
   updateVersionInGoss:
     name: Update the `DockerCompose` version in the goss test

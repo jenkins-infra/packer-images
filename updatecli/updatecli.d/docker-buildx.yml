@@ -33,7 +33,7 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "docker_buildx_version"
+      key: "$.docker_buildx_version"
     scmid: default
 
 actions:
