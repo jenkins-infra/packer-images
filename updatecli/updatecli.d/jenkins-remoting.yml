@@ -31,7 +31,7 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "jenkins_remoting_version"
+      key: "$.jenkins_remoting_version"
     scmid: default
 
 actions:

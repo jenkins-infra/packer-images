@@ -34,7 +34,7 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "gh_version"
+      key: "$.gh_version"
     scmid: default
   updateVersionInGoss:
     name: Update the `GitHub CLI (gh)` version in the goss test

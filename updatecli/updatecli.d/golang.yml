@@ -35,7 +35,7 @@ targets:
     kind: yaml
     spec:
       file: "provisioning/tools-versions.yml"
-      key: "golang_version"
+      key: "$.golang_version"
     scmid: default
   updateVersionInGoss:
     name: Update the `Golang` version in the goss test
