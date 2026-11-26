@@ -101,11 +101,11 @@ Get-WindowsFeature | Where-Object Name -like "NET*" | Format-Table Name, Display
 # Install GnuPG to allow verification of downloaded assets in a safe way
 ## TODO: track with updatecli (from tools-version.yaml?)
 $env:GNUGPG_VERSION = '2.5.24_20260923'
-$gpgTemp = 'C:\gpgtemp'
+$gpgTemp = 'C:/gpgtemp'
 $gpgInstaller = "${gpgTemp}/gnupg.exe"
 New-Item -ItemType Directory -Path $gpgTemp | Out-Null
-$GpgInstallerUrl = "https://www.gnupg.org/ftp/gcrypt/binary/gnupg-w32-{0}.exe" -f $env:GNUGPG_VERSION
-DownloadFile $GpgInstallerUrl $gpgInstaller
+$gpgInstallerUrl = "https://www.gnupg.org/ftp/gcrypt/binary/gnupg-w32-{0}.exe" -f $env:GNUGPG_VERSION
+DownloadFile $gpgInstallerUrl $gpgInstaller
 Start-Process -FilePath $gpgInstaller -ArgumentList '/S' -Wait
 & 'C:/Program Files/GnuPG/bin/gpg.exe' --version # Sanity check
 
