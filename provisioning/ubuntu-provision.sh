@@ -248,9 +248,9 @@ function install_python() {
 ## install the jdks major versions for the current os and platform
 function install_jdks(){
   # Ensure the Adoptium GPG key is loaded as a preliminary
-  GNUP_GHOME="$(mktemp -d)"
-  export GNUP_GHOME
-  gpg --batch --homedir "${GNUP_GHOME}" --import /tmp/gpg-keys/adoptium.gpg
+  GNUPGHOME="$(mktemp -d)"
+  export GNUPGHOME
+  gpg --batch --import /tmp/gpg-keys/adoptium.gpg
   for major_jdk_version in ${JDKS}; do
     echo "jdk to install : ${major_jdk_version}"
     installer_url_var="JDK${major_jdk_version}_INSTALLER_URL"
@@ -259,7 +259,7 @@ function install_jdks(){
     installation_dir="/opt/jdk-${major_jdk_version}"
     curl --fail --silent --show-error --location --output "${temp_archive}" "${installer_url}"
     curl --fail --silent --show-error --location --output "${temp_archive}.sig" "${installer_url}.sig"
-    gpg --batch --homedir "${GNUPG_HOME}" --verify "${temp_archive}.sig" "${temp_archive}"
+    gpg --batch --verify "${temp_archive}.sig" "${temp_archive}"
     mkdir -p "${installation_dir}"
     tar --extract --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
   done
