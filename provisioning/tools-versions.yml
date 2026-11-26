@@ -9,7 +9,7 @@ cst_version: 1.22.1
 docker_buildx_version: 0.39.1
 docker_version: 29.10.1
 doctl_version: 2.10.0
-gh_version: 2.105.0
+gh_version: 2.106.0
 git_linux_version: 2.56.1
 git_windows_version: 2.56.1
 git_windows_patch_version: "1"
@@ -25,7 +25,7 @@ helmfile_version: 1.8.5
 jenkins_remoting_version: 3396.ve02b_5cde31b_2
 jq_version: 1.8.2
 jxreleaseversion_version: 2.10.8
-kubectl_version: 1.35.10
+kubectl_version: 1.35.11
 launchable_version: 1.126.0
 maven_version: 3.10.2
 netlifydeploy_version: 0.2.2
