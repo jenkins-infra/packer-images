@@ -98,6 +98,17 @@ Get-PackageProvider NuGet -ForceBootstrap
 Install-WindowsFeature Net-Framework-Core
 Get-WindowsFeature | Where-Object Name -like "NET*" | Format-Table Name, DisplayName, InstallState -AutoSize
 
+# Install GnuPG to allow verification of downloaded assets in a safe way
+## TODO: track with updatecli (from tools-version.yaml?)
+$env:GNUGPG_VERSION = '2.5.24_20260923'
+$gpgTemp = 'C:/gpgtemp'
+$gpgInstaller = "${gpgTemp}/gnupg.exe"
+New-Item -ItemType Directory -Path $gpgTemp | Out-Null
+$gpgInstallerUrl = "https://www.gnupg.org/ftp/gcrypt/binary/gnupg-w32-{0}.exe" -f $env:GNUGPG_VERSION
+DownloadFile $gpgInstallerUrl $gpgInstaller
+Start-Process -FilePath $gpgInstaller -ArgumentList '/S' -Wait
+& 'C:/Program Files/GnuPG/bin/gpg.exe' --version # Sanity check
+
 ## List of tools to use
 $downloads = [ordered]@{}
 
@@ -108,10 +119,8 @@ foreach ($jdkMajorVersion in $jdkList) {
     $key = "jdk${jdkMajorVersion}"
 
     $urlVarName = "JDK${jdkMajorVersion}_INSTALLER_URL"
-    $checksumVarName = "JDK${jdkMajorVersion}_CHECKSUM_VALUE"
 
     $DownloadUrl = [System.Environment]::GetEnvironmentVariable($urlVarName)
-    $ChecksumValue = [System.Environment]::GetEnvironmentVariable($checksumVarName)
     if (-not $DownloadUrl) {
         Write-Warning "${urlVarName} undefined, ${key} ignored."
         return $false #no need to continue if variable not set
@@ -119,18 +128,15 @@ foreach ($jdkMajorVersion in $jdkList) {
     $localZipPath = "$baseDir\temurin${jdkMajorVersion}.zip"
     $expandTarget = "$baseDir"
     $preExpandScript = {
-        if (-Not (Test-Path -Path $localZipPath)) {
-            Write-Error "ZIP file not found at $localZipPath Download went wrong"
-            return $false
-        }
+        Write-Host "Retrieving signature file for ${key}..."
+        # Retrieve the GPG signature file
+        $ProgressPreference = 'SilentlyContinue' # Disable Progress bar for faster downloads
+        Invoke-WebRequest "${DownloadUrl}.sig" -OutFile "${localZipPath}.sig"
+        Write-Host "OK signature file retrieved for ${key}"
 
-        $actualHash = (Get-FileHash -Path $localZipPath -Algorithm SHA256).Hash.ToLower()
-        if ($actualHash -ne $ChecksumValue.ToLower()) {
-            Write-Error "Checksum mismatch for $key. Expected: $ChecksumValue, Got: $actualHash"
-            return $false
-        }
-
-        Write-Host "OK Checksum validated for $key"
+        Write-Host "Verifying signature of the file ${localZipPath} for ${key}..."
+        & 'C:\Program Files\GnuPG\bin\gpgv.exe' --keyring C:\gpg-keys\adoptium.gpg "${localZipPath}.sig" "${localZipPath}"
+        Write-Host "OK signature verified for $key"
         return $true
     }.GetNewClosure()
     $postExpandScript = {

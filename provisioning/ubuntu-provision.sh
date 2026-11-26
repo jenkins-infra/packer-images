@@ -247,21 +247,21 @@ function install_python() {
 
 ## install the jdks major versions for the current os and platform
 function install_jdks(){
+  # Ensure the Adoptium GPG key is loaded as a preliminary
+  GNUPGHOME="$(mktemp -d)"
+  export GNUPGHOME
+  gpg --batch --import /tmp/gpg-keys/adoptium.gpg
   for major_jdk_version in ${JDKS}; do
     echo "jdk to install : ${major_jdk_version}"
     installer_url_var="JDK${major_jdk_version}_INSTALLER_URL"
+    installer_url="${!installer_url_var}" # Indirection (e.g. resolve the referenced variable)
     temp_archive="$(mktemp)"
     installation_dir="/opt/jdk-${major_jdk_version}"
-    curl --fail --silent --show-error --location --output "${temp_archive}" "${!installer_url_var}"
-    checksum_value_var="JDK${major_jdk_version}_CHECKSUM_VALUE"
-    real_checksum=$(sha256sum "${temp_archive}" | awk '{print $1}')
-    if [ "${real_checksum}" = "${!checksum_value_var}" ]; then
-      mkdir -p "${installation_dir}"
-      tar --extract --gunzip --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
-    else
-      echo "wrong checksum for ${major_jdk_version} install"
-      exit 1
-    fi
+    curl --fail --silent --show-error --location --output "${temp_archive}" "${installer_url}"
+    curl --fail --silent --show-error --location --output "${temp_archive}.sig" "${installer_url}.sig"
+    gpg --batch --verify "${temp_archive}.sig" "${temp_archive}"
+    mkdir -p "${installation_dir}"
+    tar --extract --file="${temp_archive}" --directory="${installation_dir}" --strip-components=1
   done
 }
 
