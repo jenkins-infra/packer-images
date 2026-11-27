@@ -15,9 +15,9 @@ build {
     # List available offers and publishers with the command `az vm image list --output table`
     image_offer     = try(local.az_instance_image_offer[var.agent_os_version], "N/A")
     image_publisher = "canonical"
-    image_sku     = try(local.az_instance_image_sku[var.agent_os_version][var.architecture], "N/A")
-    image_version = try(local.images_versions["azure"][var.agent_os_type][var.agent_os_version][var.architecture], "N/A")
-    os_type       = "Linux"
+    image_sku       = try(local.az_instance_image_sku[var.agent_os_version][var.architecture], "N/A")
+    image_version   = try(local.images_versions["azure"][var.agent_os_type][var.agent_os_version][var.architecture], "N/A")
+    os_type         = "Linux"
   }
 
   provisioner "shell" {
@@ -57,7 +57,7 @@ build {
 
   provisioner "shell" {
     environment_vars = local.provisioning_env_vars
-    execute_command  = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E bash '{{ .Path }}'"
+    execute_command  = "chmod +x {{ .Path }}; sudo env {{ .Vars }} bash '{{ .Path }}'"
     script           = "./provisioning/ubuntu-provision.sh"
   }
 

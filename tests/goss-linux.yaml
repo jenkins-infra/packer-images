@@ -102,7 +102,9 @@ command:
     exec: python3 --version
     exit-status: 0
     stdout:
-      - "3.10"
+      # The distribution's own python3, so the version follows the Ubuntu release:
+      # 3.10 on 22.04 and 3.14 on 26.04. The from-source build is checked below.
+      - '/3\.(10|14)/'
   # Python3 installed from source
   python3:
     exec: /usr/local/bin/python3.15 --version
