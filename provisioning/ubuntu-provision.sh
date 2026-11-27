@@ -178,7 +178,10 @@ function install_docker() {
   gpg --batch --yes --dearmor -o "${keyring_file}" /tmp/gpg-keys/docker.gpg
   chmod a+r "${keyring_file}"
 
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=${keyring_file}] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+  # Use ARCHITECTURE rather than dpkg, which reports amd64v3 on 26.04 x86. The Docker
+  # repository only publishes amd64, arm64, armhf, s390x and ppc64el, so an amd64v3 entry
+  # makes apt-get update fail on a 404.
+  echo "deb [arch=${ARCHITECTURE} signed-by=${keyring_file}] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
   apt-get update --quiet
 
   # Install pinned version
@@ -224,7 +227,6 @@ function install_python() {
 	lzma tk-dev uuid-dev zlib1g-dev libmpdec-dev libzstd-dev \
 	inetutils-inetd
 
-  python3 -m pip install --no-cache-dir pip --upgrade
   mkdir python-src
   python3_source_download_url="https://www.python.org/ftp/python/${PYTHON3_VERSION}/Python-${PYTHON3_VERSION}.tgz"
   curl --fail --silent --show-error "${python3_source_download_url}" --output python-src.tgz
